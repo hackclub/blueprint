@@ -338,12 +338,12 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    sidekiq (7.3.9)
-      base64
-      connection_pool (>= 2.3.0)
-      logger
-      rack (>= 2.2.4)
-      redis-client (>= 0.22.2)
+    sidekiq (8.0.7)
+      connection_pool (>= 2.5.0)
+      json (>= 2.9.0)
+      logger (>= 1.6.2)
+      rack (>= 3.1.0)
+      redis-client (>= 0.23.2)
     slack-ruby-client (2.7.0)
       faraday (>= 2.0.1)
       faraday-mashify
@@ -453,7 +453,7 @@ DEPENDENCIES
   redis (~> 5.0)
   rubocop-rails-omakase
   selenium-webdriver
-  sidekiq (~> 7.0)
+  sidekiq (~> 8.0)
   slack-ruby-client (~> 2.7)
   solid_cable
   solid_cache

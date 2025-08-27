@@ -45,7 +45,7 @@ gem "tailwindcss-rails", "~> 4.0"
 # Redis for cache, queue, and Action Cable
 gem "redis", "~> 5.0"
 # Sidekiq for background jobs (optional, but recommended)
-gem "sidekiq", "~> 7.0"
+gem "sidekiq", "~> 8.0"
 
 # PostgreSQL adapter for ActiveRecord
 gem "pg", "~> 1.5"
