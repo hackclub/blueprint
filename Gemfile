@@ -57,7 +57,7 @@ gem "pg", "~> 1.6"
 gem "marksmith"
 
 # HTTP client
-gem "faraday", "~> 2.13"
+gem "faraday", "~> 2.14"
 
 # Slack client
 gem "slack-ruby-client", "~> 3.0"
