@@ -11,6 +11,7 @@
 <li><a href="/guides/midi">Midi Keyboard</a></li>
 <li><a href="/guides/split-keyboard">Split Keyboard</a></li>
 <li><a href="/guides/qmk">QMK for keybaords</a></li>
+<li><a href="/guides/schematic-best-practices">Schematic best practices</a></li>
 </ul>
 
 #### Note about projects made with the community provided guides:
