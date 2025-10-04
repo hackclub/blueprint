@@ -586,6 +586,8 @@ Now we need to assign the parts that JLCPCB couldn't automatically find and the 
 
 **Also make sure you're using as many basic parts as possible, filter for these so that your PCB is cheaper when selecting parts, but sometimes parts aren't available as basic**
 
+You might also have problems with the flash memory part, just use the **W25Q16JVUXIQ** part instead of **W25Q16JVUXIQ TR** (they're the same thing, just TR specifics it's in a tape roll which you don't need to worry about)!
+
 This is what my final BOM looks like, feel free to copy mine (it'll be in my GitHub repository under /PRODUCTION/files too):
 
 ![Pasted image 20250930192047.png](https://hc-cdn.hel1.your-objectstorage.com/s/v3/f20b481fbedf03a76ee251054942efcf7a81285f_Pasted_image_20250930192047.png)
