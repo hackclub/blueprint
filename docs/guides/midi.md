@@ -29,6 +29,7 @@ There will be another guide for assembly later.
 4. Hackatime is not required to submit your project.
 5. You are only allowed to make one submission.
 6. You must include a readme, with images and renders of your project.
+
 ## What’s in the kit
 7. Orpheus Pico
 8. TFT LCD
