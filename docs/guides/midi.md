@@ -42,6 +42,7 @@ There will be another guide for assembly later.
     - Threaded inserts
 14. Diodes (for your switch matrix)
 15. Resistors and capacitors (specify in the submission form!)
+
 ## Getting started
 This guide covers the essential steps needed to make a simple mini device, and teaches you to implement the folowing things in both circuit design and code.
 - Switches and keys (in matrix)
