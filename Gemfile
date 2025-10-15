@@ -129,7 +129,7 @@ group :development do
   gem "bullet"
 
   # Live reload for Hotwire
-  gem "hotwire-livereload", "~> 2.0"
+  gem "hotwire-livereload", "~> 2.1"
 
   gem "pre-commit", require: false
 
