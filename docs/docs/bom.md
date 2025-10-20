@@ -2,9 +2,9 @@
 | ----------- | ---------------------------------- |
 | description | How to make a Bill of Materials |
 
-
-
- As you create hardware projects for Blueprint, you will be required to include a BOM, or Bill of Materials, in .csv format. If you have any questions or suggestions, reach out in #blueprint-support or DM @Tanishq Goyal!
+# Let's Design a Bill of Mareials!
+---
+> As you create hardware projects for Blueprint, you will be required to include a BOM, or Bill of Materials, in .csv format. If you have any questions or suggestions, reach out in #blueprint-support or DM @Tanishq Goyal!
 
 --- 
 ## What is a BOM? Why is this important?
@@ -18,7 +18,7 @@ A BOM, or Bill of Materials, is the comprehensive list of ==**all**== required p
 In industrial BOMs, you will generally include information such as part numbers, part names, descriptions, manufacturer/manufacturing method, etc. If you are interested, check out [this BOM writing guide](https://durolabs.co/blog/bill-of-materials-example/)
 
 ![Manufactoring BOM Example!](https://hc-cdn.hel1.your-objectstorage.com/s/v3/fbea41efef552a6cc8830f589c44f6f3f2b8e236_pasted_image_20251017223635.png)
->[!info] This is is what industry BOMs look like. Thankfully, you won't have to deal with that for Blueprint! This format is pretty widespread, with robotics teams listing parts similarly as well. 
+> This is is what industry BOMs look like. Thankfully, you won't have to deal with that for Blueprint! This format is pretty widespread, with robotics teams listing parts similarly as well. 
 
 However, for Blueprint, your BOMs will look vastly different and is much less complex.  Here are the bare minimums for what you need for your Blueprint BOM:
 
@@ -61,7 +61,7 @@ Fortunately, there are tools that allow you to easily create a .csv file, withou
 Here is an example using Google Sheets. I will use formulas to make the Total Price and Running Total automatically update. 
 
 1. Total Price Formula. This is equivalent to the Unit Price times the quantity. 
-![Step 1][https://hc-cdn.hel1.your-objectstorage.com/s/v3/19deaef50d30d1524066970c1b76a219ad170939_pasted_image_20251017234942.png]
+![Step_1][https://hc-cdn.hel1.your-objectstorage.com/s/v3/19deaef50d30d1524066970c1b76a219ad170939_pasted_image_20251017234942.png]
 You should then drag the blue circle on the bottom right corner to copy the formulas for the below cells. For more information on formatting with Google Sheets, check out this [basic Google Sheets formula guide!](https://www.youtube.com/watch?v=llkP9DxRAPI) 
 
 2. Running Total. 
@@ -69,10 +69,10 @@ This calculation represents the cumulative total of purchases including sales ta
 
 **Running Total = (Total Price × (1 + Sales Tax Rate)) + Previous Running Total**
 
-##### Example: New Jersey Sales Tax (6.625%)
+###### Example: New Jersey Sales Tax (6.625%)
 
 **Formula Structure:**
-- **Tax Multiplier:** `1.06625` (1 + 0.06625)
+- **Tax Multiplier:** `1.06625 (1 + 0.06625)`
 - **Rounding:** Applied to nearest cent using `ROUND` function
 - **First Item:** `=ROUND(Total Price × 1.06625, 2)`
   - **Example:** `=ROUND(D2*1.06625,2)`
