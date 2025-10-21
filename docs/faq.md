@@ -30,6 +30,10 @@ Not at all. Unless you’re going advanced, most projects don't need pcbs, and w
 
 Yes! However, only one person can submit the project and access the journal.
 
+## Can I get reimbursed for 3D Printed parts!
+
+Yep! We will partially reimburse you to the nearest 250g of filament.
+
 ## Can I submit an existing project or one that I previously started?
 
 If it's already finished, unfortunately not, sorry! Start a new project.
@@ -88,3 +92,6 @@ Yes!
 ## Can people get tickets after December first?
 
 Yes! The submission is due December 1st, but there's going to be time after to build & spend tickets.
+
+> For any questions or missing content, DM @Tanishq Goyal or ask in #bluprint-support!
+
