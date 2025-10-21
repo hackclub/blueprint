@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_17_213106) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_20_231553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -158,6 +158,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_17_213106) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
+  end
+
+  create_table "build_reviews", force: :cascade do |t|
+    t.bigint "reviewer_id", null: false
+    t.bigint "project_id", null: false
+    t.float "hours_override"
+    t.boolean "admin_review"
+    t.string "reason"
+    t.integer "ticket_override"
+    t.boolean "invalidated", default: false
+    t.integer "tier_override"
+    t.integer "frozen_funding_needed_cents"
+    t.integer "frozen_duration_seconds"
+    t.integer "frozen_tier"
+    t.integer "frozen_entry_count"
+    t.text "feedback"
+    t.integer "result"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_build_reviews_on_project_id"
+    t.index ["reviewer_id", "project_id"], name: "index_build_reviews_on_reviewer_id_and_project_id", unique: true, where: "(invalidated = false)"
+    t.index ["reviewer_id"], name: "index_build_reviews_on_reviewer_id"
   end
 
   create_table "design_reviews", force: :cascade do |t|
@@ -527,6 +549,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_17_213106) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "build_reviews", "projects"
+  add_foreign_key "build_reviews", "users", column: "reviewer_id"
   add_foreign_key "design_reviews", "projects"
   add_foreign_key "design_reviews", "users", column: "reviewer_id"
   add_foreign_key "follows", "projects"
