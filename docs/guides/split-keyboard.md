@@ -13,6 +13,8 @@ This guide is meant to be an extension to the [hackpad guide](https://hackpad.ha
 
 In this tutorial we are going to use the same form factor board as in the hackpad tutorial, but with different internals. Instead of a rp2040 it has a nrf52840 chip inside, which has wireless capabilities.
 
+This guide is made by @koeg on slack, so if you have any questions about this guide DM me or ask in #blueprint-support. Thr source files of this project can be found in this [repo](https://github.com/mito-keyboard/mito-simplified).
+
 ## Installing Libraries
 
 After you created the kicad project, we need to install some libraries. We will be installing the same OPL libraries as in the hackpad tutorial, here is the [link](https://hackpad.hackclub.com/guide#pcb_design) for that section.
