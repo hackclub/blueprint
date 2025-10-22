@@ -50,7 +50,48 @@ This means that you have a nice looking ReadMe.md, all of your required files (s
 
 ### 3) Required files 
 
-The required files depend on your project type. For typical PCB projects it even differs on KiCAD vs EasyEDA. A good rule of thumb is to upload **AT LEAST** the files required to fully recreate the project. For KiCAD, you will need:
+Your repo should look like this:
+
+#### Root Directory
+- [x] `README.md` contains:
+  - [x] A short description of what your project is
+  - [x] A couple sentences on *why* you made the project
+  - [x] Screenshot of full 3D model
+  - [x] Screenshot of PCB (if applicable)
+  - [x] Wiring diagram (if applicable)
+  - [x] BOM in table format at the end of the README
+- [x] `JOURNAL.md` contains:
+  - [x] Total time spent on the project at the top
+  - [x] Dates
+  - [x] Time spent per day
+  - [x] Pictures/videos of work in progress
+- [x] `BOM.csv` with links to all components
+      
+####  /CAD
+- [x] Complete CAD assembly with all components (including electronics)
+- [x] `.STEP` file of the full 3D CAD model
+- [x] Source design files (e.g., `.f3d`, `.FCStd`)
+- [x] (Optional) 3D render of your project
+
+#### /PCB
+- [x] `.kicad_pro` (KiCad project file)
+- [x] `.kicad_sch` (schematic)
+- [x] `.kicad_pcb` (PCB)
+- [x] `gerbers.zip` or equivalent
+- [x] - `.wrl` 3D Model of your PCB
+
+####  /Firmware
+- [x] Firmware present (even if untested)
+- [x] Any libraries or dependencies used
+
+#### YOU *DO NOT* HAVE:
+- [ ] AI Generated READMEs or Journal entries
+- [ ] Stolen work from other people
+- [ ] missing firmware/software
+
+Projects containing these issues may be permanently rejected and could result in a ban from Blueprint and other Hack Club programs.
+
+The required files may depend on your project type. For typical PCB projects it even differs on KiCAD vs EasyEDA. A good rule of thumb is to upload **AT LEAST** the files required to fully recreate the project. For KiCAD, you will need:
 
 - `.kicad_pcb`, file representing the KiCad PCB Layout
 - `.kicad_sch`, for your schematic
@@ -69,6 +110,8 @@ You can additional link to your Onshape document.
 
 All projects should also have 
   - Some pictures of the design (hopefully you have some cool renders)
+
+
 
 ### 4) A Good Journal
 
