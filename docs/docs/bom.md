@@ -61,10 +61,13 @@ Fortunately, there are tools that allow you to easily create a .csv file, withou
 Here is an example using Google Sheets. I will use formulas to make the Total Price and Running Total automatically update. 
 
 1. Total Price Formula. This is equivalent to the Unit Price times the quantity. 
-![Step_1][https://hc-cdn.hel1.your-objectstorage.com/s/v3/19deaef50d30d1524066970c1b76a219ad170939_pasted_image_20251017234942.png]
+
+![Step_1](https://hc-cdn.hel1.your-objectstorage.com/s/v3/19deaef50d30d1524066970c1b76a219ad170939_pasted_image_20251017234942.png)
+
 You should then drag the blue circle on the bottom right corner to copy the formulas for the below cells. For more information on formatting with Google Sheets, check out this [basic Google Sheets formula guide!](https://www.youtube.com/watch?v=llkP9DxRAPI) 
 
-2. Running Total. 
+2. Running Total.
+   
 This calculation represents the cumulative total of purchases including sales tax. The formula is:
 
 **Running Total = (Total Price × (1 + Sales Tax Rate)) + Previous Running Total**
