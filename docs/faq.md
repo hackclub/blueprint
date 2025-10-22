@@ -93,5 +93,5 @@ Yes!
 
 Yes! The submission is due December 1st, but there's going to be time after to build & spend tickets.
 
-> For any questions or missing content, DM @Tanishq Goyal or ask in #bluprint-support!
+> For any questions or missing content, DM @Tanishq Goyal or ask in #blueprint-support!
 
