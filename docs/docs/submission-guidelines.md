@@ -65,7 +65,7 @@ Your repo should look like this:
   - [x] Dates
   - [x] Time spent per day
   - [x] Pictures/videos of work in progress
-- [x] `BOM.csv` with links to all components
+- [x] `BOM.csv` [make sure to have all required parts!](https://blueprint.hackclub.com/docs/bom)
       
 ####  /CAD
 - [x] Complete CAD assembly with all components (including electronics)
