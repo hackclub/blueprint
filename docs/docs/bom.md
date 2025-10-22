@@ -66,7 +66,7 @@ Here is an example using Google Sheets. I will use formulas to make the Total Pr
 
 You should then drag the blue circle on the bottom right corner to copy the formulas for the below cells. For more information on formatting with Google Sheets, check out this [basic Google Sheets formula guide!](https://www.youtube.com/watch?v=llkP9DxRAPI) 
 
-2. Running Total.
+2\. Running Total.
    
 This calculation represents the cumulative total of purchases including sales tax. The formula is:
 
