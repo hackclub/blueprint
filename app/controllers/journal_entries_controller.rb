@@ -54,7 +54,7 @@ class JournalEntriesController < ApplicationController
   private
 
   def set_project
-    @project = current_user.projects.find_by(id: params[:project_id]) || Project.find_by(id: params[:project_id])
+    @project = current_user.projects.find_by(id: params[:project_id])
     not_found unless @project
   end
 
