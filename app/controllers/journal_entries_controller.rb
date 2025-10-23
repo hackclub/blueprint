@@ -1,6 +1,8 @@
 class JournalEntriesController < ApplicationController
   before_action :set_project
   before_action :set_journal_entry, only: [ :show, :destroy, :edit, :update ]
+  before_action :require_project_owner!, only: [ :create ]
+  before_action :require_owner_or_author!, only: [ :edit, :update, :destroy ]
 
   def show
     ahoy.track "journal_entry_view", journal_entry_id: @journal_entry.id, user_id: current_user&.id, project_id: @project.id
@@ -13,8 +15,6 @@ class JournalEntriesController < ApplicationController
   end
 
   def create
-    not_found and return unless @project.user == current_user
-
     @journal_entry = @project.journal_entries.build(journal_entry_params.merge(user: current_user))
 
     if @journal_entry.save
@@ -27,14 +27,9 @@ class JournalEntriesController < ApplicationController
   end
 
   def edit
-    not_found and return unless @journal_entry.user == current_user
-    not_found and return unless @project.can_edit?
   end
 
   def update
-    not_found and return unless @journal_entry.user == current_user
-    not_found and return unless @project.can_edit?
-
     if @journal_entry.update(journal_entry_params)
       ahoy.track("journal_entry_update", project_id: @project.id, user_id: current_user.id, journal_entry_id: @journal_entry.id)
       redirect_to project_path(@project), notice: "Journal entry updated."
@@ -44,9 +39,6 @@ class JournalEntriesController < ApplicationController
   end
 
   def destroy
-    not_found and return unless @journal_entry.user == current_user
-    not_found and return unless @project.can_edit?
-
     @journal_entry.destroy
     redirect_to project_path(@project), notice: "Journal entry deleted."
   end
@@ -54,13 +46,23 @@ class JournalEntriesController < ApplicationController
   private
 
   def set_project
-    @project = current_user.projects.find_by(id: params[:project_id])
+    @project = Project.find_by(id: params[:project_id])
     not_found unless @project
   end
 
   def set_journal_entry
     @journal_entry = @project.journal_entries.find_by(id: params[:id])
     not_found unless @journal_entry
+  end
+
+  def require_project_owner!
+    uid = current_user&.id
+    not_found and return unless uid && @project.user_id == uid
+  end
+
+  def require_owner_or_author!
+    uid = current_user&.id
+    not_found and return unless uid && (@project.user_id == uid || @journal_entry.user_id == uid)
   end
 
   def journal_entry_params
