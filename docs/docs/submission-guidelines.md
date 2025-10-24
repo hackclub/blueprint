@@ -53,41 +53,41 @@ This means that you have a nice looking ReadMe.md, all of your required files (s
 Your repo should look like this:
 
 #### Root Directory
-- [x] `README.md` contains:
-  - [x] A short description of what your project is
-  - [x] A couple sentences on *why* you made the project
-  - [x] Screenshot of full 3D model
-  - [x] Screenshot of PCB (if applicable)
-  - [x] Wiring diagram (if applicable)
-  - [x] BOM in table format at the end of the README
-- [x] `JOURNAL.md` contains:
-  - [x] Total time spent on the project at the top
-  - [x] Dates
-  - [x] Time spent per day
-  - [x] Pictures/videos of work in progress
-- [x] `BOM.csv` [make sure to have all required parts!](https://blueprint.hackclub.com/docs/bom)
+-  `README.md` contains:
+  -  A short description of what your project is
+  -  A couple sentences on *why* you made the project
+  -  Screenshot of full 3D model
+  -  Screenshot of PCB (if applicable)
+  -  Wiring diagram (if applicable)
+  -  BOM in table format at the end of the README
+-  `JOURNAL.md` contains:
+  -  Total time spent on the project at the top
+  -  Dates
+  -  Time spent per day
+  -  Pictures/videos of work in progress
+-  `BOM.csv` [make sure to have all required parts!](https://blueprint.hackclub.com/docs/bom)
       
 ####  /CAD
-- [x] Complete CAD assembly with all components (including electronics)
-- [x] `.STEP` file of the full 3D CAD model
-- [x] Source design files (e.g., `.f3d`, `.FCStd`)
-- [x] (Optional) 3D render of your project
+-  Complete CAD assembly with all components (including electronics)
+-  `.STEP` file of the full 3D CAD model
+-  Source design files (e.g., `.f3d`, `.FCStd`)
+-  (Optional) 3D render of your project
 
 #### /PCB
-- [x] `.kicad_pro` (KiCad project file)
-- [x] `.kicad_sch` (schematic)
-- [x] `.kicad_pcb` (PCB)
-- [x] `gerbers.zip` or equivalent
-- [x] - `.wrl` 3D Model of your PCB
+-  `.kicad_pro` (KiCad project file)
+-  `.kicad_sch` (schematic)
+-  `.kicad_pcb` (PCB)
+-  `gerbers.zip` or equivalent
+- `.wrl` 3D Model of your PCB
 
 ####  /Firmware
-- [x] Firmware present (even if untested)
-- [x] Any libraries or dependencies used
+-  Firmware present (even if untested)
+-  Any libraries or dependencies used
 
 #### YOU *DO NOT* HAVE:
-- [ ] AI Generated READMEs or Journal entries
-- [ ] Stolen work from other people
-- [ ] missing firmware/software
+-  AI Generated READMEs or Journal entries
+-  Stolen work from other people
+-  missing firmware/software
 
 Projects containing these issues may be permanently rejected and could result in a ban from Blueprint and other Hack Club programs.
 
