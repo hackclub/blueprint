@@ -46,14 +46,15 @@
           <%= form_with model: @project, class: "space-y-10" do |f| %>
             <%= f.hidden_field :ship, value: true %>
 
-            <% if @project.needs_funding %>
-              <div class="space-y-2">
-                <%= f.label :tier, "What tier should this project be?", class: "block text-xl font-medium" %>
-                <div class="w-full text-left text-white select bg-bp-dark">
-                  <%= f.select :tier, Project.tier_options, { include_blank: false, selected: 4 }, { data: { ship_bom_target: "select", funding_amount_target: "tierSelect", action: "change->funding-amount#tierChanged" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
-                </div>
+            <div class="space-y-2">
+              <%= f.label :tier, "What tier should this project be?", class: "block text-xl font-medium" %>
+              <div class="w-full text-left text-white select bg-bp-dark">
+                <%= f.select :tier, @project.needs_funding ? Project.tier_options : Project.tier_options_with_multipliers, { include_blank: false, selected: 4 }, { data: { ship_bom_target: "select", funding_amount_target: "tierSelect", action: "change->funding-amount#tierChanged" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
               </div>
-              <p>If you don't know which tier your project should be, look <a href="/docs" class="underline text-bp-warning underline-offset-2 hover:text-bp-warning/80">here</a></p>
+            </div>
+            <p>If you don't know which tier your project should be, look <a href="/docs" class="underline text-bp-warning underline-offset-2 hover:text-bp-warning/80">here</a></p>
+
+            <% if @project.needs_funding %>
 
               <div class="space-y-2">
                 <%= f.label :funding_needed, "How much funding do you need?", class: "block text-xl font-medium" %>
@@ -185,18 +186,18 @@
             <%= render "shared/button", text: "Next", html_options: { data: { action: "click->paginate#next" } } %>
           </div>
         <% end %>
-        <% if @project.needs_funding %>
-          <%= render "shared/card", class: "hidden", html_options: { data: { controller: "funding-amount", funding_amount_tier_max_cents_value: Project.tier_max_cents.to_json, paginate_target: "page" } } do %>
-            <div>
-              <%= f.label :tier, "What tier should this project be?", class: "text-3xl" %>
-              <p class="text-lg">We may adjust this as we see fit.<br>If you're unsure what to pick, check the <a href="/docs" target="_blank" class="underline text-bp-warning">tier docs</a>.</p>
-            </div>
-            <div class="py-4 space-y-6 flex-flex-col">
-              <div class="space-y-2">
-                <div class="w-full text-left text-white select bg-bp-dark">
-                  <%= f.select :tier, Project.tier_options, { include_blank: false, selected: @project.tier || 4 }, { data: { funding_amount_target: "tierSelect", action: "change->funding-amount#tierChanged" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
-                </div>
+        <%= render "shared/card", class: "hidden", html_options: { data: { controller: "funding-amount", funding_amount_tier_max_cents_value: Project.tier_max_cents.to_json, paginate_target: "page" } } do %>
+          <div>
+            <%= f.label :tier, "What tier should this project be?", class: "text-3xl" %>
+            <p class="text-lg">We may adjust this as we see fit.<br>If you're unsure what to pick, check the <a href="/docs" target="_blank" class="underline text-bp-warning">tier docs</a>.</p>
+          </div>
+          <div class="py-4 space-y-6 flex-flex-col">
+            <div class="space-y-2">
+              <div class="w-full text-left text-white select bg-bp-dark">
+                <%= f.select :tier, @project.needs_funding ? Project.tier_options : Project.tier_options_with_multipliers, { include_blank: false, selected: @project.tier || 4 }, { data: { funding_amount_target: "tierSelect", action: "change->funding-amount#tierChanged" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
               </div>
+            </div>
+            <% if @project.needs_funding %>
               <div class="space-y-2">
                 <%= f.label :funding_needed, "How much funding do you need?", class: "block text-xl font-medium" %>
                 <p>This should match your BOM (Bill Of Materials) and cart screenshots.</s>
@@ -212,14 +213,14 @@
                 </div>
                 <p class="hidden text-sm text-bp-danger" data-funding-amount-target="error"></p>
               </div>
-            </div>
-            <div class="flex items-center pt-2">
-              <%= render "shared/button", text: "Back", variant: :outline, html_options: { data: { action: "click->paginate#prev" } } %>
-              <%= link_to "Cancel", project_path(@project), class: "btn btn-outline ml-2" %>
-              <div class="grow"></div>
-              <%= render "shared/button", text: "Next", html_options: { data: { action: "click->paginate#next" } } %>
-            </div>
-          <% end %>
+            <% end %>
+          </div>
+          <div class="flex items-center pt-2">
+            <%= render "shared/button", text: "Back", variant: :outline, html_options: { data: { action: "click->paginate#prev" } } %>
+            <%= link_to "Cancel", project_path(@project), class: "btn btn-outline ml-2" %>
+            <div class="grow"></div>
+            <%= render "shared/button", text: "Next", html_options: { data: { action: "click->paginate#next" } } %>
+          </div>
         <% end %>
         <%= render "shared/card", class: "hidden", html_options: { data: { controller: "print-legion", paginate_target: "page" } } do %>
           <div>
@@ -273,11 +274,18 @@
           <div>
             <p class="text-3xl">Cart screenshots</p>
             <p class="text-lg">
-              Upload screenshots of your shopping cart (e.g., suppliers) so we can verify pricing.<br>
-              Make sure the screenshot shows the full cart with items, prices, and quantities.<br>
-              For screenshots of JLC, make sure your PCB options are visible.<br>
-              If the cart doesn't fit within one screenshot, upload multiple.<br>
-              <% if @project.needs_funding %><span class="text-bp-warning">At least one image is required.</span><% end %>
+              <% if @project.needs_funding %>
+                Upload screenshots of your shopping cart (e.g., suppliers) so we can verify pricing.<br>
+                Make sure the screenshot shows the full cart with items, prices, and quantities.<br>
+                For screenshots of JLC, make sure your PCB options are visible.<br>
+                If the cart doesn't fit within one screenshot, upload multiple.<br>
+                <span class="text-bp-warning">At least one image is required.</span>
+              <% else %>
+                If you are buying things, upload screenshots of your shopping cart (e.g., suppliers).<br>
+                Make sure the screenshot shows the full cart with items, prices, and quantities.<br>
+                For screenshots of JLC, make sure your PCB options are visible.<br>
+                If the cart doesn't fit within one screenshot, upload multiple.
+              <% end %>
             </p>
           </div>
 
@@ -305,12 +313,13 @@
           <% manual_checks = [
             ["repo", "I have included all code, 3D models, schematics, and other project files into the repository in a format that can be edited (e.g. STEP, not STL)"],
             ["readme", "I have described my project in the README.md on the repository"],
-            ["bom", "I have researched the cheapest option for my components"],
             ["unique", "I know my project is original, or I have modified an existing project significantly"],
             ["design", "I have tried my best to build a functional design (electronics, 3D parts, etc)"],
-            ["journal", "I journaled all aspects of my project creation"],
+            ["journal", "I journaled all aspects of my project creation and build if applicable"],
             ["hours", "I reported time spent honestly and to the best of my ability."]
-          ] %>
+          ]
+          manual_checks.insert(2, ["bom", "I have researched the cheapest option for my components"]) if @project.needs_funding
+          %>
           <div>
             <% manual_checks.each do |key, msg| %>
               <div class="flex items-start space-x-3">

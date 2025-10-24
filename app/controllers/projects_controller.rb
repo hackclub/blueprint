@@ -232,10 +232,6 @@ class ProjectsController < ApplicationController
     end
     params[:project].delete(:ysws_other)
 
-    if params.dig(:project, :needs_funding) == "false" || params.dig(:project, :needs_funding) == false
-      params[:project][:tier] = nil
-    end
-
     # Compute print_legion from radio inputs
     if params.dig(:project, :has_3d_print).present? && params.dig(:project, :needs_3d_print_help).present?
       has_3d = params[:project][:has_3d_print] == "yes"

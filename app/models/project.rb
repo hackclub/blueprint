@@ -406,6 +406,11 @@ class Project < ApplicationRecord
       Project.tiers.map { |key, value| [ "Tier #{key} (#{tier_amounts[key.to_i]})", value ] }
   end
 
+  def self.tier_options_with_multipliers
+    tier_multipliers = { 1 => "1.5x multiplier", 2 => "1.25x multiplier", 3 => "1.1x multiplier", 4 => "1.0x multiplier", 5 => "0.8x multiplier" }
+    Project.tiers.map { |key, value| [ "Tier #{key} (#{tier_multipliers[key.to_i]})", value ] }
+  end
+
   def self.tier_max_cents
     { 1 => 40000, 2 => 20000, 3 => 10000, 4 => 5000, 5 => 2500 }
   end
