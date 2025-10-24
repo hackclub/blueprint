@@ -148,6 +148,11 @@ Rails.application.routes.draw do
       get "design_reviews/:id", to: "design_reviews#show", as: :design_review
       post "design_reviews/:id", to: "design_reviews#create", as: :design_review_create
 
+      get "build_reviews", to: "build_reviews#index", as: :build_reviews
+      get "build_reviews/random", to: "build_reviews#show_random", as: :random_build_review
+      get "build_reviews/:id", to: "build_reviews#show", as: :build_review
+      post "build_reviews/:id", to: "build_reviews#create", as: :build_review_create
+
       resources :projects, only: [ :index, :show ]
       resources :users, only: [ :index, :show, :update ]
     end

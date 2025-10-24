@@ -11,6 +11,7 @@
         <div class="grid grid-cols-3 gap-6">
           <% if current_user.reviewer_perms? %>
             <%= render "shared/button", variant: :outline, text: "Design Review (#{Project.where(is_deleted: false, review_status: :design_pending).count.to_i})", url: admin_design_reviews_path %>
+            <%= render "shared/button", variant: :outline, text: "Build Review (#{Project.where(is_deleted: false, review_status: :build_pending).count.to_i})", url: admin_build_reviews_path %>
           <% end %>
         </div>
         <p class="text-4xl">Dashboards</p>

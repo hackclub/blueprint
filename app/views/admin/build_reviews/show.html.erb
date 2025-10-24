@@ -1,0 +1,232 @@
+<section class="space-y-6">
+  <%= render "shared/button", text: "Back", url: admin_build_reviews_path, class: "py-0" %>
+  <%= render "shared/card" do %>
+    <div class="flex flex-col justify-between space-y-1" >
+      <h1 class="pb-2 text-4xl">Project #<%= @project.id %>, <%= link_to @project.title, admin_project_path(@project), class: "underline" %></h1>
+      <div>
+        <p>By <%= render "shared/user_inline", user: @project.user, admin_view: true %> on <%= @project.created_at.strftime("%B %d, %Y") %></p>
+      </div>
+      <div class="flex justify-start text-xl mt-4">
+        <% if @project.tier.present? %>
+          <% tier_style = @project.tier == "1" ? "bg-bp-danger text-bp-darker" : (@project.tier == "2" ? "bg-bp-warning text-bp-darker" : (@project.tier == "3" ? "bg-bp-success text-bp-darker" : "bg-bp-dark text-white")) %>
+          <p>Tier: <span class="<%= tier_style %> p-1 px-3 "><%= @project.tier %></span></p>
+        <% end %>
+      </div>
+    </div>
+    <div class="space-y-6">
+      <p class="text-xl wrap-break-word"><%= @project.description %></p>
+      <div>
+        <% if @project.repo_link.present? %>
+          <%= render "shared/button", text: "Repository", url: @project.repo_link, class: "py-0", html_options: { target: "_blank" } %>
+        <% end %>
+        <% if @project.demo_link.present? %>
+          <%= render "shared/button", text: "Demo", url: @project.demo_link, class: "py-0", html_options: { target: "_blank" } %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%= render "shared/card" do %>
+    <p class="text-3xl pb-4">Design Reviews</p>
+    <% if @project.design_reviews.any? %>
+      <div class="flex flex-col divide-y-2">
+        <% @project.design_reviews.order(created_at: :desc).each do |review| %>
+          <div class="py-4 first:pt-0 last:pb-0 flex space-x-4">
+            <div>
+              <% if review.invalidated? %>
+                <p class="text-bp-danger">OUTDATED</p>
+              <% end %>
+              <% if review.admin_review? %>
+                <p class="text-bp-warning">ADMIN</p>
+              <% end %>
+              <p>Reviewed by: <%= render "shared/user_inline", user: User.find(review.reviewer_id), admin_view: true %></p>
+              <% if review.result == "approved" %>
+                <p>Result: <span class="text-bp-success">Approved</span></p>
+              <% elsif review.result == "returned" %>
+                <p>Result: <span class="text-bp-warning">Returned</span></p>
+              <% elsif review.result == "rejected" %>
+                <p>Result: <span class="text-bp-danger">Permanently Rejected</span></p>
+              <% else %>
+                <p>Result: <span>Unknown</span></p>
+              <% end %>
+              <p>Hours override: <%= review.hours_override || "N/A" %></p>
+              <p>Tier override: <%= review.tier_override || "N/A" %></p>
+              <p>Grant override: <%= review.grant_override_cents ? "$#{sprintf("%.2f", review.grant_override_cents / 100.0)}" : "N/A" %></p>
+              <p>Feedback: <%= review.feedback.present? ? review.feedback : "No feedback given" %></p>
+              <p>Reason: <%= review.reason.present? ? review.reason : "No reason given" %></p>
+              <p>Reviewed at: <%= review.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+            </div>
+            <div>
+              <p>Frozen data (at time of review):</p>
+              <p>Funding: <%= review.frozen_funding_needed_cents.present? ? "$#{sprintf("%.2f", review.frozen_funding_needed_cents / 100.0)}" : "Unknown" %></p>
+              <p>Tier: <%= review.frozen_tier.present? ? review.frozen_tier : "Unknown" %></p>
+              <p>Hours: <%= review.frozen_duration_seconds.present? ? (review.frozen_duration_seconds / 3600.0).round(2) : "Unknown" %></p>
+              <p>Journal entries: <%= review.frozen_entry_count.present? ? review.frozen_entry_count : "Unknown" %></p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-white/70">No design reviews yet.</p>
+    <% end %>
+  <% end %>
+
+  <%= render "shared/card" do %>
+    <p class="text-3xl pb-4">Previous Build Reviews</p>
+    <div class="flex flex-col divide-y-2">
+      <% @project.build_reviews.order(created_at: :desc).each do |review| %>
+        <div class="py-4 first:pt-0 last:pb-0 flex space-x-4">
+          <div>
+            <% if review.invalidated? %>
+              <p class="text-bp-danger">OUTDATED</p>
+            <% end %>
+            <% if review.admin_review? %>
+              <p class="text-bp-warning">ADMIN</p>
+            <% end %>
+            <p>Reviewed by: <%= render "shared/user_inline", user: User.find(review.reviewer_id), admin_view: true %></p>
+            <% if review.result == "approved" %>
+              <p>Result: <span class="text-bp-success">Approved</span></p>
+            <% elsif review.result == "returned" %>
+              <p>Result: <span class="text-bp-warning">Returned</span></p>
+            <% elsif review.result == "rejected" %>
+              <p>Result: <span class="text-bp-danger">Permanently Rejected</span></p>
+            <% else %>
+              <p>Result: <span>Unknown</span></p>
+            <% end %>
+            <p>Hours override: <%= review.hours_override || "N/A" %></p>
+            <p>Tier override: <%= review.tier_override || "N/A" %></p>
+            <p>Ticket multiplier: <%= review.ticket_multiplier || "N/A" %></p>
+            <p>Ticket offset: <%= review.ticket_offset || "N/A" %></p>
+            <p>Feedback: <%= review.feedback.present? ? review.feedback : "No feedback given" %></p>
+            <p>Reason: <%= review.reason.present? ? review.reason : "No reason given" %></p>
+            <p>Reviewed at: <%= review.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+          </div>
+          <div>
+            <p>Frozen data (since previous review):</p>
+            <p>Tier at time: <%= review.frozen_tier.present? ? review.frozen_tier : "Unknown" %></p>
+            <p>Hours since last: <%= review.frozen_duration_seconds.present? ? (review.frozen_duration_seconds / 3600.0).round(2) : "Unknown" %></p>
+            <p>Entries since last: <%= review.frozen_entry_count.present? ? review.frozen_entry_count : "Unknown" %></p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= render "shared/card" do %>
+    <div class="space-y-2">
+      <p class="text-3xl">Journal Entries (since last review)</p>
+      <div class="flex space-x-12 text-xl">
+        <% entries = @project.journal_entries_since_last_build_review %>
+        <p>Count: <%= entries.count %></p>
+        <p>Total: <%= (entries.sum(:duration_seconds) / 3600.0).round(2) %>h</p>
+        <% if entries.count > 0 %>
+          <p>Average: <%= (entries.average(:duration_seconds).to_f / 3600.0).round(2) %>h</p>
+          <p>≥1h: <%= entries.where("duration_seconds >= ?", 3600).count %>/<%= entries.count %></p>
+          <p>Max: <%= (entries.maximum(:duration_seconds).to_f / 3600.0).round(2) %>h</p>
+          <p>Min: <%= (entries.minimum(:duration_seconds).to_f / 3600.0).round(2) %>h</p>
+        <% end %>
+      </div>
+      <% if entries.count > 1 %>
+        <% chart_data = entries.order(:id).pluck(:id, :duration_seconds).map { |id, duration| ["##{id}", duration / 3600.0] }.to_h %>
+        <div class="mt-4">
+          <%= bar_chart chart_data,
+            suffix: " hrs",
+            height: "300px",
+            colors: ["#ffc857"],
+            library: {
+              plugins: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: "Time spent per entry (hours) - Since Last Review",
+                  color: "white"
+                }
+              },
+              scales: {
+                y: {
+                  title: {
+                    display: true,
+                    text: "Entries",
+                    color: "white"
+                  },
+                  ticks: { color: "white" }
+                },
+                x: {
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: "Hours",
+                    color: "white"
+                  },
+                  ticks: { color: "white" }
+                }
+              }
+            } %>
+        </div>
+      <% end %>
+      <div>
+        <details>
+          <summary>Show Entire Journal (all time)</summary>
+          <div class="mt-4 space-y-6 markdown">
+          <% base_url = Rails.application.routes.default_url_options[:host] || "localhost:3000" %>
+          <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: @project.generate_journal(true), base_url: "http://#{base_url}").render) %>
+          </div>
+        </details>
+      </div>
+    </div>
+  <% end %>
+
+  <%= render "shared/card" do %>
+    <p class="text-3xl pb-4">Submit Build Review</p>
+    <%= form_with model: @build_review, url: admin_build_review_create_path(@project), method: :post, html: { class: "space-y-6", data: { controller: "build-review-calculator", build_review_calculator_project_tier_value: @project.tier || 'null', build_review_calculator_hours_since_last_review_value: @project.hours_since_last_build_review.round(2) } } do |f| %>
+      <div>
+        <%= f.label :tier_override, "Tier Override", class: "block text-xl font-medium" %>
+        <%= f.select :tier_override, BuildReview.tier_options_with_multipliers, { include_blank: "Leave blank for default tier (#{@project.tier})" }, class: "input px-3 mt-1 block w-full", data: { build_review_calculator_target: "tier", action: "change->build-review-calculator#tierChanged" } %>
+      </div>
+
+      <div>
+        <%= f.label :hours_override, "Hours Override", class: "block text-xl font-medium" %>
+        <%= f.number_field :hours_override, step: 0.01, placeholder: "Leave blank to use calculated hours (#{@project.hours_since_last_build_review.round(2)}h)", class: "input px-3 mt-1 block w-full", data: { build_review_calculator_target: "hoursOverride", action: "input->build-review-calculator#calculate" } %>
+        <p class="text-sm text-white/70 mt-1">Override the calculated hours for this review</p>
+      </div>
+
+      <div>
+        <%= f.label :ticket_multiplier, "Ticket Multiplier Override", class: "block text-xl font-medium" %>
+        <%= f.number_field :ticket_multiplier, step: 0.01, placeholder: "Auto-calculated based on tier", class: "input px-3 mt-1 block w-full", data: { build_review_calculator_target: "multiplier", action: "input->build-review-calculator#calculate" } %>
+        <p class="text-sm text-white/70 mt-1">Multiplier applied to base rate of 10 tickets/hour (defaults: T1=×1.5=15 tickets/hour, T2=×1.25=12.5/hr, T3=×1.1=11/hr, T4=×1.0=10/hr, T5/None=×0.8=8/hr)</p>
+      </div>
+
+      <div>
+        <%= f.label :ticket_offset, "Ticket Offset", class: "block text-xl font-medium" %>
+        <%= f.number_field :ticket_offset, step: 1, placeholder: "Default 0", class: "input px-3 mt-1 block w-full", data: { build_review_calculator_target: "offset", action: "input->build-review-calculator#calculate" } %>
+        <p class="text-sm text-white/70 mt-1">Fixed number of tickets to add or subtract</p>
+      </div>
+
+      <div class="p-4 bg-bp-success/20 border-2 border-bp-success rounded">
+        <p class="text-2xl font-bold" data-build-review-calculator-target="preview">
+          <span data-build-review-calculator-target="tickets">0</span> tickets will be granted
+        </p>
+        <p class="text-sm text-white/70 mt-1">
+          Formula: (<span data-build-review-calculator-target="hours"><%= @project.hours_since_last_build_review.round(2) %></span> hours × 10 tickets/hour × <span data-build-review-calculator-target="displayMultiplier">multiplier</span>) + <span data-build-review-calculator-target="displayOffset">offset</span>
+        </p>
+        <p class="text-xs text-white/60 mt-1">Base rate: 10 tickets/hour. Multiplier adjusts the rate (e.g., 1.5× = 15 tickets/hour)</p>
+      </div>
+
+      <div>
+        <%= f.label :reason, "Internal Reason", class: "block text-xl font-medium" %>
+        <%= f.text_area :reason, rows: 4, placeholder: "Add notes or reasons for your decision", class: "input px-3 mt-1 block w-full" %>
+      </div>
+
+      <div>
+        <%= f.label :feedback, class: "block text-xl font-medium" %>
+        <%= f.text_area :feedback, rows: 4, placeholder: "Feedback is shown to users", class: "input px-3 mt-1 block w-full" %>
+      </div>
+
+      <div class="flex gap-4">
+        <%= f.button "Approve", type: "submit", name: "build_review[result]", value: "approved", class: "btn btn-primary flex-1 bg-bp-success border-bp-success" %>
+        <%= f.button "Return", type: "submit", name: "build_review[result]", value: "returned", class: "btn btn-primary flex-1 bg-bp-warning border-bp-warning" %>
+        <%= f.button "Permanently Reject", type: "submit", name: "build_review[result]", value: "rejected", class: "btn btn-primary flex-1 bg-bp-danger border-bp-danger" %>
+      </div>
+    <% end %>
+  <% end %>
+</section>

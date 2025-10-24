@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_22_183324) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_24_155431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -160,6 +160,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_22_183324) do
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
   end
 
+  create_table "build_reviews", force: :cascade do |t|
+    t.bigint "reviewer_id", null: false
+    t.bigint "project_id", null: false
+    t.boolean "admin_review"
+    t.string "reason"
+    t.text "feedback"
+    t.integer "result"
+    t.boolean "invalidated", default: false
+    t.integer "frozen_duration_seconds"
+    t.integer "frozen_entry_count"
+    t.integer "frozen_tier"
+    t.float "ticket_multiplier"
+    t.integer "ticket_offset"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "tier_override"
+    t.float "hours_override"
+    t.index ["project_id"], name: "index_build_reviews_on_project_id"
+    t.index ["reviewer_id", "project_id"], name: "index_build_reviews_on_reviewer_id_and_project_id", unique: true, where: "(invalidated = false)"
+    t.index ["reviewer_id"], name: "index_build_reviews_on_reviewer_id"
+  end
+
   create_table "design_reviews", force: :cascade do |t|
     t.bigint "reviewer_id", null: false
     t.bigint "project_id", null: false
@@ -237,7 +259,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_22_183324) do
     t.text "content"
     t.string "summary"
     t.bigint "views", default: [], null: false, array: true
+    t.string "review_type"
+    t.bigint "review_id"
+    t.index ["project_id", "created_at"], name: "index_journal_entries_unreviewed_by_project", where: "(review_id IS NULL)"
     t.index ["project_id"], name: "index_journal_entries_on_project_id"
+    t.index ["review_type", "review_id"], name: "index_journal_entries_on_review"
+    t.index ["review_type", "review_id"], name: "index_journal_entries_on_review_type_and_review_id"
     t.index ["user_id"], name: "index_journal_entries_on_user_id"
   end
 
@@ -298,6 +325,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_22_183324) do
     t.integer "approved_tier"
     t.integer "approved_funding_cents"
     t.boolean "print_legion", default: false, null: false
+    t.integer "journal_entries_count", default: 0, null: false
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
@@ -537,6 +565,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_22_183324) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "build_reviews", "projects"
+  add_foreign_key "build_reviews", "users", column: "reviewer_id"
   add_foreign_key "design_reviews", "projects"
   add_foreign_key "design_reviews", "users", column: "reviewer_id"
   add_foreign_key "follows", "projects"

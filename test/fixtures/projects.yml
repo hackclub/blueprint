@@ -12,6 +12,7 @@
 #  funding_needed_cents   :integer          default(0), not null
 #  hackatime_project_keys :string           default([]), is an Array
 #  is_deleted             :boolean          default(FALSE)
+#  journal_entries_count  :integer          default(0), not null
 #  needs_funding          :boolean          default(TRUE)
 #  print_legion           :boolean          default(FALSE), not null
 #  project_type           :string

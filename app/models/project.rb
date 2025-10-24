@@ -10,6 +10,7 @@
 #  funding_needed_cents   :integer          default(0), not null
 #  hackatime_project_keys :string           default([]), is an Array
 #  is_deleted             :boolean          default(FALSE)
+#  journal_entries_count  :integer          default(0), not null
 #  needs_funding          :boolean          default(TRUE)
 #  print_legion           :boolean          default(FALSE), not null
 #  project_type           :string
@@ -38,12 +39,13 @@ class Project < ApplicationRecord
   attr_accessor :preloaded_view_count, :preloaded_follower_count
 
   belongs_to :user
-  has_many :journal_entries, dependent: :destroy
+  has_many :journal_entries, dependent: :destroy, counter_cache: true
   has_one :latest_journal_entry, -> { order(created_at: :desc) }, class_name: "JournalEntry"
   has_many :timeline_items, dependent: :destroy
   has_many :follows, dependent: :destroy
   has_many :followers, through: :follows, source: :user
   has_many :design_reviews, dependent: :destroy
+  has_many :build_reviews, dependent: :destroy
   has_many :project_grants, dependent: :destroy
   has_many :kudos, dependent: :destroy
 
@@ -145,7 +147,9 @@ class Project < ApplicationRecord
   before_validation :set_funding_needed_cents_to_zero_if_no_funding
   after_update_commit :sync_github_journal!, if: -> { saved_change_to_repo_link? && repo_link.present? }
   after_update :invalidate_design_reviews_on_resubmit, if: -> { saved_change_to_review_status? && design_pending? }
+  after_update :invalidate_build_reviews_on_resubmit, if: -> { saved_change_to_review_status? && build_pending? }
   after_update :approve_design!, if: -> { saved_change_to_review_status? && design_approved? }
+  after_update :approve_build!, if: -> { saved_change_to_review_status? && build_approved? }
   after_update :dm_status!, if: -> { saved_change_to_review_status? }
   after_commit :sync_to_gorse, on: [ :create, :update ]
   after_commit :delete_from_gorse, on: :destroy
@@ -532,6 +536,42 @@ class Project < ApplicationRecord
         msg += "<@#{admin_review.reviewer.slack_id}> left the following notes:\n\n#{admin_review.feedback}\n\n"
       end
       msg += "You can now start building your project and ship it for tickets when it's ready.\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
+    elsif build_needs_revision?
+      review = build_reviews.where(result: "returned", invalidated: false).last
+      if review && review.feedback.present? && review.reviewer&.slack_id.present?
+        msg += "Your Blueprint project *#{title}* needs some changes before it can be approved for tickets. Here's some feedback from your inspector, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
+        msg += "*Tier:* #{review.tier_override || review.frozen_tier}\n\n" if review.tier_override.present? || review.frozen_tier.present?
+        msg += "<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
+      else
+        msg += "Your Blueprint project *#{title}* needs some changes before it can be approved for tickets.\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
+      end
+    elsif build_rejected?
+      review = build_reviews.where(result: "rejected", invalidated: false).last
+      if review && review.feedback.present? && review.reviewer&.slack_id.present?
+        msg += "Your Blueprint project *#{title}* has been rejected for tickets. Here's some feedback from your inspector, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
+        msg += "*Tier:* #{review.tier_override || review.frozen_tier}\n\n" if review.tier_override.present? || review.frozen_tier.present?
+        msg += "<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
+      else
+        msg += "Your Blueprint project *#{title}* has been rejected for tickets.\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
+      end
+    elsif build_approved?
+      msg += "Your Blueprint project *#{title}* has passed the build review! You've been awarded tickets for your work.\n\n"
+
+      review = build_reviews.where(result: "approved", invalidated: false).order(created_at: :desc).first
+      if review
+        hours_worked = review.frozen_duration_seconds.to_f / 3600.0
+        multiplier = review.ticket_multiplier || 1.0
+        offset = review.ticket_offset || 0
+        tickets = ((hours_worked * multiplier) + offset).round
+
+        msg += "*Total tickets awarded:* #{tickets} tickets\n\n"
+
+        admin_review = build_reviews.where(admin_review: true, result: "approved", invalidated: false).order(created_at: :desc).first
+        if admin_review && admin_review.feedback.present? && admin_review.reviewer&.slack_id.present?
+          msg += "<@#{admin_review.reviewer.slack_id}> left the following notes:\n\n#{admin_review.feedback}\n\n"
+        end
+      end
+      msg += "Keep building and ship again for more tickets!\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
     else
       msg += "Your Blueprint project *#{title}* has been updated!\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
     end
@@ -551,12 +591,31 @@ class Project < ApplicationRecord
     addresses = idv_data.dig(:identity, :addresses) || []
     primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
 
-    hours = design_reviews.where.not(hours_override: nil).where(invalidated: false, admin_review: true).order(created_at: :desc).first&.hours_override || journal_entries.sum(:duration_seconds) / 3600.0
+    # Calculate total hours from ALL journal entries
+    total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0
+
+    # Get approved reviews
+    approved_design_reviews = design_reviews.where(result: "approved", invalidated: false).order(created_at: :asc)
+    approved_build_reviews = build_reviews.where(result: "approved", invalidated: false).order(created_at: :asc)
+
+    # Calculate total effective hours from all approved reviews (design + build)
+    total_effective_hours = 0
+    approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+    approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+
+    # Use total effective hours if any reviews exist, otherwise use total logged
+    hours_for_airtable = (approved_design_reviews.any? || approved_build_reviews.any?) ? total_effective_hours : total_hours_logged
+
+    # For grants, use design review override if present
     grant = design_reviews.where.not(grant_override_cents: nil).where(invalidated: false, admin_review: true).order(created_at: :desc).first&.grant_override_cents || funding_needed_cents
 
-    valid_reviews = design_reviews.where(invalidated: false, result: "approved")
-    reasoning = "This user logged #{pluralize(hours, 'hour')} across #{pluralize(journal_entries.count, 'journal entry')}.\n\n\n"
-    valid_reviews.each do |review|
+    reasoning = "This user logged #{total_hours_logged.round(1)} hours across #{pluralize(journal_entries.count, 'journal entry')}.\n\n\n"
+
+    approved_design_reviews.each do |review|
+      reasoning += "On #{review.created_at.strftime('%Y-%m-%d')}, #{review.admin_review ? 'Admin' : 'Reviewer'} #{review.reviewer.display_name} (#{review.reviewer.email}) decided \"#{review.result}\" with reason: #{review.reason.present? && !review.reason.empty? ? review.reason : 'no reason'}\n\n\n"
+    end
+
+    approved_build_reviews.each do |review|
       reasoning += "On #{review.created_at.strftime('%Y-%m-%d')}, #{review.admin_review ? 'Admin' : 'Reviewer'} #{review.reviewer.display_name} (#{review.reviewer.email}) decided \"#{review.result}\" with reason: #{review.reason.present? && !review.reason.empty? ? review.reason : 'no reason'}\n\n\n"
     end
 
@@ -580,7 +639,7 @@ class Project < ApplicationRecord
       "Country" => primary_address.dig(:country),
       "ZIP / Postal Code" => primary_address.dig(:postal_code),
       "Birthday" => idv_data.dig(:identity, :birthday),
-      "Optional - Override Hours Spent" => hours,
+      "Optional - Override Hours Spent" => hours_for_airtable,
       "Optional - Override Hours Spent Justification" => reasoning,
       "Slack ID" => user&.slack_id,
       "Project Name" => title,
@@ -618,6 +677,35 @@ class Project < ApplicationRecord
     end
   end
 
+  # @deprecated Use unreviewed_journal_entries instead
+  def last_non_invalid_review_at
+    [
+      design_reviews.where(invalidated: false).maximum(:created_at),
+      build_reviews.where(invalidated: false).maximum(:created_at)
+    ].compact.max
+  end
+
+  # @deprecated Use unreviewed_journal_entries instead
+  def last_non_invalid_build_review_at
+    build_reviews.where(invalidated: false).maximum(:created_at)
+  end
+
+  def unreviewed_journal_entries
+    journal_entries.where(review_id: nil)
+  end
+
+  def journal_entries_since_last_build_review
+    unreviewed_journal_entries
+  end
+
+  def hours_since_last_build_review
+    unreviewed_journal_entries.sum(:duration_seconds) / 3600.0
+  end
+
+  def entries_since_last_build_review_count
+    unreviewed_journal_entries.count
+  end
+
   private
 
   def normalize_repo_link
@@ -640,6 +728,12 @@ class Project < ApplicationRecord
 
   def invalidate_design_reviews_on_resubmit
     design_reviews.update_all(invalidated: true)
+    JournalEntry.where(project_id: id, review_type: "DesignReview").update_all(review_id: nil, review_type: nil)
+  end
+
+  def invalidate_build_reviews_on_resubmit
+    build_reviews.update_all(invalidated: true)
+    JournalEntry.where(project_id: id, review_type: "BuildReview").update_all(review_id: nil, review_type: nil)
   end
 
   def approve_design!
@@ -650,6 +744,11 @@ class Project < ApplicationRecord
       approved_funding_cents: admin_review&.grant_override_cents || funding_needed_cents
     )
 
+    upload_to_airtable!
+  end
+
+  def approve_build!
+    # Upload build review data to Airtable
     upload_to_airtable!
   end
 

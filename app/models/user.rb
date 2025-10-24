@@ -41,6 +41,7 @@ class User < ApplicationRecord
   has_many :follows, dependent: :destroy
   has_many :followed_projects, through: :follows, source: :project
   has_many :design_reviews, foreign_key: :reviewer_id, dependent: :destroy
+  has_many :build_reviews, foreign_key: :reviewer_id, dependent: :destroy
   has_one :task_list, dependent: :destroy
   has_many :kudos, dependent: :destroy
 
@@ -879,7 +880,7 @@ class User < ApplicationRecord
   end
 
   def special_perms?
-    role == "admin" || role == "reviewer"
+    role != "user"
   end
 
   private
