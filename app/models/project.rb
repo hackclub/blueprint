@@ -216,7 +216,8 @@ class Project < ApplicationRecord
     end
 
     ship_design_events = attribute_updated_event(object: self, attribute: :review_status, after: "design_pending", all: true)
-    user_ids = ship_design_events.map { |e| e[:whodunnit] }.compact.uniq
+    ship_build_events = attribute_updated_event(object: self, attribute: :review_status, after: "build_pending", all: true)
+    user_ids = (ship_design_events + ship_build_events).map { |e| e[:whodunnit] }.compact.uniq
     user_ids += kudos.pluck(:user_id).map(&:to_s)
 
     all_reviews = design_reviews.where(result: %w[returned rejected approved]).order(created_at: :asc)
@@ -247,7 +248,12 @@ class Project < ApplicationRecord
 
     ship_design_events.each do |event|
       user = users[event[:whodunnit].to_s]
-      timeline << { type: :ship_design, date: event[:timestamp], user: user }
+      timeline << { type: :ship, date: event[:timestamp], user: user }
+    end
+
+    ship_build_events.each do |event|
+      user = users[event[:whodunnit].to_s]
+      timeline << { type: :ship, date: event[:timestamp], user: user }
     end
 
     return_design_events.each do |event|
@@ -499,6 +505,8 @@ class Project < ApplicationRecord
       msg += "Your Blueprint project *#{title}* is almost ready to be reviewed! But before we can review your project, you need to verify your identity.\n\nHack Club has given out over $1M in grants to teens like you, and with that comes a lot of adults trying to slip in.\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/auth/idv|Click here to verify your identity>\n\n"
     elsif design_pending?
       msg += "Your Blueprint project *#{title}* is currently waiting for a design review. An inspector will take a look at it soon!\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
+    elsif build_pending?
+      msg += "Your Blueprint project *#{title}* is currently waiting for a build review. An inspector will take a look at it soon!\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
     elsif design_needs_revision?
       review = design_reviews.where(result: "returned", invalidated: false).last
       if review && review.feedback.present? && review.reviewer&.slack_id.present?
