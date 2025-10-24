@@ -37,17 +37,55 @@ class Admin::UsersController < Admin::ApplicationController
 
   def update
     @user = User.find(params[:id])
-    if @user.update(user_params)
-      redirect_to admin_user_path(@user), notice: "Internal notes updated successfully"
+
+    # Check for concurrent edit conflicts
+    original_notes = params[:user][:internal_notes_original]
+    if original_notes != @user.internal_notes
+      respond_to do |format|
+        format.html do
+          flash[:alert] = "Another reviewer updated these notes while you were editing"
+          redirect_to admin_user_path(@user)
+        end
+        format.turbo_stream do
+          flash.now[:alert] = "Another reviewer updated these notes while you were editing"
+          render turbo_stream: turbo_stream.replace(
+            "user_notes_#{@user.id}",
+            partial: "admin/users/user_notes_form",
+            locals: {
+              user: @user,
+              conflict: true,
+              current_notes: @user.internal_notes,
+              attempted_notes: params[:user][:internal_notes]
+            }
+          )
+        end
+      end
+      return
+    end
+
+    if @user.update(internal_notes: params[:user][:internal_notes])
+      respond_to do |format|
+        format.html { redirect_to admin_user_path(@user), notice: "Internal notes updated successfully" }
+        format.turbo_stream do
+          flash.now[:notice] = "Internal notes updated successfully"
+          render turbo_stream: turbo_stream.replace("user_notes_#{@user.id}", partial: "admin/users/user_notes_form", locals: { user: @user })
+        end
+      end
     else
-      render :show, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :show, status: :unprocessable_entity }
+        format.turbo_stream do
+          flash.now[:alert] = "Failed to update internal notes"
+          render turbo_stream: turbo_stream.replace("user_notes_#{@user.id}", partial: "admin/users/user_notes_form", locals: { user: @user })
+        end
+      end
     end
   end
 
   private
 
   def user_params
-    params.require(:user).permit(:internal_notes)
+    params.require(:user).permit(:internal_notes, :internal_notes_original)
   end
 
   def require_reviewer_perms!
