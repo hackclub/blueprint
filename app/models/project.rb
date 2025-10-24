@@ -224,7 +224,9 @@ class Project < ApplicationRecord
     user_ids = (ship_design_events + ship_build_events).map { |e| e[:whodunnit] }.compact.uniq
     user_ids += kudos.pluck(:user_id).map(&:to_s)
 
-    all_reviews = design_reviews.where(result: %w[returned rejected approved]).order(created_at: :asc)
+    all_reviews = design_reviews.where(result: %w[returned rejected])
+                                .or(design_reviews.where(result: "approved", admin_review: true))
+                                .order(created_at: :asc)
     return_design_events = []
     reject_design_events = []
     approve_design_groups = []
