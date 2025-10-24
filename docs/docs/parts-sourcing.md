@@ -92,7 +92,9 @@ Arduinos are fairly outdated by todays standards
   - 3D printed parts (3D printing as a Service, JLC3DP-alike)
     - [3Ding](https://www.3ding.in/)
     -
-
+### Türkiye (Turkey)
+- You will most likely be charged customs tax for products over ~30EUR. Keep that in mind.
+  
 > confirmed more vendors? wanna add specific notes for your country? contribute [here](https://github.com/hackclub/blueprint/blob/main/docs/docs/parts-sourcing.md)!! You'd be helping a ton of people!
 
 ## Tips for specific vendors
