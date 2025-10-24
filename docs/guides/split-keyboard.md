@@ -13,7 +13,9 @@ This guide is meant to be an extension to the [hackpad guide](https://hackpad.ha
 
 In this tutorial we are going to use the same form factor board as in the hackpad tutorial, but with different internals. Instead of a rp2040 it has a nrf52840 chip inside, which has wireless capabilities.
 
-This guide is made by @koeg on slack, so if you have any questions about this guide DM me or ask in #blueprint-support. Thr source files of this project can be found in this [repo](https://github.com/mito-keyboard/mito-simplified).
+If you want to dive a little bit deeper before starting, Joe Scotto has some good videos on [how keyboard work](https://www.youtube.com/watch?v=7LyziNdFlew&list=PLBD2IS_t_iWZDMdG_ZF57x9Ebm3kxKqxF) and on [how kicad works](https://www.youtube.com/watch?v=8WXpGTIbxlQ&list=PLBD2IS_t_iWZDMdG_ZF57x9Ebm3kxKqxF&index=2)
+
+This guide is made by @koeg on slack, so if you have any questions about this ask in #blueprint-support and tag me. Thr source files of this project can be found in this [repo](https://github.com/mito-keyboard/mito-simplified).
 
 ## Installing Libraries
 
@@ -81,7 +83,7 @@ and a diode `D` (you will see later why we need this):
 
 You may be wondering, why did we need to place down a diode???? You may also notice that the Xiao doesn't have enough pins for a full half of a split keyboard. In comes the humble keyboard matrix; with it we only have to connect one pin per column and one pin per row, drastically reducing the number of pins needed for a keyboard.
 
-The matrix works by giving power to each column one at a time and checking which keys are pressed down in that row. We need diodes to prevent *ghosting*, whereby pressing down one key, the keyboard detects more than one keypress. If you want you can read into [keyboard matrixes here](https://docs.qmk.fm/how_a_matrix_works).
+The matrix works by giving power to each column one at a time and checking which keys are pressed down in that row. The matrix will represent our final keyboard layout on our PCB, in this example if we have 4 rows and 5 columns, and one lonely thumb button in the 5th column and the 5th row, in our matrix in the schematic. We will have the same layout of switches on our PCB. We need diodes to prevent *ghosting*, whereby pressing down one key, the keyboard detects more than one keypress. If you want you can read into [keyboard matrixes here](https://docs.qmk.fm/how_a_matrix_works).
 
 For now all you need to know is that every key has its own diode; this is like one unit:
 
