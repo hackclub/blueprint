@@ -1,0 +1,148 @@
+# Blinky Board
+
+Made by @CAN
+
+Hi there! This is a tutorial on how to make a 555 LED Chaser board otherwise known as a “Blinky Board”. You can follow this tutorial, customize your design and you will be shipped the parts to build it! 
+
+## Here is what we will be building:
+
+We will all build this LED chaser which blinks 10 LEDs in a variable speed sequence. 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/766c5aee15a8c57b1bd57467f3382fc68c0a627c_unnamed.gif)
+
+Here’s the schematic: 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e089878c0586cfaaef00bc5f3b7da4044525edf6__3A16B0A8-2A46-4CCC-9F58-228AC47FAB86_.png)
+
+## What we’ll be doing
+
+- Set up [EasyEDA](https://easyeda.com/)/[GitHub](https://github.com/)
+- Design a Schematic
+- Create a Printed Circuit Board (PCB)
+- Submit your board for manufacturing at JLCPCB
+- Get a PCB grant from Hack Club Blueprint
+- Wait a week for your board to come back
+- Solder your board
+- Test your board and enjoy!
+
+## Set up accounts
+
+If you haven’t already, you should create an account on [EasyEDA](https://easyeda.com/) and [GitHub](https://github.com/). EasyEDA is what you will use to design the PCB and GitHub is where you will share it.
+
+## Create your project
+
+Go to [easyeda.com/editor](http://easyeda.com/editor) and click Design Online > STD edition. We are using the standard edition for simplicity sake but the pro edition is nice and its free!
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a83f8d3eb5790cd6666ed4bf6600e5985f8cd87a__A476BF7E-89EE-422E-B563-63182A7A19B7_.png)
+
+Now click New Project > Name your Project > Save
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/49fcf0556cda7a369c0949d7fa8d21f5f6df16d8__188E0BAB-5E62-4FD4-9D15-9791E8A4DB0C_.png)
+
+## Create your schematic
+
+You should see something like the image below. That is the schematic editor where you will be making your circuit diagram. Below are some useful tools.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8cc3b535f214f0b6be2e74aa564047dd41c72dd7__21B71484-212D-4F6E-BE33-5CC7F8DD864B_.png)
+
+Here are the components we will be using: (IC stands for Integrated Circuit)
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/d91b426a709588e2ab5803427c3624a753450f45__771DD54A-39E4-4922-9E2C-BAE6DBCC179B_.png)
+
+In schematic, things are represented as symbols. Here are the symbols for the components above:
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ca8bd830950c4bf32c887793df420ea52141425e__83C593DD-25FA-4281-B875-CDAFA65B4C39_.png)
+
+In order to place components (aka symbols), you need to click “Library” and search for a component number such as “CD4017BCN”.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4f0fc7ce84b7e363a93d6c04860ce5dfc76e45d4__A96120AA-08F2-49DF-AB22-62FBFAA633F5_.png)
+
+You will now need to go through and find all of your components. Luckily, we already compiled a list of everything you need to place. Go to Library>Click on the part number>Place for each of the parts below:
+
+- **C46749** (this is your 555 IC which is famous in circuitry)
+- **C32710674** (this is your main 4017 IC. It controls all of the LED’s flashing given an input from the 555)
+- **C492401** (this is your header, or little pins which you will use to power your circuit)
+- **C81276** (this is another little header which you can use for debugging your circuit)
+- **C62934** (this is an electrolytic capacitor, it is directional so be careful!)
+- **C249157** (this is another cap)
+- **C713997** (this is a 1k ohm resistor)
+- **C58592** (this is a 470 ohm resistor)
+- **C58592** (this is a potentiometer otherwise known as a variable resistor. You can use this to control the speed of the flashes)
+
+You will also need to place a total of 10 of the different colored LEDs below. You will get 10 of each color in the kit so don’t worry!
+
+- **C2844743** (red LED)
+- **C779445** (orange LED)
+- **C330770** (yellow LED)
+- **C2895483** (emerald LED)
+- **C473834** (blue LED) (elite ball knowlege required)
+- **C2895480** (white LED)
+
+Here is a good point to remind you. If you ever need help, ask in #blueprint-support on the Hack Club Slack. 
+
+## Place your components
+
+Now that you have placed all of your components, you should arrange it as below. This will make it easier when you wire.
+
+- You can use ‘r’ to rotate them
+- Use Copy and Paste when you need more, E.g. to make 10  LED’s
+- Remember to save (Control-C or  ⌘-C) often !!!!
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b86449f89ce3fbcc4dfb37cfea56d0e402fbd122__0B589CAB-0E7F-403F-90D3-7350DD6C9C88_.png)
+
+## Wire your components
+
+Don’t mess this up! Make sure your wiring matches the diagram below. The little red dots indicate that two wires are connected. Make sure that the wires which are supposed to pass over each other are not connected!
+
+- Click “w” or the wire button, or click on a terminal of a component
+- Wire together GND of all the LEDs
+- Check out Shortcut keys (Settings-> Shortcut key settings)
+- Remember to save (Control-C or  ⌘-C) often !!!!
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/778ce6cb2c018696f8354aabb15b7112f4873a99__BBC27CE3-7A26-4E46-AFA7-E725BDBB9552_.png)
+
+Your schematic is complete! 
+
+Reminder: ⌘+ S OR Ctrl + S to save your design often!
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/5aaf335b6f95cb2efb09573d6b4c74a52d61f8ed__534392E2-01CF-42B4-B1E8-7F2185EB0ACD_.png)
+
+## Create a Printed Circuit Board (PCB)
+
+Now, its time to convert your schematic (circuit connection guide) into a PCB (the physical layout of the connections).
+
+At the top of your screen, click 
+
+**Design > Convert Schematic to PCB**
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/111cd17b9f2a14453f1ba78ca456d652ccda152b__D27CDDB5-8BEC-4FF4-880A-04901B93BCE1_.png)
+
+<aside>
+
+Note if you are trying to make changes to your PCB later:
+
+Use Update PCB! It preserves your PCB layout!
+
+</aside>
+
+## Create an outline for your PCB
+
+For this tutorial, I will be making a rectangular for simplicity sake. However, 
+
+**YOU NEED TO CUSTOMIZE YOUR BOARD WITH A CUSTOM OUTLINE AND ART**
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/d3c10a29dc99ea3ab31c5ff7d3d893319974b98d__BA6D32FD-B511-4C8B-AAD5-D6D800E09D17_.png)
+
+First, select the “Board Outline” on the sidebar. 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/9f20de70d8fa423169ec12cf1fb5fd9318276b63__1841ADE8-E6F4-47D0-8E13-D9BB8295298E_.png)
+
+Next, you can either make your own board outline using the “Line” and other features in the toolbar.
+
+…or you can find a custom DXF online to have a custom outline.
+
+File→Import→DXF 
+
+(you can also convert an image to a DXF using an online converter such as convertio) 
+
+One thing about the DXF’s you may need to u
