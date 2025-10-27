@@ -42,6 +42,8 @@ class User < ApplicationRecord
   has_many :followed_projects, through: :follows, source: :project
   has_many :design_reviews, foreign_key: :reviewer_id, dependent: :destroy
   has_many :build_reviews, foreign_key: :reviewer_id, dependent: :destroy
+  has_many :received_build_reviews, through: :projects, source: :build_reviews
+  has_many :manual_ticket_adjustments, dependent: :destroy
   has_one :task_list, dependent: :destroy
   has_many :kudos, dependent: :destroy
 
@@ -699,7 +701,14 @@ class User < ApplicationRecord
   end
 
   def tickets
-    0
+    build_review_tickets = received_build_reviews
+      .approved
+      .where(invalidated: false)
+      .sum { |br| br.tickets_awarded }
+
+    manual_adjustments = manual_ticket_adjustments.sum(:adjustment)
+
+    build_review_tickets + manual_adjustments
   end
 
   def follow_project!(project)
