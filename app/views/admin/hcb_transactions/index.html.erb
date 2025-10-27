@@ -1,0 +1,115 @@
+<section class="space-y-6">
+  <%= render "shared/button", text: "Back", url: admin_root_path, class: "py-0" %>
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="pb-2 text-4xl">HCB Transactions</h1>
+      <% last_sync = @hcb_transactions.maximum(:last_synced_at) %>
+      <p class="text-sm text-white/60">
+        Last synced: <%= last_sync ? "#{time_ago_in_words(last_sync)} ago" : "Never" %>
+      </p>
+    </div>
+    <%= form_with url: admin_hcb_transactions_path, method: :get, local: true, class: "w-full max-w-2xl" do %>
+      <div class="flex items-center gap-3">
+        <input type="text" name="q" value="<%= h(@q) %>" placeholder="Search transaction ID, memo, grant ID, or user name" class="w-full text-white border-white rounded-none input bg-bp-darker placeholder-white/60" />
+        <button type="submit" class="text-lg rounded-none btn btn-primary">Search</button>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @top_missing_receipts.present? %>
+    <div class="border-2 border-white rounded-none">
+      <div class="p-3 text-xl font-bold border-b-2 border-white">Top 5 Users Missing Receipts</div>
+      <% @top_missing_receipts.each do |grant| %>
+        <a href="<%= admin_hcb_transactions_path(q: grant.to_user_name) %>" class="flex items-center justify-between px-3 py-2 text-lg transition-all border-b border-white/30 last:border-0 hover:bg-white/5">
+          <div class="flex items-center gap-2">
+            <% if grant.to_user_avatar.present? %>
+              <img src="<%= grant.to_user_avatar %>" alt="<%= grant.to_user_name %>" class="w-8 h-8 rounded-full" />
+            <% else %>
+              <div class="flex items-center justify-center w-8 h-8 text-xs font-bold rounded-full bg-white/20">
+                <%= grant.to_user_name&.first&.upcase || "?" %>
+              </div>
+            <% end %>
+            <span><%= grant.to_user_name || grant.grant_id %></span>
+          </div>
+          <div class="text-sm text-white/60"><%= grant.missing_count %> missing</div>
+        </a>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="border-2 border-white rounded-none">
+    <!-- Header row -->
+    <div class="grid grid-cols-11 p-3 text-lg border-b-2 border-white">
+      <div class="col-span-2">Grant</div>
+      <div class="col-span-1">Status</div>
+      <div class="col-span-1 text-right mr-6">Amount</div>
+      <div class="col-span-4">Memo</div>
+      <div class="col-span-1 text-right mr-6">Receipts</div>
+      <div class="col-span-2">Spent</div>
+    </div>
+
+    <!-- Rows -->
+    <% if @hcb_transactions.present? %>
+      <% @hcb_transactions.each do |tx| %>
+        <div class="grid grid-cols-11 px-3 text-lg border-b border-white/30 last:border-0">
+          <div class="flex items-center col-span-2 py-2 gap-2">
+            <% if tx.hcb_grant %>
+              <a href="https://hcb.hackclub.com/grants/<%= tx.hcb_grant.grant_id %>" target="_blank" class="flex items-center gap-2 underline decoration-white/30 underline-offset-2 hover:decoration-white">
+                <% if tx.hcb_grant.to_user_avatar.present? %>
+                  <img src="<%= tx.hcb_grant.to_user_avatar %>" alt="<%= tx.hcb_grant.to_user_name %>" class="w-8 h-8 rounded-full" />
+                <% else %>
+                  <div class="w-8 h-8 rounded-full bg-white/20"></div>
+                <% end %>
+                <span><%= tx.hcb_grant.to_user_name || tx.hcb_grant.grant_id %></span>
+              </a>
+            <% else %>
+              –
+            <% end %>
+          </div>
+          <div class="flex items-center col-span-1">
+            <% if tx.status %>
+              <span class="px-2 py-0.5 text-xs rounded-sm <%= tx.status == 'Declined' ? 'bg-bp-danger/20 text-bp-danger' : (tx.status == 'Reversed' ? 'bg-bp-warning/20 text-bp-warning' : 'bg-white/20 text-white/80') %>">
+                <%= tx.status %>
+              </span>
+            <% else %>
+              –
+            <% end %>
+          </div>
+          <div class="flex items-center justify-end mr-6 col-span-1 <%= tx.amount_cents && tx.amount_cents.negative? ? 'text-bp-danger' : '' %>">
+            <% if tx.amount_cents %>
+              <% amount = tx.amount_cents / 100.0 %>
+              <%= amount < 0 ? "-$#{number_with_precision(amount.abs, precision: 2)}" : "$#{number_with_precision(amount, precision: 2)}" %>
+            <% else %>
+              –
+            <% end %>
+          </div>
+          <div class="flex items-center col-span-4 truncate">
+            <% if tx.transaction_id.present? %>
+            <a href="https://hcb.hackclub.com/hcb/<%= tx.transaction_id %>" target="_blank" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">
+              <%= tx.memo || "-" %>
+            </a>
+            <% else %>
+              <%= tx.memo || "–" %>
+            <% end %>
+          </div>
+          <div class="flex items-center justify-end mr-6 col-span-1 <%= tx.receipt_count.nil? || tx.receipt_count <= 0 ? 'text-bp-danger font-bold' : '' %>">
+            <%= tx.receipt_count || 0 %>
+          </div>
+          <div class="flex items-center col-span-2">
+            <% if tx.hcb_created_at %>
+              <%= time_ago_in_words(tx.hcb_created_at) %> ago
+            <% else %>
+              –
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="px-4 py-6 text-center text-white/70">No transactions found.</div>
+    <% end %>
+  </div>
+
+  <div class="flex items-center justify-end text-lg">
+    <%== pagy_nav(@pagy) if @pagy.present? && @pagy.pages > 1 %>
+  </div>
+</section>

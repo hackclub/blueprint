@@ -125,7 +125,7 @@ class HcbScraperService
       doc = Nokogiri::HTML(raw_response.body)
 
       doc.css("span").each do |span|
-        if span.text.strip.start_with?("issued about ")
+        if span.text.strip =~ /\Aissued .+ ago/
           img = span.previous_element.at_css("img")["src"] rescue nil
           grant_hash[:to_user_avatar] ||= img
           break
@@ -151,6 +151,7 @@ class HcbScraperService
         receipt_count = frame.parent.parent.next_element.text.strip.to_i rescue nil
         memo = frame.at_css("span").at_css("a").text.strip rescue nil
         created_at_text = frame.parent.parent.parent.parent.previous_element.at_css("time")["datetime"] rescue nil
+        created_at_text ||= frame.parent.parent.parent.parent.previous_element.text.strip rescue nil
         created_at = Time.parse(created_at_text) rescue nil
 
         transactions << {

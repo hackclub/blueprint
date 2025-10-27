@@ -175,7 +175,7 @@ class ProjectsController < ApplicationController
       { key: "readme", msg: "README.md present", met: nil },
       { msg: "Description is at least 50 characters on Blueprint", met: desc_ok },
       { msg: "Project has 3 journal entries", met: journal_ok },
-      { msg: "Uploaded a Banner image", met: banner_ok }
+      { msg: "Uploaded aBanner image uploaded", met: banner_ok }
     ]
 
     @base_ok = repo_linked && desc_ok && journal_ok && banner_ok

@@ -139,6 +139,8 @@ Rails.application.routes.draw do
         post :revoke_to_user, on: :member
         patch :update_internal_notes, on: :member
       end
+
+      resources :hcb_transactions, only: [ :index ]
     end
 
     constraints ReviewerConstraint do
