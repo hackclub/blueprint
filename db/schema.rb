@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_27_170715) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_27_211837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -248,6 +248,50 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_170715) do
     t.index ["project_id"], name: "index_follows_on_project_id"
     t.index ["user_id", "project_id"], name: "index_follows_on_user_id_and_project_id", unique: true
     t.index ["user_id"], name: "index_follows_on_user_id"
+  end
+
+  create_table "hcb_grants", force: :cascade do |t|
+    t.string "org_id", null: false
+    t.string "grant_id", null: false
+    t.string "status"
+    t.integer "initial_amount_cents"
+    t.integer "balance_cents"
+    t.string "to_user_name"
+    t.text "to_user_avatar"
+    t.text "for_reason"
+    t.datetime "issued_at"
+    t.string "source_url"
+    t.datetime "first_seen_at", null: false
+    t.datetime "last_seen_at", null: false
+    t.datetime "last_synced_at"
+    t.integer "sync_failures_count", default: 0, null: false
+    t.text "last_sync_error"
+    t.datetime "soft_deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["last_seen_at"], name: "index_hcb_grants_on_last_seen_at"
+    t.index ["org_id", "grant_id"], name: "index_hcb_grants_on_org_id_and_grant_id", unique: true
+    t.index ["soft_deleted_at"], name: "index_hcb_grants_on_soft_deleted_at"
+  end
+
+  create_table "hcb_transactions", force: :cascade do |t|
+    t.bigint "hcb_grant_id", null: false
+    t.string "org_id", null: false
+    t.string "transaction_id", null: false
+    t.string "status"
+    t.integer "amount_cents"
+    t.integer "receipt_count"
+    t.text "memo"
+    t.datetime "hcb_created_at"
+    t.string "source_url"
+    t.datetime "first_seen_at", null: false
+    t.datetime "last_seen_at", null: false
+    t.datetime "last_synced_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hcb_grant_id"], name: "index_hcb_transactions_on_hcb_grant_id"
+    t.index ["last_seen_at"], name: "index_hcb_transactions_on_last_seen_at"
+    t.index ["org_id", "transaction_id"], name: "index_hcb_transactions_on_org_id_and_transaction_id", unique: true
   end
 
   create_table "journal_entries", force: :cascade do |t|
@@ -580,6 +624,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_170715) do
   add_foreign_key "design_reviews", "users", column: "reviewer_id"
   add_foreign_key "follows", "projects"
   add_foreign_key "follows", "users"
+  add_foreign_key "hcb_transactions", "hcb_grants"
   add_foreign_key "journal_entries", "projects"
   add_foreign_key "journal_entries", "users"
   add_foreign_key "kudos", "projects"

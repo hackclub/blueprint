@@ -1,0 +1,59 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# == Schema Information
+#
+# Table name: hcb_transactions
+#
+#  id             :bigint           not null, primary key
+#  amount_cents   :integer
+#  first_seen_at  :datetime         not null
+#  hcb_created_at :datetime
+#  last_seen_at   :datetime         not null
+#  last_synced_at :datetime
+#  memo           :text
+#  receipt_count  :integer
+#  source_url     :string
+#  status         :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  hcb_grant_id   :bigint           not null
+#  org_id         :string           not null
+#  transaction_id :string           not null
+#
+# Indexes
+#
+#  index_hcb_transactions_on_hcb_grant_id               (hcb_grant_id)
+#  index_hcb_transactions_on_last_seen_at               (last_seen_at)
+#  index_hcb_transactions_on_org_id_and_transaction_id  (org_id,transaction_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (hcb_grant_id => hcb_grants.id)
+#
+one:
+  hcb_grant: one
+  org_id: MyString
+  transaction_id: MyString
+  status: MyString
+  amount_cents: 1
+  receipt_count: 1
+  memo: MyText
+  hcb_created_at: 2025-10-27 17:18:37
+  source_url: MyString
+  first_seen_at: 2025-10-27 17:18:37
+  last_seen_at: 2025-10-27 17:18:37
+  last_synced_at: 2025-10-27 17:18:37
+
+two:
+  hcb_grant: two
+  org_id: MyString
+  transaction_id: MyString
+  status: MyString
+  amount_cents: 1
+  receipt_count: 1
+  memo: MyText
+  hcb_created_at: 2025-10-27 17:18:37
+  source_url: MyString
+  first_seen_at: 2025-10-27 17:18:37
+  last_seen_at: 2025-10-27 17:18:37
+  last_synced_at: 2025-10-27 17:18:37

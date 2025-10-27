@@ -590,6 +590,7 @@ DEPENDENCIES
   lz_string
   marksmith
   mission_control-jobs
+  nokogiri
   pagy
   paper_trail
   pg (~> 1.6)

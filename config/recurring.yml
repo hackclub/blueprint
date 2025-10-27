@@ -29,13 +29,13 @@ production:
     class: RefreshIdvDataJob
     queue: background
     schedule: every 10 minutes
-  
+
   sync_airtable_data:
     class: AirtableSyncJob
     queue: background
     schedule: every 10 minutes
 
-  refresh_recommendations:
-    class: RecommenderJob
-    queue: recommendation
+  sync_hcb_data:
+    class: HcbSyncJob
+    queue: background
     schedule: every hour at minute 24
