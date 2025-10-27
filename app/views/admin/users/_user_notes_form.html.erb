@@ -31,7 +31,7 @@
     </div>
   <% end %>
   
-  <%= form_with model: user, url: admin_user_path(user), method: :patch, html: { class: "space-y-4" } do |f| %>
+  <%= form_with model: user, url: update_internal_notes_admin_user_path(user), method: :patch, html: { class: "space-y-4" } do |f| %>
     <%= f.hidden_field :internal_notes_original, value: user.internal_notes %>
     <%= f.text_area :internal_notes, rows: 3, placeholder: "Add internal notes about this user...", class: "input px-3 block w-full" %>
     <%= f.submit "Save Notes", class: "btn btn-primary" %>

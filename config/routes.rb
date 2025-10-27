@@ -134,9 +134,10 @@ Rails.application.routes.draw do
       end
       resources :allowed_emails, only: [ :index, :create, :destroy ]
 
-      resources :users, only: [ :index, :show, :update ] do
+      resources :users, only: [ :index, :show ] do
         post :grant_reviewer, on: :member
         post :revoke_to_user, on: :member
+        patch :update_internal_notes, on: :member
       end
     end
 

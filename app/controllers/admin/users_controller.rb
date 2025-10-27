@@ -1,6 +1,6 @@
 class Admin::UsersController < Admin::ApplicationController
-  skip_before_action :require_admin!, only: [ :index, :show ]
-  before_action :require_reviewer_perms!, only: [ :index, :show ]
+  skip_before_action :require_admin!, only: [ :index, :show, :update_internal_notes ]
+  before_action :require_reviewer_perms!, only: [ :index, :show, :update_internal_notes ]
 
   def index
     @q = params[:q].to_s.strip
@@ -35,7 +35,7 @@ class Admin::UsersController < Admin::ApplicationController
     redirect_to admin_user_path(@user), notice: "User role revoked to user"
   end
 
-  def update
+  def update_internal_notes
     @user = User.find(params[:id])
 
     # Check for concurrent edit conflicts

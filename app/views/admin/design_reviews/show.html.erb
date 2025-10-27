@@ -145,6 +145,12 @@
       <p class="text-xl">No screenshots uploaded.</p>
     <% end %>
   <% end %>
+
+  <%= render "shared/card" do %>
+    <p class="text-3xl pb-4">User Internal Notes</p>
+    <%= render "admin/users/user_notes_form", user: @project.user %>
+  <% end %>
+
   <%= render "shared/card" do %>
     <p class="text-3xl pb-4">Submit Design Review</p>
     <%= form_with model: @design_review, url: admin_design_review_create_path(@project), method: :post, html: { class: "space-y-6" } do |f| %>
