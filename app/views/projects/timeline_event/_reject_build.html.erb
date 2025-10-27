@@ -1,0 +1,26 @@
+<% if event[:feedback].present? || event[:tier_override].present? %>
+  <%= render "timeline_event_card" do %>
+    <div class="flex space-x-4">
+      <% if event[:user] %>
+        <p class="grow"><%= render "shared/user_inline", user: event[:user] %> rejected <%= project.title %> <%= c_time_ago_in_words(event[:date]) %> ago</p>
+      <% else %>
+      <% end %>
+    </div>
+    <div class="timeline-journal">
+      <% if event[:feedback].present? %>
+        <p><%= event[:feedback] %></p>
+      <% end %>
+      <% if event[:tier_override].present? %>
+        <p><strong>Tier:</strong> <%= event[:tier_override] %></p>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <%= render "timeline_event_basic", icon: "icons/reject.svg" do %>
+    <% if event[:user] %>
+        <p><%= render "shared/user_inline", user: event[:user] %> rejected <%= project.title %> <span title="<%= event[:date] %>"><%= c_time_ago_in_words(event[:date]) %> ago</span></p>
+    <% else %>
+      <p><%= project.title %> was rejected <span title="<%= event[:date] %>"><%= c_time_ago_in_words(event[:date]) %> ago</span></p>
+    <% end %>
+  <% end %>
+<% end %>

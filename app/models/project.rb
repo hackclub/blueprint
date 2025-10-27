@@ -224,7 +224,7 @@ class Project < ApplicationRecord
     user_ids = (ship_design_events + ship_build_events).map { |e| e[:whodunnit] }.compact.uniq
     user_ids += kudos.pluck(:user_id).map(&:to_s)
 
-    all_reviews = design_reviews.where(result: %w[returned rejected])
+    all_design_reviews = design_reviews.where(result: %w[returned rejected])
                                 .or(design_reviews.where(result: "approved", admin_review: true))
                                 .order(created_at: :asc)
     return_design_events = []
@@ -232,7 +232,7 @@ class Project < ApplicationRecord
     approve_design_groups = []
     previous_result = nil
 
-    all_reviews.each do |review|
+    all_design_reviews.each do |review|
       user_ids << review.reviewer_id.to_s
 
       if review.result == "returned"
@@ -244,6 +244,31 @@ class Project < ApplicationRecord
           approve_design_groups << { date: review.created_at, reviews: [] }
         end
         approve_design_groups.last[:reviews] << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents, admin_review: review.admin_review }
+      end
+
+      previous_result = review.result
+    end
+
+    all_build_reviews = build_reviews.where(result: %w[returned rejected])
+                                .or(build_reviews.where(result: "approved", admin_review: true))
+                                .order(created_at: :asc)
+    return_build_events = []
+    reject_build_events = []
+    approve_build_groups = []
+    previous_result = nil
+
+    all_build_reviews.each do |review|
+      user_ids << review.reviewer_id.to_s
+
+      if review.result == "returned"
+        return_build_events << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override }
+      elsif review.result == "rejected"
+        reject_build_events << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override }
+      elsif review.result == "approved"
+        if previous_result != "approved"
+          approve_build_groups << { date: review.created_at, reviews: [] }
+        end
+        approve_build_groups.last[:reviews] << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override, admin_review: review.admin_review }
       end
 
       previous_result = review.result
@@ -277,6 +302,23 @@ class Project < ApplicationRecord
         r.merge(user: users[r[:user_id].to_s])
       end
       timeline << { type: :approve_design, date: group[:date], reviews: reviews_with_users }
+    end
+
+    return_build_events.each do |event|
+      user = users[event[:user_id].to_s]
+      timeline << { type: :return_build, date: event[:date], user: user, feedback: event[:feedback], tier_override: event[:tier_override] }
+    end
+
+    reject_build_events.each do |event|
+      user = users[event[:user_id].to_s]
+      timeline << { type: :reject_build, date: event[:date], user: user, feedback: event[:feedback], tier_override: event[:tier_override] }
+    end
+
+    approve_build_groups.each do |group|
+      reviews_with_users = group[:reviews].map do |r|
+        r.merge(user: users[r[:user_id].to_s])
+      end
+      timeline << { type: :approve_build, date: group[:date], reviews: reviews_with_users }
     end
 
     sorted_timeline = timeline.sort_by { |e| e[:date] }

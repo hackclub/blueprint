@@ -1,0 +1,38 @@
+<% reviews = event[:reviews] || [] %>
+<% admin_review = reviews.find { |r| r[:admin_review] } %>
+<% first_review = reviews.first %>
+<% build_review = project.build_reviews.where(result: "approved", invalidated: false).order(created_at: :desc).first %>
+<% has_content = reviews.any? { |r| r[:feedback].present? } || first_review&.dig(:tier_override).present? || build_review&.tickets_awarded %>
+
+<% if has_content %>
+  <%= render "timeline_event_card" do %>
+    <div class="flex space-x-4">
+      <p class="grow">
+        <%= reviews.map { |r| render("shared/user_inline", user: r[:user]) }.join(" and ").html_safe %>
+        approved <%= project.title %> <%= c_time_ago_in_words(event[:date]) %> ago
+      </p>
+    </div>
+    <div class="timeline-journal">
+      <% if build_review&.tickets_awarded %>
+        <p><strong>Tickets awarded:</strong> <%= build_review.tickets_awarded %> tickets</p>
+      <% end %>
+      <% if first_review&.dig(:tier_override).present? %>
+        <p><strong>Tier:</strong> <%= first_review[:tier_override] %></p>
+      <% end %>
+      <% reviews.each do |review| %>
+        <% if review[:feedback].present? %>
+          <div class="mt-2">
+            <p><%= review[:feedback] %></p>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <%= render "timeline_event_basic", icon: "icons/approve.svg" do %>
+    <p>
+      <%= reviews.map { |r| render("shared/user_inline", user: r[:user]) }.join(" and ").html_safe %>
+      approved <%= project.title %> <span title="<%= event[:date] %>"><%= c_time_ago_in_words(event[:date]) %> ago</span>
+    </p>
+  <% end %>
+<% end %>
