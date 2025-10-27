@@ -149,7 +149,6 @@ class HcbScraperService
         status = status_ele.text.strip if status_ele.name == "span" rescue nil
         if status.nil?
           status_ele = frame.previous_element.previous_element rescue nil
-          puts status_ele
           status = status_ele.at_css("span").text.strip if status_ele.name == "action" rescue nil
         end
         amount_cents = (frame.parent.parent.parent.parent.next_element.text.strip.delete("$,").to_f * 100).to_i rescue nil
