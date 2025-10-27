@@ -165,9 +165,9 @@ class ProjectsController < ApplicationController
     end
 
     repo_linked = @project.repo_link.present?
-    desc_ok = true # @project.description.to_s.strip.length >= 50
-    journal_ok = true # @project.journal_entries.count >= 3
-    banner_ok = true # @project.banner.attached?
+    desc_ok = @project.description.to_s.strip.length >= 50
+    journal_ok = @project.journal_entries.count >= 3
+    banner_ok = @project.banner.attached?
 
     @checks = [
       { msg: "GitHub repo linked", met: repo_linked },
@@ -175,7 +175,7 @@ class ProjectsController < ApplicationController
       { key: "readme", msg: "README.md present", met: nil },
       { msg: "Description is at least 50 characters on Blueprint", met: desc_ok },
       { msg: "Project has 3 journal entries", met: journal_ok },
-      { msg: "Banner image uploaded", met: banner_ok }
+      { msg: "Uploaded a Banner image", met: banner_ok }
     ]
 
     @base_ok = repo_linked && desc_ok && journal_ok && banner_ok
