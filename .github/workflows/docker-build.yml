@@ -5,6 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -54,6 +55,12 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
+      
+      - name: Trigger Coolify deployment for main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          curl -X GET "${{ secrets.COOLIFY_DEPLOY_URL_MAIN }}" \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
 
   build-gorse:
     runs-on: ubuntu-latest
@@ -105,6 +112,12 @@ jobs:
             GORSE_DASH_PASSWORD=${{ secrets.GORSE_DASH_PASSWORD }}
             GORSE_API_KEY=${{ secrets.GORSE_API_KEY }}
             GORSE_ADMIN_API_KEY=${{ secrets.GORSE_ADMIN_API_KEY }}
+      
+      # - name: Trigger Coolify deployment for gorse
+      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      #   run: |
+      #     curl -X GET "${{ secrets.COOLIFY_DEPLOY_URL_GORSE }}" \
+      #       -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
 
   build-worker:
     runs-on: ubuntu-latest
@@ -149,3 +162,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
+      
+      # - name: Trigger Coolify deployment for worker
+      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      #   run: |
+      #     curl -X GET "${{ secrets.COOLIFY_DEPLOY_URL_WORKER }}" \
+      #       -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
