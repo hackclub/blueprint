@@ -161,7 +161,7 @@
           <div class="py-4 space-y-6 flex-flex-col">
             <div class="space-y-2">
               <div class="w-full text-left text-white select bg-bp-dark">
-                <%= f.select :tier, @project.needs_funding ? Project.tier_options : Project.tier_options_with_multipliers, { include_blank: false, selected: @project.tier || 4 }, { data: { funding_amount_target: "tierSelect", action: "change->funding-amount#tierChanged" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
+                <%= f.select :tier, @project.needs_funding ? Project.tier_options : Project.tier_options_with_multipliers, { include_blank: false, selected: @project.tier || 5 }, { data: { funding_amount_target: "tierSelect", action: "change->funding-amount#tierChanged" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
               </div>
             </div>
             <% if @project.needs_funding %>
