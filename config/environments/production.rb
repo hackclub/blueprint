@@ -24,7 +24,7 @@ Rails.application.configure do
   # Store uploaded files on the cloudflare r2 (see config/storage.yml for options).
   config.active_storage.service = :cloudflare
   config.active_storage.routes_prefix = "/user-attachments"
-  config.active_storage.service_urls_expire_in = 1.year
+  config.active_storage.service_urls_expire_in = 7.days
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true
