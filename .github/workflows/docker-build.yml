@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-main:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: warp-ubuntu-latest-x64-32x
     steps:
       - uses: actions/checkout@v4
       
@@ -54,7 +54,7 @@ jobs:
           retention-days: 7
 
   build-worker:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
