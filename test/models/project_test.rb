@@ -17,6 +17,7 @@
 #  readme_link            :string
 #  repo_link              :string
 #  review_status          :string
+#  skip_gh_sync           :boolean          default(FALSE)
 #  tier                   :integer
 #  title                  :string
 #  views_count            :integer          default(0), not null

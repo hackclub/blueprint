@@ -17,6 +17,7 @@
 #  readme_link            :string
 #  repo_link              :string
 #  review_status          :string
+#  skip_gh_sync           :boolean          default(FALSE)
 #  tier                   :integer
 #  title                  :string
 #  views_count            :integer          default(0), not null
@@ -436,6 +437,7 @@ class Project < ApplicationRecord
 
   def sync_github_journal!
     return unless user&.github_user? && repo_link.present?
+    return if skip_gh_sync?
     GithubJournalSyncJob.perform_later(id)
   end
 
