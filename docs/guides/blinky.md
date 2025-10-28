@@ -141,8 +141,133 @@ Next, you can either make your own board outline using the “Line” and other 
 
 …or you can find a custom DXF online to have a custom outline.
 
-File→Import→DXF 
+File→Import→DXF
 
 (you can also convert an image to a DXF using an online converter such as convertio) 
 
-One thing about the DXF’s you may need to u
+One thing about the DXF’s you may need to scale it online. Make sure to always keep your board below 100x100mm. 
+
+## PCB Layout
+
+Once you have your board outline, you need to organize and wire your components. You should get familiar with the PCB tools:
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/cac16711c0f9702ef11d943fd693658a2e30f9ed_image.png)
+
+A PCB is made out of multiple layers. Our boards are “two layer” meaning that they have two layers of copper wire. 
+
+The layers include: 
+
+Top and bottom solder mask: the white ink where you can do art 
+
+Top and bottom copper layer: the layers where you make your copper wires 
+
+Substrate: The actual plastic (usually green) which makes up your board
+
+Via: the tunnels which connect the top and bottom copper layers
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/c2ec73f247fdb1f466903fc86d345fe0f4b47b6f_image.png)
+
+## Place your components
+
+Place all of your components inside the Board Outline. Move components to shorten ratlines, which are are the straight blue lines. You can use ‘r’ to rotate.
+
+Remember to save (Control-C or  ⌘-C) often !!!!
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/066ff9acb3435c5bd772890417b8702c9edde7a7_image.png)
+
+(remember that your board outline, the purple lines, should not be a rectangle but some custom shape)
+
+## Wiring your components
+
+The ratlines (the blue straight lines) in-between your components is not the complete wiring. They are just telling you where connections should happen. 
+
+On the side bar, you can choose either top layer (red) or bottom layer (blue), or a combination of both to wire your components. 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8ea222f123d51cdd5bf2cac00b055ce98718d1d0_image.png)
+
+If it is impossible to make a connection in one layer, you can add a via. A via acts as a tunnel to connect between the two copper layers. As you are wiring you can click ‘v’ to place a via and switch to the other side.
+
+Your PCB is routed!
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a8846471c379ddc28fc84b366451824d841dfee6_image.png)
+
+## Customization
+
+You may have already added some text and art to customize your board. if not, you can click “TopSilkLayer” and use the text tool.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/28771d826d2ce20407a101f5c342212a67b547f8_image.png)
+
+To add art, just select the “Top Silkscreen Layer” or “Bottom Silkscreen Layer” in the sidebars. Then you can do: 
+
+File→import→image 
+
+to add custom art. 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0eb5896b961ad09975eeb0ae08aec282107ba53c_image.png)
+
+Your board is now beautiful
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e2462343267cd8a90cd643b0eea6dac4adb34b28_image.png)
+
+## Run Design Rules Check
+
+Click Design → Run Design Rules Check 
+
+This runs a script which makes sure that your board has no interference errors, no components are off the board, and no wires are intersecting. It does not however confirm that your board works.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/45d9dc52ccf5d311e8105d5d6b5498618cd0dd0f_image.png)
+
+Using the output, correct any errors. 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ac4cbd4a863e01e5f5b6609f40a1945a42a3481e_image.png)
+
+Once your PCB passes the DRC, it is finished!
+
+In PCB editor click View > 3D View to see your finished work!
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/50638b1bb956cd429eab5755e7aaf142ffe088db_image.png)
+
+## Creating your project repo
+
+Now it is time to order your board.
+
+Get the following files of your project: 
+
+- A screenshot of your 3d view (see above)
+- A PDF of your schematic (In your schematic editor do File → Export → PDF)
+- Your schematic (in your schematic editor do File → Export → EasyEDA)
+- Your Gerber (in your PCB editor do File → Generate PCB Fabrication File (Gerber))
+- Your PCB (in your PCB editor do File → Export → EasyEDA)
+
+A PDF of your schematic (In your schematic editor do File → Export → PDF)
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/5e6decf5d2fa92253b9a567b15b92ab3e684266d_image.png)
+
+Your schematic (in your schematic editor do File → Export → EasyEDA)
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4066809bebc778265301e03e75d70c686cb5e6ed_image.png)
+
+Your Gerber (in your PCB editor do File → Generate PCB Fabrication File (Gerber))
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/647519e77f09584480f0cefe7b8ed5b6f21d96f3_image.png)
+
+Your PCB (in your PCB editor do File → Export → EasyEDA)
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ab6f09e8041e0c5eb56a74e34a87aab1e8a936c6_image.png)
+
+## Creating your GitHub Repo
+
+Once you have the five files, create a repository on [Github.com](http://Github.com). (you may need to create an account)
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8c2a28ed6838101ae8c5def10c9115042637a201_image.png)
+
+You need to 
+
+- **Name it** - I named it 555 Chaser but you can do whatever
+- **Write a nice description** - this can be short
+- **Make it public**
+- **Enable  a README** so others can see what you made
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/86cd75d246e16ce3a172caa472c49f2648ee92eb_image.png)
+
+Once your repo is created, it is time to upload the five files you downloaded befor...
