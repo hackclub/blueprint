@@ -103,24 +103,25 @@ class BuildReview < ApplicationRecord
 
   def finalize_on_approve
     transaction do
+      now = Time.current
       self.tier_override ||= project.tier
       self.ticket_multiplier ||= BuildReview.default_multiplier_for_tier(effective_tier)
       self.ticket_offset ||= 0
 
-      associate_journal_entries!(up_to: Time.current)
+      associate_journal_entries!(up_to: now)
 
-      self.frozen_duration_seconds = journal_entries.sum(:duration_seconds)
-      self.frozen_entry_count = journal_entries.count
-      self.frozen_tier = effective_tier
+      frozen_duration = JournalEntry.where(review: self).sum(:duration_seconds)
+      frozen_count = JournalEntry.where(review: self).count
+      frozen_t = effective_tier
 
       update_columns(
         tier_override: tier_override,
         ticket_multiplier: ticket_multiplier,
         ticket_offset: ticket_offset,
-        frozen_duration_seconds: frozen_duration_seconds,
-        frozen_entry_count: frozen_entry_count,
-        frozen_tier: frozen_tier,
-        updated_at: Time.current
+        frozen_duration_seconds: frozen_duration,
+        frozen_entry_count: frozen_count,
+        frozen_tier: frozen_t,
+        updated_at: now
       )
     end
   end
