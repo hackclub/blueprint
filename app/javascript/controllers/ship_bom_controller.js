@@ -46,10 +46,14 @@ export default class extends Controller {
   }
 
   async check() {
-    await Promise.all([
-      this.checkOne(this.urlValue, "bom"),
-      this.checkOne(this.readmeUrlValue, "readme"),
-    ])
+    const checks = []
+    if (this.boxTargets.some((e) => e.dataset.check === "bom")) {
+      checks.push(this.checkOne(this.urlValue, "bom"))
+    }
+    if (this.boxTargets.some((e) => e.dataset.check === "readme")) {
+      checks.push(this.checkOne(this.readmeUrlValue, "readme"))
+    }
+    await Promise.all(checks)
   }
 
   async checkOne(url, type) {
