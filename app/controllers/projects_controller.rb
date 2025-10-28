@@ -184,7 +184,7 @@ class ProjectsController < ApplicationController
     end
 
     if !bom_exempt_ysws.include?(@project.ysws)
-      @checks << { key: "bom", msg: "Bill of materials (bom.csv) present", met: nil },
+      @checks << { key: "bom", msg: "Bill of materials (bom.csv) present", met: nil }
     end
 
     @base_ok = repo_linked && desc_ok && journal_ok && banner_ok
