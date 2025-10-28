@@ -187,7 +187,9 @@ class ProjectsController < ApplicationController
       @checks << { key: "bom", msg: "Bill of materials (bom.csv) present", met: nil }
     end
 
-    @base_ok = repo_linked && desc_ok && journal_ok && banner_ok
+    journal_required = !journal_exempt_ysws.include?(@project.ysws)
+
+    @base_ok = repo_linked && desc_ok && banner_ok && (journal_required ? journal_ok : true)
   end
 
   def follow
