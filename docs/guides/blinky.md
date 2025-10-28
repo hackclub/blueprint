@@ -270,4 +270,109 @@ You need to
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/86cd75d246e16ce3a172caa472c49f2648ee92eb_image.png)
 
-Once your repo is created, it is time to upload the five files you downloaded befor...
+Once your repo is created, it is time to upload the five files you downloaded before. 
+
+Click Add File → Upload files 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/470145098fd2379b9385c1f49ddf795fbadfa1a3_image.png)
+
+Drag in your: 
+
+- PCB Screenshot
+- Schematic PDF
+- Gerber
+- PCB EasyEDA file
+- Schematic EasyEDA file
+
+(you should have added all of these before)
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8116375daf649aa342be5d409e010a5769f5ed81_image.png)
+
+You can then click to commit your changes and your repo is done! Make sure to save the URL for your repo for later!
+
+## Ordering Your Board
+
+Go to [https://jlcpcb.com/](https://jlcpcb.com/) and make an account. Then, add your Gerber file for the instant quote. 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/baaa0ca887d51110c30cba9d862968acbef618f8_image.png)
+
+Settings: 
+
+You should keep the default settings for everything. The only thing you should/can change is the PCB Color. I did black as seen below:
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/2b2ea8e606d05ddff382fdcc7934da4bff70615c_image.png)
+
+For high-spec options, also keep the default. Do not click PCB assembly as we will give you a kit to hand-solder your board.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/053061912ca84c66c46323ccef5b12cb71c7d721_image.png)
+
+Once you have successfully *Not* changed any of the settings (except the board color), on the right, change the shipping method to Global Standard Direct, and take a screenshot (this is very important). 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/6f538d5f301eae997544c43c1d6ce6daca01331d_image.png)
+
+## Creating your project on Blueprint
+
+You are almost done! At this stage you should have: 
+
+- A completed board
+- A GitHub repo for your board
+- A price estimate and screenshot for your board
+
+Now, you just need to create your project on Blueprint. Blueprint not only allows people to share their projects, but acts as a gallery of all the projects made. 
+
+First, create your Blueprint account on [https://blueprint.hackclub.com/](https://blueprint.hackclub.com/) (⇒ Sign in). In the future, you will be able to log into your account anywhere, anytime to make your project. 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b7cf34ff897d78ad13372226165e67814934dae3_image.png)
+
+Your screen should look something like this.
+
+Click the “+ Start a Project” button at the bottom of your screen. You need to fill out the form (you can just copy the name and description from your GitHub repo). For your banner, just upload the 3d render of your PCB.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/84fa13d1537256ffdb6f5fd9939f96f4f0603bd3_image.png)
+
+IMPORTANT: 
+Make sure you select the LED Chaser as your guide. Doing this will bypass the need for a journal in order to ship. For your future Blueprint projects, you will need to make an updated guide with what you are making.
+
+Also, make sure you click “I need funding”
+
+Now click “Create Project”
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/283a56a17d26ee6e3d42a9d20975cbaa25b04964_image.png)
+
+Once your project is created, click into it on the project screen.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a73a0deeb8dbf8e604f0ebfda1f95f6f6ccd6daa_image.png)
+
+Now, click “Ship It”
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/6d1688e2383ca416db27b57942698e7f24a88da9_image.png)
+
+Blueprint will run some checks. If any are red, you need to fix them.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0e646bc3c854746bfd51172fa68cdba8a9df1625_image.png)
+
+Enter the dollar amount which you previously screenshotted on JPCLCB (don’t worry, we will give you extra for any fluctuations). 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/22dfe9ac0998e14b4f9418b118f37eeee29a5561_image.png)
+
+Click “No” for 3d print
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/cd0755158d34ae939d044a3d350e0ca6c4cb6ea7_image.png)
+
+Upload your JLCPCB screenshot from earlier
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0aaa8f8f94dab1567dfdaff06ca5ac755b07f131_image.png)
+
+Check your project…. and ship!
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/9306e1f8bb9e33f20e757051d90f47fe1f8035e0_image.png)
+
+You may need to verify your Hack Club identity if you have not already.
+
+You are done!
+
+You should wait for  a reviewer to approve your project! Once it is approved, you can complete the checkout on JLCPCB (making sure to use Global Standard Direct), and your kit/soldering iron will be sent to you! 
+
+While you wait….
+
+Check out more Blueprint projects on [https://blueprint.hackclub.com/explore](https://blueprint.hackclub.com/explore)! You can also make any hardware project you want on Blueprint, and get up to $400 to make it. For future Blueprint projects, you will need to make a journal throughout your development process. Again, if you have any questions, ask in #blueprint-suppport on Slack.
