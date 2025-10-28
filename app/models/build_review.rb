@@ -77,7 +77,7 @@ class BuildReview < ApplicationRecord
   end
 
   def tickets_awarded
-    ((effective_hours * 10 * (ticket_multiplier || 1.0)) + (ticket_offset || 0)).round
+    ((effective_hours * 10 * (ticket_multiplier || 0.8)) + (ticket_offset || 0)).round
   end
 
   def associate_journal_entries!(up_to: nil)

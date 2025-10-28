@@ -10,7 +10,7 @@ class IdentityVaultService
       @host ||= {
         staging: "https://hca.dinosaurbbq.org/",
         prod: "https://identity.hackclub.com/"
-      }[env]
+      }[:prod]
     end
 
     def authorize_url(redirect_uri, sneaky_params = nil, state: nil)

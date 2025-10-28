@@ -608,10 +608,7 @@ class Project < ApplicationRecord
 
       review = build_reviews.where(result: "approved", invalidated: false).order(created_at: :desc).first
       if review
-        hours_worked = review.frozen_duration_seconds.to_f / 3600.0
-        multiplier = review.ticket_multiplier || 1.0
-        offset = review.ticket_offset || 0
-        tickets = ((hours_worked * multiplier) + offset).round
+        tickets = review.tickets_awarded
 
         msg += "*Total tickets awarded:* #{tickets} tickets\n\n"
 

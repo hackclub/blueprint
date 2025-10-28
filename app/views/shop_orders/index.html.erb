@@ -1,0 +1,64 @@
+<section class="flex flex-col items-center grow space-y-6">
+  <div class="w-full max-w-5xl space-y-4 min-h-full flex flex-col m-8">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-4xl">Your Orders</h1>
+      <%= link_to "Back to Tool Bag", toolbag_path, class: "btn btn-outline" %>
+    </div>
+    
+    <% if @shop_orders.empty? %>
+      <div class="text-center py-12">
+        <p class="text-xl text-bp-muted mb-4">You haven't placed any orders yet.</p>
+        <%= link_to "Browse Shop", toolbag_path, class: "btn btn-primary" %>
+      </div>
+    <% else %>
+      <div class="space-y-4">
+        <% @shop_orders.each do |order| %>
+          <div class="bg-bp-darker rounded p-6 flex flex-col md:flex-row gap-6">
+            <% if order.shop_item.image.attached? %>
+              <div class="w-32 h-32 flex-shrink-0 bg-bp-dark rounded overflow-hidden flex items-center justify-center">
+                <%= image_tag order.shop_item.image, class: "max-h-full max-w-full object-contain" %>
+              </div>
+            <% end %>
+
+            <div class="flex-grow space-y-2">
+              <h2 class="text-2xl font-medium"><%= order.shop_item.name %></h2>
+              <p class="text-bp-muted"><%= order.shop_item.desc %></p>
+              
+              <div class="flex flex-wrap gap-4 text-sm pt-2">
+                <div>
+                  <span class="text-bp-muted">Quantity:</span>
+                  <span class="ml-1"><%= order.quantity %></span>
+                </div>
+                <div>
+                  <span class="text-bp-muted">Cost:</span>
+                  <span class="ml-1"><%= pluralize(order.frozen_unit_ticket_cost * order.quantity, "ticket") %></span>
+                </div>
+                <div>
+                  <span class="text-bp-muted">Ordered:</span>
+                  <span class="ml-1"><%= order.created_at.strftime("%B %d, %Y") %></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-shrink-0 flex items-start">
+              <% case order.state %>
+              <% when "pending" %>
+                <span class="px-4 py-2 rounded-full bg-bp-warning/20 text-bp-warning border border-bp-warning">Pending</span>
+              <% when "awaiting_verification" %>
+                <span class="px-4 py-2 rounded-full bg-bp-warning/20 text-bp-warning border border-bp-warning">Awaiting Verification</span>
+              <% when "approved" %>
+                <span class="px-4 py-2 rounded-full bg-bp-success/20 text-bp-success border border-bp-success">Approved</span>
+              <% when "fufilled" %>
+                <span class="px-4 py-2 rounded-full bg-bp-success/20 text-bp-success border border-bp-success">Fulfilled</span>
+              <% when "rejected" %>
+                <span class="px-4 py-2 rounded-full bg-bp-danger/20 text-bp-danger border border-bp-danger">Rejected</span>
+              <% when "on_hold" %>
+                <span class="px-4 py-2 rounded-full bg-bp-muted/20 text-bp-muted border border-bp-muted">On Hold</span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</section>

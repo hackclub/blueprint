@@ -46,6 +46,7 @@ class User < ApplicationRecord
   has_many :manual_ticket_adjustments, dependent: :destroy
   has_one :task_list, dependent: :destroy
   has_many :kudos, dependent: :destroy
+  has_many :shop_orders, dependent: :destroy
 
   has_many :ahoy_visits
   has_many :ahoy_events
@@ -708,7 +709,11 @@ class User < ApplicationRecord
 
     manual_adjustments = manual_ticket_adjustments.sum(:adjustment)
 
-    build_review_tickets + manual_adjustments
+    shop_order_costs = shop_orders
+      .where.not(state: :rejected)
+      .sum { |order| (order.frozen_unit_ticket_cost || 0) * (order.quantity || 0) }
+
+    build_review_tickets + manual_adjustments - shop_order_costs
   end
 
   def follow_project!(project)

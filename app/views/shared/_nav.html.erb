@@ -74,7 +74,9 @@
                     <img src="<%= avatar_url %>" alt="<%= name %>'s avatar" class="rounded-lg size-12">
                     <div>
                         <p class="w-32 truncate whitespace-nowrap"><%= name %> <%= current_user.created_at < DateTime.new(2025,10,4,4,0,0) ? "🚀" : "" %></p>
-                        <p>0 Tickets</p>
+                        <% cache [current_user, "tickets", current_user.received_build_reviews.maximum(:updated_at), current_user.manual_ticket_adjustments.maximum(:updated_at), current_user.shop_orders.maximum(:updated_at)] do %>
+                          <p><%= pluralize(current_user.tickets, "ticket") %></p>
+                        <% end %>
                     </div>
                 </div>
             <% end %>

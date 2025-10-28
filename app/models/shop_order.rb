@@ -61,6 +61,9 @@ class ShopOrder < ApplicationRecord
   belongs_to :rejected_by, class_name: "User", optional: true
   belongs_to :on_hold_by, class_name: "User", optional: true
 
+  validates :quantity, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  validate :quantity_within_stock, on: :create
+
   before_validation :freeze_unit_costs, on: :create
 
   private
@@ -70,5 +73,13 @@ class ShopOrder < ApplicationRecord
 
     self.frozen_unit_ticket_cost ||= shop_item.ticket_cost
     self.frozen_unit_usd_cost ||= shop_item.usd_cost
+  end
+
+  def quantity_within_stock
+    return unless shop_item && quantity && shop_item.total_stock.present?
+
+    if quantity > shop_item.total_stock
+      errors.add(:quantity, "cannot exceed available stock of #{shop_item.total_stock}")
+    end
   end
 end

@@ -1,0 +1,103 @@
+<section class="flex flex-col items-center grow space-y-6">
+  <div class="w-full max-w-4xl space-y-4 min-h-full flex flex-col m-8">
+    <%= render "shared/card" do %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-4">
+          <% if @shop_item.image.attached? %>
+            <div class="w-full h-64 bg-bp-dark rounded overflow-hidden flex items-center justify-center">
+              <%= image_tag @shop_item.image, class: "max-h-full max-w-full object-contain" %>
+            </div>
+          <% end %>
+
+          <div>
+            <h1 class="text-3xl font-medium"><%= @shop_item.name %></h1>
+            <% if @shop_item.desc.present? %>
+              <p class="text-bp-muted mt-2"><%= @shop_item.desc %></p>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div>
+            <h2 class="text-3xl font-medium">Complete your order</h2>
+            <div class="text-xl mt-2">
+              <span class="text-bp-muted">Price:</span>
+              <span class="font-medium ml-2"><%= @shop_item.ticket_cost %> tickets</span>
+            </div>
+          </div>
+
+          <%= form_with model: @shop_order, url: shop_orders_path, class: "space-y-6", data: { turbo: false, controller: "checkout", checkout_unit_price_value: @shop_item.ticket_cost, checkout_user_balance_value: current_user.tickets } do |f| %>
+            <%= f.hidden_field :shop_item_id, value: @shop_item.id %>
+            
+            <% if @shop_order.errors.any? %>
+              <div class="bg-bp-danger/20 border border-bp-danger rounded p-4">
+                <h3 class="font-medium mb-2">Please fix the following errors:</h3>
+                <ul class="list-disc list-inside space-y-1">
+                  <% @shop_order.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="space-y-2">
+              <%= f.label :quantity, "Quantity", class: "block text-lg font-medium" %>
+              <%= f.number_field :quantity, value: 1, min: 1, max: @shop_item.total_stock, class: "input w-full", data: { action: "input->checkout#updateTotal", checkout_target: "quantityInput" } %>
+            </div>
+
+          <div class="space-y-2">
+            <%= f.label :frozen_address, "Shipping Address", class: "block text-lg font-medium" %>
+            <% if @addresses.present? %>
+              <% address_options = @addresses.map do |addr| 
+                label = "#{addr[:first_name]} #{addr[:last_name]}, #{addr[:line_1]}, #{addr[:city]}, #{addr[:state]} #{addr[:postal_code]}"
+                label += " (Primary)" if addr[:primary]
+                [label, addr.to_json]
+              end %>
+              <% primary_address = @addresses.find { |a| a[:primary] } || @addresses.first %>
+              <div class="w-full text-left text-white select bg-bp-dark">
+                <%= f.select :frozen_address, address_options, { selected: primary_address.to_json }, { class: "text-white bg-bp-dark w-full", style: "color: white; background-color: var(--color-bp-dark);" } %>
+              </div>
+              <%= link_to "Manage my addresses", "https://identity.hackclub.com/addresses", class: "text-sm text-bp-warning underline underline-offset-2", target: "_blank", rel: "noopener noreferrer" %>
+            <% else %>
+              <p class="text-bp-muted">No address found in your identity vault</p>
+              <%= link_to "Manage my addresses", "https://identity.hackclub.com/addresses", class: "text-sm text-bp-warning underline underline-offset-2", target: "_blank", rel: "noopener noreferrer" %>
+            <% end %>
+          </div>
+
+          <div class="bg-bp-success/25 rounded p-6 space-y-4">
+            <h2 class="text-2xl font-medium">Order Summary</h2>
+            
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span>Item Price:</span>
+                <span><%= @shop_item.ticket_cost %> tickets</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Quantity:</span>
+                <span data-checkout-target="quantityDisplay">1</span>
+              </div>
+              <div class="flex justify-between text-xl font-medium pt-2 border-t border-bp-muted/30">
+                <span>Total Cost:</span>
+                <span data-checkout-target="totalCost"><%= @shop_item.ticket_cost %> tickets</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span>Your Current Balance:</span>
+              <span><%= current_user.tickets %> tickets</span>
+            </div>
+            <p class="text-bp-danger mt-2 hidden" data-checkout-target="insufficientFunds"></p>
+          </div>
+
+            <div class="flex items-center justify-between gap-4 pt-4">
+              <%= link_to "Cancel", :back, class: "btn btn-outline" %>
+              <%= f.submit "Place Order", class: "btn btn-primary", data: { checkout_target: "submitButton" } %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>
