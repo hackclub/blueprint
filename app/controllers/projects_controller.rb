@@ -207,6 +207,13 @@ class ProjectsController < ApplicationController
   end
 
   def create
+    if params.dig(:project, :ysws) == "none"
+      params[:project][:ysws] = nil
+    elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
+      params[:project][:ysws] = params[:project][:ysws_other]
+    end
+    params[:project].delete(:ysws_other)
+
     @project = current_user.projects.build(project_params)
     if @project.save
       ahoy.track("project_create", project_id: @project.id, user_id: current_user&.id)
