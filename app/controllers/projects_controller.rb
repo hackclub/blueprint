@@ -164,6 +164,8 @@ class ProjectsController < ApplicationController
       return
     end
 
+    journal_exempt_ysws = [ "led" ]
+
     repo_linked = @project.repo_link.present?
     desc_ok = @project.description.to_s.strip.length >= 50
     journal_ok = @project.journal_entries.count >= 3
@@ -174,9 +176,12 @@ class ProjectsController < ApplicationController
       { key: "bom", msg: "Bill of materials (bom.csv) present", met: nil },
       { key: "readme", msg: "README.md present", met: nil },
       { msg: "Description is at least 50 characters on Blueprint", met: desc_ok },
-      { msg: "Project has 3 journal entries", met: journal_ok },
-      { msg: "Uploaded aBanner image uploaded", met: banner_ok }
+      { msg: "Uploaded a banner image", met: banner_ok }
     ]
+
+    if !journal_exempt_ysws.include?(@project.ysws)
+      @checks << { msg: "Project has 3 journal entries", met: journal_ok }
+    end
 
     @base_ok = repo_linked && desc_ok && journal_ok && banner_ok
   end

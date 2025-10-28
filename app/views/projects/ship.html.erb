@@ -153,39 +153,6 @@
             </div>
           </div>
         <% end %>
-        <%= render "shared/card", class: "hidden", html_options: { data: { controller: "ysws", paginate_target: "page" } } do %>
-          <div>
-            <%= f.label :ysws, "Was this project from another program?", class: "text-3xl" %>
-            <p class="text-lg">Did you work on or submit this project to another program?<br>Or, was this project originally meant for another program?</p>
-          </div>
-          <div class="pt-4 space-y-10 flex-flex-col">
-            <div class="space-y-2">
-              <div class="w-full text-left text-white select bg-bp-dark">
-                <% ysws_options = [
-                  ["Was not for another program", "none"],
-                  ["Mini Midi Magic", "midi"],
-                  ["Athena", "athena"],
-                  ["Grounded", "grounded"],
-                  ["Other", "other"]
-                ] %>
-                <%= f.select :ysws, ysws_options, { selected: "none" }, { data: { ysws_target: "select", action: "change->ysws#toggle" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
-              </div>
-              <div class="hidden" data-ysws-target="otherField">
-                <%= f.label :ysws_other, "Please specify:", class: "block text-lg font-medium mb-2" %>
-                <%= f.text_field :ysws_other, data: { ysws_target: "otherInput", action: "input->ysws#validate" }, class: "input w-full", placeholder: "Enter program name..." %>
-              </div>
-            </div>
-          </div>
-          <div>
-            <p class="text-xl">Blueprint projects cannot be submitted to other programs unless specified.</p>
-          </div>
-          <div class="flex items-center pt-2">
-            <%= render "shared/button", text: "Back", variant: :outline, html_options: { data: { action: "click->paginate#prev" } } %>
-            <%= link_to "Cancel", project_path(@project), class: "btn btn-outline ml-2" %>
-            <div class="grow"></div>
-            <%= render "shared/button", text: "Next", html_options: { data: { action: "click->paginate#next" } } %>
-          </div>
-        <% end %>
         <%= render "shared/card", class: "hidden", html_options: { data: { controller: "funding-amount", funding_amount_tier_max_cents_value: Project.tier_max_cents.to_json, paginate_target: "page" } } do %>
           <div>
             <%= f.label :tier, "What tier should this project be?", class: "text-3xl" %>
