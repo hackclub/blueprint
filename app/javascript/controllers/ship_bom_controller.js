@@ -128,7 +128,8 @@ export default class extends Controller {
 
   updateDisabled() {
     if (!this.hasSubmitTarget) return
-    const bomOk = this._bomState === "ok"
+    const hasBom = this.boxTargets.some((e) => e.dataset.check === "bom")
+    const bomOk = hasBom ? this._bomState === "ok" : true
     const hasReadme = this.boxTargets.some((e) => e.dataset.check === "readme")
     const readmeOk = hasReadme ? this._readmeState === "ok" : true
     const tierOk = this.hasSelectTarget ? ((this.selectTarget.value || "").toString().trim() !== "") : true

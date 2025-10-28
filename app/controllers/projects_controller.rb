@@ -165,6 +165,7 @@ class ProjectsController < ApplicationController
     end
 
     journal_exempt_ysws = [ "led" ]
+    bom_exempt_ysws = [ "led" ]
 
     repo_linked = @project.repo_link.present?
     desc_ok = @project.description.to_s.strip.length >= 50
@@ -173,7 +174,6 @@ class ProjectsController < ApplicationController
 
     @checks = [
       { msg: "GitHub repo linked", met: repo_linked },
-      { key: "bom", msg: "Bill of materials (bom.csv) present", met: nil },
       { key: "readme", msg: "README.md present", met: nil },
       { msg: "Description is at least 50 characters on Blueprint", met: desc_ok },
       { msg: "Uploaded a banner image", met: banner_ok }
@@ -181,6 +181,10 @@ class ProjectsController < ApplicationController
 
     if !journal_exempt_ysws.include?(@project.ysws)
       @checks << { msg: "Project has 3 journal entries", met: journal_ok }
+    end
+
+    if !bom_exempt_ysws.include?(@project.ysws)
+      @checks << { key: "bom", msg: "Bill of materials (bom.csv) present", met: nil },
     end
 
     @base_ok = repo_linked && desc_ok && journal_ok && banner_ok
