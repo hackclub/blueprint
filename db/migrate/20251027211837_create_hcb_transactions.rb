@@ -16,7 +16,7 @@ class CreateHcbTransactions < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :hcb_transactions, [:org_id, :transaction_id], unique: true
+    add_index :hcb_transactions, [ :org_id, :transaction_id ], unique: true
     add_index :hcb_transactions, :last_seen_at
   end
 end

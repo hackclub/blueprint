@@ -20,7 +20,7 @@ class CreateHcbGrants < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :hcb_grants, [:org_id, :grant_id], unique: true
+    add_index :hcb_grants, [ :org_id, :grant_id ], unique: true
     add_index :hcb_grants, :last_seen_at
     add_index :hcb_grants, :soft_deleted_at
   end
