@@ -9,7 +9,7 @@ class ShopOrdersController < ApplicationController
     end
 
     @shop_item = ShopItem.find(params[:item_id])
-    
+
     unless @shop_item.enabled
       raise ActiveRecord::RecordNotFound
     end
@@ -23,7 +23,7 @@ class ShopOrdersController < ApplicationController
 
   def create
     @shop_item = ShopItem.find(params[:shop_order][:shop_item_id])
-    
+
     unless @shop_item.enabled
       raise ActionController::RoutingError.new("Not Found")
     end
