@@ -2,7 +2,7 @@
 <%= render "timeline_event_card", class: "flex flex-col space-y-2" do %>
   <div class="flex space-x-4">
     <p class="grow"><%= render "shared/user_inline", user: project.user %> added to the journal <%= c_time_ago_in_words(event[:date]) %> ago<% if current_user.present? && current_user == project.user %> (<%= pluralize((entry.duration_seconds / 3600.0).round(2), "hour") %>)<% end %></p>
-    <% if current_user.present? && current_user == project.user && @project.can_edit? %>
+    <% if current_user.present? && current_user == project.user && project.can_edit? %>
       <div class="flex items-center space-x-4">
         <%= link_to edit_project_journal_entry_path(project, entry), class: "hover:scale-125 motion-safe:transition-all" do %>
           <%= inline_svg "icons/edit.svg", class: "size-5" %>
