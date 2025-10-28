@@ -106,8 +106,11 @@ export default class extends Controller {
       )
       el.classList.add("bg-bp-success", "border-bp-success")
     }
-    if (type === "bom") this._bomState = "ok"
-    if (type === "readme") this._readmeState = "ok"
+    if (type === "bom") {
+      this._bomState = "ok"
+    } else if (type === "readme") {
+      this._readmeState = "ok"
+    }
     this.updateDisabled()
   }
 
@@ -125,8 +128,11 @@ export default class extends Controller {
       )
       el.classList.add("bg-bp-danger", "border-bp-danger")
     }
-    if (type === "bom") this._bomState = "fail"
-    if (type === "readme") this._readmeState = "fail"
+    if (type === "bom") {
+      this._bomState = "fail"
+    } else if (type === "readme") {
+      this._readmeState = "fail"
+    }
     this.updateDisabled()
   }
 
@@ -138,6 +144,9 @@ export default class extends Controller {
     const readmeOk = hasReadme ? this._readmeState === "ok" : true
     const tierOk = this.hasSelectTarget ? ((this.selectTarget.value || "").toString().trim() !== "") : true
     const allOk = !!this.baseOkValue && bomOk && readmeOk && tierOk
+    
+    console.log("Ship validation:", { baseOk: this.baseOkValue, bomOk, readmeOk, tierOk, allOk })
+    
     this.submitTarget.disabled = !allOk
   }
 
