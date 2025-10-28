@@ -4,7 +4,7 @@
         loading: :lazy,
         src: pagy_url_for(@pagy, @pagy.next),
         target: "_top",
-        class: "flex flex-col gap-4 md:grid md:gap-6 md:grid-cols-3"
+        class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
       ) do %>
     <div class="flex justify-center col-span-3 py-4">
       <span>Loading more...</span>

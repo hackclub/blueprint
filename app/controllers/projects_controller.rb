@@ -84,12 +84,12 @@ class ProjectsController < ApplicationController
       end
     elsif params[:type] == "projects"
       if params[:sort] == "new"
-        @pagy, @projects = pagy(Project.where(is_deleted: false).includes(:banner_attachment, :latest_journal_entry).order(created_at: :desc), limit: 21)
+        @pagy, @projects = pagy(Project.where(is_deleted: false).includes(:banner_attachment, :latest_journal_entry).order(created_at: :desc), limit: 24)
         preload_project_metrics(@projects)
       elsif params[:sort] == "you"
         if current_user && Flipper.enabled?(:gorse_recommendations, current_user)
           page = params[:page].present? ? params[:page].to_i : 1
-          project_ids = GorseService.get_user_recommendation(current_user.id, page, 21, type: :project)
+          project_ids = GorseService.get_user_recommendation(current_user.id, page, 24, type: :project)
 
           # Redirect new users with no recommendations to top
           if page == 1 && project_ids.empty?
@@ -97,10 +97,10 @@ class ProjectsController < ApplicationController
           end
 
           # Calculate count: if empty, we've reached the end
-          count = project_ids.empty? ? (page - 1) * 21 : page * 21 + 1
+          count = project_ids.empty? ? (page - 1) * 24 : page * 24 + 1
 
           # Create manual pagy object for navigation
-          @pagy = Pagy.new(count: count, page: page, items: 21, overflow: :last_page)
+          @pagy = Pagy.new(count: count, page: page, items: 24, overflow: :last_page)
 
           # Load projects maintaining Gorse order
           if project_ids.any?
@@ -116,14 +116,14 @@ class ProjectsController < ApplicationController
             redirect_to explore_path(type: "projects", sort: "top", page: params[:page]) and return
           end
           project_ids = all_projects.pluck(:id)
-          @pagy, paginated_ids = pagy_array(project_ids, limit: 21)
+          @pagy, paginated_ids = pagy_array(project_ids, limit: 24)
           order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], projects.id::int)", paginated_ids.map(&:to_i) ])
           @projects = Project.where(id: paginated_ids).includes(:banner_attachment, :latest_journal_entry).order(Arel.sql(order_clause))
           preload_project_metrics(@projects)
         end
       elsif params[:sort] == "top"
         all_projects = Project.where(is_deleted: false).includes(:banner_attachment, :latest_journal_entry).order(views_count: :desc)
-        @pagy, @projects = pagy(all_projects, limit: 21)
+        @pagy, @projects = pagy(all_projects, limit: 24)
         preload_project_metrics(@projects)
       else
         redirect_to explore_path(type: "projects") and return
