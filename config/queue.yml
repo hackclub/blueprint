@@ -3,14 +3,13 @@ default: &default
     - polling_interval: 1
       batch_size: 500
   workers:
-    - queues: [realtime, default, background, uptime]
-      threads: 5
-      processes: <%= ENV.fetch("JOB_CONCURRENCY", 1) %>
+    - queues: [realtime, default, uptime]
+      threads: 4
+      processes: <%= ENV.fetch("JOB_CONCURRENCY", 2) %>
       polling_interval: 0.1
-    - queues: "*"
-      threads: 1
-      processes: <%= ENV.fetch("JOB_CONCURRENCY_FALLBACK", 1) %>
-      polling_interval: 0.1
+    - queues: [background, uptime]
+      threads: 6
+      processes: <%= ENV.fetch("JOB_CONCURRENCY", 2) %>
 
 development:
   <<: *default
