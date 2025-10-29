@@ -41,17 +41,16 @@ class LeaderboardsController < ApplicationController
       rows.map { |r| [ users[r.user_id], r.shipped_count.to_i ] }.compact
     end
 
-    @approved_hours = Rails.cache.fetch("lb:approved_hours_v2", expires_in: 15.minutes) do
+    @total_hours = Rails.cache.fetch("lb:total_hours", expires_in: 15.minutes) do
       rows = Project
-               .joins(:design_reviews)
+               .joins(:journal_entries)
                .where(is_deleted: false)
-               .where(design_reviews: { invalidated: false, admin_review: true, result: 0 })
                .group(:user_id)
-               .select("projects.user_id, SUM(COALESCE(design_reviews.hours_override::numeric, design_reviews.frozen_duration_seconds::numeric/3600.0)) AS approved_hours")
-               .order("approved_hours DESC")
+               .select("projects.user_id, SUM(journal_entries.duration_seconds) / 3600.0 AS total_hours")
+               .order("total_hours DESC")
                .limit(10)
       users = User.where(id: rows.map(&:user_id)).index_by(&:id)
-      rows.map { |r| [ users[r.user_id], r.approved_hours.to_f.round(1) ] }.compact
+      rows.map { |r| [ users[r.user_id], r.total_hours.to_f.round(1) ] }.compact
     end
 
     @first_pass_reviews = Rails.cache.fetch("lb:first_pass", expires_in: 15.minutes) do

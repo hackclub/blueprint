@@ -83,11 +83,11 @@
         </div>
       </div>
 
-      <!-- Most Approved Hours (Reviewers) -->
+      <!-- Most Hours Logged -->
       <div class="border-2 border-white/25 bg-bp-dark p-6">
-        <h2 class="text-2xl font-bold mb-6 pb-3 border-b-2 border-white/25">Most Approved Hours</h2>
+        <h2 class="text-2xl font-bold mb-6 pb-3 border-b-2 border-white/25">Most Hours Logged</h2>
         <div class="space-y-3">
-          <% @approved_hours.each_with_index do |(user, hours), index| %>
+          <% @total_hours.each_with_index do |(user, hours), index| %>
             <div class="flex items-center gap-4 p-3 bg-bp-darker border border-white/10 hover:border-white/25 transition-colors">
               <div class="text-2xl font-bold text-bp-warning w-8"><%= index + 1 %></div>
               <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
