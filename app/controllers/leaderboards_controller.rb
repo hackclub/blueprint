@@ -1,4 +1,6 @@
 class LeaderboardsController < ApplicationController
+  allow_unauthenticated_access
+
   def index
     @referrals = Rails.cache.fetch("lb:referrals", expires_in: 15.minutes) do
       rows = User.where.not(referrer_id: nil)

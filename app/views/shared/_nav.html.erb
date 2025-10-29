@@ -2,10 +2,10 @@
     "Home" => user_logged_in? ? home_path : login_path,
     "My Projects" => user_logged_in? ? projects_path : login_path,
     "Explore" => explore_path,
-    "Leaderboard" => leaderboard_path,
     "Tool Bag" => toolbag_path,
     "Guides" => guides_path,
     "Blueprint Docs" => docs_path,
+    "Leaderboard" => leaderboard_path,
     "FAQ" => faq_path,
     "Admin" => current_user&.special_perms? ? admin_root_path : nil
 } %>
