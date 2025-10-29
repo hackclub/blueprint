@@ -39,11 +39,40 @@ module Authentication
   end
 
   def set_current_user
-    @current_user = User.find_by(id: session[:user_id]) if session[:user_id]
+    uid = session[:user_id]
+    oid = session[:original_id]
+
+    if oid
+      original_user = User.find_by(id: oid)
+      if original_user&.admin?
+        impersonated = User.find_by(id: uid)
+        if impersonated
+          @current_user = impersonated
+        else
+          reset_session
+          session[:user_id] = original_user.id
+          @current_user = original_user
+        end
+      else
+        reset_session
+        session[:user_id] = original_user.id if original_user
+        @current_user = original_user
+      end
+    else
+      @current_user = User.find_by(id: uid)
+    end
   end
 
   def current_user
     @current_user
+  end
+
+  def original_user
+    @original_user ||= User.find_by(id: session[:original_id]) if session[:original_id]
+  end
+
+  def impersonating?
+    session[:original_id].present?
   end
 
   def terminate_session

@@ -68,6 +68,11 @@
     </div>
     <% if user_logged_in? %>
         <div class="flex flex-col space-y-1">
+            <% if session[:original_id] %>
+                <%= link_to admin_stop_impersonating_path, method: :post, class: "text-bp-warning text-sm mb-2 cursor-pointer", data: { turbo_method: :post } do %>
+                    <span>Stop Impersonating</span>
+                <% end %>
+            <% end %>
             <%= link_to user_path(current_user), class: "flex items-center space-x-4" do %>
                 <div class="flex items-center space-x-4">
                     <% avatar_url = current_user.avatar || "https://hc-cdn.hel1.your-objectstorage.com/s/v3/c283ae01214b9052480f1e216e43dbe09a424048_image.png" %>

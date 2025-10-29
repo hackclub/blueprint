@@ -1,6 +1,9 @@
 class Admin::UsersController < Admin::ApplicationController
-  skip_before_action :require_admin!, only: [ :index, :show, :update_internal_notes ]
+  skip_before_action :require_admin!, only: [ :index, :show, :update_internal_notes, :stop_impersonating ]
+  skip_before_action :authenticate_user!, only: [ :stop_impersonating ]
+  skip_before_action :ensure_allowed_user!, only: [ :stop_impersonating ]
   before_action :require_reviewer_perms!, only: [ :index, :show, :update_internal_notes ]
+  before_action :require_impersonating!, only: [ :stop_impersonating ]
 
   def index
     @q = params[:q].to_s.strip
@@ -57,6 +60,38 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def impersonate
+    unless current_user&.admin?
+      return redirect_to(main_app.root_path, alert: "Not authorized.")
+    end
+
+    if session[:original_id].present?
+      return redirect_back(fallback_location: admin_user_path(params[:id]), alert: "Already impersonating. Stop first.")
+    end
+
+    user = User.find_by(id: params[:id])
+    return redirect_back(fallback_location: admin_users_path, alert: "User not found") unless user
+    return redirect_back(fallback_location: admin_user_path(user), alert: "Cannot impersonate yourself") if user.id == current_user.id
+    return redirect_back(fallback_location: admin_user_path(user), alert: "Cannot impersonate admins/staff") if user.admin? || user.special_perms?
+
+    previous_admin_id = current_user.id
+    reset_session
+    session[:original_id] = previous_admin_id
+    session[:user_id] = user.id
+    redirect_to main_app.root_path, notice: "Now impersonating #{user.display_name}"
+  end
+
+  def stop_impersonating
+    unless session[:original_id].present?
+      return redirect_to main_app.root_path, alert: "Not currently impersonating"
+    end
+
+    orig_id = session[:original_id]
+    reset_session
+    session[:user_id] = orig_id
+    redirect_to main_app.root_path, notice: "Stopped impersonating"
+  end
+
   private
 
   def user_params
@@ -66,6 +101,12 @@ class Admin::UsersController < Admin::ApplicationController
   def require_reviewer_perms!
     unless current_user&.reviewer_perms?
       redirect_to main_app.root_path, alert: "You are not authorized to access this page."
+    end
+  end
+
+  def require_impersonating!
+    unless session[:original_id].present?
+      redirect_to main_app.root_path, alert: "Not currently impersonating."
     end
   end
 end

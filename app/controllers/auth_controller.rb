@@ -240,6 +240,7 @@ class AuthController < ApplicationController
 
   # Logout
   def destroy
+    session.delete(:original_id) if session[:original_id]
     terminate_session
 
     # clear Ahoy cookies

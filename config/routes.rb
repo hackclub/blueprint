@@ -129,6 +129,8 @@ Rails.application.routes.draw do
   get "faq", to: "guides#faq", as: :faq
 
   namespace :admin do
+    post "stop_impersonating", to: "users#stop_impersonating"
+
     constraints AdminConstraint do
       mount MissionControl::Jobs::Engine, at: "jobs"
       mount Flipper::UI.app(Flipper), at: "flipper"
@@ -144,6 +146,7 @@ Rails.application.routes.draw do
         post :grant_reviewer, on: :member
         post :revoke_to_user, on: :member
         patch :update_internal_notes, on: :member
+        post :impersonate, on: :member
       end
 
       resources :hcb_transactions, only: [ :index ]
