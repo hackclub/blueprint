@@ -41,17 +41,17 @@ class LeaderboardsController < ApplicationController
       rows.map { |r| [users[r.user_id], r.shipped_count.to_i] }.compact
     end
 
-    @approved_hours = Rails.cache.fetch("lb:approved_hours", expires_in: 15.minutes) do
-      rows = DesignReview
-               .joins(:project)
-               .approved
-               .where(invalidated: false, admin_review: true)
-               .where(projects: { is_deleted: false })
-               .group("projects.user_id")
-               .pluck(Arel.sql("projects.user_id, SUM(COALESCE(hours_override::numeric, frozen_duration_seconds::numeric/3600.0)) AS approved_hours"))
-      user_ids = rows.map(&:first)
-      users = User.where(id: user_ids).index_by(&:id)
-      rows.map { |uid, hours| [users[uid], hours.to_f.round(1)] }.compact.sort_by { |_, h| -h }.first(10)
+    @approved_hours = Rails.cache.fetch("lb:approved_hours_v2", expires_in: 15.minutes) do
+      rows = Project
+               .joins(:design_reviews)
+               .where(is_deleted: false)
+               .where(design_reviews: { invalidated: false, admin_review: true, result: 0 })
+               .group(:user_id)
+               .select("projects.user_id, SUM(COALESCE(design_reviews.hours_override::numeric, design_reviews.frozen_duration_seconds::numeric/3600.0)) AS approved_hours")
+               .order("approved_hours DESC")
+               .limit(10)
+      users = User.where(id: rows.map(&:user_id)).index_by(&:id)
+      rows.map { |r| [users[r.user_id], r.approved_hours.to_f.round(1)] }.compact
     end
 
     @first_pass_reviews = Rails.cache.fetch("lb:first_pass", expires_in: 15.minutes) do
