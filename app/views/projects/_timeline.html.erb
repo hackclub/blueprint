@@ -3,6 +3,7 @@
 <% cache [
   project,
   "timeline",
+  current_user&.id,
   project.updated_at,
   project.journal_entries.maximum(:updated_at),
   project.journal_entries.count,
