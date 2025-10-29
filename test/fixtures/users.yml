@@ -7,6 +7,7 @@
 #  id                          :bigint           not null, primary key
 #  avatar                      :string
 #  email                       :string           not null
+#  free_stickers_claimed       :boolean          default(FALSE), not null
 #  github_username             :string
 #  identity_vault_access_token :string
 #  internal_notes              :text

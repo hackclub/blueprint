@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_28_183936) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_29_140627) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -602,6 +602,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_28_183936) do
     t.string "identity_vault_id"
     t.boolean "ysws_verified"
     t.text "internal_notes"
+    t.boolean "free_stickers_claimed", default: false, null: false
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
   end
 

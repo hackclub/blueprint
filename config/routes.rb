@@ -89,6 +89,7 @@ Rails.application.routes.draw do
   get "api/site" => "api#site", as: :api_site
   post "api/stickers" => "api#stickers", as: :api_stickers
   post "api/report_grant_given" => "api#report_grant_given", as: :api_report_grant_given
+  post "api/report_free_stickers_claimed" => "api#report_free_stickers_claimed", as: :api_report_free_stickers_claimed
 
   resources :projects, only: [ :index, :new, :create, :show, :edit, :update, :destroy ] do
     member do
