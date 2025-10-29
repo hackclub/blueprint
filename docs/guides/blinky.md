@@ -67,7 +67,7 @@ You will now need to go through and find all of your components. Luckily, we alr
 - **C249157** (this is another cap)
 - **C713997** (this is a 1k ohm resistor)
 - **C58592** (this is a 470 ohm resistor)
-- **C58592** (this is a potentiometer otherwise known as a variable resistor. You can use this to control the speed of the flashes)
+- **C118912** (this is a potentiometer otherwise known as a variable resistor. You can use this to control the speed of the flashes)
 
 You will also need to place a total of 10 of the different colored LEDs below. You will get 10 of each color in the kit so don’t worry!
 
