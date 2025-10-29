@@ -39,8 +39,11 @@ class JournalEntriesController < ApplicationController
   end
 
   def destroy
-    @journal_entry.destroy
+    @journal_entry.destroy!
     redirect_to project_path(@project), notice: "Journal entry deleted."
+  rescue ActiveRecord::RecordNotDestroyed => e
+    Rails.logger.warn("Failed to destroy JournalEntry #{@journal_entry.id}: #{@journal_entry.errors.full_messages.to_sentence}")
+    redirect_to project_path(@project), alert: "Could not delete journal entry."
   end
 
   private

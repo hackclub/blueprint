@@ -79,6 +79,9 @@ class JournalEntry < ApplicationRecord
 
   def sync_project_github_journal
     project&.sync_github_journal!
+  rescue => e
+    Rails.logger.error("Failed to enqueue GitHub journal sync for project #{project_id}: #{e.message}")
+    Sentry.capture_exception(e)
   end
 
   def sync_project_to_gorse
