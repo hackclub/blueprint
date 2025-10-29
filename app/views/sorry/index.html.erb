@@ -47,7 +47,7 @@
               <div>
                 <% if current_user.ban_type == "hackatime" %>
                   <p>Your account has been suspended due to manipulation and/or inflation of Hackatime data in other Hack Club program(s).</p>
-                <% elsif current_user.ban_type == "hardware" %>
+                <% elsif current_user.ban_type == "previous" %>
                   <p>Your account has been suspended due to violations from previous Hack Club Hardware program(s).</p>
                 <% elsif current_user.ban_type == "slack" %>
                   <p>Your account has been suspended due to violations of the Code of Conduct on the Hack Club Slack.</p>

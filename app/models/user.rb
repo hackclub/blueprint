@@ -57,7 +57,7 @@ class User < ApplicationRecord
   belongs_to :referrer, class_name: "User", optional: true
 
   enum :role, { user: 0, admin: 1, reviewer: 2 }
-  enum :ban_type, { hackatime: 0, blueprint: 1, hardware: 2, slack: 3, age: 4 }
+  enum :ban_type, { hackatime: 0, blueprint: 1, previous: 2, slack: 3, age: 4 }
 
   validates :role, presence: true
   validates :is_banned, inclusion: { in: [ true, false ] }
