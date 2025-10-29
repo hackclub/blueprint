@@ -13,16 +13,14 @@ class UserBanCheckJob < ApplicationJob
     users = User.where.not(slack_id: [ nil, "" ]).to_a
 
     mutex = Mutex.new
-    users_checked = 0
-    users_banned = 0
-    users_unbanned = 0
+    counters = { checked: 0, banned: 0, unbanned: 0 }
 
     users.each_slice((users.size.to_f / max_threads).ceil).map do |user_batch|
       Thread.new do
         user_batch.each do |user|
           begin
-            mutex.synchronize { users_checked += 1 }
-            check_user_bans(user, mutex, users_banned, users_unbanned)
+            mutex.synchronize { counters[:checked] += 1 }
+            check_user_bans(user, mutex, counters)
           rescue => e
             Rails.logger.error("Error processing user #{user.id}: #{e.message}")
             Sentry.capture_exception(e)
@@ -31,12 +29,12 @@ class UserBanCheckJob < ApplicationJob
       end
     end.each(&:join)
 
-    Rails.logger.info "UserBanCheckJob completed: checked #{users_checked}, banned #{users_banned}, unbanned #{users_unbanned}"
+    Rails.logger.info "UserBanCheckJob completed: checked #{counters[:checked]}, banned #{counters[:banned]}, unbanned #{counters[:unbanned]}"
   end
 
   private
 
-  def check_user_bans(user, mutex, users_banned, users_unbanned)
+  def check_user_bans(user, mutex, counters)
     # Check bans in priority order
     BAN_PRIORITY.each do |ban_type|
       should_ban = case ban_type
@@ -58,7 +56,7 @@ class UserBanCheckJob < ApplicationJob
         # User should be banned for this type
         unless user.is_banned && user.ban_type == ban_type.to_s
           user.update!(is_banned: true, ban_type: ban_type)
-          mutex.synchronize { users_banned += 1 }
+          mutex.synchronize { counters[:banned] += 1 }
           Rails.logger.info "User #{user.id} (#{user.slack_id}) banned for #{ban_type}"
         end
         return # Stop checking lower priority bans
@@ -68,7 +66,7 @@ class UserBanCheckJob < ApplicationJob
     # If we reach here, no bans apply - unban if currently banned
     if user.is_banned
       user.update!(is_banned: false, ban_type: nil)
-      mutex.synchronize { users_unbanned += 1 }
+      mutex.synchronize { counters[:unbanned] += 1 }
       Rails.logger.info "User #{user.id} (#{user.slack_id}) unbanned"
     end
   end
@@ -100,7 +98,6 @@ class UserBanCheckJob < ApplicationJob
 
     unless response.success?
       if response.status == 404
-        Rails.logger.info("User #{slack_id} does not have a Hackatime account")
         return false
       end
 
