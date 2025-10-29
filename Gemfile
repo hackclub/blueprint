@@ -91,6 +91,8 @@ gem "blazer"
 
 gem "ahoy_matey"
 
+gem "geocoder"
+
 gem "disco"
 
 gem "jwt"
