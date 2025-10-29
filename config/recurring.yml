@@ -39,3 +39,8 @@ production:
     class: HcbSyncJob
     queue: background
     schedule: every hour at minute 24
+
+  user_ban_check:
+    class: UserBanCheckJob
+    queue: background
+    schedule: every hour at minute 32
