@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Account Suspended - Blueprint</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="robots" content="noindex">
+    <meta name="darkreader-lock">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/webp" sizes="32x32" href="/favicon-32x32.webp">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/webp" sizes="16x16" href="/favicon-16x16.webp">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <%= Sentry.get_trace_propagation_meta.html_safe %>
+  </head>
+
+  <body class="grainy-bg grid-bg">
+    <svg width="0" height="0" class="block">
+      <filter id="grainy" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency=".5" numOctaves="2"/>
+        <feColorMatrix type="saturate" values="0"/>
+        <feBlend in="SourceGraphic" mode="multiply"/>
+      </filter>
+    </svg>
+    <%= render "shared/notice" %>
+
+    <main>
+      <div class="flex items-center justify-center min-h-screen">
+        <%= render "shared/card", class: "flex flex-col items-center justify-center min-h-screen px-4 space-y-12 md:p-12 md:min-h-auto max-w-2xl" do %>
+          <div class="text-center space-y-8">
+            <h1 class="text-4xl pb-2">Your account is suspended</h1>
+            <% if current_user.ban_type.present? %>
+              <div>
+                <% if current_user.ban_type == "hackatime" %>
+                  <p>Your account has been suspended due to manipulation and/or inflation of Hackatime data in other Hack Club program(s).</p>
+                <% elsif current_user.ban_type == "hardware" %>
+                  <p>Your account has been suspended due to violations from previous Hack Club Hardware program(s).</p>
+                <% elsif current_user.ban_type == "slack" %>
+                  <p>Your account has been suspended due to violations of the Code of Conduct on the Hack Club Slack.</p>
+                <% elsif current_user.ban_type == "age" %>
+                  <p>Your account has been suspended because Hack Club programs are for teenagers 13-18 (inclusive) only.</p>
+                <% end %>
+              </div>
+            <% end %>
+            <div class="text-sm">
+              <p>Unfortunately, you cannot participate in Hack Club Blueprint.</p>
+              <% if current_user.ban_type == "hackatime" %>
+                <p>Please contact the @Fraud Department on <a href="https://hack.club/slack" target="_blank" class="underline">Slack</a> if you believe this is a mistake.</p>
+              <% elsif current_user.ban_type == "slack" %>
+                <p>Please contact the <a href="mailto:conduct@hackclub.com" class="underline">Slack Community Team</a> if you believe this is a mistake.</p>
+              <% elsif current_user.ban_type == "age" %>
+                <p>Please contact the Identity Verification Team via the <a href="https://hackclub.slack.com/archives/C092833JXKK" target="_blank" class="underline">#identity-help</a> channel on <a href="https://hack.club/slack" target="_blank" class="underline">Slack</a> if you believe this is a mistake.</p>
+              <% else %>
+                <p>Please contact <a href="mailto:blueprint@hackclub.com" class="underline">support</a> if you believe this is a mistake.</p>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </main>
+  </body>
+</html>

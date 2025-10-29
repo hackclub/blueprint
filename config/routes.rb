@@ -66,6 +66,8 @@ Rails.application.routes.draw do
   root "landing#index"
   get "landing" => "landing#authed", as: :landing
 
+  get "sorry" => "sorry#index", as: :sorry
+
   # Referral system
   get "r/:id" => "referral#show", as: :referral
 

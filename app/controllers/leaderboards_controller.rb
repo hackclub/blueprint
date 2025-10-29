@@ -2,13 +2,13 @@ class LeaderboardsController < ApplicationController
   def index
     @referrals = Rails.cache.fetch("lb:referrals", expires_in: 15.minutes) do
       rows = User.where.not(referrer_id: nil)
-                 .where.not(slack_id: [nil, ""])
+                 .where.not(slack_id: [ nil, "" ])
                  .where(is_mcg: false)
                  .group(:referrer_id)
                  .order(Arel.sql("COUNT(*) DESC"))
                  .limit(10).count
       users = User.where(id: rows.keys).index_by(&:id)
-      rows.map { |uid, cnt| [users[uid], cnt] }.compact
+      rows.map { |uid, cnt| [ users[uid], cnt ] }.compact
     end
 
     @views = Rails.cache.fetch("lb:views", expires_in: 15.minutes) do
@@ -18,7 +18,7 @@ class LeaderboardsController < ApplicationController
                     .select("user_id, SUM(views_count) AS total_views")
                     .order("total_views DESC").limit(10)
       users = User.where(id: rows.map(&:user_id)).index_by(&:id)
-      rows.map { |r| [users[r.user_id], r.total_views.to_i] }.compact
+      rows.map { |r| [ users[r.user_id], r.total_views.to_i ] }.compact
     end
 
     @followers = Rails.cache.fetch("lb:followers", expires_in: 15.minutes) do
@@ -28,7 +28,7 @@ class LeaderboardsController < ApplicationController
                    .select("projects.user_id AS user_id, COUNT(*) AS followers_count")
                    .order("followers_count DESC").limit(10)
       users = User.where(id: rows.map(&:user_id)).index_by(&:id)
-      rows.map { |r| [users[r.user_id], r.followers_count.to_i] }.compact
+      rows.map { |r| [ users[r.user_id], r.followers_count.to_i ] }.compact
     end
 
     @shipped = Rails.cache.fetch("lb:shipped", expires_in: 15.minutes) do
@@ -38,7 +38,7 @@ class LeaderboardsController < ApplicationController
                     .select("user_id, COUNT(*) AS shipped_count")
                     .order("shipped_count DESC").limit(10)
       users = User.where(id: rows.map(&:user_id)).index_by(&:id)
-      rows.map { |r| [users[r.user_id], r.shipped_count.to_i] }.compact
+      rows.map { |r| [ users[r.user_id], r.shipped_count.to_i ] }.compact
     end
 
     @approved_hours = Rails.cache.fetch("lb:approved_hours_v2", expires_in: 15.minutes) do
@@ -51,7 +51,7 @@ class LeaderboardsController < ApplicationController
                .order("approved_hours DESC")
                .limit(10)
       users = User.where(id: rows.map(&:user_id)).index_by(&:id)
-      rows.map { |r| [users[r.user_id], r.approved_hours.to_f.round(1)] }.compact
+      rows.map { |r| [ users[r.user_id], r.approved_hours.to_f.round(1) ] }.compact
     end
 
     @first_pass_reviews = Rails.cache.fetch("lb:first_pass", expires_in: 15.minutes) do
@@ -70,7 +70,7 @@ class LeaderboardsController < ApplicationController
       SQL
       user_ids = rows.map(&:reviewer_id)
       users = User.where(id: user_ids).index_by(&:id)
-      rows.map { |r| [users[r.reviewer_id], r.first_pass_count.to_i] }.compact
+      rows.map { |r| [ users[r.reviewer_id], r.first_pass_count.to_i ] }.compact
     end
   end
 end

@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   before_action :set_paper_trail_whodunnit
   before_action :update_last_active
+  before_action :redirect_banned_users
 
   after_action :track_page_view
 
@@ -34,5 +35,12 @@ class ApplicationController < ActionController::Base
     return unless current_user
 
     current_user.update_column(:last_active, Time.current)
+  end
+
+  def redirect_banned_users
+    return unless user_logged_in?
+    return unless current_user.is_banned
+
+    redirect_to sorry_path
   end
 end
