@@ -1,0 +1,88 @@
+<section class="flex justify-center">
+  <div class="w-full max-w-6xl space-y-8 p-4">
+    <div class="space-y-1 py-4">
+      <h1 class="text-5xl font-bold">Leaderboard</h1>
+      <p class="text-xl">Top contributors in the community</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- Most Referrals -->
+      <div class="border-2 border-white/25 bg-bp-dark p-6">
+        <h2 class="text-2xl font-bold mb-6 pb-3 border-b-2 border-white/25">Most Referrals</h2>
+        <div class="space-y-3">
+          <% @referrals.each_with_index do |(user, count), index| %>
+            <div class="flex items-center gap-4 p-3 bg-bp-darker border border-white/10 hover:border-white/25 transition-colors">
+              <div class="text-2xl font-bold text-bp-warning w-8"><%= index + 1 %></div>
+              <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                <%= image_tag user.avatar_url, alt: user.display_name, class: "w-full h-full object-cover" %>
+              </div>
+              <div class="flex-1">
+                <%= link_to user.display_name, user_path(user), class: "text-lg font-medium hover:text-bp-warning transition-colors" %>
+              </div>
+              <div class="text-lg font-bold text-white/75"><%= count %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Most Project Views -->
+      <div class="border-2 border-white/25 bg-bp-dark p-6">
+        <h2 class="text-2xl font-bold mb-6 pb-3 border-b-2 border-white/25">Most Project Views</h2>
+        <div class="space-y-3">
+          <% @views.each_with_index do |(user, count), index| %>
+            <div class="flex items-center gap-4 p-3 bg-bp-darker border border-white/10 hover:border-white/25 transition-colors">
+              <div class="text-2xl font-bold text-bp-warning w-8"><%= index + 1 %></div>
+              <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                <%= image_tag user.avatar_url, alt: user.display_name, class: "w-full h-full object-cover" %>
+              </div>
+              <div class="flex-1">
+                <%= link_to user.display_name, user_path(user), class: "text-lg font-medium hover:text-bp-warning transition-colors" %>
+              </div>
+              <div class="text-lg font-bold text-white/75"><%= number_with_delimiter(count) %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Most Followers -->
+      <div class="border-2 border-white/25 bg-bp-dark p-6">
+        <h2 class="text-2xl font-bold mb-6 pb-3 border-b-2 border-white/25">Most Followers</h2>
+        <div class="space-y-3">
+          <% @followers.each_with_index do |(user, count), index| %>
+            <div class="flex items-center gap-4 p-3 bg-bp-darker border border-white/10 hover:border-white/25 transition-colors">
+              <div class="text-2xl font-bold text-bp-warning w-8"><%= index + 1 %></div>
+              <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                <%= image_tag user.avatar_url, alt: user.display_name, class: "w-full h-full object-cover" %>
+              </div>
+              <div class="flex-1">
+                <%= link_to user.display_name, user_path(user), class: "text-lg font-medium hover:text-bp-warning transition-colors" %>
+              </div>
+              <div class="text-lg font-bold text-white/75"><%= count %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Most Shipped Projects -->
+      <div class="border-2 border-white/25 bg-bp-dark p-6">
+        <h2 class="text-2xl font-bold mb-6 pb-3 border-b-2 border-white/25">Most Shipped Projects</h2>
+        <div class="space-y-3">
+          <% @shipped.each_with_index do |(user, count), index| %>
+            <div class="flex items-center gap-4 p-3 bg-bp-darker border border-white/10 hover:border-white/25 transition-colors">
+              <div class="text-2xl font-bold text-bp-warning w-8"><%= index + 1 %></div>
+              <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                <%= image_tag user.avatar_url, alt: user.display_name, class: "w-full h-full object-cover" %>
+              </div>
+              <div class="flex-1">
+                <%= link_to user.display_name, user_path(user), class: "text-lg font-medium hover:text-bp-warning transition-colors" %>
+              </div>
+              <div class="text-lg font-bold text-white/75"><%= count %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

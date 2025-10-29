@@ -105,6 +105,7 @@ Rails.application.routes.draw do
     post :check_readme, on: :collection
   end
   get "explore" => "projects#explore", as: :explore
+  get "leaderboard" => "leaderboards#index", as: :leaderboard
 
   get "toolbag" => "toolbag#index", as: :toolbag
 
