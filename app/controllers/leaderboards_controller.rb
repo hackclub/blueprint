@@ -7,7 +7,7 @@ class LeaderboardsController < ApplicationController
                  .group(:referrer_id)
                  .order(Arel.sql("COUNT(*) DESC"))
                  .limit(10).count
-      users = User.where(id: rows.keys).includes(:avatar_attachment).index_by(&:id)
+      users = User.where(id: rows.keys).index_by(&:id)
       rows.map { |uid, cnt| [users[uid], cnt] }.compact
     end
 
@@ -16,7 +16,7 @@ class LeaderboardsController < ApplicationController
                     .group(:user_id)
                     .select("user_id, SUM(views_count) AS total_views")
                     .order("total_views DESC").limit(10)
-      users = User.where(id: rows.map(&:user_id)).includes(:avatar_attachment).index_by(&:id)
+      users = User.where(id: rows.map(&:user_id)).index_by(&:id)
       rows.map { |r| [users[r.user_id], r.total_views.to_i] }.compact
     end
 
@@ -26,7 +26,7 @@ class LeaderboardsController < ApplicationController
                    .group("projects.user_id")
                    .select("projects.user_id AS user_id, COUNT(*) AS followers_count")
                    .order("followers_count DESC").limit(10)
-      users = User.where(id: rows.map(&:user_id)).includes(:avatar_attachment).index_by(&:id)
+      users = User.where(id: rows.map(&:user_id)).index_by(&:id)
       rows.map { |r| [users[r.user_id], r.followers_count.to_i] }.compact
     end
 
@@ -35,7 +35,7 @@ class LeaderboardsController < ApplicationController
                     .group(:user_id)
                     .select("user_id, COUNT(*) AS shipped_count")
                     .order("shipped_count DESC").limit(10)
-      users = User.where(id: rows.map(&:user_id)).includes(:avatar_attachment).index_by(&:id)
+      users = User.where(id: rows.map(&:user_id)).index_by(&:id)
       rows.map { |r| [users[r.user_id], r.shipped_count.to_i] }.compact
     end
   end
