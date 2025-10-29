@@ -43,13 +43,15 @@ class LeaderboardsController < ApplicationController
 
     @approved_hours = Rails.cache.fetch("lb:approved_hours", expires_in: 15.minutes) do
       rows = DesignReview
+               .joins(:project)
                .approved
                .where(invalidated: false, admin_review: true)
-               .group(:reviewer_id)
-               .pluck(Arel.sql("reviewer_id, SUM(COALESCE(hours_override::numeric, frozen_duration_seconds::numeric/3600.0)) AS approved_hours"))
+               .where(projects: { is_deleted: false })
+               .group("projects.user_id")
+               .pluck(Arel.sql("projects.user_id, SUM(COALESCE(hours_override::numeric, frozen_duration_seconds::numeric/3600.0)) AS approved_hours"))
       user_ids = rows.map(&:first)
       users = User.where(id: user_ids).index_by(&:id)
-      rows.map { |uid, hours| [users[uid], hours.to_f.round(1)] }.compact.first(10)
+      rows.map { |uid, hours| [users[uid], hours.to_f.round(1)] }.compact.sort_by { |_, h| -h }.first(10)
     end
 
     @first_pass_reviews = Rails.cache.fetch("lb:first_pass", expires_in: 15.minutes) do
