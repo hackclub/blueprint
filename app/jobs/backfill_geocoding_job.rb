@@ -1,60 +1,87 @@
 class BackfillGeocodingJob < ApplicationJob
   queue_as :background
 
-  RATE_LIMIT = 20 # requests per second
+  RATE_LIMIT = 20 # requests per second globally
 
-  def perform(batch_size: 100)
-    visits = Ahoy::Visit.where(country: nil).where.not(ip: nil)
+  def perform
+    max_threads = ENV.fetch("MAX_BACKGROUND_JOB_THREADS", "6").to_i.clamp(1, 6)
+    Rails.logger.info "Using #{max_threads} threads for geocoding backfill"
+
+    visits = Ahoy::Visit.where(country: nil).where.not(ip: nil).to_a
     total = visits.count
 
-    Rails.logger.info "Backfilling geocoding for #{total} visits in batches of #{batch_size}..."
+    return if total.zero?
 
-    processed = 0
-    errors = 0
-    successes = 0
-    request_count = 0
-    window_start = Time.current
+    Rails.logger.info "Backfilling geocoding for #{total} visits..."
 
-    visits.find_in_batches(batch_size: batch_size) do |batch|
-      batch.each do |visit|
-        # Rate limiting: allow bursts up to 20 per second
-        if request_count >= RATE_LIMIT
-          elapsed = Time.current - window_start
-          if elapsed < 1
-            sleep_time = 1 - elapsed
-            sleep(sleep_time)
+    # Separate mutexes to avoid blocking counter updates while rate limiting
+    rate_mutex = Mutex.new
+    rate_cond = ConditionVariable.new
+    counters_mutex = Mutex.new
+
+    counters = { processed: 0, successes: 0, errors: 0 }
+    rate_limit_state = { count: 0, window_start: mono_now }
+
+    visits.each_slice((visits.size.to_f / max_threads).ceil).map do |visit_batch|
+      Thread.new do
+        visit_batch.each do |visit|
+          # Rate limiting: wait until we can make a request
+          rate_mutex.synchronize do
+            loop do
+              now = mono_now
+              elapsed = now - rate_limit_state[:window_start]
+
+              # Reset window if more than 1 second has elapsed
+              if elapsed >= 1
+                rate_limit_state[:window_start] = now
+                rate_limit_state[:count] = 0
+              end
+
+              # If under limit, claim a slot and proceed
+              if rate_limit_state[:count] < RATE_LIMIT
+                rate_limit_state[:count] += 1
+                break
+              else
+                # Wait for remaining time in window (releases lock while waiting)
+                rate_cond.wait(rate_mutex, 1 - elapsed)
+              end
+            end
           end
-          request_count = 0
-          window_start = Time.current
-        end
 
-        begin
-          result = Geocoder.search(visit.ip).first
-          request_count += 1
+          begin
+            result = Geocoder.search(visit.ip).first
 
-          if result
-            visit.update_columns(
-              country: result.country_code,
-              region: result.state,
-              city: result.city,
-              latitude: result.latitude,
-              longitude: result.longitude
-            )
-            successes += 1
+            if result
+              visit.update_columns(
+                country: result.country_code,
+                region: result.state,
+                city: result.city,
+                latitude: result.latitude,
+                longitude: result.longitude
+              )
+              counters_mutex.synchronize { counters[:successes] += 1 }
+            end
+          rescue => e
+            Rails.logger.error "Error geocoding visit #{visit.id}: #{e.message}"
+            counters_mutex.synchronize { counters[:errors] += 1 }
           end
-        rescue => e
-          Rails.logger.error "Error geocoding visit #{visit.id}: #{e.message}"
-          errors += 1
-        end
 
-        processed += 1
-
-        if processed % 100 == 0
-          Rails.logger.info "Progress: #{processed}/#{total} (#{successes} successful, #{errors} errors)"
+          counters_mutex.synchronize do
+            counters[:processed] += 1
+            if counters[:processed] % 100 == 0
+              Rails.logger.info "Progress: #{counters[:processed]}/#{total} (#{counters[:successes]} successful, #{counters[:errors]} errors)"
+            end
+          end
         end
       end
-    end
+    end.each(&:join)
 
-    Rails.logger.info "Backfill complete! Processed: #{processed}, Successful: #{successes}, Errors: #{errors}"
+    Rails.logger.info "Backfill complete! Processed: #{counters[:processed]}, Successful: #{counters[:successes]}, Errors: #{counters[:errors]}"
+  end
+
+  private
+
+  def mono_now
+    Process.clock_gettime(Process::CLOCK_MONOTONIC)
   end
 end
