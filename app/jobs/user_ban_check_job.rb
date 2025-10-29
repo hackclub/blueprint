@@ -1,37 +1,101 @@
 class UserBanCheckJob < ApplicationJob
   queue_as :background
 
+  # Ban priority: higher priority bans take precedence
+  BAN_PRIORITY = [ :blueprint, :hardware, :slack, :age, :hackatime ].freeze
+
   def perform
     Rails.logger.info "UserBanCheckJob started at #{Time.current}"
 
+    max_threads = ENV.fetch("MAX_BACKGROUND_JOB_THREADS", "6").to_i.clamp(1, 6)
+    Rails.logger.info "Using #{max_threads} threads for ban checking"
+
+    users = User.where.not(slack_id: [ nil, "" ]).to_a
+
+    mutex = Mutex.new
     users_checked = 0
     users_banned = 0
     users_unbanned = 0
 
-    User.where.not(slack_id: [ nil, "" ]).find_each do |user|
-      users_checked += 1
-
-      if is_hackatime_banned?(user.slack_id)
-        unless user.is_banned && user.ban_type == "hackatime"
-          user.update!(is_banned: true, ban_type: :hackatime)
-          users_banned += 1
-          Rails.logger.info "User #{user.id} (#{user.slack_id}) banned for Hackatime"
-        end
-      else
-        if user.is_banned && user.ban_type == "hackatime"
-          user.update!(is_banned: false, ban_type: nil)
-          users_unbanned += 1
-          Rails.logger.info "User #{user.id} (#{user.slack_id}) unbanned from Hackatime"
+    users.each_slice((users.size.to_f / max_threads).ceil).map do |user_batch|
+      Thread.new do
+        user_batch.each do |user|
+          begin
+            mutex.synchronize { users_checked += 1 }
+            check_user_bans(user, mutex, users_banned, users_unbanned)
+          rescue => e
+            Rails.logger.error("Error processing user #{user.id}: #{e.message}")
+            Sentry.capture_exception(e)
+          end
         end
       end
-    end
+    end.each(&:join)
 
     Rails.logger.info "UserBanCheckJob completed: checked #{users_checked}, banned #{users_banned}, unbanned #{users_unbanned}"
   end
 
   private
 
+  def check_user_bans(user, mutex, users_banned, users_unbanned)
+    # Check bans in priority order
+    BAN_PRIORITY.each do |ban_type|
+      should_ban = case ban_type
+      when :blueprint
+        is_blueprint_banned?(user)
+      when :hardware
+        is_hardware_banned?(user)
+      when :slack
+        is_slack_banned?(user)
+      when :age
+        is_age_banned?(user)
+      when :hackatime
+        is_hackatime_banned?(user.slack_id)
+      else
+        false
+      end
+
+      if should_ban
+        # User should be banned for this type
+        unless user.is_banned && user.ban_type == ban_type.to_s
+          user.update!(is_banned: true, ban_type: ban_type)
+          mutex.synchronize { users_banned += 1 }
+          Rails.logger.info "User #{user.id} (#{user.slack_id}) banned for #{ban_type}"
+        end
+        return # Stop checking lower priority bans
+      end
+    end
+
+    # If we reach here, no bans apply - unban if currently banned
+    if user.is_banned
+      user.update!(is_banned: false, ban_type: nil)
+      mutex.synchronize { users_unbanned += 1 }
+      Rails.logger.info "User #{user.id} (#{user.slack_id}) unbanned"
+    end
+  end
+
+  def is_blueprint_banned?(user)
+    # TODO: Implement blueprint ban check
+    false
+  end
+
+  def is_hardware_banned?(user)
+    # TODO: Implement hardware ban check
+    false
+  end
+
+  def is_slack_banned?(user)
+    # TODO: Implement slack ban check
+    false
+  end
+
+  def is_age_banned?(user)
+    # TODO: Implement age ban check
+    false
+  end
+
   def is_hackatime_banned?(slack_id)
+    return false if slack_id.blank?
+
     response = Faraday.get("https://hackatime.hackclub.com/api/v1/users/#{slack_id}/trust_factor")
 
     unless response.success?
