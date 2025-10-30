@@ -4,6 +4,25 @@ Made by @CAN
 
 Hi there! This is a tutorial on how to make a 555 LED Chaser board otherwise known as a “Blinky Board”. You can follow this tutorial, customize your design and you will be shipped the parts to build it! 
 
+You will get: 
+- The PCB you design
+- 1x soldering iron (only if you need it)
+- 1x 9V Battery Buckle
+- 1x 1uF 50V Electrolytic Capacitor 
+- 2x 2x1 Pin Header
+- 2x 1x1 Pin HEader 
+- 2x 470 Ohm resistor 
+- 2x 1K resistor 
+- 2x potentiometer
+- 2x NE555P IC's 
+- 2x CD4017BE Chips
+- 10x Blue LED's 
+- 10x Green LEDs
+- 10x Orange LED's 
+- 10x RED LED's 
+- 10x Yellow LED's
+
+
 ## Here is what we will be building:
 
 We will all build this LED chaser which blinks 10 LEDs in a variable speed sequence. 
