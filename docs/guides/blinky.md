@@ -4,25 +4,6 @@ Made by @CAN
 
 Hi there! This is a tutorial on how to make a 555 LED Chaser board otherwise known as a “Blinky Board”. You can follow this tutorial, customize your design and you will be shipped the parts to build it! 
 
-You will get: 
-- The PCB you design
-- 1x soldering iron (only if you need it)
-- 1x 9V Battery Buckle
-- 1x 1uF 50V Electrolytic Capacitor 
-- 2x 2x1 Pin Header
-- 2x 1x1 Pin HEader 
-- 2x 470 Ohm resistor 
-- 2x 1K resistor 
-- 2x potentiometer
-- 2x NE555P IC's 
-- 2x CD4017BE Chips
-- 10x Blue LED's 
-- 10x Green LEDs
-- 10x Orange LED's 
-- 10x RED LED's 
-- 10x Yellow LED's
-
-
 ## Here is what we will be building:
 
 We will all build this LED chaser which blinks 10 LEDs in a variable speed sequence. 
@@ -48,7 +29,51 @@ Here’s the schematic:
 
 If you haven’t already, you should create an account on [EasyEDA](https://easyeda.com/) and [GitHub](https://github.com/). EasyEDA is what you will use to design the PCB and GitHub is where you will share it.
 
-## Create your project
+## Creating your GitHub Repo
+
+Create a repository on [Github.com](http://Github.com). (you may need to create an account)
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8c2a28ed6838101ae8c5def10c9115042637a201_image.png)
+
+You need to 
+
+- **Name it** - I named it 555 Chaser but you can do whatever
+- **Write a nice description** - this can be short
+- **Make it public**
+- **Enable  a README** so others can see what you made
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/86cd75d246e16ce3a172caa472c49f2648ee92eb_image.png)
+
+Now copy the URL for your repo. You will need it for your next step.
+
+## Creating your project on Blueprint
+
+Now, you just need to create your project on Blueprint. Blueprint not only allows people to share projects, but acts as a gallery of all the projects made. 
+
+First, create your Blueprint account on [https://blueprint.hackclub.com/](https://blueprint.hackclub.com/) (⇒ Sign in). In the future, you will be able to log into your account anywhere, anytime to make your project. 
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b7cf34ff897d78ad13372226165e67814934dae3_image.png)
+
+Your screen should look something like this.
+
+Click the “+ Start a Project” button at the bottom of your screen. You need to fill out the form (you can just copy the name and description from your GitHub repo). Don’t worry about the banner for now. You can put that in later.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/84fa13d1537256ffdb6f5fd9939f96f4f0603bd3_image.png)
+
+IMPORTANT: 
+Make sure you select the LED Chaser as your guide. Doing this will bypass the need for a journal in order to ship. For your future Blueprint projects, you will need to make an updated guide with what you are making.
+
+Also, make sure you click “I need funding”
+
+Now click “Create Project”
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/283a56a17d26ee6e3d42a9d20975cbaa25b04964_image.png)
+
+Once your project is created, click into it on the project screen.
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a73a0deeb8dbf8e604f0ebfda1f95f6f6ccd6daa_image.png)
+
+## Create your project on EasyEDA
 
 Go to [easyeda.com/editor](http://easyeda.com/editor) and click Design Online > STD edition. We are using the standard edition for simplicity sake but the pro edition is nice and its free!
 
@@ -86,7 +111,7 @@ You will now need to go through and find all of your components. Luckily, we alr
 - **C249157** (this is another cap)
 - **C713997** (this is a 1k ohm resistor)
 - **C58592** (this is a 470 ohm resistor)
-- **C118912** (this is a potentiometer otherwise known as a variable resistor. You can use this to control the speed of the flashes)
+- **C58592** (this is a potentiometer otherwise known as a variable resistor. You can use this to control the speed of the flashes)
 
 You will also need to place a total of 10 of the different colored LEDs below. You will get 10 of each color in the kit so don’t worry!
 
@@ -246,7 +271,7 @@ In PCB editor click View > 3D View to see your finished work!
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/50638b1bb956cd429eab5755e7aaf142ffe088db_image.png)
 
-## Creating your project repo
+## Add your files to your GitHub Repo
 
 Now it is time to order your board.
 
@@ -274,22 +299,9 @@ Your PCB (in your PCB editor do File → Export → EasyEDA)
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ab6f09e8041e0c5eb56a74e34a87aab1e8a936c6_image.png)
 
-## Creating your GitHub Repo
+## Upload your files o GitHub
 
-Once you have the five files, create a repository on [Github.com](http://Github.com). (you may need to create an account)
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8c2a28ed6838101ae8c5def10c9115042637a201_image.png)
-
-You need to 
-
-- **Name it** - I named it 555 Chaser but you can do whatever
-- **Write a nice description** - this can be short
-- **Make it public**
-- **Enable  a README** so others can see what you made
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/86cd75d246e16ce3a172caa472c49f2648ee92eb_image.png)
-
-Once your repo is created, it is time to upload the five files you downloaded before. 
+Go back to the GitHub repo you created at the start.
 
 Click Add File → Upload files 
 
@@ -303,13 +315,13 @@ Drag in your:
 - PCB EasyEDA file
 - Schematic EasyEDA file
 
-(you should have added all of these before)
+(you should have downloaded all of these before)
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8116375daf649aa342be5d409e010a5769f5ed81_image.png)
 
-You can then click to commit your changes and your repo is done! Make sure to save the URL for your repo for later!
+You can then click to commit your changes and your repo is done! 
 
-## Ordering Your Board
+## Getting a JLCPCB Price
 
 Go to [https://jlcpcb.com/](https://jlcpcb.com/) and make an account. Then, add your Gerber file for the instant quote. 
 
@@ -329,36 +341,16 @@ Once you have successfully *Not* changed any of the settings (except the board c
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/6f538d5f301eae997544c43c1d6ce6daca01331d_image.png)
 
-## Creating your project on Blueprint
+## Submitting your Blueprint project to get funding
 
 You are almost done! At this stage you should have: 
 
 - A completed board
 - A GitHub repo for your board
+- A Blueprint project for your board
 - A price estimate and screenshot for your board
 
-Now, you just need to create your project on Blueprint. Blueprint not only allows people to share their projects, but acts as a gallery of all the projects made. 
-
-First, create your Blueprint account on [https://blueprint.hackclub.com/](https://blueprint.hackclub.com/) (⇒ Sign in). In the future, you will be able to log into your account anywhere, anytime to make your project. 
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b7cf34ff897d78ad13372226165e67814934dae3_image.png)
-
-Your screen should look something like this.
-
-Click the “+ Start a Project” button at the bottom of your screen. You need to fill out the form (you can just copy the name and description from your GitHub repo). For your banner, just upload the 3d render of your PCB.
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/84fa13d1537256ffdb6f5fd9939f96f4f0603bd3_image.png)
-
-IMPORTANT: 
-Make sure you select the LED Chaser as your guide. Doing this will bypass the need for a journal in order to ship. For your future Blueprint projects, you will need to make an updated guide with what you are making.
-
-Also, make sure you click “I need funding”
-
-Now click “Create Project”
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/283a56a17d26ee6e3d42a9d20975cbaa25b04964_image.png)
-
-Once your project is created, click into it on the project screen.
+Go back to your Blueprint project screen from before. You should edit the project so the banner is your 3D render.
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a73a0deeb8dbf8e604f0ebfda1f95f6f6ccd6daa_image.png)
 
@@ -366,7 +358,7 @@ Now, click “Ship It”
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/6d1688e2383ca416db27b57942698e7f24a88da9_image.png)
 
-Blueprint will run some checks. If any are red, you need to fix them.
+Blueprint will run some checks. If any are red, you need to fix them. (you may need to upload your project banner)
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0e646bc3c854746bfd51172fa68cdba8a9df1625_image.png)
 
