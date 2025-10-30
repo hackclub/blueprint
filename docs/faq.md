@@ -51,11 +51,11 @@ You can spend up to the budget based on your quality tier which is outlined in (
 
 ## How will I get my 3D printed parts?
 
-Through **printing legion!** It's an international network of Hack Clubbers 3D printing for each other, sponsored by Polymaker (website coming soon - hang tight!)
+Through **printing legion!** It's an international network of Hack Clubbers 3D printing for each other! Check out (their website)[https://printlegion.hackclub.com/] 
 
 ## How likely is it that my project will be approved?
 
-It's hard to say without seeing your project, but generally speaking, as long as you follow the [guidelines](/docs/submission-guidelines) on the submitting page for your project then you'll more likely than not get approved.
+It's hard to say without seeing your project, but generally speaking, as long as you follow the [guidelines](/docs/submission-guidelines) on the submitting page for your project then you're more than likely to be approved!
 
 ## What's the minimum complexity for a custom project?
 
