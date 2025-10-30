@@ -19,6 +19,12 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                         .includes(:user, :journal_entries)
                         .order(created_at: :asc)
     end
+
+    @top_reviewers = User.joins(:design_reviews)
+                         .where("design_reviews.created_at >= ?", 7.days.ago)
+                         .group("users.id")
+                         .select("users.*, COUNT(design_reviews.id) AS reviews_count")
+                         .order("reviews_count DESC")
   end
 
   def show
