@@ -50,7 +50,7 @@ class BuildReview < ApplicationRecord
   validates :hours_override, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   before_validation :set_default_tier_override, on: :create
-  after_update :finalize_on_approve, if: -> { saved_change_to_result? && approved? && !invalidated? }
+  after_save :finalize_on_approve, if: -> { saved_change_to_result? && approved? && !invalidated? }
 
   def self.default_multiplier_for_tier(tier)
     case tier
@@ -81,17 +81,36 @@ class BuildReview < ApplicationRecord
   end
 
   def associate_journal_entries!(up_to: nil)
-    cutoff = up_to || Time.current
-    project.journal_entries
-           .where(review_id: nil)
-           .where("created_at <= ?", cutoff)
-           .update_all(review_id: id, review_type: "BuildReview")
+    cutoff = up_to || created_at
+
+    # Find the most recent valid approval (from either build or design review) at or before this review
+    last_approval = project.build_reviews
+                           .where(result: :approved, invalidated: false)
+                           .where.not(id: id)
+                           .where("created_at <= ?", cutoff)
+                           .order(created_at: :desc, id: :desc)
+                           .first
+
+    last_design_approval = project.design_reviews
+                                  .where(result: :approved, invalidated: false, admin_review: true)
+                                  .where("created_at <= ?", cutoff)
+                                  .order(created_at: :desc, id: :desc)
+                                  .first
+
+    last_valid_approval_time = [ last_approval&.created_at, last_design_approval&.created_at ].compact.max
+
+    # Associate entries created after the last approval and at or before the cutoff
+    entries = project.journal_entries.where("created_at <= ?", cutoff)
+    entries = entries.where("created_at > ?", last_valid_approval_time) if last_valid_approval_time
+
+    entries.update_all(review_id: id, review_type: "BuildReview")
   end
 
   def self.backfill_journal_associations!
+    # Deprecated: Use the reviews:backfill rake task instead, which correctly associates
+    # journal entries up to the review's created_at, not Time.current
     BuildReview.where(result: :approved, invalidated: false).find_each do |review|
-      review.associate_journal_entries!
-      review.save!
+      review.associate_journal_entries!(up_to: review.created_at)
     end
   end
 
