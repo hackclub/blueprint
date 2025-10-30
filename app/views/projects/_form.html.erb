@@ -102,6 +102,24 @@
   </div>
 
   <div>
+    <div>
+      <%= f.label :skip_gh_sync, "Publish journal to GitHub repository", class: "block text-xl font-medium" %>
+    </div>
+    <div class="flex gap-4 mt-2">
+      <%= f.label :skip_gh_sync_false, class: "flex items-center gap-2 cursor-pointer" do %>
+        <%= f.radio_button :skip_gh_sync, false, class: "hidden peer" %>
+        <div class="border-2 size-4 peer-checked:bg-white"></div>
+        <span>I want to automatically publish my journal (recommended)</span>
+      <% end %>
+      <%= f.label :skip_gh_sync_true, class: "flex items-center gap-2 cursor-pointer" do %>
+        <%= f.radio_button :skip_gh_sync, true, class: "hidden peer" %>
+        <div class="border-2 size-4 peer-checked:bg-white"></div>
+        <span>I don't want this</span>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
     <%= f.submit (@project.new_record? ? "Create project" : "Update project"), class: "btn btn-primary block w-full", data: { project_validator_target: "submit" } %>
   </div>
 <% end %>
