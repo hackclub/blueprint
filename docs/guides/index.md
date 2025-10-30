@@ -8,6 +8,7 @@
 Follow and modify one of these awesome projects
 
 <ul style="font-size: 1.25rem; line-height: 1.6;">
+<li><a href="/guides/blinky">Super Easy LED Chaser (No journal required)</a></li>
 <li><a href="/guides/devboard">Custom Devboard</a></li>
 <li><a href="/guides/midi">Midi Keyboard</a></li>
 <li><a href="/guides/split-keyboard">Split Keyboard</a></li>
