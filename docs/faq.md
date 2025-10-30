@@ -93,5 +93,13 @@ Yes!
 
 Yes! The submission is due December 1st, but there's going to be time after to build & spend tickets.
 
+## Can I use auto-routing software?
+
+No. You must do your routing manually. 
+
+## How can I contribute? 
+
+PRs are accepted and appreciated! If you are willing to use rails, do cool art, or make cool and useful hardware guides, DM @CAN on Slack! We appreciate all help :) 
+
 > For any questions or missing content, DM @Tanishq Goyal or ask in #blueprint-support!
 
