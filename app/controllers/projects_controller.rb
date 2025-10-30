@@ -84,7 +84,7 @@ class ProjectsController < ApplicationController
       end
     elsif params[:type] == "projects"
       if params[:sort] == "new"
-        @pagy, @projects = pagy(Project.where(is_deleted: false).includes(:banner_attachment, :latest_journal_entry).order(created_at: :desc), limit: 24)
+        @pagy, @projects = pagy(Project.joins(:user).where(is_deleted: false).includes(:banner_attachment, :user).order(created_at: :desc), limit: 24)
         preload_project_metrics(@projects)
       elsif params[:sort] == "you"
         if current_user && Flipper.enabled?(:gorse_recommendations, current_user)
@@ -122,7 +122,11 @@ class ProjectsController < ApplicationController
           preload_project_metrics(@projects)
         end
       elsif params[:sort] == "top"
-        all_projects = Project.where(is_deleted: false).includes(:banner_attachment, :latest_journal_entry).order(views_count: :desc)
+        all_projects = Project.joins(:user).where(is_deleted: false).includes(:banner_attachment, :user).order(views_count: :desc)
+        @pagy, @projects = pagy(all_projects, limit: 24)
+        preload_project_metrics(@projects)
+      elsif params[:sort] == "shipped"
+        all_projects = Project.joins(:user).where(is_deleted: false, review_status: "build_approved").includes(:banner_attachment, :user).order(created_at: :desc)
         @pagy, @projects = pagy(all_projects, limit: 24)
         preload_project_metrics(@projects)
       else

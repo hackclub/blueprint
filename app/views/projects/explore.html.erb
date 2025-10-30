@@ -17,12 +17,17 @@
         <div class="flex bg-bp-dark border-2 border-white/25 p-1">
           <% if current_user %>
             <%= link_to "For You", explore_path(sort: "you", type: params[:type]),
-              class: "px-4 py-1.5 text-sm font-bold transition-all #{(params[:sort] == "you" || params[:sort].nil?) ? "bg-white text-bp-dark" : "text-white hover:bg-white/10"}",
+              class: "px-4 py-1.5 text-sm font-bold transition-all #{params[:sort] == "you" ? "bg-white text-bp-dark" : "text-white hover:bg-white/10"}",
               data: { turbo_frame: "_top" } %>
           <% end %>
           <%= link_to "Top", explore_path(sort: "top", type: params[:type]),
             class: "px-4 py-1.5 text-sm font-bold transition-all #{params[:sort] == "top" ? "bg-white text-bp-dark" : "text-white hover:bg-white/10"}",
             data: { turbo_frame: "_top" } %>
+          <% if params[:type] == "projects" %>
+            <%= link_to "Shipped", explore_path(sort: "shipped", type: params[:type]),
+              class: "px-4 py-1.5 text-sm font-bold transition-all #{params[:sort] == "shipped" ? "bg-white text-bp-dark" : "text-white hover:bg-white/10"}",
+              data: { turbo_frame: "_top" } %>
+          <% end %>
           <%= link_to "New", explore_path(sort: "new", type: params[:type]),
             class: "px-4 py-1.5 text-sm font-bold transition-all #{params[:sort] == "new" ? "bg-white text-bp-dark" : "text-white hover:bg-white/10"}",
             data: { turbo_frame: "_top" } %>
