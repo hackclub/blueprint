@@ -16,6 +16,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     elsif current_user.reviewer_perms?
       @projects = Project.where(is_deleted: false, review_status: :build_pending)
                         .where.not(id: reviewed_ids)
+                        .where.not(ysws: "led")
                         .includes(:user, :journal_entries)
                         .order(created_at: :asc)
     end
