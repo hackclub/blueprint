@@ -107,35 +107,60 @@
         </div>
       </div>
 
-  <div class="pb-12 mx-4 space-y-18 relative">
- 
-  <h2 class="text-3xl text-center md:text-5xl">How this works</h2>
-  <div class="text-xl flex justify-center w-full">
-    <div class="grid grid-cols-5 bg-red- max-w-6xl grow text-center gap-y-12">
-      <div class="bg-bp-darker col-span-1 md:col-span-3 p-12 space-y-4">
-        <p class="text-3xl font-rc-full">Design a hardware project</p>
-        <p>Draft and design up something cool! Build your project digitally first. Examples: custom keyboard, your own 3D printer, or a motor controller.</p>
-      </div>
-      <div class="md:col-span-2 bg-no-repeat bg-contain scale-120 bg-center wobble-1 hidden md:block" style="background-image: url('<%= image_path("landing/steps-projects.webp") %>');">
-      </div>
-      <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-2 hidden md:block" style="background-image: url('<%= image_path("landing/steps-journal.webp") %>');">
-      </div>
-      <div class="bg-bp-darker col-span-3 p-12 space-y-4">
-        <p class="text-3xl font-rc-full">Share your progress</p>
-        <p>Share what you've been cooking up with thousands of other teenagers through journals, and open source your design on GitHub.</p>
-      </div>
-      <div class="bg-bp-darker col-span-3 p-12 space-y-4">
-        <p class="text-3xl font-rc-full">Get a grant & earn cool prizes</p>
-        <p>Get a grant up to $400 to help you build your project. Earn tickets for each hour you spend building it IRL and redeem them for rewards!</p>
-      </div>
-      <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-3 hidden md:block" style="background-image: url('<%= image_path("landing/steps-prizes.webp") %>');">
+  <div class="pb-12 mx-4 space-y-12 relative">
+    <h2 class="text-3xl text-center md:text-5xl">How this works</h2>
+    <div class="text-xl flex justify-center w-full">
+      <div class="grid grid-cols-5 bg-red- max-w-6xl grow text-center gap-y-12">
+        <div class="bg-bp-darker col-span-1 md:col-span-3 p-12 space-y-4">
+          <p class="text-3xl font-rc-full">Design a hardware project</p>
+          <p>Draft and design up something cool! Build your project digitally first. Examples: custom keyboard, your own 3D printer, or a motor controller.</p>
+        </div>
+        <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-1 hidden md:block hover:scale-130 motion-safe:transition-transform" style="background-image: url('<%= image_path("landing/steps-projects.webp") %>');">
+        </div>
+        <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-2 hidden md:block hover:scale-130 motion-safe:transition-transform"" style="background-image: url('<%= image_path("landing/steps-journal.webp") %>');">
+        </div>
+        <div class="bg-bp-darker col-span-3 p-12 space-y-4">
+          <p class="text-3xl font-rc-full">Share your progress</p>
+          <p>Share what you've been cooking up with thousands of other teenagers through journals, and open source your design on GitHub.</p>
+        </div>
+        <div class="bg-bp-darker col-span-3 p-12 space-y-4">
+          <p class="text-3xl font-rc-full">Get a grant & earn cool prizes</p>
+          <p>Get a grant up to $400 to help you build your project. Earn tickets for each hour you spend building it IRL and redeem them for rewards!</p>
+        </div>
+        <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-3 hidden md:block hover:scale-130 motion-safe:transition-transform"" style="background-image: url('<%= image_path("landing/steps-prizes.webp") %>');">
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+  <div class="space-y-12 pt-16">
+    <div class="space-y-4">
+      <h2 class="text-3xl text-center md:text-5xl">What can I build?</h2>
+      <p class="text-xl text-center">Pick one of these tracks! Make as many as you can!</p>
+    </div>
+    <div class="flex justify-center text-xl text-center">
+      <div class="grid grid-cols-2 gap-x-12 gap-y-10 max-w-6xl grow">
+        <a href="/guides" class="bg-bp-darker p-12 space-y-6 hover:scale-105 hover:-rotate-1 motion-safe:transition-transform">
+          <p class="text-3xl font-rc-full">Starter projects</p>
+          <p>Best for beginners! Follow one of our guided projects and learn the skills to build hardware!</p>
+          <%= render "shared/button", variant: :primary, text: "Get started!", class: "w-full" %>
+        </a>
+        <a href="/docs" class="bg-bp-darker p-12 space-y-6 hover:scale-105 hover:rotate-1 motion-safe:transition-transform">
+          <p class="text-3xl font-rc-full">Custom projects</p>
+          <p>Self-guided! Design and journal your own hardware project and make it real!</p>
+          <%= render "shared/button", variant: :primary, text: "Get started!", class: "w-full" %>
+        </a>
+        <div class="space-y-6 col-span-2 flex flex-col items-center">
+          <div class="space-y-4">
+            <p>Not sure what to build? Browse projects made by other teenagers for inspiration!</p>
+            <%= render "shared/button", variant: :outline, text: "Explore projects!", class: "w-full", url: explore_path %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <div class="space-y-6 md:space-y-8 mt-10">
-  <p class="text-3xl md:text-5xl font-bold text-center font-rc-full">Starter Projects</p>
   <p class="text-center   ">Read the guide -> design your own!</p>
   <div class="max-w-6xl mx-auto px-4">
     <div class="grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-3">
