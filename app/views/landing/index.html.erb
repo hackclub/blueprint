@@ -1,3 +1,30 @@
+<% faq = [
+  {
+    question: "When does this program end?",
+    answer: "Currently, the end-date of Blueprint is December 1st"
+  },
+  {
+    question: "How many projects can I make?",
+    answer: "As many as you like! We just ask that you only do one of each starter project"
+  },
+  {
+    question: "Who can apply?",
+    answer: "Any student currently enrolled in high school!"
+  },
+  {
+    question: "Can I double dip with Summer of Making or any other Hack Club program?",
+    answer: "No! Double-dipping is not allowed. If you have coding time for your project, you can journal it, get tickets, and get prizes from the tool bag."
+  },
+  {
+    question: "Do I need prior experience?",
+    answer: "Not at all! We welcome beginners and provide resources to help you learn and build your project successfully."
+  },
+  {
+    question: "If I need more money, can I pay myself?",
+    answer: "Yes!"
+  }
+] %>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -89,15 +116,6 @@
         </div>
         
         <!-- Floating scroll down arrow -->
-        <style>
-          @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-          }
-          .float-arrow {
-            animation: float 2s ease-in-out infinite;
-          }
-        </style>
         <div class="absolute left-0 right-0 flex justify-center z-999" style="top: calc(100vh - 10vh);">
           <div class="float-arrow cursor-pointer" onclick="window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })">
             <svg class="w-12 h-12 md:w-16 md:h-16 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -127,7 +145,7 @@
               <p class="text-3xl font-rc-full">Get a grant & earn cool prizes</p>
               <p>Get a grant up to $400 to help you build your project. Earn tickets for each hour you spend building it IRL and redeem them for rewards!</p>
             </div>
-            <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-3 hidden md:block hover:scale-130 motion-safe:transition-transform"" style="background-image: url('<%= image_path("landing/steps-prizes.webp") %>');">
+            <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-3 hidden md:block hover:scale-130 motion-safe:transition-transform" style="background-image: url('<%= image_path("landing/steps-prizes.webp") %>');">
             </div>
           </div>
         </div>
@@ -166,128 +184,67 @@
       </div>
 
       <!-- Divider Image -->
-      <div class="w-full py-16">
+      <div class="w-full py-24">
         <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
       </div>
 
-    </div>
-      
-    
-      <!-- Divider Image -->
-      <div class="w-full py-16">
-        <%= image_tag "divider2.webp", class: "w-full h-auto" %>
-      </div>
-    
-    <div class="flex flex-col items-center w-full px-8">
-<!-- Last Time Stats -->
-<div class="relative mt-16 md:mt-24 py-12 md:py-20 overflow-hidden">
- 
-  <!-- Background pattern -->
-  <div class="absolute inset-0 bg-bp-warning/10 border-y-4 border-bp-warning"></div>
-  <div class="absolute inset-0 bg-hatch opacity-20"></div>
-  
-  <div class="relative space-y-8 md:space-y-12">
-    <div class="text-center space-y-2 px-4">
-      <p class="text-3xl md:text-6xl font-bold text-bp-warning">Last time we did this...</p>
-      <p class="text-base md:text-2xl text-white">Hackclub Onboard Stats</p>
-    </div>
-    
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-        <!-- Stat 1 -->
-        <div class="group relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-bp-warning/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="relative flex flex-col items-center justify-center p-8 md:p-12 space-y-2 border-4 border-bp-warning bg-bp-dark transform hover:scale-105 transition-all">
-            <p class="text-5xl md:text-7xl font-bold text-bp-warning">$150K</p>
-            <p class="text-xl md:text-2xl text-center font-bold">Given out</p>
+      <div class="flex justify-center">
+        <div class="max-w-4xl text-xl border-bp-warning border-4 grow p-12 bg-bp-warning/10 space-y-8">
+          <div class="text-center space-y-2">
+            <h2 class="text-3xl text-bp-warning">The last time we did this</h2>
+            <p>Stats from <a href="https://hackclub.com/onboard" class="underline">Hack Club OnBoard</a></p>
           </div>
-        </div>
-        
-        <!-- Stat 2 -->
-        <div class="group relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-bp-warning/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="relative flex flex-col items-center justify-center p-8 md:p-12 space-y-2 border-4 border-bp-warning bg-bp-dark transform hover:scale-105 transition-all">
-            <p class="text-5xl md:text-7xl font-bold text-bp-warning">1000+</p>
-            <p class="text-xl md:text-2xl text-center font-bold">Projects made</p>
-          </div>
-        </div>
-        
-        <!-- Stat 3 -->
-        <div class="group relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-bp-warning/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="relative flex flex-col items-center justify-center p-8 md:p-12 space-y-2 border-4 border-bp-warning bg-bp-dark transform hover:scale-105 transition-all">
-            <p class="text-5xl md:text-7xl font-bold text-bp-warning">7K</p>
-            <p class="text-xl md:text-2xl text-center font-bold">Hours logged</p>
+          <div class="grid grid-cols-3 gap-8 text-center">
+            <div>
+              <p class="font-rc-full text-4xl text-bp-warning">$150,000+</p>
+              <p>Given out</p>
+            </div>
+            <div>
+              <p class="font-rc-full text-4xl text-bp-warning">1000+</p>
+              <p>Projects made</p>
+            </div>
+            <div>
+              <p class="font-rc-full text-4xl text-bp-warning">7,000+</p>
+              <p>Hours logged</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-     
 
-      <% faq = [
-        {
-          question: "When does this program end?",
-          answer: "Currently, the end-date of Blueprint is December 1st"
-        },
-        {
-          question: "How many projects can I make?",
-          answer: "As many as you like! We just ask that you only do one of each starter project"
-        },
-        {
-          question: "Who can apply?",
-          answer: "Any student currently enrolled in high school!"
-        },
-        {
-          question: "Can I double dip with Summer of Making or any other Hack Club program?",
-          answer: "No! Double-dipping is not allowed. If you have coding time for your project, you can journal it, get tickets, and get prizes from the tool bag."
-        },
-        {
-          question: "Do I need prior experience?",
-          answer: "Not at all! We welcome beginners and provide resources to help you learn and build your project successfully."
-        },
-        {
-          question: "If I need more money, can I pay myself?",
-          answer: "Yes!"
-        }
-      ] %>
-      
-      <!-- FAQ Section -->
-      <section class="w-full max-w-6xl py-8 md:py-12">
-        <div class="flex flex-col items-center space-y-8 md:px-8">
-          <h2 class="text-3xl font-bold text-center md:text-4xl">FAQ</h2>
-          <div class="grid w-full grid-cols-1 gap-4 md:gap-8 md:grid-cols-3">
+      <div class="space-y-8 mt-24">
+        <h2 class="text-3xl text-center md:text-5xl">FAQ</h2>
+        <div class="flex justify-center">
+          <div class="max-w-6xl grow grid grid-cols-3 gap-8">
             <% faq.each do |item| %>
               <%= render "shared/card", class: "flex flex-col px-4 py-3 md:px-8 md:py-6" do %>
-                  <h3 class="mb-3 text-sm font-bold md:text-xl text-bp-success"><%= item[:question] %></h3>
-                  <p class="text-xs md:text-base"><%= item[:answer] %></p>
+                <h3 class="mb-3 text-sm font-bold md:text-xl text-bp-success"><%= item[:question] %></h3>
+                <p class="text-xs md:text-base"><%= item[:answer] %></p>
               <% end %>
             <% end %>
           </div>
-          <div class="text-center">
-            <div class="h-6"></div>
-            <a href="/faq" class="text-lg underline text-bp-warning hover:text-white">
-              View Full FAQ →
-            </a>
-          </div>
         </div>
-      </section>
-      
-      <!-- Get Started Section -->
-      <section class="w-full max-w-6xl py-12 pb-24">
-        <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl">
-          <p class="text-lg uppercase md:text-3xl">Get Started</p>
+        <div class="text-center text-xl">
+          <p>Have more questions? Check out our <a href="/faq" class="underline">full FAQ!</a></p>
+        </div>
+      </div>
+
+      <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl mt-24">
+          <p class="text-lg uppercase md:text-3xl font-rc-full">Get started</p>
           <div class="flex" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
             <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
-            <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200">Join</button>
+            <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
           </div>
         </div>
+    </main>
+
+      <!-- Get Started Section -->
+      <section class="w-full max-w-6xl py-12 pb-24">
       </section>
+
       <footer class="py-8 mx-4">
         <p class="text-white/75">A project by <a href="https://hackclub.com?utm_source=blueprint" class="underline" target="_blank">Hack Club</a> for teenagers, by teenagers</p>
       </footer>
-      
+
       <!-- Special Thanks Section -->
       <section class="w-full py-8 pb-12">
         <div class="flex flex-col items-center space-y-4">
