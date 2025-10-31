@@ -153,7 +153,7 @@
             </div>
           </div>
         <% end %>
-        <%= render "shared/card", class: "hidden", html_options: { data: { controller: "funding-amount", funding_amount_tier_max_cents_value: Project.tier_max_cents.to_json, paginate_target: "page" } } do %>
+        <%= render "shared/card", class: "hidden", html_options: { data: { controller: "funding-amount", "funding-amount-tier-max-cents-value": Project.tier_max_cents.to_json, paginate_target: "page" } } do %>
           <div>
             <%= f.label :tier, "What tier should this project be?", class: "text-3xl" %>
             <p class="text-lg">We may adjust this as we see fit.<br>If you're unsure what to pick, check the <a href="/docs" target="_blank" class="underline text-bp-warning">tier docs</a>.</p>
@@ -167,7 +167,7 @@
             <% if @project.needs_funding %>
               <div class="space-y-2">
                 <%= f.label :funding_needed, "How much funding do you need?", class: "block text-xl font-medium" %>
-                <p>This should match your BOM (Bill Of Materials) and cart screenshots.</s>
+                <p>This should match your BOM (Bill Of Materials) and cart screenshots.</p>
                 <div class="relative">
                   <span class="absolute text-lg -translate-y-1/2 left-3 top-1/2">$</span>
                   <input type="text" 
@@ -237,7 +237,7 @@
             <%= render "shared/button", text: "Next", html_options: { data: { action: "click->paginate#next" } } %>
           </div>
         <% end %>
-        <%= render "shared/card", class: "hidden", html_options: { data: { controller: "cart-screenshots", paginate_target: "page", cart_screenshots_needs_funding_value: @project.needs_funding, cart_screenshots_has_existing_value: @project.cart_screenshots.attached? } } do %>
+        <%= render "shared/card", class: "hidden", html_options: { data: { controller: "cart-screenshots", paginate_target: "page", "cart-screenshots-needs-funding-value": @project.needs_funding, "cart-screenshots-has-existing-value": @project.cart_screenshots.attached? } } do %>
           <div>
             <p class="text-3xl font-rc-full">Cart screenshots</p>
             <p class="text-lg">
