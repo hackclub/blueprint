@@ -30,7 +30,7 @@ class="fixed inset-0 z-50 hidden">
   <div class="fixed inset-0 flex items-center justify-center p-4" data-controller="tasks-slack" data-tasks-slack-target-id-value="slack-join">
     <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-0" do %>
       <div class="flex flex-col items-center space-y-8">
-        <p class="text-3xl">Delete this journal entry?</p>
+        <p class="text-3xl font-rc-full">Delete this journal entry?</p>
         <div class="flex w-full space-x-4 justify-evenly">
           <div class="w-full">
             <%= render "shared/button", text: "Cancel", variant: :outline, class: "w-full", html_options: { data: { controller: "modal", action: "click->modal#hide", modal_target_id_value: "delete-journal#{ entry.id }" } } %>

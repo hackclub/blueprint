@@ -5,7 +5,7 @@
         <h1 class="text-5xl">Explore</h1>
         <p class="text-xl">Here's what the community is up to</p>
       </div>
-      <div class="flex flex-col items-end ml-auto space-y-3">
+      <div class="flex flex-col items-end ml-auto space-y-3 font-rc-full">
         <div class="flex bg-bp-dark border-2 border-white/25 p-1">
           <%= link_to "Journals", explore_path(type: "journals", sort: params[:sort]),
             class: "px-6 py-2 font-bold transition-all #{(params[:type] == "journals" || params[:type].nil?) ? "bg-white text-bp-dark" : "text-white hover:bg-white/10"}",

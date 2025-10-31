@@ -7,7 +7,7 @@
         <div class="flex flex-col items-center space-y-4">
           <p><%= image_tag @user.avatar_url, alt: @user.display_name, class: "size-24 rounded-xl" %></p>
           <div class="text-center space-y">
-            <p class="text-3xl"><%= @user.display_name %></p>
+            <p class="text-3xl font-rc-full"><%= @user.display_name %></p>
             <p class="text-sm">Joined <%= @user.created_at.strftime("%B %d, %Y") %></p>
           </div>
         </div>
@@ -24,7 +24,7 @@
     <% if user_logged_in? && current_user == @user %>
       <%= render "shared/card" do %>
         <div class="space-y-1">
-          <p class="text-3xl">Blueprint Referral Program</p>
+          <p class="text-3xl font-rc-full">Blueprint Referral Program</p>
           <p>Share Blueprint with friends and get cool stuff!</p>
         </div>
         <div class="space-y-1">

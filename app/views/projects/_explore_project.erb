@@ -2,9 +2,9 @@
   <%= render "shared/card", class: "space-y-4 hover:scale-105 hover:shadow-xl motion-safe:transition-all overflow-hidden" do %>
     <div class="h-48 -mx-8 -mt-6 bg-gray-200 bg-center bg-cover" style="background-image: url('<%= project.display_banner ? url_for(project.display_banner) : nil %>')">
     </div>
-    <div class="relative h-48 overflow-hidden">
+    <div class="relative h-30 overflow-hidden">
       <div>
-        <p class="text-2xl"><%= project.title %></p>
+        <p class="text-2xl font-rc-full"><%= project.title %></p>
       </div>
       <div>
       <p class="overflow-hidden break-words line-clamp-3"><%= project.description.empty? ? "No description yet" : project.description %></p>

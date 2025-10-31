@@ -6,7 +6,7 @@
       <% end %>
       <div class="flex flex-col space-y-2 grow">
           <%= link_to project_path(project), class: "grow" do %>
-              <p class="text-lg md:text-2xl"><%= project.title %></p>
+              <p class="text-lg md:text-2xl font-rc-full"><%= project.title %></p>
           <% end %>
           <%= render "shared/button", url: project_path(project), variant: :inset, text: "New Journal Entry", class: "text-sm md:text-base bg-bp-warning text-bp-dark hover:bg-bp-warning/80 min-h-[44px]" %>
           <%= render "shared/button", url: ship_project_path(project), variant: :inset, text: "Ship", class: "text-sm md:text-base min-h-[44px]" %>

@@ -3,7 +3,7 @@
     <% unless Flipper.enabled?(:new_ship_flow_10_06, current_user) %>
       <%= render "shared/card", class: "flex flex-col space-y-6" do %>
         <div class="p-6 pb-0 -mx-6 -mt-4 space-y-2">
-          <p class="text-3xl">It's time to ship "<%= @project.title %>"</p>
+          <p class="text-3xl font-rc-full">It's time to ship "<%= @project.title %>"</p>
           <p class="text-lg text-bp-muted">Complete these last steps before you can ship!</p>
         </div>
 
@@ -88,7 +88,7 @@
         <%= f.hidden_field :ship, value: true %>
         <%= render "shared/card", html_options: { data: { paginate_target: "page" } } do %>
           <div>
-            <p class="text-3xl">It's time to ship "<%= @project.title %>"</p>
+            <p class="text-3xl font-rc-full">It's time to ship "<%= @project.title %>"</p>
             <p class="text-lg">We'll guide you through the final steps to ship your project and make sure everything is ready!</p>
           </div>
           <% if @project.needs_funding == false %>
@@ -109,7 +109,7 @@
         <% end %>
               <%= render "shared/card", class: "hidden", html_options: { data: { paginate_target: "page" } } do %>
           <div>
-            <p class="text-3xl">Running some checks...</p>
+            <p class="text-3xl font-rc-full">Running some checks...</p>
             <p class="text-lg">Just making sure your project is ready for submission.</p>
           </div>
           <div class="space-y-8" 
@@ -191,7 +191,7 @@
         <% end %>
         <%= render "shared/card", class: "hidden", html_options: { data: { controller: "print-legion", paginate_target: "page" } } do %>
           <div>
-            <p class="text-3xl">3D Printing</p>
+            <p class="text-3xl font-rc-full">3D Printing</p>
           </div>
 
           <div class="pt-4 space-y-6">
@@ -239,7 +239,7 @@
         <% end %>
         <%= render "shared/card", class: "hidden", html_options: { data: { controller: "cart-screenshots", paginate_target: "page", "cart-screenshots-needs-funding-value": @project.needs_funding, "cart-screenshots-has-existing-value": @project.cart_screenshots.attached? } } do %>
           <div>
-            <p class="text-3xl">Cart screenshots</p>
+            <p class="text-3xl font-rc-full">Cart screenshots</p>
             <p class="text-lg">
               <% if @project.needs_funding %>
                 Upload screenshots of your shopping cart (e.g., suppliers) so we can verify pricing.<br>
@@ -274,7 +274,7 @@
         <% end %>
         <%= render "shared/card", class: "hidden", html_options: { data: { controller: "ship-checks", paginate_target: "page" } } do %>
           <div>
-            <p class="text-3xl">Final things before shipping</p>
+            <p class="text-3xl font-rc-full">Final things before shipping</p>
             <p class="text-lg">Please confirm the following statements and check the boxes</p>
           </div>
           <% manual_checks = [

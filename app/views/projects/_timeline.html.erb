@@ -15,7 +15,7 @@
   project.kudos.count
 ] do %>
   <div class="flex flex-col space-y-8">
-      <p class="text-4xl border-b border-white/20 pb-1">Timeline</p>
+      <p class="text-4xl border-b border-white/20 pb-1 font-rc-full">Timeline</p>
       <div class="flex flex-col">
           <% timeline.each do |event| %>
               <%= render "projects/timeline_event", project: project, event: event %>

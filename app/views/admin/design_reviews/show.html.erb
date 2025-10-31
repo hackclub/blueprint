@@ -27,7 +27,7 @@
     </div>
   <% end %>
   <%= render "shared/card" do %>
-    <p class="text-3xl pb-4">Previous Reviews</p>
+    <p class="text-3xl pb-4 font-rc-full">Previous Reviews</p>
     <div class="flex flex-col divide-y-2">
       <% @project.design_reviews.order(created_at: :desc).each do |review| %>
         <div class="py-4 first:pt-0 last:pb-0 flex space-x-4">
@@ -68,7 +68,7 @@
   <% end %>
   <%= render "shared/card" do %>
     <div class="space-y-2">
-      <p class="text-3xl">Journal Entries</p>
+      <p class="text-3xl font-rc-full">Journal Entries</p>
       <div class="flex space-x-12 text-xl">
         <p>Count: <%= @project.journal_entries.count %></p>
         <p>Total: <%= @project.journal_entries.sum(:duration_seconds) / 3600.0 %>h</p>
@@ -128,7 +128,7 @@
   <% end %>
   <%= render "shared/card" do %>
     <div>
-      <p class="text-3xl pb-4">Cart Screenshots</p>
+      <p class="text-3xl pb-4 font-rc-full">Cart Screenshots</p>
       <p class="text-xl">Requesting: $<%= sprintf("%.2f", @project.funding_needed_cents / 100.0) %></p>
     </div>
     <% if @project.cart_screenshots.attached? %>
@@ -147,12 +147,12 @@
   <% end %>
 
   <%= render "shared/card" do %>
-    <p class="text-3xl pb-4">User Internal Notes</p>
+    <p class="text-3xl pb-4 font-rc-full">User Internal Notes</p>
     <%= render "admin/users/user_notes_form", user: @project.user %>
   <% end %>
 
   <%= render "shared/card" do %>
-    <p class="text-3xl pb-4">Submit Design Review</p>
+    <p class="text-3xl pb-4 font-rc-full">Submit Design Review</p>
     <%= form_with model: @design_review, url: admin_design_review_create_path(@project), method: :post, html: { class: "space-y-6" } do |f| %>
       <div>
         <%= f.label :hours_override, "Hours Override", class: "block text-xl font-medium" %>

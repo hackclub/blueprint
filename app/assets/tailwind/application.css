@@ -19,10 +19,23 @@
   --font-rc-dark: "R&C Basic Dark", "Poppins", sans-serif;
   --font-rc-light: "R&C Basic", "Poppins", sans-serif;
   --font-rc-empty: "R&C Basic Empty", "Poppins", sans-serif;
+
+  --font-content: "Phantom Sans", sans-serif;
 }
 
 :root {
-  @apply bg-bp-dark text-white font-rc-full overscroll-none;
+  @apply bg-bp-dark text-white font-content overscroll-none;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-rc-full;
+  }
 }
 
 .grid-bg {
@@ -71,7 +84,7 @@
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 text-xl py-2 px-6 motion-safe:transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer;
+    @apply inline-flex items-center justify-center gap-2 text-xl py-2 px-6 motion-safe:transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-rc-full;
   }
 
   .btn-primary {
@@ -141,7 +154,7 @@
 /* Markdown-rendered content */
 .markdown {
   /* Base */
-  @apply text-white leading-relaxed font-rc-full print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word;
+  @apply text-white leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word;
 
   /* Trim outer whitespace */
   > *:first-child {
@@ -170,7 +183,7 @@
 
   /*Same as h1 but it has the fancy blueprint lines*/
   h5 {
-    @apply font-rcgl-full mt-8 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/20 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
+    @apply mt-8 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/20 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
   }
   h6 {
     @apply mt-3 mb-2 text-lg;
@@ -178,7 +191,7 @@
 
   /* Paragraphs */
   p {
-    @apply my-3 print:my-2;
+    @apply my-6 print:my-4 text-lg leading-relaxed;
   }
 
   /* Emphasis */
@@ -194,10 +207,10 @@
 
   /* Lists */
   ul {
-    @apply my-3 list-disc list-inside print:my-2;
+    @apply my-4 list-disc list-inside print:my-2 text-lg leading-relaxed;
   }
   ol {
-    @apply my-3 list-decimal list-inside print:my-2;
+    @apply my-4 list-decimal list-inside print:my-2 text-lg leading-relaxed;
   }
   li {
     @apply my-1 print:my-0;
@@ -429,7 +442,7 @@
     border-top: 2px solid #fff !important;
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
-    font-family: var(--font-rc-full), ui-sans-serif, system-ui, sans-serif !important;
+    font-family: var(--font-content), ui-sans-serif, system-ui, sans-serif !important;
   }
   .marksmith .marksmith-help-link,
   .marksmith .marksmith-upload-button,
@@ -458,7 +471,7 @@
     display: inline-flex !important;
     align-items: center !important;
     padding: 0 1rem; /* increased horizontal padding */
-    font-family: var(--font-rc-full), ui-sans-serif, system-ui, sans-serif !important;
+    font-family: var(--font-content), ui-sans-serif, system-ui, sans-serif !important;
   }
   .marksmith .bp-ms-tab.active {
     background: #fff !important; /* white bg when active */

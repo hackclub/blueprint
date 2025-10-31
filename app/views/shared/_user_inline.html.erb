@@ -1,6 +1,6 @@
 <% user = local_assigns[:user] %>
 <% admin_view = local_assigns[:admin_view] || false%>
-<% avatar_classes = tw("inline-block size-7 rounded-sm align-middle", local_assigns[:avatar_classes]) %>
+<% avatar_classes = tw("inline-block size-7 rounded-sm align-middle mx-1", local_assigns[:avatar_classes]) %>
 
 <% if user %>
   <a href="<%= admin_view ? admin_user_path(user) : user_path(user) %>" data-turbo-frame="_top">

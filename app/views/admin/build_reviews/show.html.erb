@@ -27,7 +27,7 @@
   <% end %>
 
   <%= render "shared/card" do %>
-    <p class="text-3xl pb-4">Design Reviews</p>
+    <p class="text-3xl pb-4 font-rc-full">Design Reviews</p>
     <% if @project.design_reviews.any? %>
       <div class="flex flex-col divide-y-2">
         <% @project.design_reviews.order(created_at: :desc).each do |review| %>
@@ -72,7 +72,7 @@
   <% end %>
 
   <%= render "shared/card" do %>
-    <p class="text-3xl pb-4">Previous Build Reviews</p>
+    <p class="text-3xl pb-4 font-rc-full">Previous Build Reviews</p>
     <div class="flex flex-col divide-y-2">
       <% @project.build_reviews.order(created_at: :desc).each do |review| %>
         <div class="py-4 first:pt-0 last:pb-0 flex space-x-4">
@@ -114,7 +114,7 @@
 
   <%= render "shared/card" do %>
     <div class="space-y-2">
-      <p class="text-3xl">Journal Entries (since last review)</p>
+      <p class="text-3xl font-rc-full">Journal Entries (since last review)</p>
       <div class="flex space-x-12 text-xl">
         <% entries = @project.journal_entries_since_last_build_review %>
         <p>Count: <%= entries.count %></p>
@@ -177,12 +177,12 @@
   <% end %>
 
   <%= render "shared/card" do %>
-    <p class="text-3xl pb-4">User Internal Notes</p>
+    <p class="text-3xl pb-4 font-rc-full">User Internal Notes</p>
     <%= render "admin/users/user_notes_form", user: @project.user %>
   <% end %>
 
   <%= render "shared/card" do %>
-    <p class="text-3xl pb-4">Submit Build Review</p>
+    <p class="text-3xl pb-4 font-rc-full">Submit Build Review</p>
     <%= form_with model: @build_review, url: admin_build_review_create_path(@project), method: :post, html: { class: "space-y-6", data: { controller: "build-review-calculator", build_review_calculator_project_tier_value: @project.tier || 'null', build_review_calculator_hours_since_last_review_value: @project.hours_since_last_build_review.round(2) } } do |f| %>
       <div>
         <%= f.label :tier_override, "Tier Override", class: "block text-xl font-medium" %>

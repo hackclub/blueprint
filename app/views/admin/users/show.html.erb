@@ -5,7 +5,7 @@
   </div>
   <div class="grid grid-cols-2 gap-8">
     <%= render "shared/card", class: "space-y-2" do %>
-      <p class="text-2xl">User information</p>
+      <p class="text-2xl font-rc-full">User information</p>
       <div>
         <p>ID: <%= @user.id %></p>
         <p>Username: <%= @user.username || "-" %> (<%= @user.display_name %>)</p>
@@ -23,7 +23,7 @@
       </div>
     <% end%>
     <%= render "shared/card", class: "space-y-2" do %>
-      <p class="text-2xl">User stats</p>
+      <p class="text-2xl font-rc-full">User stats</p>
       <div>
         <%= render "admin/pill", type: :boolean, value: @user.is_banned do %>
           <p>Banned:</p>
@@ -45,7 +45,7 @@
     <% end %>
     <% if current_user.admin? %>
       <%= render "shared/card", class: "space-y-4 col-span-2" do %>
-        <p class="text-2xl">Actions</p>
+        <p class="text-2xl font-rc-full">Actions</p>
         <div class="flex space-x-4">
           <% if !@user.reviewer? && !@user.admin? %>
             <%= render "shared/button",
@@ -78,11 +78,11 @@
       <% end %>
     <% end %>
     <%= render "shared/card", class: "space-y-4 col-span-2" do %>
-      <p class="text-2xl">Internal notes</p>
+      <p class="text-2xl font-rc-full">Internal notes</p>
       <%= render "admin/users/user_notes_form", user: @user %>
     <% end %>
     <%= render "shared/card", class: "space-y-2 col-span-2" do %>
-      <p class="text-2xl">Projects</p>
+      <p class="text-2xl font-rc-full">Projects</p>
       <details>
         <summary>Show projects</summary>
         <ul class="list-disc list-inside">
@@ -94,7 +94,7 @@
     <% end %>
     <% if current_user.admin? %>
       <%= render "shared/card", class: "space-y-2 col-span-2" do %>
-        <p class="text-2xl">Audit log</p>
+        <p class="text-2xl font-rc-full">Audit log</p>
         <%= render "admin/audit_log", object: @user %>
       <% end %>
     <% end %>
