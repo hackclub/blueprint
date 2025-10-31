@@ -51,7 +51,7 @@ You can spend up to the budget based on your quality tier which is outlined in (
 
 ## How will I get my 3D printed parts?
 
-Through **printing legion!** It's an international network of Hack Clubbers 3D printing for each other! Check out (their website)[https://printlegion.hackclub.com/] 
+Through **printing legion!** It's an international network of Hack Clubbers 3D printing for each other! Check out [their website](https://printlegion.hackclub.com/)
 
 ## How likely is it that my project will be approved?
 
