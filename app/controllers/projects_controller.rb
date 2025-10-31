@@ -243,7 +243,7 @@ class ProjectsController < ApplicationController
     if has_ship && @project.needs_funding?
       pending = @project.attachment_changes["cart_screenshots"]
       has_new_uploads = pending && pending.respond_to?(:attachables) && pending.attachables.present?
-      
+
       unless @project.cart_screenshots.attached? || has_new_uploads
         prepare_ship_state
         @project.errors.add(:cart_screenshots, "are required when requesting funding")
