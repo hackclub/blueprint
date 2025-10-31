@@ -34,12 +34,12 @@
     </svg>
     <%= render "shared/notice" %>
     <main data-controller="landing">
-      <div class="fixed top-8 left-0 z-[100]">
+      <div class="fixed top-8 left-0 z-100">
         <a href="https://hackclub.com?utm_source=blueprint" target="_blank">
           <%= inline_svg 'hackclub-logo.svg', class: 'h-10 md:h-16' %>
         </a>
       </div>
-      <div class="fixed top-4 md:top-8 right-4 md:right-8 z-[100]">
+      <div class="fixed top-4 md:top-8 right-4 md:right-8 z-100">
         <% if current_user.present? %>
           <%= render "shared/button", url: home_path, text: "Go home", variant: :outline, class: "bg-bp-dark border-2 px-4 py-2 text-base md:text-xl" %>
         <% else %>
@@ -53,7 +53,7 @@
         <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0">
       </div>
       <div class="absolute top-0 left-0 right-0 bg-bottom bg-no-repeat bg-cover pointer-events-none select-none" data-landing-target="hero"
-           style="background-image: url('<%= image_path('hero.webp') %>'); mask-image: linear-gradient(170deg, rgba(0,0,0,0.5) 100%, rgba(0,0,0,0) 100%);">
+           style="background-image: url('<%= image_path('hero.webp') %>'); mask-image: linear-gradient(170deg, rgba(0,0,0,0.4) 100%, rgba(0,0,0,0) 100%);">
         <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0">
       </div>
 
@@ -69,20 +69,21 @@
         <!-- Hero title -->
         <div class="absolute top-0 left-0 right-0 flex flex-col items-center justify-center min-h-screen space-y-20" data-landing-target="heroContent">
           <div class="space-y-2">
+            <div class="text-center text-2xl font-rc-full -mb-3">Hack Club presents</div>
             <div class="relative flex flex-col items-center">
               <h1 class="text-7xl md:text-[10rem]/40 font-rcgl-full">Blueprint</h1>
               <p class="p-0.5 md:p-1 ml-auto text-base -mr-3 md:-mr-8 md:text-4xl font-rc-full rotate-5 bg-bp-dark -mt-3 md:-mt-7">...then build</p>
             </div>
-            <div class="flex flex-col md:-ml-12">
-              <h2 class="text-xl text-center md:text-3xl md:mr-52">Design a hardware project,</h2>
-              <p class="text-sm text-center md:text-xl md:text-right"> and we'll pay for hardware to build it!<sup>*</sup></p>
+            <div class="text-center text-2xl font-rc-full">
+              <h2>Design a hardware project → Get funding to build it</h2>
+              <h2>For ages 13 to 18. Ends December 1, 2025</h2>
             </div>
           </div>
-          <div class="flex flex-col items-center px-4 py-4 space-y-2 text-sm border-2 md:px-12 md:py-8 md:text-2xl bg-bp-dark">
-            <p class="text-lg uppercase md:text-3xl font-rc-full">Get free stickers</p>
-            <div class="flex" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
+          <div class="flex flex-col items-center px-4 py-3 space-y-4 text-sm border-2 md:px-12 md:py-6 md:pb-8 md:text-2xl bg-bp-dark">
+            <p class="text-lg md:text-2xl font-rc-full">Start building & get free stickers!</p>
+            <div class="flex w-full" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
               <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
-              <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200">Join</button>
+              <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
             </div>
           </div>
         </div>
@@ -97,9 +98,9 @@
             animation: float 2s ease-in-out infinite;
           }
         </style>
-        <div class="absolute left-0 right-0 flex justify-center z-[999]" style="top: calc(100vh - 15vh);">
-          <div class="float-arrow">
-            <svg class="w-12 h-12 md:w-16 md:h-16 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <div class="absolute left-0 right-0 flex justify-center z-999" style="top: calc(100vh - 10vh);">
+          <div class="float-arrow cursor-pointer" onclick="window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })">
+            <svg class="w-12 h-12 md:w-16 md:h-16 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
@@ -108,47 +109,27 @@
 
   <div class="pb-12 mx-4 space-y-18 relative">
  
-  <p class="text-3xl text-center md:text-5xl font-rc-full">How does this work?</p>
-  <div class="flex justify-center px-4 text-center relative">
-    <div class="grid max-w-6xl grid-cols-2 gap-6 md:gap-12 md:grid-cols-4 relative">
-      
-      <!-- Card 1 -->
-      <div class="flex flex-col p-4 space-y-4 border-2 md:p-8 bg-bp-dark relative">
-        <p class="text-lg font-bold md:text-2xl text-bp-success font-rc-full">Design</p>
-        <p class="flex items-center justify-center text-sm grow md:text-base">Create your hardware designs in CAD</p>
-        <!-- Arrow to next -->
-        <svg class="hidden md:block absolute top-1/2 right-[-45px] -translate-y-1/2 w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="0" y1="12" x2="18" y2="12"></line>
-          <polyline points="12 6 18 12 12 18"></polyline>
-        </svg>
+  <h2 class="text-3xl text-center md:text-5xl">How this works</h2>
+  <div class="text-xl flex justify-center w-full">
+    <div class="grid grid-cols-5 bg-red- max-w-6xl grow text-center gap-y-12">
+      <div class="bg-bp-darker col-span-1 md:col-span-3 p-12 space-y-4">
+        <p class="text-3xl font-rc-full">Design a hardware project</p>
+        <p>Draft and design up something cool! Build your project digitally first. Examples: custom keyboard, your own 3D printer, or a motor controller.</p>
       </div>
-
-      <!-- Card 2 -->
-      <div class="flex flex-col p-4 space-y-4 border-2 md:p-8 bg-bp-dark relative">
-        <p class="text-lg font-bold md:text-2xl text-bp-success font-rc-full">Submit</p>
-        <p class="flex items-center justify-center text-sm grow md:text-base">We'll review your design and get back to you</p>
-        <svg class="hidden md:block absolute top-1/2 right-[-45px] -translate-y-1/2 w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="0" y1="12" x2="18" y2="12"></line>
-          <polyline points="12 6 18 12 12 18"></polyline>
-        </svg>
+      <div class="md:col-span-2 bg-no-repeat bg-contain scale-120 bg-center wobble-1 hidden md:block" style="background-image: url('<%= image_path("landing/steps-projects.webp") %>');">
       </div>
-
-      <!-- Card 3 -->
-      <div class="flex flex-col p-4 space-y-4 border-2 md:p-8 bg-bp-dark relative">
-        <p class="text-lg font-bold md:text-2xl text-bp-success font-rc-full">Build</p>
-        <p class="flex items-center justify-center text-sm grow md:text-base">Get funding to make your project real</p>
-        <svg class="hidden md:block absolute top-1/2 right-[-45px] -translate-y-1/2 w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="0" y1="12" x2="18" y2="12"></line>
-          <polyline points="12 6 18 12 12 18"></polyline>
-        </svg>
+      <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-2 hidden md:block" style="background-image: url('<%= image_path("landing/steps-journal.webp") %>');">
       </div>
-
-      <!-- Card 4 -->
-      <div class="flex flex-col p-4 space-y-4 border-2 md:p-8 bg-bp-dark relative">
-        <p class="text-lg font-bold md:text-2xl text-bp-success font-rc-full">Share</p>
-        <p class="flex items-center justify-center text-sm grow md:text-base">Ship your creation to get tools for your next project</p>
+      <div class="bg-bp-darker col-span-3 p-12 space-y-4">
+        <p class="text-3xl font-rc-full">Share your progress</p>
+        <p>Share what you've been cooking up with thousands of other teenagers through journals, and open source your design on GitHub.</p>
       </div>
-
+      <div class="bg-bp-darker col-span-3 p-12 space-y-4">
+        <p class="text-3xl font-rc-full">Get a grant & earn cool prizes</p>
+        <p>Get a grant up to $400 to help you build your project. Earn tickets for each hour you spend building it IRL and redeem them for rewards!</p>
+      </div>
+      <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-3 hidden md:block" style="background-image: url('<%= image_path("landing/steps-prizes.webp") %>');">
+      </div>
     </div>
   </div>
 </div>
