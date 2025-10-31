@@ -4,7 +4,7 @@
 
 # Welcome to Blueprint
 
-We're a Hardware program by [Hack Club](https://hackclub.com?utm_source=blueprint) open to all teenagers 13-18 where you learn and build cool hardware projects and get funding to make them real!
+We're a program by [Hack Club](https://hackclub.com?utm_source=blueprint) open to all teenagers 13-18 where you learn and build cool hardware projects and get funding to make them real!
 
 ## Here's the quick rundown
 
@@ -23,7 +23,7 @@ Here's a more detailed look at how it all works:
 
 ## What can I build?
 
-Anything hardware-related!
+<span class="text-bp-warning">Anything hardware-related!</span>
 
 If this is your first time, you should check out the [starter projects](/guides) we've created to help you learn the skills.
 
@@ -35,7 +35,7 @@ If you need inspiration, check out what other folks are building on our [explore
 
 ## How much money can I get?
 
-You can apply up to $400 per project. The amount you can get depends on the complexity of your project and how much effort you put into it. If you're building off of an existing creation, we only count the parts you added and modified.
+<span class="text-bp-warning">You can apply up to $400 per project.</span> The amount you can get depends on the complexity of your project and how much effort you put into it. If you're building off of an existing creation, we only count the parts you added and modified.
 
 You want to keep your projects original and your journal highly detailed. Don't be afraid to write everything down. It's good practice for engineering, and you'll get to share what you learned with the community!
 
