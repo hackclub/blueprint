@@ -69,6 +69,8 @@ Examples include:
 - A MIDI keyboard (see guides)
 - A custom game console
 - A custom devboard (see guides)
+- A full size keyboard
+
 
 #### Tier 2: up to $200 and a 1.25x ticket multiplier (34-66 hours)
 
@@ -76,7 +78,6 @@ A fairly advanced project that you are very proud of.
 
 Examples include:
 
-- A full size keyboard
 - A Fairy weight battle Bot
 - A custom robot arm
 - A custom FPGA board
@@ -87,10 +88,9 @@ A super advanced project that would be the cornerstone of your portfolio.
 
 Examples include:
 
-- A 3D Printer
+- A custom 3D Printer
 - A CNC mill/router
 - A custom robot dog
-- A custom FPGA board
 
 ---
 
