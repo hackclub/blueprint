@@ -4,20 +4,18 @@
 
 # Welcome to Blueprint
 
-Blueprint is a You Ship, We Ship program open to all teenagers 13-18 (inclusive) where you build cool hardware projects (or learn how to) and get funding to make them real!
-
-![Blueprint banner](https://hc-cdn.hel1.your-objectstorage.com/s/v3/72b79bc96a159671eb566cbcbd895f7679a073ac_blueprint-header.png)
+We're a Hardware program by [Hack Club](https://hackclub.com?utm_source=blueprint) open to all teenagers 13-18 where you learn and build cool hardware projects and get funding to make them real!
 
 ## Here's the quick rundown
 
-1. Design a custom hardware project (or build off of one of our [guides](/guides))
-2. Log your design process in a journal on Blueprint
+1. Design a [starter projects](/guides) or your own custom project.
+2. While you're working, log your progress on a journal on Blueprint.
 3. Apply for a grant up to $400 to buy the parts you need
-4. Build your project and log your build time
+4. Build your project and journal your build time
 5. Earn tickets based on your build time
-6. Redeem tickets for tools in the [toolbag](/toolbag) that you can use in your next project
+6. Redeem tickets for tools and prizes in the [tool bag](/toolbag)!
 
-_Alternatively, if you don't need a grant, you can earn extra tickets for the [toolbag](/toolbag) by logging your project._
+_Not all projects need a grant. You can earn extra tickets for the time spent if you do not request a grant._
 
 Here's a more detailed look at how it all works:
 
@@ -25,14 +23,23 @@ Here's a more detailed look at how it all works:
 
 ## What can I build?
 
-Anything! From as simple as a 3D print, to full robots with PCBs. You can create new designs, or build off of existing creations. Work in groups if you want. We really want to see what you can cook up!
-See the [submission guidelines](/docs/submission-guidelines) for more details on what we expect from your project.  
-If you need inspiration, check out what other hackers have built on our [explore page](/explore) or check out our [guides](/guides) for some tutorials.
+Anything hardware-related!
+
+If this is your first time, you should check out the [starter projects](/guides) we've created to help you learn the skills.
+
+If you know what you want to build, make a custom project! From 3D printing to full robots with PCBs, you can create new designs or build off of existing creations. Work in groups if you want (but only one person should submit). We really want to see what you can cook up!
+
+Make sure you have a project created on Blueprint before you start building so you can log your progress in the built-in journal. See the [submission guidelines](/docs/submission-guidelines) for more details on what we expect from your project.
+
+If you need inspiration, check out what other folks are building on our [explore page](/explore)!
 
 ## How much money can I get?
 
-You can apply up to $400 per project. The amount you can get depends on the complexity of your project and how much effort you put into it. If you're building off of an existing creation, we only count the parts you added.  
-You want to keep your projects original and your journal highly detailed. Don't be afraid to write everything down, it's good practice for engineering!  
+You can apply up to $400 per project. The amount you can get depends on the complexity of your project and how much effort you put into it. If you're building off of an existing creation, we only count the parts you added and modified.
+
+You want to keep your projects original and your journal highly detailed. Don't be afraid to write everything down. It's good practice for engineering, and you'll get to share what you learned with the community!
+
+As a general guideline, we split grants
 We split grants into tiers, each tier has a:
 
 - Maximum cost <span class="text-bp-warning">which is not your goal</span> – you want to [reduce cost](/docs/about-cost) as much as possible
@@ -71,7 +78,6 @@ Examples include:
 - A custom devboard (see guides)
 - A full size keyboard
 
-
 #### Tier 2: up to $200 and a 1.25x ticket multiplier (34-66 hours)
 
 A fairly advanced project that you are very proud of.
@@ -102,11 +108,11 @@ Examples include:
 
 Tickets reward you for the effort spent on building the project.
 
-<span class="text-bp-warning">You get 10 tickets per hour of hands-on work after you get your grant. This could be assembling, fixing cad, etc. (If you don't need a grant, it's the full time!)</span>
+<span class="text-bp-warning">If you requested a grant, you get 10 tickets per hour of hands-on work after you get your grant. This could be assembling, fixing CAD, etc.<br>If you didn't request a grant, you get the 10 tickets per hour for full time!</span>
 
 Your building time must be accurately logged in your journal. And we may adjust your ticket amount based on the quality of your final build.
 
-You can spend tickets in the [toolbag](/toolbag) to get tools and parts for your next project. The more tickets you have, the better stuff you can get.
+You can spend tickets in the [tool bag](/toolbag) to get tools and parts for your next project. The more tickets you have, the better stuff you can get.
 
 ## How do I get started?
 
@@ -114,9 +120,10 @@ We've made it super easy to get started, it takes less than 5 minutes to start j
 
 1. If you haven't already, [create an account](/auth/login) on Blueprint!
 2. Follow the tasks listed on your [home page](/) to set up your account and get started!
-3. Check the [faq](/faq) if you have any questions.
-4. Ask for help in [#blueprint-support](https://hackclub.slack.com/archives/C09CMJV6V6K) on the Hack Club Slack if you have more questions!
+3. If you're new to hardware, check out our [starter projects](/guides) to learn the basics.
+4. Check the [faq](/faq) if you have any questions.
+5. Ask for help in [#blueprint-support](https://hackclub.slack.com/archives/C09CMJV6V6K) on the Hack Club Slack or email blueprint@hackclub.com if you have more questions!
 
 ---
 
-We're excited to see what build!
+We're excited to see what you build!
