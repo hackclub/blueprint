@@ -53,10 +53,10 @@
 /* Grain overlay atop grid */
 .grainy-bg::after {
   content: "";
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: radial-gradient(ellipse, #000000b1, transparent);
-  opacity: 0.2;
+  opacity: 0.4;
   filter: url(#grainy);
   mix-blend-mode: multiply;
   pointer-events: none;
@@ -75,6 +75,29 @@
   }
   100% {
     transform: translateX(0%);
+  }
+}
+
+.wobble-1 {
+  animation: wobble 3s ease-in-out infinite;
+}
+
+.wobble-2 {
+  animation: wobble 3.5s ease-in-out infinite;
+  animation-delay: -1s;
+}
+
+.wobble-3 {
+  animation: wobble 2.5s ease-in-out infinite;
+  animation-delay: -2s;
+}
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
   }
 }
 
