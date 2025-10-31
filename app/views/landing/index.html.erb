@@ -71,7 +71,7 @@
           <div class="space-y-2">
             <div class="relative flex flex-col items-center">
               <h1 class="text-7xl md:text-[10rem]/40 font-rcgl-full">Blueprint</h1>
-              <p class="p-0.5 md:p-1 ml-auto text-base -mr-3 md:-mr-8 md:text-4xl rotate-5 bg-bp-dark -mt-3 md:-mt-7">...then build</p>
+              <p class="p-0.5 md:p-1 ml-auto text-base -mr-3 md:-mr-8 md:text-4xl font-rc-full rotate-5 bg-bp-dark -mt-3 md:-mt-7">...then build</p>
             </div>
             <div class="flex flex-col md:-ml-12">
               <h2 class="text-xl text-center md:text-3xl md:mr-52">Design a hardware project,</h2>
@@ -79,7 +79,7 @@
             </div>
           </div>
           <div class="flex flex-col items-center px-4 py-4 space-y-2 text-sm border-2 md:px-12 md:py-8 md:text-2xl bg-bp-dark">
-            <p class="text-lg uppercase md:text-3xl">Get free stickers</p>
+            <p class="text-lg uppercase md:text-3xl font-rc-full">Get free stickers</p>
             <div class="flex" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
               <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
               <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200">Join</button>
@@ -108,13 +108,13 @@
 
   <div class="pb-12 mx-4 space-y-18 relative">
  
-  <p class="text-3xl text-center md:text-5xl">How does this work?</p>
+  <p class="text-3xl text-center md:text-5xl font-rc-full">How does this work?</p>
   <div class="flex justify-center px-4 text-center relative">
     <div class="grid max-w-6xl grid-cols-2 gap-6 md:gap-12 md:grid-cols-4 relative">
       
       <!-- Card 1 -->
       <div class="flex flex-col p-4 space-y-4 border-2 md:p-8 bg-bp-dark relative">
-        <p class="text-lg font-bold md:text-2xl text-bp-success">Design</p>
+        <p class="text-lg font-bold md:text-2xl text-bp-success font-rc-full">Design</p>
         <p class="flex items-center justify-center text-sm grow md:text-base">Create your hardware designs in CAD</p>
         <!-- Arrow to next -->
         <svg class="hidden md:block absolute top-1/2 right-[-45px] -translate-y-1/2 w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
@@ -125,7 +125,7 @@
 
       <!-- Card 2 -->
       <div class="flex flex-col p-4 space-y-4 border-2 md:p-8 bg-bp-dark relative">
-        <p class="text-lg font-bold md:text-2xl text-bp-success">Submit</p>
+        <p class="text-lg font-bold md:text-2xl text-bp-success font-rc-full">Submit</p>
         <p class="flex items-center justify-center text-sm grow md:text-base">We'll review your design and get back to you</p>
         <svg class="hidden md:block absolute top-1/2 right-[-45px] -translate-y-1/2 w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
           <line x1="0" y1="12" x2="18" y2="12"></line>
@@ -135,7 +135,7 @@
 
       <!-- Card 3 -->
       <div class="flex flex-col p-4 space-y-4 border-2 md:p-8 bg-bp-dark relative">
-        <p class="text-lg font-bold md:text-2xl text-bp-success">Build</p>
+        <p class="text-lg font-bold md:text-2xl text-bp-success font-rc-full">Build</p>
         <p class="flex items-center justify-center text-sm grow md:text-base">Get funding to make your project real</p>
         <svg class="hidden md:block absolute top-1/2 right-[-45px] -translate-y-1/2 w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
           <line x1="0" y1="12" x2="18" y2="12"></line>
@@ -145,7 +145,7 @@
 
       <!-- Card 4 -->
       <div class="flex flex-col p-4 space-y-4 border-2 md:p-8 bg-bp-dark relative">
-        <p class="text-lg font-bold md:text-2xl text-bp-success">Share</p>
+        <p class="text-lg font-bold md:text-2xl text-bp-success font-rc-full">Share</p>
         <p class="flex items-center justify-center text-sm grow md:text-base">Ship your creation to get tools for your next project</p>
       </div>
 
@@ -154,7 +154,7 @@
 </div>
 
 <div class="space-y-6 md:space-y-8 mt-10">
-  <p class="text-3xl md:text-5xl font-bold text-center">Starter Projects</p>
+  <p class="text-3xl md:text-5xl font-bold text-center font-rc-full">Starter Projects</p>
   <p class="text-center   ">Read the guide -> design your own!</p>
   <div class="max-w-6xl mx-auto px-4">
     <div class="grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-3">
@@ -162,7 +162,7 @@
       <div class="flex flex-col border-2 bg-bp-dark/70 transition-all duration-200 transform hover:-translate-y-1 overflow-hidden">
         <a href="/guides/midi" class="flex flex-col p-4 space-y-4 md:p-8 hover:bg-bp-dark/50 active:bg-bp-dark/30">
           <img src="<%= image_path("landing/midi.webp") %>" alt="MIDI Project" class="w-full h-40 object-cover">
-          <p class="text-lg font-bold md:text-2xl">MIDI</p>
+          <p class="text-lg font-bold md:text-2xl font-rc-full">MIDI</p>
           <p class="flex items-center justify-center text-sm grow md:text-base text-center">Create your own MIDI controller</p>
           <p class="text-xs text-white/50 text-center mt-2">Guide by @nimit</p>
         </a>
@@ -174,7 +174,7 @@
       <div class="flex flex-col border-2 bg-bp-dark/70 transition-all duration-200 transform hover:-translate-y-1 overflow-hidden">
         <a href="/guides/devboard" class="flex flex-col p-4 space-y-4 md:p-8 hover:bg-bp-dark/50 active:bg-bp-dark/30">
           <img src="<%= image_path("landing/custom-devboard.webp") %>" alt="Custom Devboard Project" class="w-full h-40 object-cover">
-          <p class="text-lg font-bold md:text-2xl">Custom Devboard</p>
+          <p class="text-lg font-bold md:text-2xl font-rc-full">Custom Devboard</p>
           <p class="flex items-center justify-center text-sm grow md:text-base text-center">Design your own Raspberry PI</p>
           <p class="text-xs text-white/50 text-center mt-2">Guide by @Kai Pereira</p>
         </a>
@@ -186,7 +186,7 @@
       <div class="flex flex-col border-2 bg-bp-dark/70 transition-all duration-200 transform hover:-translate-y-1 overflow-hidden">
         <a href="/guides/split-keyboard" class="flex flex-col p-4 space-y-4 md:p-8 hover:bg-bp-dark/50 active:bg-bp-dark/30">
           <img src="<%= image_path("landing/split-keyboard.webp") %>" alt="Split Keyboard Project" class="w-full h-40 object-cover">
-          <p class="text-lg font-bold md:text-2xl">Split Keyboard</p>
+          <p class="text-lg font-bold md:text-2xl font-rc-full">Split Keyboard</p>
           <p class="flex items-center justify-center text-sm grow md:text-base text-center">Build a wireless split keyboard</p>
           <p class="text-xs text-white/50 text-center mt-2">Guide by @koeg</p>
         </a>

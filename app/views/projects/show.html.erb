@@ -3,18 +3,18 @@
 <section class="flex flex-col items-center space-y-6 grow">
   <div class="flex flex-col w-full max-w-4xl min-h-full m-8 space-y-12">
     <div class="print:hidden">
-      <%= link_to safe_path(params[:return_to]) || explore_path(type: "projects"),
-        class: "block w-fit font-bold text-bp-darker bg-white border-2 border-bp-dark px-6 py-2 no-underline hover:bg-bp-dark hover:text-white transition-colors",
-        data: { controller: "back", action: "click->back#go" } do %>
-        ← Back to Projects
-      <% end %>
+      <%= render "shared/button",
+        url: safe_path(params[:return_to]) || explore_path(type: "projects"),
+        text: "← Back to Projects",
+        variant: :primary,
+        html_options: { data: { controller: "back", action: "click->back#go" } } %>
     </div>
     <%= render "shared/card", class: "flex flex-col space-y-6" do %>
       <div class="h-48 -mx-8 -mt-6 bg-gray-200 bg-center bg-cover" style="background-image: url('<%= @project.display_banner ? url_for(@project.display_banner) : nil %>')">
       </div>
       <div class="space-y-2">
         <div class="flex items-start">
-          <p class="text-3xl grow wrap-break-word"><%= @project.title %></p>
+          <p class="text-3xl grow wrap-break-word font-rc-full"><%= @project.title %></p>
           <div class="space-x-2">
             <% if current_user.present? %>
               <% if current_user == @project.user %>
@@ -61,8 +61,8 @@
         </div>
       </div>
       <div class="flex space-x-6">
-        <%= render "shared/button", text: @project.repo_link.nil? ? "No Linked Repository" : "View Repository", variant: @project.repo_link.nil? ? :outline : :primary, url: @project.repo_link || "#", class: "w-full text-center #{ @project.repo_link.nil? ? 'pointer-events-none' : '' }", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
-        <%= render "shared/button", text: @project.demo_link.nil? ? "No Demo Yet" : "View Demo", variant: @project.demo_link.nil? ? :outline : :primary, url: @project.demo_link || "#", class: "w-full text-center #{ @project.demo_link.nil? ? 'pointer-events-none border-dashed' : '' }", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
+        <%= render "shared/button", text: @project.repo_link.nil? || @project.repo_link.empty? ? "No Linked Repository" : "View Repository", variant: @project.repo_link.nil? || @project.repo_link.empty? ? :outline : :primary, url: @project.repo_link || "#", class: "w-full text-center #{ @project.repo_link.nil? || @project.repo_link.empty? ? 'pointer-events-none border-dashed' : '' }", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
+        <%= render "shared/button", text: @project.demo_link.nil? || @project.demo_link.empty? ? "No Demo Yet" : "View Demo", variant: @project.demo_link.nil? || @project.demo_link.empty? ? :outline : :primary, url: @project.demo_link || "#", class: "w-full text-center #{ @project.demo_link.nil? || @project.demo_link.empty? ? 'pointer-events-none border-dashed' : '' }", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
       </div>
     <% end %>
     <% if current_user.present? && current_user == @project.user %>
@@ -83,7 +83,7 @@
       <div class="fixed inset-0 flex items-center justify-center p-4" data-controller="tasks-slack" data-tasks-slack-target-id-value="slack-join">
         <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-0" do %>
           <div class="flex flex-col items-center space-y-8">
-            <p class="text-3xl">Delete this project?</p>
+            <p class="text-3xl font-rc-full">Delete this project?</p>
             <div class="flex w-full space-x-4 justify-evenly">
               <div class="w-full">
                 <%= render "shared/button", text: "Cancel", variant: :outline, class: "w-full", html_options: { data: { controller: "modal", action: "click->modal#hide", modal_target_id_value: "delete-project" } } %>

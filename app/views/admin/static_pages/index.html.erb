@@ -7,14 +7,14 @@
     </div>
     <div class="max-w-6xl space-y-6">
       <div class="space-y-6">
-        <p class="text-4xl">Tasks</p>
+        <p class="text-4xl font-rc-full">Tasks</p>
         <div class="grid grid-cols-3 gap-6">
           <% if current_user.reviewer_perms? %>
             <%= render "shared/button", variant: :outline, text: "Design Review (#{Project.where(is_deleted: false, review_status: :design_pending).count.to_i})", url: admin_design_reviews_path %>
             <%= render "shared/button", variant: :outline, text: "Build Review (#{Project.where(is_deleted: false, review_status: :build_pending).count.to_i})", url: admin_build_reviews_path %>
           <% end %>
         </div>
-        <p class="text-4xl">Dashboards</p>
+        <p class="text-4xl font-rc-full">Dashboards</p>
         <div class="grid grid-cols-3 gap-6">
           <% if current_user.reviewer_perms? %>
             <%= render "shared/button", variant: :outline, text: "Projects (#{Project.where(is_deleted: false).count.to_i})", url: admin_projects_path %>
@@ -27,7 +27,7 @@
             <%= render "shared/button", variant: :outline, text: "HCB Transactions", url: admin_hcb_transactions_path %>
           <% end %>
         </div>
-        <p class="text-4xl">3rd party</p>
+        <p class="text-4xl font-rc-full">3rd party</p>
           <div class="grid grid-cols-3 gap-6">
             <% if current_user.admin? %>
               <%= render "shared/button", variant: :outline, text: "Metabase", url: "https://metabase.hackclub.com/dashboard/34-blueprint" %>

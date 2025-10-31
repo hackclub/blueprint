@@ -1,12 +1,12 @@
 <%= render "shared/card" do %>
   <%= form_with model: [@project, (@journal_entry || JournalEntry.new)], class: "space-y-4 dark", data: { controller: "journal-validator journal-draft", "journal-validator-min-chars-value": 150, "journal-validator-image-required-value": true, "journal-draft-project-id-value": @project.id } do |f| %>
     <div class="flex flex-col space-y-6">
-      <div>
-        <p class="block text-3xl"><%= @journal_entry&.persisted? ? "Edit journal entry" : "Write a new journal entry" %></p>
-          <p><%= @journal_entry&.persisted? ? "Update what you've been working on!" : "Share what you've been working on!" %></p>
+      <div class="space-y-1">
+        <p class="block text-3xl font-rc-full"><%= @journal_entry&.persisted? ? "Edit journal entry" : "Write a new journal entry" %></p>
+        <p class="text-xl"><%= @journal_entry&.persisted? ? "Update what you've been working on!" : "Share what you've been working on!" %></p>
       </div>
       <div class="space-y-2">
-        <%= f.label :summary, "Describe what you did in a few words", class: "block text-xl" %>
+        <%= f.label :summary, "Describe what you did in a few words", class: "block text-xl font-rc-full" %>
         <%= f.text_field :summary,
               class: "input w-full",
               placeholder: "e.g. Routed the PCB",
@@ -18,14 +18,14 @@
         </div>
       </div>
 
-      <div class="flex flex-col space-y-1">
+      <div class="flex flex-col space-y-0.5">
         <%= marksmith_tag :content,
               form: f,
               placeholder: "Write a few sentences about what you did...\nHow you did it...\nWhat went well, etc...\n\nInclude some images of your work!\n\nTip: Markdown is supported and you can drag and drop images.",
               enable_file_uploads: true,
               data: { "journal-draft-target": "textarea" },
               classes: "min-h-80 text-base" %>
-      <div class="flex gap-4 text-xs">
+      <div class="flex gap-4 text-xs pt-1">
           <p class="grow"><span data-journal-draft-target="status" hidden>Draft Saved Locally</span></p>
           <p>Min characters: <span data-journal-validator-target="charCount" class="font-medium">0/150</span></p>
           <p>Min images: <span data-journal-validator-target="imageCount" class="font-medium">0/1</span></p>
@@ -33,7 +33,7 @@
       </div>
       <div class="space-y-2">
         <div>
-          <%= f.label :duration_hours, "How many hours did you spend since the last journal?", class: "block" %>
+          <%= f.label :duration_hours, "How many hours did you spend since the last journal?", class: "block text-xl font-rc-full" %>
           <p class="text-sm">It's okay if you don't know. This can be an estimate.</p>
         </div>
         <%= f.number_field :duration_hours,
@@ -47,7 +47,7 @@
               class: "input w-full" %>
       </div>
     </div>
-    <div class="flex justify-end gap-2">
+    <div class="flex justify-end gap-2 font-rc-full">
       <%= f.submit "Publish", class: "btn btn-primary py-1", data: { "journal-draft-target": "submit", "journal-validator-target": "submit" } %>
     </div>
   <% end %>

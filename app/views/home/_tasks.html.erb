@@ -9,7 +9,7 @@
     <p class="text-sm md:text-base">Get stickers when you finish!</p>
   </div>
   <div class="flex flex-col space-y-4 grow">
-    <div class="space-y-4 grow">
+    <div class="space-y-4 grow font-rc-full">
       <% tasks.each do |name, task| %>
         <% done = task[:met] %>
         <div class="flex items-center space-x-3 md:space-x-4 text-base md:text-xl border-0">
@@ -78,7 +78,7 @@
     <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-0" do %>
       <div data-modal-target="step" class="space-y-6">
         <div>
-          <p class="text-3xl">Join the Hack Club Slack</p>
+          <p class="text-3xl font-rc-full">Join the Hack Club Slack</p>
           <p>Slack is where Hack Club communicates!</p>
         </div>
         <div class="max-w-xl bg-gray-500">
@@ -91,7 +91,7 @@
       </div>
       <div data-modal-target="step" class="space-y-6">
         <div>
-          <p class="text-3xl">Check your inbox!</p>
+          <p class="text-3xl font-rc-full">Check your inbox!</p>
           <p>Slack has sent you an invite. (Check your spam folder)</p>
         </div>
         <div class="max-w-xl bg-gray-500">
@@ -106,7 +106,7 @@
       </div>
       <div data-modal-target="step" class="space-y-6">
         <div>
-          <p class="text-3xl">Verify your Slack account</p>
+          <p class="text-3xl font-rc-full">Verify your Slack account</p>
           <p>Head over to #slack-welcome-start and "Explore the Cave"</p>
         </div>
         <div class="max-w-xl bg-gray-500">
@@ -131,7 +131,7 @@
     <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-0" do %>
       <div data-modal-target="step" class="space-y-6">
         <div>
-          <p class="text-3xl">Link your GitHub account</p>
+          <p class="text-3xl font-rc-full">Link your GitHub account</p>
           <p>GitHub is where you can store your project files!<br>We'll automatically sync your journals to GitHub</p>
         </div>
         <div class="max-w-xl bg-gray-500">

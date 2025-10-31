@@ -6,7 +6,7 @@
     </div>
     <% if @projects.empty? %>
     <div class="m-4 mt-0 grow flex flex-col space-y-4 items-center justify-center max-h-96">
-      <p class="text-lg md:text-2xl">Hmm... Nothing's here yet.</p>
+      <p class="text-lg md:text-2xl font-rc-full">Hmm... Nothing's here yet.</p>
       <%= render "shared/button", url: new_project_path, text: "+ Start a project", class: "min-h-[44px]" %>
     </div>
     <% else %>
@@ -16,7 +16,7 @@
         <% end %>
         <%= link_to new_project_path do %>
           <%= render "shared/card", class: "flex items-center justify-center h-full hover:scale-105 hover:shadow-xl motion-safe:transition-all min-h-44 md:min-h-70" do %>
-            <p class="text-base md:text-xl">+ Start a new project</p>
+            <p class="text-base md:text-xl font-rc-full">+ Start a new project</p>
           <% end %>
         <% end %>
       </div>
