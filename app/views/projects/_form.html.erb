@@ -11,7 +11,7 @@
   <% end %>
 
   <div>
-    <%= f.label :title, class: "block text-xl font-medium" %>
+    <%= f.label :title, class: "block text-xl font-medium font-rc-full" %>
     <%= f.text_field :title,
           required: true,
           class: "input px-3 w-full",
@@ -19,7 +19,7 @@
   </div>
 
   <div>
-    <%= f.label :description, class: "block text-xl font-medium" %>
+    <%= f.label :description, class: "block text-xl font-medium font-rc-full" %>
     <%= f.text_area :description,
           required: true,
           rows: 6,
@@ -30,7 +30,7 @@
   <div>
     <div class="flex items-center">
       <div>
-        <%= f.label :repo_link, class: "block text-xl font-medium" %>
+        <%= f.label :repo_link, class: "block text-xl font-medium font-rc-full" %>
         <p class="text-sm">We'll create a JOURNAL.md for you</p>
       </div>
       <div class="grow"></div>
@@ -49,7 +49,7 @@
   </div>
 
   <div>
-    <%= f.label :banner, class: "block text-xl font-medium" %>
+    <%= f.label :banner, class: "block text-xl font-medium font-rc-full" %>
     <div class="flex items-center gap-3 mt-1" data-controller="file-input">
       <%= f.file_field :banner, direct_upload: true, id: "project_banner_input", class: "hidden", data: { file_input_target: "input" }, "data-action": "change->file-input#update" %>
       <label for="project_banner_input" class="btn btn-outline">Choose file</label>
@@ -58,7 +58,7 @@
   </div>
 
   <div data-controller="ysws">
-    <%= f.label :ysws, "Are you following a guide?", class: "block text-xl font-medium" %>
+    <%= f.label :ysws, "Are you following a guide?", class: "block text-xl font-medium font-rc-full" %>
     <div class="mt-2 space-y-2">
       <div class="w-full text-left text-white select bg-bp-dark">
         <% ysws_options = [
@@ -84,7 +84,7 @@
 
   <div>
     <div>
-      <%= f.label :needs_funding, "Do you need a grant to build your project?", class: "block text-xl font-medium" %>
+      <%= f.label :needs_funding, "Do you need a grant to build your project?", class: "block text-xl font-medium font-rc-full" %>
       <p class="text-sm">You will get extra tickets if you don't need funding. <a href="/docs#what-are-tickets-how-do-i-earn-them" target="_blank" class="text-bp-warning underline">Learn more</a></p>
     </div>
     <div class="flex gap-4 mt-2">
@@ -103,7 +103,7 @@
 
   <div>
     <div>
-      <%= f.label :skip_gh_sync, "Publish journal to GitHub repository", class: "block text-xl font-medium" %>
+      <%= f.label :skip_gh_sync, "Publish journal to GitHub repository", class: "block text-xl font-medium font-rc-full" %>
     </div>
     <div class="flex gap-4 mt-2">
       <%= f.label :skip_gh_sync_false, class: "flex items-center gap-2 cursor-pointer" do %>
