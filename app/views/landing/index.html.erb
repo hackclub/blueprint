@@ -80,7 +80,7 @@
             </div>
           </div>
           <div class="flex flex-col items-center px-4 py-3 space-y-4 text-sm border-2 md:px-12 md:py-6 md:pb-8 md:text-2xl bg-bp-dark">
-            <p class="text-lg md:text-2xl font-rc-full">Start building & get free stickers!</p>
+            <p class="text-lg md:text-2xl font-rc-full">Start making & get free stickers!</p>
             <div class="flex w-full" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
               <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
               <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
@@ -107,127 +107,70 @@
         </div>
       </div>
 
-  <div class="pb-12 mx-4 space-y-12 relative">
-    <h2 class="text-3xl text-center md:text-5xl">How this works</h2>
-    <div class="text-xl flex justify-center w-full">
-      <div class="grid grid-cols-5 bg-red- max-w-6xl grow text-center gap-y-12">
-        <div class="bg-bp-darker col-span-1 md:col-span-3 p-12 space-y-4">
-          <p class="text-3xl font-rc-full">Design a hardware project</p>
-          <p>Draft and design up something cool! Build your project digitally first. Examples: custom keyboard, your own 3D printer, or a motor controller.</p>
-        </div>
-        <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-1 hidden md:block hover:scale-130 motion-safe:transition-transform" style="background-image: url('<%= image_path("landing/steps-projects.webp") %>');">
-        </div>
-        <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-2 hidden md:block hover:scale-130 motion-safe:transition-transform"" style="background-image: url('<%= image_path("landing/steps-journal.webp") %>');">
-        </div>
-        <div class="bg-bp-darker col-span-3 p-12 space-y-4">
-          <p class="text-3xl font-rc-full">Share your progress</p>
-          <p>Share what you've been cooking up with thousands of other teenagers through journals, and open source your design on GitHub.</p>
-        </div>
-        <div class="bg-bp-darker col-span-3 p-12 space-y-4">
-          <p class="text-3xl font-rc-full">Get a grant & earn cool prizes</p>
-          <p>Get a grant up to $400 to help you build your project. Earn tickets for each hour you spend building it IRL and redeem them for rewards!</p>
-        </div>
-        <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-3 hidden md:block hover:scale-130 motion-safe:transition-transform"" style="background-image: url('<%= image_path("landing/steps-prizes.webp") %>');">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="space-y-12 pt-16">
-    <div class="space-y-4">
-      <h2 class="text-3xl text-center md:text-5xl">What can I build?</h2>
-      <p class="text-xl text-center">Pick one of these tracks! Make as many as you can!</p>
-    </div>
-    <div class="flex justify-center text-xl text-center">
-      <div class="grid grid-cols-2 gap-x-12 gap-y-10 max-w-6xl grow">
-        <a href="/guides" class="bg-bp-darker p-12 space-y-6 hover:scale-105 hover:-rotate-1 motion-safe:transition-transform">
-          <p class="text-3xl font-rc-full">Starter projects</p>
-          <p>Best for beginners! Follow one of our guided projects and learn the skills to build hardware!</p>
-          <%= render "shared/button", variant: :primary, text: "Get started!", class: "w-full" %>
-        </a>
-        <a href="/docs" class="bg-bp-darker p-12 space-y-6 hover:scale-105 hover:rotate-1 motion-safe:transition-transform">
-          <p class="text-3xl font-rc-full">Custom projects</p>
-          <p>Self-guided! Design and journal your own hardware project and make it real!</p>
-          <%= render "shared/button", variant: :primary, text: "Get started!", class: "w-full" %>
-        </a>
-        <div class="space-y-6 col-span-2 flex flex-col items-center">
-          <div class="space-y-4">
-            <p>Not sure what to build? Browse projects made by other teenagers for inspiration!</p>
-            <%= render "shared/button", variant: :outline, text: "Explore projects!", class: "w-full", url: explore_path %>
+      <div class="pb-12 mx-4 space-y-12 relative">
+        <h2 class="text-3xl text-center md:text-5xl">How this works</h2>
+        <div class="text-xl flex justify-center w-full">
+          <div class="grid grid-cols-5 bg-red- max-w-6xl grow text-center gap-y-12">
+            <div class="bg-bp-darker col-span-1 md:col-span-3 p-12 space-y-4">
+              <p class="text-3xl font-rc-full">Design a hardware project</p>
+              <p>Draft and design up something cool! Build your project digitally first. Examples: custom keyboard, your own 3D printer, or a motor controller.</p>
+            </div>
+            <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-1 hidden md:block hover:scale-130 motion-safe:transition-transform" style="background-image: url('<%= image_path("landing/steps-projects.webp") %>');">
+            </div>
+            <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-2 hidden md:block hover:scale-130 motion-safe:transition-transform" style="background-image: url('<%= image_path("landing/steps-journal.webp") %>');">
+            </div>
+            <div class="bg-bp-darker col-span-3 p-12 space-y-4">
+              <p class="text-3xl font-rc-full">Share your progress</p>
+              <p>Share what you've been cooking up with thousands of other teenagers through journals, and open source your design on GitHub.</p>
+            </div>
+            <div class="bg-bp-darker col-span-3 p-12 space-y-4">
+              <p class="text-3xl font-rc-full">Get a grant & earn cool prizes</p>
+              <p>Get a grant up to $400 to help you build your project. Earn tickets for each hour you spend building it IRL and redeem them for rewards!</p>
+            </div>
+            <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-3 hidden md:block hover:scale-130 motion-safe:transition-transform"" style="background-image: url('<%= image_path("landing/steps-prizes.webp") %>');">
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-<div class="space-y-6 md:space-y-8 mt-10">
-  <p class="text-center   ">Read the guide -> design your own!</p>
-  <div class="max-w-6xl mx-auto px-4">
-    <div class="grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-3">
-      <!-- MIDI Project -->
-      <div class="flex flex-col border-2 bg-bp-dark/70 transition-all duration-200 transform hover:-translate-y-1 overflow-hidden">
-        <a href="/guides/midi" class="flex flex-col p-4 space-y-4 md:p-8 hover:bg-bp-dark/50 active:bg-bp-dark/30">
-          <img src="<%= image_path("landing/midi.webp") %>" alt="MIDI Project" class="w-full h-40 object-cover">
-          <p class="text-lg font-bold md:text-2xl font-rc-full">MIDI</p>
-          <p class="flex items-center justify-center text-sm grow md:text-base text-center">Create your own MIDI controller</p>
-          <p class="text-xs text-white/50 text-center mt-2">Guide by @nimit</p>
-        </a>
-        <a href="/guides/midi" class="group block bg-white text-bp-dark text-center py-3 md:py-4 font-bold text-sm md:text-base hover:bg-white/90 transition-colors border-t-2 border-white/20">
-          See Full Guide <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
-        </a>
-      </div>
-      <!-- Custom Devboard Project -->
-      <div class="flex flex-col border-2 bg-bp-dark/70 transition-all duration-200 transform hover:-translate-y-1 overflow-hidden">
-        <a href="/guides/devboard" class="flex flex-col p-4 space-y-4 md:p-8 hover:bg-bp-dark/50 active:bg-bp-dark/30">
-          <img src="<%= image_path("landing/custom-devboard.webp") %>" alt="Custom Devboard Project" class="w-full h-40 object-cover">
-          <p class="text-lg font-bold md:text-2xl font-rc-full">Custom Devboard</p>
-          <p class="flex items-center justify-center text-sm grow md:text-base text-center">Design your own Raspberry PI</p>
-          <p class="text-xs text-white/50 text-center mt-2">Guide by @Kai Pereira</p>
-        </a>
-        <a href="/guides/devboard" class="group block bg-white text-bp-dark text-center py-3 md:py-4 font-bold text-sm md:text-base hover:bg-white/90 transition-colors border-t-2 border-white/20">
-          See Full Guide <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
-        </a>
-      </div>
-      <!-- Split Keyboard Project -->
-      <div class="flex flex-col border-2 bg-bp-dark/70 transition-all duration-200 transform hover:-translate-y-1 overflow-hidden">
-        <a href="/guides/split-keyboard" class="flex flex-col p-4 space-y-4 md:p-8 hover:bg-bp-dark/50 active:bg-bp-dark/30">
-          <img src="<%= image_path("landing/split-keyboard.webp") %>" alt="Split Keyboard Project" class="w-full h-40 object-cover">
-          <p class="text-lg font-bold md:text-2xl font-rc-full">Split Keyboard</p>
-          <p class="flex items-center justify-center text-sm grow md:text-base text-center">Build a wireless split keyboard</p>
-          <p class="text-xs text-white/50 text-center mt-2">Guide by @koeg</p>
-        </a>
-        <a href="/guides/split-keyboard" class="group block bg-white text-bp-dark text-center py-3 md:py-4 font-bold text-sm md:text-base hover:bg-white/90 transition-colors border-t-2 border-white/20">
-          See Full Guide <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
       <!-- Divider Image -->
       <div class="w-full py-16">
-        <%= image_tag "divider2.webp", class: "w-full h-auto" %>
+        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
       </div>
 
-      <div class="space-y-12">
-        <p class="text-xl text-center md:text-3xl">Here's what others are working on</p>
-        <div class="overflow-hidden">
-          <div class="flex h-64 space-x-8 space-y-8 carousel md:h-84">
-            <% @featured_projects.shuffle.each do |project| %>
-              <a href="<%= project[:url] %>" target="_blank" rel="noopener noreferrer" class="flex flex-col w-40 h-full md:w-72 shrink-0 bg-bp-darker" data-carousel-target="item">
-                <div class="h-20 bg-gray-200 bg-center bg-no-repeat bg-cover md:h-40" style="background-image: url('<%= image_path(project[:image]) %>')"></div>
-                <div class="flex flex-col p-2 space-y-2 md:p-4 grow">
-                  <p class="text-base font-bold md:text-xl"><%= project[:title] %> <span class="text-xs">by <%= project[:author] %></span></p>
-                  <p class="text-xs md:text-base"><%= project[:description] %></p>
-                </div>
-              </a>
-            <% end %>
+      <div class="space-y-12 pt-8">
+        <div class="space-y-4">
+          <h2 class="text-3xl text-center md:text-5xl">What can I build?</h2>
+          <p class="text-xl text-center">Pick one of these tracks! Make as many projects as you can!</p>
+        </div>
+        <div class="flex justify-center text-xl text-center">
+          <div class="grid grid-cols-2 gap-x-12 gap-y-10 max-w-6xl grow">
+            <a href="/guides" class="bg-bp-darker p-12 space-y-6 hover:scale-105 hover:-rotate-1 motion-safe:transition-transform">
+              <p class="text-3xl font-rc-full">Starter projects</p>
+              <p>Best for beginners! Follow one of our guided projects and learn the skills to build hardware!</p>
+              <%= render "shared/button", variant: :primary, text: "Get started!", class: "w-full" %>
+            </a>
+            <a href="/docs" class="bg-bp-darker p-12 space-y-6 hover:scale-105 hover:rotate-1 motion-safe:transition-transform">
+              <p class="text-3xl font-rc-full">Custom projects</p>
+              <p>Self-guided! Design and journal your own hardware project and make it real!</p>
+              <%= render "shared/button", variant: :primary, text: "Get started!", class: "w-full" %>
+            </a>
+            <div class="space-y-6 col-span-2 flex flex-col items-center">
+              <div class="space-y-4">
+                <p>Not sure what to build? Browse projects made by other teenagers for inspiration!</p>
+                <%= render "shared/button", variant: :outline, text: "Explore projects!", class: "w-full", url: explore_path %>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="mx-auto" style="max-width: 350px;">
-        <%= render "shared/button", text: "Explore More Projects →", url: "/explore?sort=top&type=projects", class: "w-full" %>
       </div>
 
+      <!-- Divider Image -->
+      <div class="w-full py-16">
+        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
       </div>
+
+    </div>
       
     
       <!-- Divider Image -->
@@ -236,27 +179,6 @@
       </div>
     
     <div class="flex flex-col items-center w-full px-8">
-      
-      <section class="w-full max-w-6xl md:py-24">
-        <div class="flex flex-col items-center px-0 md:px-8">
-          <h2 class="mb-8 text-3xl font-bold text-center md:text-4xl">What is Blueprint?</h2>
-          <%= render 'shared/card', class: "p-10 flex items-center text-center" do %>
-            <p class="text-base md:text-xl">
-              Blueprint is a You Ship, We Ship program open to all teenagers 13-18 (inclusive) where you build cool hardware projects (or learn how to) and get funding to make them real!
-            </p>
-            <p class="text-xl md:text-3xl border-b border-white/20 pb-1 md:px-6">Here's the quick rundown</p>
-            <ol class="list-decimal list-inside text-base md:text-xl">
-              <li>Design a custom hardware project</li>
-              <li>Journal on the Blueprint</li>
-              <li>Apply for a grant up to $400 to buy parts</li>
-              <li>Journal your build process</li>
-              <li>Earn tickets for awesome tools</li>
-            </ol>
-            <p class="text-base md:text-xl">Beginner? No problem! We have tons of resources to help you get started.<br>Check out our <a href="/guides">starter guides</a>!</p>
-            <%= render "shared/button", text: "Learn More", url: "/docs", class: "w-full" %>
-          <% end %>
-        </div>
-      </section>
 <!-- Last Time Stats -->
 <div class="relative mt-16 md:mt-24 py-12 md:py-20 overflow-hidden">
  
