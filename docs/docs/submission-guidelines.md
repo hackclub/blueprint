@@ -89,7 +89,7 @@ Your repo should look like this:
 -  Stolen work from other people
 -  missing firmware/software
 
-Projects containing these issues may be permanently rejected and could result in a ban from Blueprint and other Hack Club programs!
+Any project that includes stolen content, AI-generated readmes or journals, or other fraudulent/dishonest material may be permanently rejected and could result in a ban from Blueprint and other Hack Club programs!
 
 The required files may depend on your project type. For typical PCB projects it even differs on KiCAD vs EasyEDA. A good rule of thumb is to upload **AT LEAST** the files required to fully recreate the project. For KiCAD, you will need:
 
