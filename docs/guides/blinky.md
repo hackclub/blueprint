@@ -111,16 +111,18 @@ You will now need to go through and find all of your components. Luckily, we alr
 - **C249157** (this is another cap)
 - **C713997** (this is a 1k ohm resistor)
 - **C58592** (this is a 470 ohm resistor)
-- **C58592** (this is a potentiometer otherwise known as a variable resistor. You can use this to control the speed of the flashes)
+- **C118912** (this is a potentiometer otherwise known as a variable resistor. You can use this to control the speed of the flashes)
 
-You will also need to place a total of 10 of the different colored LEDs below. You will get 10 of each color in the kit so don’t worry!
+You will also need to place a total of 10 LED below. You will get 10 of each color in the kit so don’t worry about assigning their color right now!
 
-- **C2844743** (red LED)
-- **C779445** (orange LED)
-- **C330770** (yellow LED)
-- **C2895483** (emerald LED)
-- **C473834** (blue LED) (elite ball knowlege required)
-- **C2895480** (white LED)
+- **C2895480** (normal LED)
+
+In the kit, you will be given 
+- 10x Red LED's 
+- 10x Orange LED' s
+- 10x Yellow LED's 
+- 10x Emerald LED's 
+- 10x Blue LED's
 
 Here is a good point to remind you. If you ever need help, ask in #blueprint-support on the Hack Club Slack. 
 
