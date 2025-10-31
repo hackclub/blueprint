@@ -168,32 +168,7 @@ class ProjectsController < ApplicationController
       return
     end
 
-    journal_exempt_ysws = [ "led" ]
-    bom_exempt_ysws = [ "led" ]
-
-    repo_linked = @project.repo_link.present?
-    desc_ok = @project.description.to_s.strip.length >= 50
-    journal_ok = @project.journal_entries.count >= 3
-    banner_ok = @project.banner.attached?
-
-    @checks = [
-      { msg: "GitHub repo linked", met: repo_linked },
-      { key: "readme", msg: "README.md present", met: nil },
-      { msg: "Description is at least 50 characters on Blueprint", met: desc_ok },
-      { msg: "Uploaded a banner image", met: banner_ok }
-    ]
-
-    if !journal_exempt_ysws.include?(@project.ysws)
-      @checks << { msg: "Project has 3 journal entries", met: journal_ok }
-    end
-
-    if !bom_exempt_ysws.include?(@project.ysws)
-      @checks << { key: "bom", msg: "Bill of materials (bom.csv) present", met: nil }
-    end
-
-    journal_required = !journal_exempt_ysws.include?(@project.ysws)
-
-    @base_ok = repo_linked && desc_ok && banner_ok && (journal_required ? journal_ok : true)
+    prepare_ship_state
   end
 
   def follow
@@ -261,13 +236,22 @@ class ProjectsController < ApplicationController
       params[:project][:print_legion] = (has_3d && needs_help)
     end
 
-    # Validate cart_screenshots if needed
-    if has_ship && @project.needs_funding? && !@project.cart_screenshots.attached? && Array(params.dig(:project, :cart_screenshots)).reject(&:blank?).empty?
-      @project.errors.add(:cart_screenshots, "are required when requesting funding")
-      render :ship, status: :unprocessable_entity and return
+    # Apply incoming attributes first so attachments are reflected on the model
+    @project.assign_attributes(project_params)
+
+    # Validate cart screenshots for funding projects on ship
+    if has_ship && @project.needs_funding?
+      pending = @project.attachment_changes["cart_screenshots"]
+      has_new_uploads = pending && pending.respond_to?(:attachables) && pending.attachables.present?
+      
+      unless @project.cart_screenshots.attached? || has_new_uploads
+        prepare_ship_state
+        @project.errors.add(:cart_screenshots, "are required when requesting funding")
+        render :ship, status: :unprocessable_entity and return
+      end
     end
 
-    if @project.update(project_params)
+    if @project.save
       if has_ship
         ahoy.track("project_ship", project_id: @project.id, user_id: current_user&.id)
 
@@ -386,6 +370,28 @@ class ProjectsController < ApplicationController
   end
 
   private
+
+  def prepare_ship_state
+    journal_exempt_ysws = [ "led" ]
+    bom_exempt_ysws = [ "led" ]
+
+    repo_linked = @project.repo_link.present?
+    desc_ok = @project.description.to_s.strip.length >= 50
+    journal_ok = @project.journal_entries.count >= 3
+    banner_ok = @project.banner.attached?
+
+    @checks = [
+      { msg: "GitHub repo linked", met: repo_linked },
+      { key: "readme", msg: "README.md present", met: nil },
+      { msg: "Description is at least 50 characters on Blueprint", met: desc_ok },
+      { msg: "Uploaded a banner image", met: banner_ok }
+    ]
+    @checks << { msg: "Project has 3 journal entries", met: journal_ok } unless journal_exempt_ysws.include?(@project.ysws)
+    @checks << { key: "bom", msg: "Bill of materials (bom.csv) present", met: nil } unless bom_exempt_ysws.include?(@project.ysws)
+
+    journal_required = !journal_exempt_ysws.include?(@project.ysws)
+    @base_ok = repo_linked && desc_ok && banner_ok && (journal_required ? journal_ok : true)
+  end
 
   def preload_project_metrics(projects)
     return if projects.blank?
