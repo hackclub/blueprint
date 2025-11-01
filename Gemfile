@@ -45,7 +45,7 @@ gem "image_processing", "~> 1.2"
 
 gem "aws-sdk-s3", require: false
 
-gem "tailwindcss-rails", "~> 4.0"
+gem "tailwindcss-rails", "~> 4.4"
 
 # Redis for cache, queue, and Action Cable
 gem "redis", "~> 5.0"
