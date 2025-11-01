@@ -22,6 +22,10 @@ As many as you like! We just ask that you only do one of each starter project.
 
 Anything within budget!
 
+## How long may reviews take?
+
+Reviews may vary in time! They can take a week or more. We try to review as soon as possible :) 
+
 ## Does my project need to have a PCB?
 
 Not at all. Unless you’re going advanced, most projects don't need pcbs, and we encourage that you hand wire components!
