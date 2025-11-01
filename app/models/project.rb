@@ -483,18 +483,19 @@ class Project < ApplicationRecord
       end
     end
 
-    if !design.nil?
-      if design
-        update!(review_status: :design_pending)
-      else
-        update!(review_status: :build_pending)
-      end
+    # Check if project has an approved admin design review (one-way gate: design -> build)
+    has_approved_design = design_reviews.where(result: :approved, invalidated: false, admin_review: true).exists?
+
+    # Once build is approved OR design is approved, always go to build (one-way gate)
+    if build_approved? || has_approved_design
+      update!(review_status: :build_pending)
+    elsif design == true
+      update!(review_status: :design_pending)
+    elsif design == false
+      update!(review_status: :build_pending)
     else
-      if needs_funding?
-        update!(review_status: :design_pending)
-      else
-        update!(review_status: :build_pending)
-      end
+      # No explicit design param and no approved review - use needs_funding
+      update!(review_status: needs_funding? ? :design_pending : :build_pending)
     end
   end
 
@@ -515,7 +516,7 @@ class Project < ApplicationRecord
   end
 
   def can_ship?
-    review_status.nil? || design_needs_revision? || build_needs_revision? || awaiting_idv?
+    review_status.nil? || design_needs_revision? || build_needs_revision? || awaiting_idv? || design_approved? || build_approved?
   end
 
   def followed_by?(user)
@@ -608,7 +609,14 @@ class Project < ApplicationRecord
     elsif build_approved?
       msg += "Your Blueprint project *#{title}* has passed the build review! You've been awarded tickets for your work.\n\n"
 
-      review = build_reviews.where(result: "approved", invalidated: false).order(created_at: :desc).first
+      # Find the most recent approved review with actual hours (second approvals may have 0)
+      review = build_reviews.where(result: "approved", invalidated: false)
+                            .order(updated_at: :desc)
+                            .detect { |r| r.frozen_duration_seconds.to_i > 0 } ||
+               build_reviews.where(result: "approved", invalidated: false)
+                            .order(updated_at: :desc)
+                            .first
+
       if review
         tickets = review.tickets_awarded
 
@@ -775,13 +783,19 @@ class Project < ApplicationRecord
   end
 
   def invalidate_design_reviews_on_resubmit
-    design_reviews.update_all(invalidated: true)
-    JournalEntry.where(project_id: id, review_type: "DesignReview").update_all(review_id: nil, review_type: nil)
+    # Don't invalidate if there's already an approved admin design review (one-way gate)
+    return if design_reviews.where(result: "approved", invalidated: false, admin_review: true).exists?
+
+    to_invalidate = design_reviews.pluck(:id)
+    design_reviews.where(id: to_invalidate).update_all(invalidated: true)
+    JournalEntry.where(project_id: id, review_type: "DesignReview", review_id: to_invalidate).update_all(review_id: nil, review_type: nil)
   end
 
   def invalidate_build_reviews_on_resubmit
-    build_reviews.update_all(invalidated: true)
-    JournalEntry.where(project_id: id, review_type: "BuildReview").update_all(review_id: nil, review_type: nil)
+    # Only invalidate non-approved build reviews to preserve journal entry cutoffs for multi-round reviews
+    to_invalidate = build_reviews.where.not(result: "approved").pluck(:id)
+    build_reviews.where(id: to_invalidate).update_all(invalidated: true)
+    JournalEntry.where(project_id: id, review_type: "BuildReview", review_id: to_invalidate).update_all(review_id: nil, review_type: nil)
   end
 
   def approve_design!

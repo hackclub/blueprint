@@ -65,24 +65,28 @@ class DesignReview < ApplicationRecord
     # Associate all journal entries created after the last approval and at or before this review
     cutoff = up_to || created_at
 
-    # Find the most recent valid approval (from either build or design review) at or before this review
-    last_approval = project.build_reviews
-                           .where(result: :approved, invalidated: false)
-                           .where("created_at <= ?", cutoff)
-                           .order(created_at: :desc, id: :desc)
-                           .first
+    # Find IDs of all prior approved reviews
+    prev_approved_build_ids = project.build_reviews
+                                     .where(result: :approved, invalidated: false)
+                                     .pluck(:id)
 
-    last_design_approval = project.design_reviews
-                                  .where(result: :approved, invalidated: false, admin_review: true)
-                                  .where.not(id: id)
-                                  .where("created_at <= ?", cutoff)
-                                  .order(created_at: :desc, id: :desc)
-                                  .first
+    prev_admin_design_ids = project.design_reviews
+                                   .where(result: :approved, invalidated: false, admin_review: true)
+                                   .where.not(id: id)
+                                   .pluck(:id)
 
-    last_valid_approval_time = [ last_approval&.created_at, last_design_approval&.created_at ].compact.max
+    # Use the timestamp of the last associated journal entry from any prior approved review as cutoff
+    # This prevents double-counting and ensures correct partitioning across review rounds
+    last_build_entry_at = prev_approved_build_ids.any? ?
+                            JournalEntry.where(review_type: "BuildReview", review_id: prev_approved_build_ids).maximum(:created_at) : nil
+    last_design_entry_at = prev_admin_design_ids.any? ?
+                             JournalEntry.where(review_type: "DesignReview", review_id: prev_admin_design_ids).maximum(:created_at) : nil
+
+    last_valid_approval_time = [ last_build_entry_at, last_design_entry_at ].compact.max
 
     # Associate entries created after the last approval and at or before the cutoff
-    entries = project.journal_entries.where("created_at <= ?", cutoff)
+    # Only associate unreviewed entries to never reassign already-associated ones
+    entries = project.journal_entries.where("created_at <= ?", cutoff).where(review_id: nil)
     entries = entries.where("created_at > ?", last_valid_approval_time) if last_valid_approval_time
 
     entries.update_all(review_id: id, review_type: "DesignReview")

@@ -3,9 +3,11 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   before_action :require_reviewer_perms!, only: [ :index, :show, :show_random, :create ]
 
   def index
+    # Only consider non-approved reviews to allow resubmitted projects to be visible
     reviewed_ids = Project.joins(:build_reviews)
                             .where(is_deleted: false, review_status: :build_pending)
                             .where(build_reviews: { invalidated: false })
+                            .where.not(build_reviews: { result: BuildReview.results[:approved] })
                             .distinct
                             .pluck(:id)
     if current_user.admin?
@@ -48,7 +50,9 @@ class Admin::BuildReviewsController < Admin::ApplicationController
       end
     end
 
-    project = Project.where(is_deleted: false, review_status: :build_pending).order("RANDOM()").first
+    scope = Project.where(is_deleted: false, review_status: :build_pending)
+    scope = scope.where.not(ysws: "led") unless current_user.admin?
+    project = scope.order("RANDOM()").first
     if project
       redirect_to admin_build_review_path(project)
     else
@@ -79,10 +83,12 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   def update_project_review_status(project, build_review)
     case build_review.result
     when "rejected"
-      project.build_reviews.where.not(id: build_review.id).update_all(invalidated: true)
+      # Only invalidate non-approved reviews to preserve journal entry cutoffs
+      project.build_reviews.where.not(id: build_review.id).where.not(result: "approved").update_all(invalidated: true)
       project.update!(review_status: :build_rejected)
     when "returned"
-      project.build_reviews.where.not(id: build_review.id).update_all(invalidated: true)
+      # Only invalidate non-approved reviews to preserve journal entry cutoffs
+      project.build_reviews.where.not(id: build_review.id).where.not(result: "approved").update_all(invalidated: true)
       project.update!(review_status: :build_needs_revision)
     when "approved"
       valid_approvals = project.build_reviews.where(result: "approved", invalidated: false)

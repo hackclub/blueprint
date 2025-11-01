@@ -48,7 +48,9 @@ class Admin::DesignReviewsController < Admin::ApplicationController
       end
     end
 
-    project = Project.where(is_deleted: false, review_status: :design_pending).order("RANDOM()").first
+    scope = Project.where(is_deleted: false, review_status: :design_pending)
+    scope = scope.where.not(ysws: "led") unless current_user.admin?
+    project = scope.order("RANDOM()").first
     if project
       redirect_to admin_design_review_path(project)
     else
