@@ -16,7 +16,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
     elsif current_user.reviewer_perms?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
                         .where.not(id: reviewed_ids)
-                        .where.not(ysws: "led")
+                        .where("ysws IS NULL OR ysws != ?", "led")
                         .includes(:user, :journal_entries)
                         .order(created_at: :asc)
     end
@@ -49,7 +49,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
     end
 
     scope = Project.where(is_deleted: false, review_status: :design_pending)
-    scope = scope.where.not(ysws: "led") unless current_user.admin?
+    scope = scope.where("ysws IS NULL OR ysws != ?", "led") unless current_user.admin?
     project = scope.order("RANDOM()").first
     if project
       redirect_to admin_design_review_path(project)
