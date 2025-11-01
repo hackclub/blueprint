@@ -87,10 +87,9 @@ class Admin::DesignReviewsController < Admin::ApplicationController
       project.design_reviews.where.not(id: design_review.id).update_all(invalidated: true)
       project.update!(review_status: :design_needs_revision)
     when "approved"
-      valid_approvals = project.design_reviews.where(result: "approved", invalidated: false)
-      admin_approvals = valid_approvals.where(admin_review: true)
+      admin_approvals = project.design_reviews.where(result: "approved", invalidated: false, admin_review: true)
 
-      if valid_approvals.count >= 2 || admin_approvals.exists?
+      if admin_approvals.exists?
         project.update!(review_status: :design_approved)
       end
     end
