@@ -6,7 +6,7 @@
 
 ## When does this program end?
 
-Currently, the end-date of Blueprint is December 1st
+Currently, the end-date of Blueprint is December 1st. You’ll still have time after that to build & earn tickets.
 
 ## How can I earn tickets?
 
@@ -25,6 +25,10 @@ Anything within budget!
 ## How long may reviews take?
 
 Reviews may vary in time! They can take a week or more. We try to review as soon as possible :) 
+
+## What tier is my project? What about X idea, or Y?
+
+We can’t give you an estimate until you design out your project. You can have a really complex idea, but if it is not polished, it will be a lower tier. 
 
 ## Does my project need to have a PCB?
 
@@ -51,7 +55,7 @@ No! Double-dipping is not allowed. If you have coding time for your project, you
 
 ## How much money can I spend on my project
 
-You can spend up to the budget based on your quality tier which is outlined in (custom projects)[/guides/custom-projects]. If you need over this amount, you can use your own money. [Also see this about Hack Club and cost.](/docs/about-cost)
+You can spend up to the budget based on your quality tier which is outlined in [custom projects](/docs). If you need over this amount, you can use your own money. [Also see this about Hack Club and cost.](/docs/about-cost)
 
 ## How will I get my 3D printed parts?
 
