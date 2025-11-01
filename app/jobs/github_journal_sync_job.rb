@@ -40,16 +40,43 @@ class GithubJournalSyncJob < ApplicationJob
           Rails.logger.info({ event: "journal_synced", project_id: project_id, status: put_response.status }.to_json)
         end
       else
-        puts put_response.body
+        error_body = put_response.body
+        error_data = {
+          event: "journal_sync_failed",
+          project_id: project_id,
+          status: put_response.status,
+          response_body: error_body,
+          org: org,
+          repo: repo,
+          user_id: user.id,
+          content_size: content.bytesize,
+          sha_present: sha.present?
+        }
+
         Rails.logger.tagged("GithubJournalSyncJob") do
-          Rails.logger.error({ event: "journal_sync_failed", project_id: project_id, status: put_response.status }.to_json)
+          Rails.logger.error(error_data.to_json)
         end
-        raise StandardError, "Failed to sync journal"
+
+        Sentry.capture_message("Failed to sync journal to GitHub", level: :error, extra: error_data)
+        raise StandardError, "Failed to sync journal: #{put_response.status}"
       end
     rescue StandardError => e
+      error_data = {
+        event: "journal_sync_exception",
+        project_id: project_id,
+        error_class: e.class.name,
+        error_message: e.message,
+        backtrace: e.backtrace&.first(10),
+        user_id: user&.id,
+        org: org,
+        repo: repo
+      }
+
       Rails.logger.tagged("GithubJournalSyncJob") do
-        Rails.logger.error({ event: "journal_sync_exception", project_id: project_id, error: e.message }.to_json)
+        Rails.logger.error(error_data.to_json)
       end
+
+      Sentry.capture_exception(e, extra: error_data)
       raise
     end
   end
