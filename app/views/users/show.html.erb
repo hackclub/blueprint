@@ -1,3 +1,11 @@
+<% content_for :title, "#{@user.display_name} - Blueprint" %>
+<% content_for :description, "Check out #{@user.display_name}'s hardware projects on Hack Club Blueprint!" %>
+<% content_for :og_image, @user.avatar_url %>
+<% content_for :og_type, "profile" %>
+<% content_for :og_tags do %>
+  <meta property="profile:username" content="<%= @user.display_name %>">
+<% end %>
+
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
 <section class="flex flex-col items-center space-y-6 grow">

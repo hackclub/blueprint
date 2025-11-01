@@ -1,3 +1,16 @@
+<% content_for :title, "#{@project.title} - Hardware Project - Blueprint" %>
+<% content_for :description, @project.description.presence || "Learn and build cool hardware projects and get funding to make them real!" %>
+<% if @project.display_banner %>
+  <% content_for :og_image, url_for(@project.display_banner) %>
+<% end %>
+<% content_for :og_type, "article" %>
+<% content_for :og_tags do %>
+  <meta property="article:published_time" content="<%= @project.created_at.iso8601 %>">
+  <meta property="article:modified_time" content="<%= @project.updated_at.iso8601 %>">
+  <meta property="article:author" content="<%= user_url(@project.user) %>">
+  <meta property="article:section" content="Hardware Projects">
+<% end %>
+
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
 <section class="flex flex-col items-center space-y-6 grow">

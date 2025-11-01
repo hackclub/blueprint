@@ -33,7 +33,20 @@
     <meta name="description" content="Learn and build cool hardware projects and get funding to make them real! Ends December 1, 2025.">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0e305b">
     <meta name="darkreader-lock">
+    
+    <meta property="og:title" content="Hack Club Blueprint">
+    <meta property="og:description" content="Learn and build cool hardware projects and get funding to make them real! Ends December 1, 2025.">
+    <meta property="og:image" content="<%= image_url("og.jpg") %>">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:site_name" content="Hack Club Blueprint">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <link rel="canonical" href="<%= request.original_url %>">
+    
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
