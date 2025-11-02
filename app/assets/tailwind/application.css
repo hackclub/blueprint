@@ -20,7 +20,7 @@
   --font-rc-light: "R&C Basic", "Poppins", sans-serif;
   --font-rc-empty: "R&C Basic Empty", "Poppins", sans-serif;
 
-  --font-content: "Phantom Sans", sans-serif;
+  --font-content: "Phantom Sans", "Poppins", sans-serif;
 }
 
 :root {
