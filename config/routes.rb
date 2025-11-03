@@ -81,6 +81,7 @@ Rails.application.routes.draw do
   delete "auth/logout" => "auth#destroy", as: :logout
   post "auth/track" => "auth#track", as: :auth_tracks
   get "auth/idv" => "auth#idv", as: :idv
+  get "auth/idv/start" => "auth#idv_start", as: :idv_start
   get "idv_callback" => "auth#idv_callback", as: :idv_callback
 
   get "/utm_source" => "landing#utm_source", as: :utm_source

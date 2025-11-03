@@ -263,10 +263,14 @@ class AuthController < ApplicationController
   end
 
   def idv
+    render "projects/ship_idv", layout: "application"
+  end
+
+  def idv_start
     state = SecureRandom.hex(24)
     session[:idv_state] = state
-    @idv_link = current_user.identity_vault_oauth_link(idv_callback_url, state: state)
-    render "projects/ship_idv", layout: "application"
+    idv_link = current_user.identity_vault_oauth_link(idv_callback_url, state: state)
+    redirect_to idv_link, allow_other_host: true
   end
 
   def idv_callback
