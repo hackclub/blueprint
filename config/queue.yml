@@ -3,7 +3,7 @@ default: &default
     - polling_interval: 1
       batch_size: 500
   workers:
-    - queues: [realtime, default, uptime]
+    - queues: [realtime, default]
       threads: 4
       processes: <%= ENV.fetch("JOB_CONCURRENCY", 2) %>
       polling_interval: 0.1
