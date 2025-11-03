@@ -31,10 +31,11 @@ class BackfillGeocodingJob < ApplicationJob
     IPAddr.new("131.0.72.0/22")
   ].freeze
 
-  def perform(dry_run: false)
+  def perform(dry_run: false, all: false)
     max_threads = ENV.fetch("MAX_BACKGROUND_JOB_THREADS", "6").to_i.clamp(1, 6)
 
-    all_visits_unfiltered = Ahoy::Visit.where(country: nil).where.not(ip: nil).to_a
+    scope = all ? Ahoy::Visit.where.not(ip: nil) : Ahoy::Visit.where(country: nil).where.not(ip: nil)
+    all_visits_unfiltered = scope.to_a
     total_visits_unfiltered = all_visits_unfiltered.count
     total_ips_unfiltered = all_visits_unfiltered.map(&:ip).uniq.count
 
@@ -47,7 +48,7 @@ class BackfillGeocodingJob < ApplicationJob
     total_ips = unique_ips.count
 
     if dry_run
-      Rails.logger.info "DRY RUN Results:"
+      Rails.logger.info "DRY RUN Results (#{all ? 'all visits' : 'only ungeocoded visits'}):"
       Rails.logger.info "  Before filtering: #{total_ips_unfiltered} unique IPs, #{total_visits_unfiltered} visits"
       Rails.logger.info "  After filtering:  #{total_ips} unique IPs, #{total_visits} visits"
       Rails.logger.info "  Filtered out:     #{total_ips_unfiltered - total_ips} Cloudflare IPs, #{total_visits_unfiltered - total_visits} visits"
