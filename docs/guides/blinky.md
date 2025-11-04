@@ -132,7 +132,7 @@ Now that you have placed all of your components, you should arrange it as below.
 
 - You can use ‘r’ to rotate them
 - Use Copy and Paste when you need more, E.g. to make 10  LED’s
-- Remember to save (Control-C or  ⌘-C) often !!!!
+- Remember to save (Control-S or  ⌘-S) often !!!!
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b86449f89ce3fbcc4dfb37cfea56d0e402fbd122__0B589CAB-0E7F-403F-90D3-7350DD6C9C88_.png)
 
@@ -143,7 +143,7 @@ Don’t mess this up! Make sure your wiring matches the diagram below. The littl
 - Click “w” or the wire button, or click on a terminal of a component
 - Wire together GND of all the LEDs
 - Check out Shortcut keys (Settings-> Shortcut key settings)
-- Remember to save (Control-C or  ⌘-C) often !!!!
+- Remember to save (Control-S or  ⌘-S) often !!!!
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/778ce6cb2c018696f8354aabb15b7112f4873a99__BBC27CE3-7A26-4E46-AFA7-E725BDBB9552_.png)
 
@@ -217,7 +217,7 @@ Via: the tunnels which connect the top and bottom copper layers
 
 Place all of your components inside the Board Outline. Move components to shorten ratlines, which are are the straight blue lines. You can use ‘r’ to rotate.
 
-Remember to save (Control-C or  ⌘-C) often !!!!
+Remember to save (Control-S or  ⌘-S) often !!!!
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/066ff9acb3435c5bd772890417b8702c9edde7a7_image.png)
 
