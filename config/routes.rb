@@ -119,14 +119,25 @@ Rails.application.routes.draw do
     post :update_timezone, on: :collection
   end
 
-  # Docs -> docs/docs (formerly guides)
+  # About
+  get "about", to: "guides#about", as: :about
+  get "about/*slug", to: "guides#about"
+  # Backwards compatibility
   get "docs", to: "guides#docs", as: :docs
   get "docs/*slug", to: "guides#docs"
 
-  # Guides -> docs/guides (formerly starter-projects)
-  get "guides", to: "guides#guides", as: :guides
-  get "guides/*slug", to: "guides#guides",
+  # Guides
+  get "resources", to: "guides#resources", as: :resources
+  get "resources/*slug", to: "guides#resources",
       constraints: { slug: /[a-z0-9\/_\-]+/ }
+  # Backwards compatibility
+  get "guides", to: "guides#guides", as: :guides
+  get "guides/*slug", to: "guides#guides"
+
+  # Starter Projects
+  get "starter-projects", to: "guides#starter_projects", as: :starter_projects
+  get "starter-projects/*slug", to: "guides#starter_projects"
+
   get "faq", to: "guides#faq", as: :faq
 
   namespace :admin do

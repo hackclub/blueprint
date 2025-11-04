@@ -2,21 +2,49 @@ class GuidesController < ApplicationController
   allow_unauthenticated_access only: %i[ show docs guides faq ]
   skip_before_action :set_current_user, if: :turbo_frame_request?
 
+  SECTION_CONFIG = {
+    "about" => { suffix: "About Blueprint", index_title: "About - Blueprint" },
+    "resources" => { suffix: "Resources", index_title: "Resources - Blueprint" },
+    "starter-projects" => { suffix: "Starter Projects", index_title: "Starter Projects - Blueprint" },
+    "docs" => { suffix: "Blueprint Docs", index_title: "Docs - Blueprint" },
+    "guides" => { suffix: "Blueprint Guides", index_title: "Guides - Blueprint" }
+  }.freeze
+
+  def about
+    render_section("about", params[:slug])
+  end
+
+  def resources
+    render_section("resources", params[:slug])
+  end
+
+  def starter_projects
+    render_section("starter-projects", params[:slug])
+  end
+
+  # backwards compatibility
   def docs
-    render_from_base Rails.root.join("docs", "docs"), params[:slug]
+    redirect_to about_path
   end
 
   def guides
-    render_from_base Rails.root.join("docs", "guides"), params[:slug]
+    redirect_to resources_path
   end
 
   def faq
-    render_from_base Rails.root.join("docs"), "faq"
+    render_from_base Rails.root.join("docs"), "faq", { suffix: "FAQ", index_title: "FAQ - Blueprint", url_prefix: "/faq" }
   end
 
   private
 
-  def render_from_base(base, slug)
+  def render_section(section, slug)
+    config = SECTION_CONFIG[section]
+    base = Rails.root.join("docs", section)
+    url_prefix = "/#{section}"
+    render_from_base(base, slug, config, url_prefix)
+  end
+
+  def render_from_base(base, slug, config, url_prefix = nil)
     slug = slug.to_s
     slug = "" if slug.blank?
     not_found unless valid_slug?(slug)
@@ -33,33 +61,18 @@ class GuidesController < ApplicationController
     @title = File.basename(path, ".md").presence || "index"
     @content_html = helpers.render_markdown_file(path)
 
-    # SEO metadata from optional table at top of markdown
-    meta = { title: nil, description: nil }
-    suffix = "Blueprint"
-    index_title = "Blueprint"
+    suffix = config[:suffix] || "Blueprint"
+    index_title = config[:index_title] || "Blueprint"
 
-    case
-    when base.to_s.end_with?("docs/docs")
-      url_prefix = "/docs"
-      suffix = "Blueprint Docs"
-      index_title = "Docs - Blueprint"
+    meta = if url_prefix
       current_url = slug.blank? ? url_prefix : "#{url_prefix}/#{slug}"
-      item = helpers.docs_meta_for_url(current_url) rescue nil
-      meta[:title] = item[:title] if item
-      meta[:description] = item[:description] if item
-    when base.to_s.end_with?("docs/guides")
-      url_prefix = "/guides"
-      suffix = "Blueprint Guides"
-      index_title = "Guides - Blueprint"
-      current_url = slug.blank? ? url_prefix : "#{url_prefix}/#{slug}"
-      item = helpers.guide_meta_for_url(current_url) rescue nil
-      meta[:title] = item[:title] if item
-      meta[:description] = item[:description] if item
+      item = helpers.meta_for_url(url_prefix, current_url) rescue nil
+      { title: item&.dig(:title), description: item&.dig(:description) }
     else
       begin
-        meta = helpers.send(:parse_guide_metadata, path)
+        helpers.send(:parse_guide_metadata, path)
       rescue NoMethodError
-        meta = { title: nil, description: nil }
+        { title: nil, description: nil }
       end
     end
 

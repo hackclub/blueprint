@@ -150,7 +150,8 @@ module GuidesHelper
         title = meta[:title].presence || fallback_title
         desc  = meta[:description].presence
         prio  = meta[:priority]
-        items << { title: title, path: url, description: desc, slug: slug, file: p, priority: prio }
+        unlisted = meta[:unlisted] || false
+        items << { title: title, path: url, description: desc, slug: slug, file: p, priority: prio, unlisted: unlisted }
       end
       items
     end
@@ -164,7 +165,7 @@ module GuidesHelper
 
   def docs_menu_items
     docs_section_metadata
-      .reject { |i| i[:slug].blank? }
+      .reject { |i| i[:slug].blank? || i[:unlisted] }
       .sort_by { |h| [ h[:priority].nil? ? Float::INFINITY : h[:priority].to_i, h[:title].downcase ] }
       .map { |i| { title: i[:title], path: i[:path], description: i[:description] } }
   end
@@ -181,13 +182,34 @@ module GuidesHelper
 
   def guides_menu_items
     guides_metadata
-      .reject { |i| i[:slug].blank? }
+      .reject { |i| i[:slug].blank? || i[:unlisted] }
       .sort_by { |h| [ h[:priority].nil? ? Float::INFINITY : h[:priority].to_i, h[:title].downcase ] }
       .map { |i| { title: i[:title], path: i[:path], description: i[:description] } }
   end
 
   def guide_meta_for_url(url)
     guides_metadata.find { |i| i[:path] == url }
+  end
+
+  # Generic menu items for any submenu based on URL path
+  def menu_items_for(url_path)
+    section = url_path.to_s.sub(%r{^/}, "")
+    base = Rails.root.join("docs", section)
+    return [] unless File.directory?(base)
+    
+    docs_metadata(base: base, url_prefix: url_path, default_index_title: section.titleize)
+      .reject { |i| i[:slug].blank? || i[:unlisted] }
+      .sort_by { |h| [ h[:priority].nil? ? Float::INFINITY : h[:priority].to_i, h[:title].downcase ] }
+      .map { |i| { title: i[:title], path: i[:path], description: i[:description] } }
+  end
+
+  def meta_for_url(url_path, url)
+    section = url_path.to_s.sub(%r{^/}, '')
+    base = Rails.root.join("docs", section)
+    return nil unless File.directory?(base)
+    
+    docs_metadata(base: base, url_prefix: url_path, default_index_title: section.titleize)
+      .find { |i| i[:path] == url }
   end
 
   private
@@ -213,7 +235,7 @@ module GuidesHelper
   def parse_guide_metadata(path)
     key = [ "guide_md_meta", path.to_s, File.mtime(path).to_i ]
     GUIDES_HTML_CACHE.fetch(key) do
-      meta = { title: nil, description: nil, priority: nil }
+      meta = { title: nil, description: nil, priority: nil, unlisted: false }
       in_table = false
       File.foreach(path) do |raw|
         line = raw.rstrip
@@ -250,6 +272,8 @@ module GuidesHelper
               rescue ArgumentError, TypeError
                 meta[:priority] = nil
               end
+            when "unlisted"
+              meta[:unlisted] = val.to_s.downcase == "true"
             end
           end
         else
@@ -260,6 +284,6 @@ module GuidesHelper
       meta
     end
   rescue Errno::ENOENT
-    { title: nil, description: nil, priority: nil }
+    { title: nil, description: nil, priority: nil, unlisted: false }
   end
 end

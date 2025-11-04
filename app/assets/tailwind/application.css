@@ -136,11 +136,19 @@
   }
 
   .btn-nav {
-    @apply bg-bp-dark !py-[8px] inset-shadow-sm inset-shadow-black/25 hover:bg-bp-lighter;
+    @apply bg-bp-dark !py-[6px] inset-shadow-sm inset-shadow-black/25 hover:bg-bp-lighter;
   }
 
-  .btn-nav-active {
+  .btn-nav-active:not(.submenu) {
     @apply border-2 border-white bg-bp-dark hover:bg-bp-lighter;
+  }
+
+  .btn-nav-active.submenu {
+    @apply border-2 border-white bg-bp-dark;
+  }
+
+  .btn-nav-active.submenu .submenu-btn {
+    @apply py-1.5! pt-2!;
   }
 
   .btn-nav-active.nav-submenu-container {

@@ -1,14 +1,16 @@
 <% nav_links = {
     "Home" => user_logged_in? ? home_path : login_path,
+    "About Blueprint" => about_path,
     "My Projects" => user_logged_in? ? projects_path : login_path,
     "Explore" => explore_path,
     "Tool Bag" => toolbag_path,
-    "Guides" => guides_path,
-    "Blueprint Docs" => docs_path,
     "Leaderboard" => leaderboard_path,
+    "Starter Projects" => starter_projects_path,
+    "Resources" => resources_path,
     "FAQ" => faq_path,
     "Admin" => current_user&.special_perms? ? admin_root_path : nil
 } %>
+<% submenu = ["About Blueprint", "Resources"] %>
 
 <% normalize_path = ->(p) { p.to_s.sub(%r{/$}, "") } %>
 <% req = normalize_path.call(request.path) %>
@@ -17,7 +19,7 @@
      p.present? && (req == p || req.start_with?("#{p}/"))
    }&.first %>
 
-<nav id="global-nav" data-nav-target="panel" data-turbo-permanent class="fixed inset-y-0 left-0 z-50 w-64 md:w-[15rem] bg-bp-darker flex flex-col py-8 px-6 print:hidden space-y-8 shadow-xl shadow-black/50 transform transition-transform duration-200 -translate-x-full md:translate-x-0 overflow-y-auto md:bottom-0 md:top-0 font-rc-full" aria-hidden="true">
+<nav id="global-nav" data-nav-target="panel" class="fixed inset-y-0 left-0 z-50 w-64 md:w-[15rem] bg-bp-darker flex flex-col py-8 px-6 print:hidden space-y-8 shadow-xl shadow-black/50 transform transition-transform duration-200 -translate-x-full md:translate-x-0 overflow-y-auto md:bottom-0 md:top-0 font-rc-full" aria-hidden="true">
     <div class="flex items-center justify-between md:block">
         <a class="text-center md:block" href="<%= user_logged_in? ? landing_path : root_path %>">
             <p class="text-3xl md:text-4xl font-rcgl-full">Blueprint</p>
@@ -32,38 +34,32 @@
     <div class="flex flex-col space-y-3 grow">
         <% nav_links.each do |name, path| %>
             <% next if path.nil? %>
-            <% match = ["Guides", "Blueprint Docs"].include?(name) ? "prefix" : "exact" %>
+            <% has_submenu = submenu.include?(name) %>
+            <% match = has_submenu ? "prefix" : "exact" %>
+            <% submenu_base_path = has_submenu ? normalize_path.call(path) : nil %>
+            <% active = current_nav == name %>
 
-            <% if name == "Blueprint Docs" %>
-                <div class="flex flex-col btn btn-nav hover:bg-bp-dark py-0! px-0! gap-0! text-base" data-nav-target="link" data-nav-match="prefix" data-nav-base="/docs">
-                    <%= render "shared/button", url: path, text: name, variant: :none, class: "text-base py-0 nav-submenu-btn" %>
-                    <ul data-nav-target="submenu" data-submenu-base="/docs" class="flex-col hidden w-full pb-3 space-y-1 text-sm text-center">
-                        <% index_meta = docs_meta_for_url(docs_path) %>
-                        <li class="w-full px-2 hover:bg-bp-lighter motion-safe:transition-colors">
-                          <a href="<%= docs_path %>" data-nav-target="sublink" data-nav-match="exact" title="<%= index_meta&.dig(:description) %>"><%= index_meta&.dig(:title) || "Start here" %></a>
-                        </li>
-                        <% docs_menu_items.each do |item| %>
-                          <li class="w-full px-2 hover:bg-bp-lighter motion-safe:transition-colors">
-                            <a href="<%= item[:path] %>" data-nav-target="sublink" data-nav-match="prefix" title="<%= item[:description] %>"><%= item[:title] %></a>
-                          </li>
-                        <% end %>
-                    </ul>
-                </div>
-            <% elsif name == "Guides" %>
-                <div class="flex flex-col btn btn-nav text-base py-1.5!" data-nav-target="link" data-nav-match="prefix" data-nav-base="/guides">
-                    <%= render "shared/button", url: path, text: name, variant: :none, class: "text-base py-0" %>
-                    <ul class="flex-col hidden pb-3 space-y-1 text-sm text-center">
-                        <% guides_menu_items.each do |item| %>
-                          <li>
-                            <a href="<%= item[:path] %>" data-nav-target="sublink" data-nav-match="prefix" title="<%= item[:description] %>"><%= item[:title] %></a>
-                          </li>
-                        <% end %>
-                    </ul>
-                </div>
+            <% if has_submenu && active %>
+              <div class="flex flex-col btn btn-nav text-base submenu p-0 gap-0" data-nav-target="link" data-nav-match="prefix" data-nav-base="<%= submenu_base_path %>">
+                <%= render "shared/button", url: path, text: name, variant: :none, class: "text-base p-0 hover:bg-bp-lighter w-full submenu-btn" %>
+                <ul data-nav-target="submenu" data-submenu-base="<%= submenu_base_path %>" class="flex-col hidden w-full pb-3 text-sm text-center">
+                  <% index_meta = meta_for_url(submenu_base_path, submenu_base_path) rescue nil %>
+                  <% unless index_meta&.dig(:unlisted) %>
+                    <li class="w-full">
+                      <a href="<%= submenu_base_path %>" class="px-2 hover:bg-bp-lighter motion-safe:transition-colors block py-0.5" data-nav-target="sublink" data-nav-match="exact" title="<%= index_meta&.dig(:description) %>"><%= index_meta&.dig(:title) || "Start here" %></a>
+                    </li>
+                  <% end %>
+                  <% items = menu_items_for(submenu_base_path) rescue [] %>
+                  <% items.each do |item| %>
+                    <li class="w-full">
+                      <a href="<%= item[:path] %>" class="px-2 hover:bg-bp-lighter motion-safe:transition-colors block py-0.5" data-nav-target="sublink" data-nav-match="<%= item[:match] || 'prefix' %>" title="<%= item[:description] %>"><%= item[:title] %></a>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
             <% else %>
-                <%= render "shared/button", url: path, text: name, variant: current_nav == name ? :nav_active : :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""}", html_options: { data: { nav_target: "link", nav_match: match } } %>
+              <%= render "shared/button", url: path, text: name, variant: active ? :nav_active : :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""}", html_options: { data: { nav_target: "link", nav_match: match } } %>
             <% end %>
-            
         <% end %>
     </div>
     <% if user_logged_in? %>
