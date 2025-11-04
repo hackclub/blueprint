@@ -10,6 +10,10 @@
     "FAQ" => faq_path,
     "Admin" => current_user&.special_perms? ? admin_root_path : nil
 } %>
+
+<% if user_logged_in? && current_user.projects.where(is_deleted: false).count > 5 %>
+  <% nav_links = nav_links.to_a.insert(2, ["My Projects", projects_path]).to_h %>
+<% end %>
 <% submenu = ["About Blueprint", "Design Resources"] %>
 
 <% normalize_path = ->(p) { p.to_s.sub(%r{/$}, "") } %>
