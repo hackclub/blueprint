@@ -658,8 +658,8 @@ class Project < ApplicationRecord
       total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0
 
       # Get approved reviews
-      approved_design_reviews = design_reviews.where(result: "approved", invalidated: false).order(created_at: :asc)
-      approved_build_reviews = build_reviews.where(result: "approved", invalidated: false).order(created_at: :asc)
+      approved_design_reviews = design_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
+      approved_build_reviews = build_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
 
       # Calculate total effective hours from all approved reviews (design + build)
       total_effective_hours = 0
