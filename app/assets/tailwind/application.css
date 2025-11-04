@@ -183,6 +183,38 @@
   .pagy.nav .current {
     @apply underline;
   }
+
+  .checkbox {
+    @apply border-2 size-4;
+  }
+
+  .checkbox.checked {
+    @apply bg-white relative;
+  }
+
+  .checkbox.checked.check-darker:not(.check-cross):after {
+    @apply absolute top-0 left-0 border-l-3 border-b-3 border-bp-darker w-3 h-2 content-[''] -rotate-45;
+  }
+
+  .checkbox.checked.check-dark:not(.check-cross):after {
+    @apply absolute top-0 left-0 border-l-3 border-b-3 border-bp-dark w-3 h-2 content-[''] -rotate-45;
+  }
+
+  /* .checkbox.checked.check-cross.check-darker:before {
+    @apply absolute -top-0.5 left-[4.5px] border-l-3 border-bp-darker h-4 content-[''] rotate-45;
+  }
+
+  .checkbox.checked.check-cross.check-darker:after {
+    @apply absolute -top-0.5 left-[4.5px] border-l-3 border-bp-darker h-4 content-[''] -rotate-45;
+  }
+
+  .checkbox.checked.check-cross.check-dark:before {
+    @apply absolute -top-0.5 left-[4.5px] border-l-3 border-bp-dark h-4 content-[''] rotate-45;
+  }
+
+  .checkbox.checked.check-cross.check-dark:after {
+    @apply absolute -top-0.5 left-[4.5px] border-l-3 border-bp-dark h-4 content-[''] -rotate-45;
+  } */
 }
 
 /* Remove rendered rich text (ActionText) styles */
@@ -202,24 +234,24 @@
 
   /* Headings */
   h1 {
-    @apply mt-8 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/20 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
+    @apply mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
   }
   h2 {
-    @apply mt-8 mb-3 pb-2 text-4xl leading-tight tracking-tight border-b border-white/20 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
+    @apply mt-10 mb-3 pb-2 text-4xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
   }
 
   h3 {
-    @apply mt-6 mb-2 text-3xl;
+    @apply mt-10 mb-2 text-3xl;
   }
 
   /*Same as H2 but as a green accent color*/
   h4 {
-    @apply text-bp-success mt-8 mb-3 pb-2 text-3xl leading-tight tracking-tight border-b border-white/20 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
+    @apply text-bp-success mt-10 mb-3 pb-2 text-3xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
   }
 
   /*Same as h1 but it has the fancy blueprint lines*/
   h5 {
-    @apply mt-8 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/20 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
+    @apply mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
   }
   h6 {
     @apply mt-3 mb-2 text-lg;
@@ -249,14 +281,14 @@
     @apply my-4 list-decimal list-inside print:my-2 text-lg leading-relaxed;
   }
   li {
-    @apply my-1 print:my-0;
+    @apply print:my-0;
   }
   li p {
-    @apply my-1 print:my-0;
+    @apply print:my-0;
   }
   li > ul,
   li > ol {
-    @apply mt-1 ml-4;
+    @apply ml-4;
   }
 
   /* Code */
@@ -272,12 +304,12 @@
 
   /* Blockquote */
   blockquote {
-    @apply my-4 border-l-4 border-white/30 pl-4 italic text-white/80 print:border-black/20 print:text-black;
+    @apply my-4 border-l-4 border-white/50 pl-4 italic text-white/80 print:border-black/20 print:text-black;
   }
 
   /* Horizontal rule */
   hr {
-    @apply my-6 border-t border-white/20 print:border-black/20;
+    @apply my-6 border-t border-white/50 print:border-black/20;
   }
 
   /* Images */

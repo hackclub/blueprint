@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_29_145120) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_04_154557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -380,6 +380,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_145120) do
     t.boolean "print_legion", default: false, null: false
     t.integer "journal_entries_count", default: 0, null: false
     t.boolean "skip_gh_sync", default: false
+    t.boolean "needs_soldering_iron", default: false, null: false
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 

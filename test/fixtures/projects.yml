@@ -14,6 +14,7 @@
 #  is_deleted             :boolean          default(FALSE)
 #  journal_entries_count  :integer          default(0), not null
 #  needs_funding          :boolean          default(TRUE)
+#  needs_soldering_iron   :boolean          default(FALSE), not null
 #  print_legion           :boolean          default(FALSE), not null
 #  project_type           :string
 #  readme_link            :string
