@@ -1,13 +1,11 @@
-class GuidesController < ApplicationController
+class MarkdownController < ApplicationController
   allow_unauthenticated_access only: %i[ show docs guides faq ]
   skip_before_action :set_current_user, if: :turbo_frame_request?
 
   SECTION_CONFIG = {
     "about" => { suffix: "About Blueprint", index_title: "About - Blueprint" },
     "resources" => { suffix: "Resources", index_title: "Resources - Blueprint" },
-    "starter-projects" => { suffix: "Starter Projects", index_title: "Starter Projects - Blueprint" },
-    "docs" => { suffix: "Blueprint Docs", index_title: "Docs - Blueprint" },
-    "guides" => { suffix: "Blueprint Guides", index_title: "Guides - Blueprint" }
+    "starter-projects" => { suffix: "Starter Projects", index_title: "Starter Projects - Blueprint" }
   }.freeze
 
   def about

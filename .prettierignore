@@ -1,3 +1,3 @@
 # Prevent Prettier from normalizing Markdown emphasis markers in guides
 # This preserves authored markers like __underline__
-docs/guides/**/*.md
+docs/**/*.md

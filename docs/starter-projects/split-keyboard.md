@@ -168,4 +168,4 @@ You should find two flat sides of your two PCBs, place the mousebites there, and
 
 You will have to use the [ZMK](https://zmk.dev/docs) firmware, ZMK has excellent documentation and tutorials, and it explains it better then I could. It has a learning curve, but there is no getting around that
 
-[Back to Guides](/guides)
+[Back to Starter Projects](/starter-projects)

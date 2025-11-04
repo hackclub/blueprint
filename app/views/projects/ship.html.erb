@@ -52,7 +52,7 @@
                 <%= f.select :tier, @project.needs_funding ? Project.tier_options : Project.tier_options_with_multipliers, { include_blank: false, selected: 4 }, { data: { ship_bom_target: "select", funding_amount_target: "tierSelect", action: "change->funding-amount#tierChanged" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
               </div>
             </div>
-            <p>If you don't know which tier your project should be, look <a href="/docs" class="underline text-bp-warning underline-offset-2 hover:text-bp-warning/80">here</a></p>
+            <p>If you don't know which tier your project should be, look <a href="/about" class="underline text-bp-warning underline-offset-2 hover:text-bp-warning/80">here</a></p>
 
             <% if @project.needs_funding %>
 
@@ -156,7 +156,7 @@
         <%= render "shared/card", class: "hidden", html_options: { data: { controller: "funding-amount", "funding-amount-tier-max-cents-value": Project.tier_max_cents.to_json, paginate_target: "page" } } do %>
           <div>
             <%= f.label :tier, "What tier should this project be?", class: "text-3xl" %>
-            <p class="text-lg">We may adjust this as we see fit.<br>If you're unsure what to pick, check the <a href="/docs" target="_blank" class="underline text-bp-warning">tier docs</a>.</p>
+            <p class="text-lg">We may adjust this as we see fit.<br>If you're unsure what to pick, check the <a href="/about" target="_blank" class="underline text-bp-warning">tier docs</a>.</p>
           </div>
           <div class="py-4 space-y-6 flex-flex-col">
             <div class="space-y-2">

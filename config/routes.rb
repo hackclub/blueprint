@@ -120,25 +120,25 @@ Rails.application.routes.draw do
   end
 
   # About
-  get "about", to: "guides#about", as: :about
-  get "about/*slug", to: "guides#about"
+  get "about", to: "markdown#about", as: :about
+  get "about/*slug", to: "markdown#about"
   # Backwards compatibility
-  get "docs", to: "guides#docs", as: :docs
-  get "docs/*slug", to: "guides#docs"
+  get "docs", to: "markdown#docs", as: :docs
+  get "docs/*slug", to: "markdown#docs"
 
-  # Guides
-  get "resources", to: "guides#resources", as: :resources
-  get "resources/*slug", to: "guides#resources",
+  # Resources
+  get "resources", to: "markdown#resources", as: :resources
+  get "resources/*slug", to: "markdown#resources",
       constraints: { slug: /[a-z0-9\/_\-]+/ }
   # Backwards compatibility
-  get "guides", to: "guides#guides", as: :guides
-  get "guides/*slug", to: "guides#guides"
+  get "guides", to: "markdown#guides", as: :guides
+  get "guides/*slug", to: "markdown#guides"
 
   # Starter Projects
-  get "starter-projects", to: "guides#starter_projects", as: :starter_projects
-  get "starter-projects/*slug", to: "guides#starter_projects"
+  get "starter-projects", to: "markdown#starter_projects", as: :starter_projects
+  get "starter-projects/*slug", to: "markdown#starter_projects"
 
-  get "faq", to: "guides#faq", as: :faq
+  get "faq", to: "markdown#faq", as: :faq
 
   namespace :admin do
     post "stop_impersonating", to: "users#stop_impersonating"

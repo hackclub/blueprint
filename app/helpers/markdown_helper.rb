@@ -1,7 +1,7 @@
 require "redcarpet"
 require "uri"
 
-module GuidesHelper
+module MarkdownHelper
   class GuidesLinkRenderer < Redcarpet::Render::HTML
     def initialize(options = {})
       @base_url = options[:base_url]

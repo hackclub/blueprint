@@ -63,7 +63,7 @@ Your repo should look like this:
 - Dates
 - Time spent per day
 - Pictures/videos of work in progress
-- `BOM.csv` [make sure to have all required parts!](https://blueprint.hackclub.com/docs/bom)
+- `BOM.csv` [make sure to have all required parts!](/resources/bom)
 
 #### /CAD
 

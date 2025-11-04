@@ -22,4 +22,4 @@ That said, please always do what you can to select the cheaper option while maki
 
 If you are ever stuck on cost optimizing, ask around on the Slack, the community is very helpful!
 
-[Back to index](/docs)
+[Back to index](/about)

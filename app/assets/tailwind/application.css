@@ -230,7 +230,7 @@
 /* Markdown-rendered content */
 .markdown {
   /* Base */
-  @apply text-white leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word;
+  @apply text-white/85 leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word;
 
   /* Trim outer whitespace */
   > *:first-child {
@@ -241,6 +241,14 @@
   }
 
   /* Headings */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-rc-full text-white;
+  }
   h1 {
     @apply mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
   }
