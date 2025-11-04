@@ -649,7 +649,7 @@ class Project < ApplicationRecord
     primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
 
     # Check if this is an LED project
-    if led?
+    if ysws == "led"
       hours_for_airtable = 5
       reasoning = "This project followed the 555 LED blinker guide. This was a guide that we have used at workshops before and which took students new to hardware a minimum of 5 hours to complete. This project at least meets the standards of a project submitted at this event. - Clay"
     else
