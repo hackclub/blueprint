@@ -1,16 +1,16 @@
 <% nav_links = {
     "Home" => user_logged_in? ? home_path : login_path,
     "About Blueprint" => about_path,
-    "My Projects" => user_logged_in? ? projects_path : login_path,
-    "Explore" => explore_path,
-    "Tool Bag" => toolbag_path,
-    "Leaderboard" => leaderboard_path,
+    # "My Projects" => user_logged_in? ? projects_path : login_path,
     "Starter Projects" => starter_projects_path,
-    "Resources" => resources_path,
+    "Design Resources" => resources_path,
+    "Explore" => explore_path,
+    "Leaderboard" => leaderboard_path,
+    "Shop" => toolbag_path,
     "FAQ" => faq_path,
     "Admin" => current_user&.special_perms? ? admin_root_path : nil
 } %>
-<% submenu = ["About Blueprint", "Resources"] %>
+<% submenu = ["About Blueprint", "Design Resources"] %>
 
 <% normalize_path = ->(p) { p.to_s.sub(%r{/$}, "") } %>
 <% req = normalize_path.call(request.path) %>
