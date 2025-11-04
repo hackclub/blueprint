@@ -13,8 +13,12 @@
             </a>        
         <% end %>
       <% end %>
-      <%= render 'tasks' %>
-      <%= render 'announcements' %>
+      <% if current_user.tasks.completed? && current_user.free_stickers_claimed %>
+        <%= render 'announcements', class: 'col-span-1 md:col-span-2' %>
+      <% else %>
+        <%= render 'tasks' %>
+        <%= render 'announcements' %>
+      <% end %>
       <%= render 'projects' %>
     </div>
   </div>
