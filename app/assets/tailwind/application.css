@@ -230,7 +230,7 @@
 /* Markdown-rendered content */
 .markdown {
   /* Base */
-  @apply text-white/85 leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word;
+  @apply text-white/85 leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word tracking-wide;
 
   /* Trim outer whitespace */
   > *:first-child {
