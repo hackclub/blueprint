@@ -83,7 +83,8 @@ class Project < ApplicationRecord
 
   # Enums
   enum :project_type, {
-    custom: "custom"
+    custom: "custom",
+    led: "led"
   }
 
   enum :review_status, {
@@ -647,33 +648,39 @@ class Project < ApplicationRecord
     addresses = idv_data.dig(:identity, :addresses) || []
     primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
 
-    # Calculate total hours from ALL journal entries
-    total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0
+    # Check if this is an LED project
+    if led?
+      hours_for_airtable = 5
+      reasoning = "This project followed the 555 LED blinker guide. This was a guide that we have used at workshops before and which took students new to hardware a minimum of 5 hours to complete. This project at least meets the standards of a project submitted at this event. - Clay"
+    else
+      # Calculate total hours from ALL journal entries
+      total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0
 
-    # Get approved reviews
-    approved_design_reviews = design_reviews.where(result: "approved", invalidated: false).order(created_at: :asc)
-    approved_build_reviews = build_reviews.where(result: "approved", invalidated: false).order(created_at: :asc)
+      # Get approved reviews
+      approved_design_reviews = design_reviews.where(result: "approved", invalidated: false).order(created_at: :asc)
+      approved_build_reviews = build_reviews.where(result: "approved", invalidated: false).order(created_at: :asc)
 
-    # Calculate total effective hours from all approved reviews (design + build)
-    total_effective_hours = 0
-    approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
-    approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+      # Calculate total effective hours from all approved reviews (design + build)
+      total_effective_hours = 0
+      approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+      approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
 
-    # Use total effective hours if any reviews exist, otherwise use total logged
-    hours_for_airtable = (approved_design_reviews.any? || approved_build_reviews.any?) ? total_effective_hours : total_hours_logged
+      # Use total effective hours if any reviews exist, otherwise use total logged
+      hours_for_airtable = (approved_design_reviews.any? || approved_build_reviews.any?) ? total_effective_hours : total_hours_logged
+
+      reasoning = "This user logged #{total_hours_logged.round(1)} hours across #{pluralize(journal_entries.count, 'journal entry')}.\n\n\n"
+
+      approved_design_reviews.each do |review|
+        reasoning += "On #{review.created_at.strftime('%Y-%m-%d')}, #{review.admin_review ? 'Admin' : 'Reviewer'} #{review.reviewer.display_name} (#{review.reviewer.email}) decided \"#{review.result}\" with reason: #{review.reason.present? && !review.reason.empty? ? review.reason : 'no reason'}\n\n\n"
+      end
+
+      approved_build_reviews.each do |review|
+        reasoning += "On #{review.created_at.strftime('%Y-%m-%d')}, #{review.admin_review ? 'Admin' : 'Reviewer'} #{review.reviewer.display_name} (#{review.reviewer.email}) decided \"#{review.result}\" with reason: #{review.reason.present? && !review.reason.empty? ? review.reason : 'no reason'}\n\n\n"
+      end
+    end
 
     # For grants, use design review override if present
     grant = design_reviews.where.not(grant_override_cents: nil).where(invalidated: false, admin_review: true).order(created_at: :desc).first&.grant_override_cents || funding_needed_cents
-
-    reasoning = "This user logged #{total_hours_logged.round(1)} hours across #{pluralize(journal_entries.count, 'journal entry')}.\n\n\n"
-
-    approved_design_reviews.each do |review|
-      reasoning += "On #{review.created_at.strftime('%Y-%m-%d')}, #{review.admin_review ? 'Admin' : 'Reviewer'} #{review.reviewer.display_name} (#{review.reviewer.email}) decided \"#{review.result}\" with reason: #{review.reason.present? && !review.reason.empty? ? review.reason : 'no reason'}\n\n\n"
-    end
-
-    approved_build_reviews.each do |review|
-      reasoning += "On #{review.created_at.strftime('%Y-%m-%d')}, #{review.admin_review ? 'Admin' : 'Reviewer'} #{review.reviewer.display_name} (#{review.reviewer.email}) decided \"#{review.result}\" with reason: #{review.reason.present? && !review.reason.empty? ? review.reason : 'no reason'}\n\n\n"
-    end
 
     fields = {
       "Code URL" => repo_link,
