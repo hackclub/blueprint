@@ -15,7 +15,7 @@ class Admin::HcbTransactionsController < Admin::ApplicationController
     @top_missing_receipts = HcbTransaction
       .joins(:hcb_grant)
       .where(receipt_count: 0)
-      .group("hcb_grants.to_user_avatar")
+      .group("hcb_grants.to_user_avatar, hcb_grants.to_user_name")
       .select("hcb_grants.to_user_avatar, hcb_grants.to_user_name, COUNT(hcb_transactions.id) as missing_count")
       .order("missing_count DESC")
   end
