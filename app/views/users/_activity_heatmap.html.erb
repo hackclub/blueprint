@@ -1,0 +1,45 @@
+<%# Inputs: activity_by_date ({"YYYY-MM-DD" => count}), start_date (Date), end_date (Date) %>
+<% palette = [
+  "bg-gray-200 dark:bg-gray-700", # 0 entries
+  "bg-emerald-200",
+  "bg-emerald-300",
+  "bg-emerald-500",
+  "bg-emerald-700"
+] %>
+
+<% days = [] %>
+<% d = start_date %>
+<% while d <= end_date %>
+  <% days << d %>
+  <% d += 1 %>
+<% end %>
+
+<% today = Date.current %>
+
+<div class="space-y-2">
+  <div class="flex flex-wrap gap-y-1.5 gap-x-1.5">
+    <% days.each do |day| %>
+      <% count = activity_by_date[day.iso8601] || 0 %>
+      <% is_today = day == today %>
+      <% klass =
+        if is_today
+          "bg-amber-400 ring-2 ring-amber-500"
+        else
+          case count
+          when 0 then palette[0]
+          when 1..2 then palette[1]
+          when 3..5 then palette[2]
+          when 6..9 then palette[3]
+          else palette[4]
+          end
+        end
+      %>
+      <% tooltip_text = is_today ? "Today - #{count} journal #{'entry'.pluralize(count)}" : "#{count} journal #{'entry'.pluralize(count)} on #{day.strftime('%b %-d, %Y')}" %>
+      <div
+        class="w-5 h-5 rounded-sm <%= klass %> <%= is_today ? '' : 'ring-1 ring-black/5' %>"
+        title="<%= tooltip_text %>">
+      </div>
+    <% end %>
+    </div>
+    <div class="text-xs text-gray-500">October 1, 2025 - January 1, 2026</div>
+</div>

@@ -5,6 +5,26 @@ class UsersController < ApplicationController
     @user = User.find_by(id: params[:id])
     not_found unless @user
     @projects = @user.projects.where(is_deleted: false).includes(:banner_attachment).order(created_at: :desc)
+
+    # Heatmap data
+    @activity_start_date = Date.new(2025, 10, 1)
+    @activity_end_date   = Date.new(2026, 1, 1)
+
+    tz = (@user.respond_to?(:timezone_raw) && @user.timezone_raw.presence) || Time.zone.name
+    range = @activity_start_date.beginning_of_day..@activity_end_date.end_of_day
+
+    # Build a sanitized group expression: date_trunc('day', created_at AT TIME ZONE ?)::date
+    group_sql = ActiveRecord::Base.send(
+      :sanitize_sql_array,
+      ["date_trunc('day', created_at AT TIME ZONE ?)::date", tz]
+    )
+
+    counts = JournalEntry.where(user_id: @user.id, created_at: range)
+                         .group(Arel.sql(group_sql))
+                         .count
+
+    # Convert keys to ISO date strings for easy lookup in the view
+    @activity_by_date = counts.transform_keys { |d| d.to_date.iso8601 }
   end
 
   def me

@@ -29,6 +29,15 @@
         <% end %>
       </div>
     <% end %>
+    <%= render "shared/card" do %>
+      <div class="space-y-4">
+        <p class="text-3xl font-rc-full"><%= current_user == @user ? "Your Journal Activity" : "#{@user.display_name}'s Journal Activity" %></p>
+        <%= render "users/activity_heatmap",
+              activity_by_date: @activity_by_date,
+              start_date: @activity_start_date,
+              end_date: @activity_end_date %>
+      </div>
+    <% end %>
     <% if user_logged_in? && current_user == @user %>
       <%= render "shared/card" do %>
         <div class="space-y-1">
