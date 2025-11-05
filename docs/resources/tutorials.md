@@ -1,6 +1,8 @@
-| title       | Design resources                          |
+| title       | Tutorials                          |
 | ----------- | ----------------------------------------- |
 | description | Places to go to get help with your design |
+| Priority | 10 |
+
 
 # Design Resources
 Never designed a PCB before? You're in the right place! The Blueprint community has collected resources for you to get up-to-speed with circuit and PCB design! If you have any questions, feel free to ask in [`#blueprint`](https://hackclub.slack.com/archives/C083S537USC)
