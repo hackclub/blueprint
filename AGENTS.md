@@ -10,7 +10,7 @@ This project uses ruby 3.4.4 and rails 8.0.2.1. Make sure to only suggest change
 
 When adding changes, use best rails & hotwire practices and patterns. Use partials and helpers to keep code DRY. Use concerns to share code between models and controllers. Use stimulus over inline javascript. Keep performance in mind and minimize database queries (e.g. use includes, avoid n+1 queries). Use background jobs for long running tasks. Use caching where appropriate.
 
-When modifying code, ensure that you maintain existing functionality and do not introduce bugs. Ensure that your changes are well-integrated with the existing codebase and follow the project's coding standards and conventions.
+When modifying code, ensure that you maintain existing functionality and do not introduce bugs. Ensure that your changes are well-integrated with the existing codebase and follow the project's coding standards and conventions. Use `git diff` to see what you changed and run checks `bin/rubocop -f github` and `bin/brakeman --no-pager` before finishing to ensure code quality and security. In those checks, if there are issues that are unrelated to your changes, you can ignore them.
 
 If asked to change the requirements or behavior of a feature, make sure previous implementations that you suggested are also updated to reflect the new requirements.
 
