@@ -14,7 +14,7 @@
 <% if user_logged_in? && current_user.projects.where(is_deleted: false).count > 5 %>
   <% nav_links = nav_links.to_a.insert(2, ["My Projects", projects_path]).to_h %>
 <% end %>
-<% submenu = ["About Blueprint", "Design Resources"] %>
+<% submenu = ["About Blueprint", "Starter Projects", "Design Resources"] %>
 
 <% normalize_path = ->(p) { p.to_s.sub(%r{/$}, "") } %>
 <% req = normalize_path.call(request.path) %>
@@ -23,7 +23,7 @@
      p.present? && (req == p || req.start_with?("#{p}/"))
    }&.first %>
 
-<nav id="global-nav" data-nav-target="panel" class="fixed inset-y-0 left-0 z-50 w-64 md:w-[15rem] bg-bp-darker flex flex-col py-8 px-6 print:hidden space-y-8 shadow-xl shadow-black/50 transform transition-transform duration-200 -translate-x-full md:translate-x-0 overflow-y-auto md:bottom-0 md:top-0 font-rc-full" aria-hidden="true">
+<nav id="global-nav" data-nav-target="panel" class="fixed inset-y-0 left-0 z-50 w-64 md:w-[15rem] bg-bp-darker flex flex-col py-8 px-6 print:hidden space-y-6 shadow-xl shadow-black/50 transform transition-transform duration-200 -translate-x-full md:translate-x-0 overflow-y-auto md:bottom-0 md:top-0 font-rc-full" aria-hidden="true">
     <div class="flex items-center justify-between md:block">
         <a class="text-center md:block" href="<%= user_logged_in? ? landing_path : root_path %>">
             <p class="text-3xl md:text-4xl font-rcgl-full">Blueprint</p>
