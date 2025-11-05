@@ -1,0 +1,6 @@
+[submodule "app/views/prototype"]
+	path = app/views/prototype
+	url = https://github.com/hackclub/blueprint-prototype-views.git
+[submodule "public/assets/prototype"]
+	path = public/assets/prototype
+	url = https://github.com/hackclub/blueprint-prototype-assets.git

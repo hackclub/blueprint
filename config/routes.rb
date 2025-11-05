@@ -140,6 +140,8 @@ Rails.application.routes.draw do
 
   get "faq", to: "markdown#faq", as: :faq
 
+  get "prototype", to: "prototype#index", as: :prototype
+
   namespace :admin do
     post "stop_impersonating", to: "users#stop_impersonating"
 
