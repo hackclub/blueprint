@@ -196,7 +196,7 @@ module MarkdownHelper
     section = url_path.to_s.sub(%r{^/}, "")
     base = Rails.root.join("docs", section)
     return [] unless File.directory?(base)
-    
+
     docs_metadata(base: base, url_prefix: url_path, default_index_title: section.titleize)
       .reject { |i| i[:slug].blank? || i[:unlisted] }
       .sort_by { |h| [ h[:priority].nil? ? Float::INFINITY : h[:priority].to_i, h[:title].downcase ] }
@@ -204,10 +204,10 @@ module MarkdownHelper
   end
 
   def meta_for_url(url_path, url)
-    section = url_path.to_s.sub(%r{^/}, '')
+    section = url_path.to_s.sub(%r{^/}, "")
     base = Rails.root.join("docs", section)
     return nil unless File.directory?(base)
-    
+
     docs_metadata(base: base, url_prefix: url_path, default_index_title: section.titleize)
       .find { |i| i[:path] == url }
   end

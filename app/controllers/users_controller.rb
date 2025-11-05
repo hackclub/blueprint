@@ -16,7 +16,7 @@ class UsersController < ApplicationController
     # Build a sanitized group expression: date_trunc('day', created_at AT TIME ZONE ?)::date
     group_sql = ActiveRecord::Base.send(
       :sanitize_sql_array,
-      ["date_trunc('day', created_at AT TIME ZONE ?)::date", tz]
+      [ "date_trunc('day', created_at AT TIME ZONE ?)::date", tz ]
     )
 
     counts = JournalEntry.where(user_id: @user.id, created_at: range)
