@@ -1,5 +1,10 @@
 # Make your own Hackpad!
 
+<div class="flex justify-center my-8">
+  <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" alt="Hackpad Image" style="width: 40%;" />
+</div>
+
+
 Hey! Want to make your own macropad but have absolutely no clue where to start? You found the right place! In this tutorial, we're going to make a 4-key macropad as an example. **For a full submission, you will have to edit it to be your own** (add extra keys?? a knob?? OLED screen? up to you!)
 
 **Read over the [FAQ](/faq) first so that you have an idea of what you're working with!**
@@ -21,7 +26,23 @@ If you're unsure about anything, send a message in **#hackpad!** We have so many
 
 There's also [this](/resources) giant wall of resources to reference!
 
----
+
+# List of approved parts
+
+Here is the list of parts that come with the kit! Feel free to use anything in it
+
+- Seeed XIAO RP2040 - since you're soldering, you can mount it SMD style! Please note it is significantly harder than doing it through-hole, so if it's your first time soldering I would avoid it.
+- Through-hole 1N4148 Diodes (Max 20x)
+- MX-Style switches (Max 16x)
+- EC11 Rotary encoders (Max 2x)
+- 0.91 inch OLED displays (Max 1x) (make sure the pin order is GND-VCC-SCL-SDA, otherwise it WILL NOT WORK)
+- Blank DSA keycaps (White)
+- SK6812 MINI-E LEDs (Max 16x)
+- M3x16mm screws
+- [M3x5mx4mm heatset inserts](https://www.aliexpress.us/item/2255800046543591.html)
+- 3D PRINTED CASE ONLY. NO ACRYLIC.
+
+
 
 ## Designing your PCB
 
