@@ -68,16 +68,40 @@ export default class extends Controller {
 
     const value = (this.repoTarget.value || "").trim()
 
-    // Always validate immediately to update submit disabled state
-    // (repo will be invalid until a positive check arrives)
-    this._repoState = value.length === 0 ? { kind: "empty" } : { kind: "checking" }
-    this.setStatus(value.length === 0 ? "" : "Checking…", { neutral: true })
+    if (value.length === 0) {
+      this._repoState = { kind: "empty" }
+      this.setStatus("", { neutral: true })
+      this.validate()
+      if (this._timer) clearTimeout(this._timer)
+      return
+    }
+
+    if (!this.isGitHubRepo(value)) {
+      this._repoState = { kind: "ok" }
+      this.setStatus("Non-GitHub repository detected. Verification skipped.", { neutral: true })
+      this.validate()
+      if (this._timer) clearTimeout(this._timer)
+      return
+    }
+
+    this._repoState = { kind: "checking" }
+    this.setStatus("Checking…", { neutral: true })
     this.validate()
 
     if (this._timer) clearTimeout(this._timer)
-    if (value.length === 0) return
-
     this._timer = setTimeout(() => this.runRepoCheck(value), this.debounceValue)
+  }
+
+  isGitHubRepo(repo) {
+    const trimmed = repo.trim()
+    
+    if (trimmed.match(/^https?:\/\/github\.com\//i)) return true
+    if (trimmed.match(/^git@github\.com:/i)) return true
+    if (trimmed.match(/^github\.com\//i)) return true
+    if (trimmed.match(/^[^\/]+\/[^\/]+$/)) return true
+    if (trimmed.match(/^[\w.-]+$/)) return true
+    
+    return false
   }
 
   async runRepoCheck(repo) {

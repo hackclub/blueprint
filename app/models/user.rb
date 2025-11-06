@@ -627,9 +627,9 @@ class User < ApplicationRecord
 
     # Ensure this repo isn't already linked to another project
     in_use = if project_id.present?
-      Project.where(repo_link: normalized).where.not(id: project_id).exists?
+      Project.where(repo_link: normalized, is_deleted: false).where.not(id: project_id).exists?
     else
-      Project.where(repo_link: normalized).exists?
+      Project.where(repo_link: normalized, is_deleted: false).exists?
     end
 
     if in_use

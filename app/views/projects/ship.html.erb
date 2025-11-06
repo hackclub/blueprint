@@ -156,7 +156,7 @@
         <%= render "shared/card", class: "hidden", html_options: { data: { controller: "funding-amount", "funding-amount-tier-max-cents-value": Project.tier_max_cents.to_json, paginate_target: "page" } } do %>
           <div>
             <%= f.label :tier, "What tier should this project be?", class: "text-3xl" %>
-            <p class="text-lg">We may adjust this as we see fit.<br>If you're unsure what to pick, check the <a href="/about" target="_blank" class="underline text-bp-warning">tier docs</a>.</p>
+            <p class="text-lg">We may adjust this as we see fit.<br>If you're unsure what to pick, check the <a href="/docs" target="_blank" class="underline text-bp-warning">tier docs</a>.</p>
           </div>
           <div class="py-4 space-y-6 flex-flex-col">
             <div class="space-y-2">

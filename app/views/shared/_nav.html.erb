@@ -11,7 +11,8 @@
     "Admin" => current_user&.special_perms? ? admin_root_path : nil
 } %>
 
-<% if user_logged_in? && current_user.projects.where(is_deleted: false).count > 5 %>
+<% active_projects_count = user_logged_in? ? Rails.cache.fetch([current_user.id, "active_projects_count", current_user.projects.maximum(:updated_at)]) { current_user.projects.where(is_deleted: false).count } : 0 %>
+<% if active_projects_count > 5 %>
   <% nav_links = nav_links.to_a.insert(2, ["My Projects", projects_path]).to_h %>
 <% end %>
 <% submenu = ["About Blueprint", "Starter Projects", "Design Resources"] %>
@@ -80,16 +81,7 @@
                     <img src="<%= avatar_url %>" alt="<%= name %>'s avatar" class="rounded-lg size-12">
                     <div>
                         <p class="w-32 truncate whitespace-nowrap"><%= name %> <%= current_user.created_at < DateTime.new(2025,10,4,4,0,0) ? "🚀" : "" %></p>
-                        <% cache [
-                          current_user,
-                          "tickets",
-                          current_user.received_build_reviews.maximum(:updated_at),
-                          current_user.received_build_reviews.count,
-                          current_user.manual_ticket_adjustments.maximum(:updated_at),
-                          current_user.manual_ticket_adjustments.count,
-                          current_user.shop_orders.maximum(:updated_at),
-                          current_user.shop_orders.count
-                        ] do %>
+                        <% cache [current_user, "tickets-v2"] do %>
                           <p><%= pluralize(current_user.tickets, "ticket") %></p>
                         <% end %>
                     </div>

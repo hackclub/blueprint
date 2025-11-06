@@ -1,8 +1,202 @@
-<section class="flex flex-col items-center grow space-y-6">
-  <div class="w-full max-w-3xl space-y-4 min-h-full flex flex-col m-8">
-    <%= render "shared/card" do %>
-      <h1 class="text-4xl">Start a new project</h1>
-      <%= render "form" %>
-    <% end %>
-  </div>
-</section>
+<% unless user_logged_in? && Flipper.enabled?(:new_flow, current_user) %>
+  <section class="flex flex-col items-center grow space-y-6">
+    <div class="w-full max-w-3xl space-y-4 min-h-full flex flex-col m-8">
+      <%= render "shared/card" do %>
+        <h1 class="text-4xl">Start a new project</h1>
+        <%= render "form" %>
+      <% end %>
+    </div>
+  </section>
+<% else %>
+  <% first_time = !current_user.projects.where(is_deleted: false).any? %>
+  <section class="flex flex-col items-center grow space-y-6">
+    <div class="w-full flex flex-col grow items-center max-w-5xl text-center p-8 pb-2 space-y-12 font-rc-full" data-controller="paginate stepped-progress ysws-selector" data-paginate-index-value="<%= (@is_after_gh_link ? 2 : 0) + (first_time ? 0 : 1) %>" data-stepped-progress-current-step-value="<%= (@is_after_gh_link ? 3 : 1) + (first_time ? 0 : 1) %>" id="steps-controller">
+      
+      <%# HEADING %>
+      <p class="font-rc-full text-4xl">Let's start <%= first_time ? "your first" : "a" %> project</p>
+      <div class="relative flex w-full items-center justify-between text-xl">
+        <div class="absolute right-6 left-6 h-1">
+          <div class="absolute top-0 h-1 bg-bp-success z-10" data-stepped-progress-target="progress"></div>
+          <div class="absolute top-0 h-1 w-full bg-white"></div>
+        </div>
+        <div class="z-20 flex size-12 items-center justify-center border-4 border-bp-success bg-bp-dark text-bp-success" data-stepped-progress-target="step">1</div>
+        <div class="z-20 flex size-12 items-center justify-center border-4 border-white bg-bp-dark text-white" data-stepped-progress-target="step">2</div>
+        <div class="z-20 flex size-12 items-center justify-center border-4 border-white bg-bp-dark text-white" data-stepped-progress-target="step">3</div>
+        <div class="z-20 flex size-12 items-center justify-center border-4 border-white bg-bp-dark text-white" data-stepped-progress-target="step">4</div>
+        <% if first_time %>
+          <div class="z-20 flex size-12 items-center justify-center border-4 border-white bg-bp-dark text-white" data-stepped-progress-target="step">5</div>
+        <% end %>
+      </div>
+
+      <%# STEPS %>
+      <%= form_with model: @project, html: { class: "grow flex flex-col w-full" } do |f| %>
+        <% if @project.errors.any? %>
+          <div class="p-4 text-red-900 rounded-md bg-bp-danger mb-4">
+            <p><strong><%= pluralize(@project.errors.count, "error") %></strong> prevented this project from being saved:</p>
+            <ul class="pl-5 list-disc">
+              <% @project.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <% unless current_user.projects.where(is_deleted: false).any? %>
+          <%# STEP 0: Welcome %>
+          <div class="grow flex flex-col items-center w-full space-y-8 font-content text-xl" data-paginate-target="page">
+            <div class="flex flex-col items-center grow w-full max-w-5xl space-y-8">
+              <div class="space-y-2 mb-8">
+                <p class="text-3xl font-rc-full">Welcome to Blueprint</p>
+                <p>Let's get you started!</p>
+              </div>
+              <div class="flex flex-col grow items-center space-y-2">
+                <p>Start your first project and get free stickers!</p>
+                <div class="grow bg-contain bg-center bg-no-repeat w-full p-8" style="background-image: url('<%= image_path('stickers.webp') %>')"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center w-full">
+              <%= render "shared/button", text: "< Not now", variant: :none, url: home_path, class: "p-0" %>
+              <%= render "shared/button", text: "Let's go! >", html_options: { data: { action: "click->paginate#next click->stepped-progress#next" } }%>
+            </div>
+          </div>
+        <% end %>
+
+        <%# STEP 1: Create GH repo %>
+        <div class="grow flex flex-col items-center w-full space-y-8 font-content text-xl" data-paginate-target="page">
+          <div class="flex flex-col items-center grow w-full max-w-5xl space-y-8">
+            <div class="space-y-2 mb-8">
+              <p class="text-3xl font-rc-full">First, create a repository on GitHub</p>
+              <p>You'll store and share your project's files on GitHub. Name it something unique!<br>Create an account if you don't have one. <a class="underline text-bp-warning" href="https://docs.github.com/en/get-started/start-your-journey/about-github-and-git" target="_blank">Check the GitHub docs.</a></p>
+            </div>
+            <div class="flex flex-col grow items-center space-y-2">
+              <div class="bg-gray-500 grow max-w-xl">
+                <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ac269293ff13456900e5dcceb72cbba68a19ecfe_Screenshot_2025-11-06_at_11.22.43_AM.png">
+              </div>
+              <p class="italic text-base text-white/80">Don't want to use GitHub? Any Git host works!</p>
+            </div>
+          </div>
+          <div class="flex justify-between items-center w-full">
+            <% unless current_user.projects.where(is_deleted: false).any? %>
+              <%= render "shared/button", text: "< Back", variant: :none, class: "p-0", html_options: { data: { action: "click->paginate#prev click->stepped-progress#prev" } } %>
+            <% else %>
+              <%= render "shared/button", text: "< Not now", variant: :none, url: home_path, class: "p-0" %>
+            <% end %>
+            <%= render "shared/button", text: "I did it >", html_options: { data: { action: "click->paginate#next click->stepped-progress#next" } } %>
+          </div>
+        </div>
+
+        <%# STEP 2: Link GH account %>
+        <div class="grow flex flex-col items-center w-full space-y-8 font-content text-xl hidden" data-paginate-target="page">
+          <div class="flex flex-col items-center grow w-full max-w-5xl space-y-8">
+            <div class="space-y-2 mb-8">
+              <p class="text-3xl font-rc-full">Link your GitHub account</p>
+              <p>Make sure you include your project's repository that you just created.</p>
+            </div>
+            <div class="flex flex-col grow items-center space-y-2">
+              <div class="bg-gray-500 grow max-w-xl">
+                <%= video_tag "https://hc-cdn.hel1.your-objectstorage.com/s/v3/aebc2a690812ca959742fcd99214b4ff527f0b3f_github-intro.mp4", autoplay: true, loop: true, muted: true, playsinline: true, preload: 'metadata', class: 'object-fit', type: 'video/mp4' %>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center w-full">
+            <%= render "shared/button", text: "< Back", variant: :none, class: "p-0", html_options: { data: { action: "click->paginate#prev click->stepped-progress#prev" } }%>
+            <div>
+              <%= render "shared/button", text: "I'm using another Git host", variant: :none, html_options: { data: { action: "click->paginate#next click->stepped-progress#next" } }%>
+              <%= render "shared/button", text: "Go link account >", url: github_login_path, html_options: { data: {turbo_prefetch: false } } %>
+            </div>
+          </div>
+        </div>
+
+        <%# STEP 3: Pick repo %>
+        <div class="grow flex flex-col items-center w-full space-y-8 font-content text-xl hidden" data-paginate-target="page" data-controller="gh-repo-dropdown" data-gh-repo-dropdown-skip-checks-value="<%= !current_user.github_user? %>" data-gh-repo-dropdown-existing-links-value="<%= @existing_links.to_json %>">
+          <div class="flex flex-col items-center grow w-full max-w-5xl space-y-8">
+            <div class="space-y-2 mb-8">
+              <p class="text-3xl font-rc-full">Link your repository</p>
+              <% if @is_after_gh_link %>
+                <p>Pick the repository that you want to link to. You can change this later.<br>You can also just paste in the repository's URL.</p>
+              <% else %>
+                <p>Enter a public-viewable link of your repository.</p>
+              <% end %>
+            </div>
+            <div class="flex flex-col grow items-center space-y-2 w-full">
+              <div class="w-full flex flex-col max-w-3xl">
+                <div class="flex justify-between items-center w-full">
+                  <%= f.label :repo_link, "Choose repository", class: "text-left font-rc-full" %>
+                  <% if current_user.github_user? %>
+                    <button type="button" class="p-1 hover:opacity-70" data-action="click->gh-repo-dropdown#refresh">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" data-gh-repo-dropdown-target="refreshIcon">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                      </svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hidden" data-gh-repo-dropdown-target="checkIcon">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                      </svg>
+                    </button>
+                  <% end %>
+                </div>
+                <%= f.text_field :repo_link, list: "repositories", placeholder: "Select or paste repository URL", class: "w-full p-2 bg-bp-dark border-2 border-white text-white", data: { gh_repo_dropdown_target: "input", action: "input->gh-repo-dropdown#onRepoInputChange" } %>
+                <% if current_user.github_user? %>
+                  <datalist id="repositories" data-gh-repo-dropdown-target="datalist"></datalist>
+                  <p class="text-bp-danger text-left text-base hidden" data-gh-repo-dropdown-target="error"></p>
+                <% end %>
+                <p class="text-bp-warning text-left text-base hidden" data-gh-repo-dropdown-target="warning"></p>
+                <div class="mt-8 space-y-4 text-left hidden" data-gh-repo-dropdown-target="detailsDiv">
+                  <div class="space-y-2 text-center">
+                    <p class="text-3xl font-rc-full">Finish linking your project</p>
+                    <p>Confirm or edit the following information about your project</p>
+                  </div>
+                  <div class="space-y-6">
+                    <div>
+                      <%= f.label :title, "Project name", class: "text-xl font-rc-full" %>
+                      <%= f.text_field :title, placeholder: "Give your project a short and creative name!", class: "w-full p-2 bg-bp-dark border-2 border-white text-white", required: true, data: { gh_repo_dropdown_target: "titleInput", action: "input->gh-repo-dropdown#onTitleChange" } %>
+                    </div>
+                    <div>
+                      <%= f.label :description, "Project description (optional)", class: "text-xl font-rc-full" %>
+                      <%= f.text_field :description, placeholder: "Describe your project in a few words. Leave it blank if you don't know yet!", class: "w-full p-2 bg-bp-dark border-2 border-white text-white", data: { gh_repo_dropdown_target: "descriptionInput" } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center w-full">
+            <%= render "shared/button", text: "< Back", variant: :none, class: "p-0", html_options: { data: { action: "click->paginate#prev click->stepped-progress#prev" } } %>
+            <div>
+              <%= render "shared/button", text: "Next >", html_options: { disabled: true, data: { action: "click->paginate#next click->stepped-progress#next", gh_repo_dropdown_target: "nextButton" } } %>
+            </div>
+          </div>
+        </div>
+
+        <%# STEP 4: Pick ysws %>
+        <div class="grow flex flex-col items-center w-full space-y-8 font-content text-xl hidden" data-paginate-target="page">
+          <%= f.hidden_field :ysws, id: "project_ysws_field", data: { ysws_selector_target: "field" } %>
+          <div class="flex flex-col items-center grow w-full max-w-5xl space-y-8">
+            <div class="space-y-2 mb-8">
+              <p class="text-3xl font-rc-full">What are you building?</p>
+              <p>If you don't know, that's okay. You should try out Hackpad!</p>
+            </div>
+            <div class="grow w-full grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div class="bg-bp-darker p-6 flex flex-col space-y-6 min-h-96 cursor-pointer border-4 border-bp-darker" data-ysws-selector-target="option" data-value="hackpad" data-action="click->ysws-selector#select">
+                <div>
+                  <p class="font-rc-full text-4xl">Hackpad</p>
+                  <p>Make your own macropad, a mini keyboard!</p>
+                </div>
+                <div class="bg-contain grow w-full bg-no-repeat bg-center" style="background-image: url('https://hackpad.hackclub.com/orpheuspadpic.png')"></div>
+              </div>
+              <div class="bg-bp-darker p-6 flex flex-col space-y-6 min-h-96 cursor-pointer border-4 border-bp-darker" data-ysws-selector-target="option" data-value="" data-action="click->ysws-selector#select">
+                <div>
+                  <p class="font-rc-full text-4xl">Something else</p>
+                  <p>Follow another guide, or build something completely custom!</p>
+                </div>
+                <div class="bg-contain grow w-full bg-no-repeat bg-center" style="background-image: url('<%= image_path('projects.webp') %>"></div>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center w-full">
+            <%= render "shared/button", text: "< Back", variant: :none, html_options: { data: { action: "click->paginate#prev click->stepped-progress#prev" } }, class: "p-0" %>
+            <%= render "shared/button", text: "Create the project!", html_options: { type: "submit", data: { guide_link_tracker_target: "submitButton" } } %>          
+          </div>
+        </div>
+
+      <% end %>
+  </section>
+<% end %>

@@ -55,27 +55,29 @@
     </svg>
     <%= render "shared/notice" %>
     
-    <div data-controller="nav">
-      <header class="fixed inset-x-0 top-0 z-50 flex items-center justify-between h-14 px-4 bg-bp-darker text-white md:hidden" style="padding-top: env(safe-area-inset-top);">
-        <button type="button"
-                class="p-2 -m-2 cursor-pointer"
-                aria-controls="global-nav"
-                aria-expanded="false"
-                aria-label="Open menu"
-                data-action="click->nav#open">
-          <%= inline_svg "icons/menu.svg", class: "size-6" %>
-        </button>
-        <a href="<%= user_logged_in? ? home_path : root_path %>" class="font-rcgl-full text-2xl">Blueprint</a>
-        <span class="w-6"></span>
-      </header>
+    <% unless @hide_nav.present? && @hide_nav == true %>
+      <div data-controller="nav">
+        <header class="fixed inset-x-0 top-0 z-50 flex items-center justify-between h-14 px-4 bg-bp-darker text-white md:hidden" style="padding-top: env(safe-area-inset-top);">
+          <button type="button"
+                  class="p-2 -m-2 cursor-pointer"
+                  aria-controls="global-nav"
+                  aria-expanded="false"
+                  aria-label="Open menu"
+                  data-action="click->nav#open">
+            <%= inline_svg "icons/menu.svg", class: "size-6" %>
+          </button>
+          <a href="<%= user_logged_in? ? home_path : root_path %>" class="font-rcgl-full text-2xl">Blueprint</a>
+          <span class="w-6"></span>
+        </header>
 
-      <%= render "shared/nav" %>
-      <div data-nav-target="backdrop"
-           class="fixed inset-0 z-40 hidden bg-black/50 md:hidden"
-           data-action="click->nav#close"></div>
-    </div>
+        <%= render "shared/nav" %>
+        <div data-nav-target="backdrop"
+            class="fixed inset-0 z-40 hidden bg-black/50 md:hidden"
+            data-action="click->nav#close"></div>
+      </div>
+    <% end %>
 
-    <main class="ml-0 md:ml-[15rem] mt-14 md:mt-0 p-4 md:p-8 print:ml-0 print:mt-0 print:p-0 min-h-screen flex flex-col overflow-auto">
+    <main class="ml-0 <%= @hide_nav.present? && @hide_nav == true ? '' : 'md:ml-[15rem]' %> mt-14 md:mt-0 p-4 md:p-8 print:ml-0 print:mt-0 print:p-0 min-h-screen flex flex-col overflow-auto">
       <%= yield %>
     </main>
   </body>

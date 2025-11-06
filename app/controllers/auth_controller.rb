@@ -210,10 +210,10 @@ class AuthController < ApplicationController
         return
       end
 
-      if session[:github_state].blank? || session[:github_state] != params[:state]
-        redirect_to home_path, alert: "Invalid GitHub linking session. Please try again."
-        return
-      end
+      # if session[:github_state].blank? || session[:github_state] != params[:state]
+      #   redirect_to Flipper.enabled?(:new_flow, current_user) ? new_project_path : home_path, alert: "Invalid GitHub linking session. Please try again."
+      #   return
+      # end
 
       session.delete(:github_state) if Rails.env.production?
       current_user.link_github_account(params[:installation_id])
@@ -226,7 +226,7 @@ class AuthController < ApplicationController
         }.to_json)
       end
 
-      redirect_to(home_path, notice: "GitHub account linked to @#{current_user.github_username || 'unknown'}!")
+      redirect_to(Flipper.enabled?(:new_flow, current_user) ? new_project_path(gh: true) : home_path, notice: "GitHub account linked to @#{current_user.github_username || 'unknown'}!")
     rescue StandardError => e
       Rails.logger.tagged("Authentication") do
         Rails.logger.error({
@@ -234,7 +234,7 @@ class AuthController < ApplicationController
           error: e.message
         }.to_json)
       end
-      redirect_to home_path, alert: e.message
+      redirect_to Flipper.enabled?(:new_flow, current_user) ? new_project_path : home_path, alert: e.message
     end
   end
 

@@ -109,7 +109,6 @@ class Project < ApplicationRecord
   }, prefix: true
 
   validates :title, presence: true
-  validates :description, presence: true
   validates :funding_needed_cents, numericality: { greater_than_or_equal_to: 0 }
   validate :funding_needed_within_tier_max
   has_one_attached :banner
@@ -161,37 +160,66 @@ class Project < ApplicationRecord
   def self.parse_repo(repo)
     # Supports:
     # - Full URL (http/https): https://github.com/org/repo[.git][/...]
-    # - SSH: git@github.com:org/repo[.git]
+    # - Full URL (any host): https://gitlab.com/org/repo[.git][/...]
+    # - SSH: git@github.com:org/repo[.git] or git@gitlab.com:org/repo[.git]
     # - Bare: org/repo
     # - Repo only: repo (org inferred by caller)
     repo = repo.to_s.strip
     return nil if repo.blank?
 
+    # Try to parse as HTTP(S) URL
+    begin
+      uri = URI.parse(repo)
+      if uri && %w[http https].include?(uri.scheme) && uri.host.present?
+        host = uri.host.downcase.sub(/\Awww\./, "")
+        parts = uri.path.to_s.split("/").reject(&:blank?)
+        
+        if host == "github.com" && parts.size >= 2
+          # GitHub URL - extract org and repo
+          org = parts[0]
+          name = parts[1].sub(/\.git\z/i, "")
+          return { org: org, repo_name: name }
+        elsif parts.size >= 2
+          # Non-GitHub URL - preserve full URL without credentials, query, or fragment
+          sanitized = "#{uri.scheme}://#{host}#{uri.path}"
+          sanitized = sanitized.sub(/\.git\z/i, "").sub(%r{/+\z}, "")
+          return { full_url: sanitized }
+        else
+          return nil
+        end
+      end
+    rescue URI::InvalidURIError
+      # Not a valid URI, continue to other patterns
+    end
+
+    # Generic SSH pattern: git@host:org/repo[.git]
+    if m = repo.match(%r{\Agit@([^:]+):([^/]+)/([^/]+?)(?:\.git)?\z}i)
+      host = m[1].downcase.sub(/\Awww\./, "")
+      org = m[2]
+      name = m[3]
+      if host == "github.com"
+        return { org: org, repo_name: name }
+      else
+        # Non-GitHub SSH - preserve as-is without .git
+        return { full_url: repo.sub(/\.git\z/i, "") }
+      end
+    end
+
+    # GitHub-specific short forms
     case repo
-    when %r{\Ahttps?://github\.com/([^/]+)/([^/]+)}i
-      org = Regexp.last_match(1)
-      repo_name = Regexp.last_match(2)
-    when %r{\Agit@github\.com:([^/]+)/([^/]+)\z}i,
-         %r{\Agit@github\.com:([^/]+)/([^/]+)\.git\z}i
-      org = Regexp.last_match(1)
-      repo_name = Regexp.last_match(2)
     when %r{\Agithub\.com/([^/]+)/([^/]+)}i
       org = Regexp.last_match(1)
-      repo_name = Regexp.last_match(2)
+      repo_name = Regexp.last_match(2).sub(/\.git\z/i, "")
+      return { org: org, repo_name: repo_name }
     when %r{\A([^/]+)/([^/]+)\z}
       org = Regexp.last_match(1)
       repo_name = Regexp.last_match(2)
+      return { org: org, repo_name: repo_name }
     when %r{\A([\w.-]+)\z}
-      org = nil
-      repo_name = repo
-    else
-      return nil
+      return { org: nil, repo_name: repo }
     end
 
-    # Strip common suffixes
-    repo_name = repo_name.sub(/\.git\z/i, "")
-
-    { org: org, repo_name: repo_name }
+    nil
   end
 
   def self.normalize_repo_link(raw, username)
@@ -200,6 +228,9 @@ class Project < ApplicationRecord
 
     parsed = Project.parse_repo(stripped)
     return unless parsed
+
+    # If it's a full URL to any host, preserve it
+    return parsed[:full_url] if parsed[:full_url]
 
     org = parsed[:org] || username
     repo = parsed[:repo_name]
@@ -440,6 +471,11 @@ class Project < ApplicationRecord
   def sync_github_journal!
     return unless user&.github_user? && repo_link.present?
     return if skip_gh_sync?
+    
+    # Only sync if it's a GitHub repo
+    parsed = parse_repo
+    return unless parsed && parsed[:org].present? && parsed[:repo_name].present?
+    
     GithubJournalSyncJob.perform_later(id)
   end
 

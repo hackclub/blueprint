@@ -33,6 +33,7 @@ class ApplicationController < ActionController::Base
 
   def update_last_active
     return unless current_user
+    return if current_user.last_active && current_user.last_active > 5.minutes.ago
 
     current_user.update_column(:last_active, Time.current)
   end

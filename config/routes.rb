@@ -106,6 +106,7 @@ Rails.application.routes.draw do
     post :check_github_repo, on: :collection
     post :check_bom, on: :collection
     post :check_readme, on: :collection
+    get :list_repos, on: :collection
   end
   get "explore" => "projects#explore", as: :explore
   get "leaderboard" => "leaderboards#index", as: :leaderboard

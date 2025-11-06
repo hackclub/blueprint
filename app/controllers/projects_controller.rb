@@ -189,6 +189,10 @@ class ProjectsController < ApplicationController
 
   def new
     @project = current_user.projects.build
+
+    @is_after_gh_link = params[:gh] == "true" && current_user.github_user?
+    @existing_links = Project.unscoped.where(user_id: current_user.id, is_deleted: false).where.not(repo_link: [ nil, "" ]).pluck(:repo_link)
+    @hide_nav = true
   end
 
   def create
@@ -202,9 +206,9 @@ class ProjectsController < ApplicationController
     @project = current_user.projects.build(project_params)
     if @project.save
       ahoy.track("project_create", project_id: @project.id, user_id: current_user&.id)
-      redirect_to projects_path, notice: "Project created."
+      redirect_to project_path(@project), notice: "Project created."
     else
-      render :new, status: :unprocessable_entity
+      redirect_to new_project_path, status: :unprocessable_entity
     end
   end
 
@@ -300,7 +304,7 @@ class ProjectsController < ApplicationController
     repo = params[:repo].to_s.strip
 
     parsed_repo = Project.parse_repo(repo)
-    unless parsed_repo
+    unless parsed_repo && parsed_repo[:repo_name].present?
       render json: { ok: false, error: "Invalid GitHub repo" }, status: :unprocessable_entity
       return
     end
@@ -367,6 +371,37 @@ class ProjectsController < ApplicationController
     render json: { ok: true, exists: exists, url: project.readme_file_url }
   rescue StandardError => e
     render json: { ok: false, error: e.message }, status: :unprocessable_entity
+  end
+
+  def list_repos
+    unless current_user.github_user?
+      render json: { ok: false, error: "GitHub account not linked" }, status: unprocessable_entity
+    end
+
+    response = current_user.fetch_github("/installation/repositories")
+
+    unless response.status == 200
+      render json: { ok: false, error: "Failed to fetch GitHub repositories" }, status: :unprocessable_entity
+      Sentry.capture_exception("Failed to fetch GitHub repositories", extra: { body: response.body })
+      return
+    end
+
+    result = JSON.parse(response.body)
+
+    repositories = result.dig("repositories") || []
+    # filter to "private" false
+    repositories = repositories.select { |r| r.dig("private") == false }
+
+    clean_repositories = repositories.map do |r|
+      {
+        name: r["name"],
+        full_name: r["full_name"],
+        owner: r.dig("owner", "login"),
+        description: r["description"]
+      }
+    end
+
+    render json: { ok: true, repositories: clean_repositories }
   end
 
   private
