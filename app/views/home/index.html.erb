@@ -5,20 +5,30 @@
       <p class="text-lg md:text-xl">Here's what's cooking today</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-      <%= render 'shared/card', class: 'col-span-1 md:col-span-2' do %>
-        <p class="text-2xl md:text-3xl font-rc-full">Congrats on your first project!</p>
-        <a href="https://forms.hackclub.com/t/6MhoMy5dY7us?ID=<%= current_user.slack_id %>&BPID=<%= current_user.id %>&email=<%= current_user.email %>" class="font-rc-full text-lg md:text-2xl bg-bp-success text-bp-dark grow px-6 md:px-8 text-center py-3 md:py-1 min-h-[44px] flex items-center justify-center">
-          Claim your stickers!
+      <% unless current_user.is_pro %>
+        <a href="/hackpad" class="bg-bp-darker">
+          <%= render 'shared/card', class: 'flex flex-col hover:bg-white/3 motion-safe:transition-colors' do %>
+            <p class="text-2xl md:text-3xl font-rc-full">Welcome! Start your first project with a mini-keyboard</p>
+            <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" alt="Mini Keyboard Example" class="my-4 max-w-md mx-auto" />
+            <div class="font-rc-full text-lg md:text-2xl bg-bp-warning text-bp-dark grow px-6 md:px-8 text-center py-3 md:py-1 min-h-[44px] flex items-center justify-center">
+              Build your own custom Hackpad
+            </div>
+          <% end %>
         </a>
       <% end %>
-    <%= render 'projects' %>
-      <% if current_user.tasks.completed? && current_user.free_stickers_claimed %>
-        <%= render 'announcements', class: 'col-span-1 md:col-span-2' %>
+      <% if current_user.is_pro %>
+        <%= render 'projects' %>
+        <% if current_user.tasks.completed? && current_user.free_stickers_claimed %>
+          <%= render 'announcements', class: 'col-span-1 md:col-span-2' %>
+        <% else %>
+          <%= render 'tasks' %>
+          <%= render 'announcements' %>
+        <% end %>
+          <%= render 'viral_projects' %>
       <% else %>
-        <%= render 'tasks' %>
         <%= render 'announcements' %>
-      <% end %>
         <%= render 'viral_projects' %>
+      <% end %>
     </div>
   </div>
 </section>
