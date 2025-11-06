@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_06_132130) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_06_182022) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -605,6 +605,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_132130) do
     t.text "internal_notes"
     t.boolean "free_stickers_claimed", default: false, null: false
     t.integer "ban_type"
+    t.date "birthday"
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
   end
 

@@ -7,6 +7,7 @@
 #  id                          :bigint           not null, primary key
 #  avatar                      :string
 #  ban_type                    :integer
+#  birthday                    :date
 #  email                       :string           not null
 #  free_stickers_claimed       :boolean          default(FALSE), not null
 #  github_username             :string
