@@ -5,30 +5,27 @@
     <!-- Banner -->
     <section class="relative w-full">
       <div class="absolute inset-0 bg-black/40 z-10"></div>
-      <img
-        src="/assets/prototype/prototype_banner_narrow.png"
-        alt="Prototype banner"
-        class="block w-full h-auto select-none"
-        draggable="false"
-        loading="eager"
-        decoding="async"
-      />
+      <%= image_tag "prototype/prototype_banner_narrow.png",
+        alt: "Prototype banner",
+        class: "block w-full h-auto select-none",
+        draggable: false,
+        loading: :eager,
+        decoding: :async
+      %>
       <div class="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 space-y-2 md:space-y-20">
         <div class="space-y-1">
           <div class="flex justify-center">
-            <img 
-              src="/assets/prototype/prototype_sponsors.png" 
-              alt="Sponsor logos"
-              class="h-8 md:h-12 w-auto"
-            />
+            <%= image_tag "prototype/prototype_sponsors.png",
+              alt: "Sponsor logos",
+              class: "h-8 md:h-12 w-auto"
+            %>
           </div>
           <div class="space-y-2">
             <div class="relative flex flex-col items-center">
-              <img 
-                src="/assets/prototype/prototype_logo.png" 
-                alt="Prototype"
-                class="h-40 md:h-72 w-auto"
-              />
+              <%= image_tag "prototype/prototype_logo.png",
+                alt: "Prototype",
+                class: "h-40 md:h-72 w-auto"
+              %>
               <p class="p-0.5 md:p-1 ml-auto text-sm mr-4 md:-mr-8 md:text-4xl font-rc-full rotate-5 bg-bp-dark -mt-3 md:-mt-7">A 3 day hackathon</p>
             </div>
             <div class="text-center text-sm md:text-2xl font-rc-full mx-4">
@@ -85,7 +82,7 @@
         <div class="relative overflow-hidden min-h-[260px] md:min-h-[520px]">
           <div
             class="absolute inset-0 bg-no-repeat bg-center bg-contain md:scale-110 wobble-2 md:hover:scale-130 motion-safe:transition-transform duration-300 ease-out will-change-transform select-none pointer-events-none"
-            style="background-image: url('<%= image_path("/assets/prototype/prototype_parts.png") %>');"
+            style="background-image: url('<%= image_path("prototype/prototype_parts.png") %>');"
             aria-hidden="true">
           </div>
         </div>
@@ -94,13 +91,12 @@
 
     <!-- Divider (bottom) -->
     <div class="w-full select-none pointer-events-none -mb-px">
-      <img
-        src="/assets/prototype/divider-tilt-up.png"
-        alt=""
-        class="w-full h-auto"
-        draggable="false"
-        aria-hidden="true"
-      />
+      <%= image_tag "prototype/divider-tilt-up.png",
+        alt: "",
+        class: "w-full h-auto",
+        draggable: false,
+        "aria-hidden": true
+      %>
     </div>
 
     <!-- How can I qualify section -->
@@ -144,13 +140,12 @@
 
         <!-- Divider (bottom) -->
     <div class="w-full select-none pointer-events-none -mb-px">
-      <img
-        src="/assets/prototype/divider-tilt-down.png"
-        alt=""
-        class="w-full h-auto"
-        draggable="false"
-        aria-hidden="true"
-      />
+      <%= image_tag "prototype/divider-tilt-down.png",
+        alt: "",
+        class: "w-full h-auto",
+        draggable: false,
+        "aria-hidden": true
+      %>
     </div>
 
     <!-- Previous Hackathon Video -->
