@@ -1,5 +1,8 @@
 # Make your own Hackpad!
 
+Made by @alexren
+
+
 <div class="flex justify-center my-8">
   <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" alt="Hackpad Image" style="width: 40%;" />
 </div>

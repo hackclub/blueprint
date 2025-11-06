@@ -5,6 +5,8 @@
 
 # Mini Midi Magic
 
+Made by @nimit 
+
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/710054274784eca36dca4ca7a384e5b2f1fd4c9c_image.png)
 Welcome to mini midi magic! This is a kickstart guide to help you get started with designing and building your own midi device and point you towards practical resources to help you make something cool for the world to see (and hear)!
 

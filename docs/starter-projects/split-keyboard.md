@@ -5,6 +5,12 @@
 
 # Wireless split
 
+Made by @koeg 
+
+<div class="flex justify-center my-8">
+  <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/de46c106573fb5001fc260372f0709ae17f415cd_split-keyboard.webp" alt="Hackpad Image" style="width: 40%;" />
+</div>
+
 Hii! Do you not want to get carpal tunnel? Or just think that split keyboard are cool? Then you are in the right place!
 
 In this guide you will be learning how to make a wireless split keyboard
