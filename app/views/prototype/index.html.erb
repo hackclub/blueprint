@@ -49,7 +49,7 @@
 
 
     <!-- How does this work section -->
-    <section class="relative w-full px-4 md:px-8 lg:px-12">
+    <section class="relative w-full px-4 md:px-8 lg:px-12 z-20">
       <div class="grid grid-cols-1 md:grid-cols-2 items-stretch">
         <!-- Left: content -->
         <div class="bg-[#500E0E] flex m-4 md:m-8 lg:m-12">
@@ -78,7 +78,7 @@
         </div>
 
         <!-- Right: image as background w/ wobble+hover -->
-        <div class="relative overflow-hidden min-h-[260px] md:min-h-[520px]">
+        <div class="relative overflow-hidden min-h-[150px] md:min-h-[280px] z-99">
           <div
             class="absolute inset-0 bg-no-repeat bg-center bg-contain md:scale-110 wobble-2 md:hover:scale-130 motion-safe:transition-transform duration-300 ease-out will-change-transform select-none pointer-events-none"
             style="background-image: url('<%= image_path("prototype/prototype_parts.png") %>');"
@@ -89,7 +89,7 @@
     </section>
 
     <!-- Divider (bottom) -->
-    <div class="w-full select-none pointer-events-none -mb-px">
+    <div class="w-full select-none pointer-events-none -mb-px z-10">
       <%= image_tag "prototype/divider-tilt-up.png",
         alt: "",
         class: "w-full h-auto",
