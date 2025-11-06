@@ -41,6 +41,22 @@ class Admin::ProjectsController < Admin::ApplicationController
     redirect_to admin_project_path(@project), notice: "Project revived."
   end
 
+  def mark_viral
+    @project = Project.find(params[:id])
+    not_found unless @project
+
+    @project.update!(viral: true)
+    redirect_to admin_project_path(@project), notice: "Project marked as viral."
+  end
+
+  def unmark_viral
+    @project = Project.find(params[:id])
+    not_found unless @project
+
+    @project.update!(viral: false)
+    redirect_to admin_project_path(@project), notice: "Project unmarked as viral."
+  end
+
   private
 
   def require_reviewer_perms!

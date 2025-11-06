@@ -22,6 +22,7 @@
 #  tier                   :integer
 #  title                  :string
 #  views_count            :integer          default(0), not null
+#  viral                  :boolean          default(FALSE), not null
 #  ysws                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null

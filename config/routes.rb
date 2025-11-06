@@ -154,6 +154,8 @@ Rails.application.routes.draw do
       resources :projects, only: [ :index, :show ] do
         post :delete, on: :member
         post :revive, on: :member
+        post :mark_viral, on: :member
+        post :unmark_viral, on: :member
       end
       resources :allowed_emails, only: [ :index, :create, :destroy ]
 
