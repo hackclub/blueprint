@@ -1,0 +1,215 @@
+<% content_for :title, "Prototype" %>
+
+<%= render "layout" do %>
+  <div class="text-white overflow-hidden">
+    <!-- Banner -->
+    <section class="relative w-full">
+      <div class="absolute inset-0 bg-black/40 z-10"></div>
+      <img
+        src="/assets/prototype/prototype_banner_narrow.png"
+        alt="Prototype banner"
+        class="block w-full h-auto select-none"
+        draggable="false"
+        loading="eager"
+        decoding="async"
+      />
+      <div class="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 space-y-2 md:space-y-20">
+        <div class="space-y-1">
+          <div class="flex justify-center">
+            <img 
+              src="/assets/prototype/prototype_sponsors.png" 
+              alt="Sponsor logos"
+              class="h-8 md:h-12 w-auto"
+            />
+          </div>
+          <div class="space-y-2">
+            <div class="relative flex flex-col items-center">
+              <img 
+                src="/assets/prototype/prototype_logo.png" 
+                alt="Prototype"
+                class="h-40 md:h-72 w-auto"
+              />
+              <p class="p-0.5 md:p-1 ml-auto text-sm mr-4 md:-mr-8 md:text-4xl font-rc-full rotate-5 bg-bp-dark -mt-3 md:-mt-7">A 3 day hackathon</p>
+            </div>
+            <div class="text-center text-sm md:text-2xl font-rc-full mx-4">
+              <h2 class="hidden md:block">December 19-21, 2025 @ AMD HQ</h2>
+              <h2 class="md:hidden">December 19-21, 2025</h2>
+              <h2 class="md:hidden">@ AMD HQ</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+       <!-- Floating scroll down arrow -->
+        <div class="absolute left-0 right-0 flex justify-center z-999" style="top: calc(100vh - 10vh);">
+          <div class="float-arrow cursor-pointer" onclick="window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })">
+            <svg class="w-12 h-12 md:w-16 md:h-16 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- How does this work section -->
+    <section class="relative w-full px-4 md:px-8 lg:px-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 items-stretch">
+        <!-- Left: content -->
+        <div class="bg-[#500E0E] flex m-4 md:m-8 lg:m-12">
+          <div class="px-6 py-12 md:px-12 md:py-20 w-full flex items-center">
+            <div class="w-full max-w-xl mx-auto space-y-6">
+              <h2 class="text-3xl md:text-5xl font-rc-full">How does this work?</h2>
+
+              <div class="space-y-6 md:text-xl leading-relaxed">
+                <div>
+                  <p class="font-bold mb-2">You will be given:</p>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>An AMD MiniPC</li>
+                    <li>A Hugging Face Le Robot arm</li>
+                    <li>Hardware to fully customize it</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <p class="font-bold mb-2">Your task:</p>
+                  <p>Use AI and custom hardware attachments to complete challenges.</p>
+                  <p class="text-sm md:text-base italic mt-2 opacity-90">(to be announced day of)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: image as background w/ wobble+hover -->
+        <div class="relative overflow-hidden min-h-[260px] md:min-h-[520px]">
+          <div
+            class="absolute inset-0 bg-no-repeat bg-center bg-contain md:scale-110 wobble-2 md:hover:scale-130 motion-safe:transition-transform duration-300 ease-out will-change-transform select-none pointer-events-none"
+            style="background-image: url('<%= image_path("/assets/prototype/prototype_parts.png") %>');"
+            aria-hidden="true">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Divider (bottom) -->
+    <div class="w-full select-none pointer-events-none -mb-px">
+      <img
+        src="/assets/prototype/divider-tilt-up.png"
+        alt=""
+        class="w-full h-auto"
+        draggable="false"
+        aria-hidden="true"
+      />
+    </div>
+
+    <!-- How can I qualify section -->
+    <section class="w-full py-12 md:pt-20 px-4 md:px-8 lg:px-12">
+      <div class="bg-[#500E0E] flex m-4 md:m-8 lg:m-12">
+        <div class="px-6 py-12 md:px-12 md:py-20 w-full flex items-center">
+          <div class="w-full max-w-4xl mx-auto space-y-8 text-center">
+            <h2 class="text-4xl md:text-6xl font-rc-full">How can I qualify?</h2>
+            
+            <div class="space-y-6 md:text-xl leading-relaxed">
+              <p class="text-2xl md:text-3xl font-bold">
+                You are guaranteed a spot if:
+              </p>
+              <p>
+                You have <span class="font-bold text-bp-warning">5 or more "prototype points"</span> on Hack Club Blueprint.
+              </p>
+              <p>
+                This could mean one tier 1 project, a tier 2 and 3 project, etc.
+              </p>
+              <p>
+                <span class="font-bold">Travel Stipends</span> are $100 by default and can go up to $400 by building more projects
+              </p>
+            </div>
+
+            <div class="flex justify-center py-8">
+              <img 
+                src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/25de1405658d50e80662edb588cd0ca0887c019f_Untitled-2025-10-22-1113-2.svg" 
+                alt="Blueprint tier structure showing points and funding"
+                class="w-full max-w-4xl h-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learn More Button -->
+    <div class="w-full flex justify-center px-4 md:px-8 lg:px-12">
+      <%= render "shared/button", url: home_path, text: "Learn more", variant: :primary, class: "bg-[#500E0E] hover:bg-[#6D1010] border-0 px-8 py-4 md:px-12 md:py-6 text-xl md:text-3xl font-rc-full text-white" %>
+    </div>
+
+        <!-- Divider (bottom) -->
+    <div class="w-full select-none pointer-events-none -mb-px">
+      <img
+        src="/assets/prototype/divider-tilt-down.png"
+        alt=""
+        class="w-full h-auto"
+        draggable="false"
+        aria-hidden="true"
+      />
+    </div>
+
+    <!-- Previous Hackathon Video -->
+    <section class="w-full py-12 md:py-20 px-4 md:px-8 lg:px-12">
+      <div class="max-w-5xl mx-auto px-6 md:px-12 space-y-8">
+        <h2 class="text-3xl md:text-5xl font-rc-full text-center">Our previous hackathon, Undercity:</h2>
+        
+        <div class="aspect-video w-full">
+          <iframe 
+            width="100%" 
+            height="100%" 
+            src="https://www.youtube.com/embed/kaEFv7e49mo" 
+            title="Undercity Hackathon"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen
+            class="rounded-lg">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- Parent Info Link -->
+    <div class="w-full flex justify-center py-8 px-4 md:px-8 lg:px-12">
+      <a href="#" class="text-xl md:text-2xl font-rc-full text-white hover:text-bp-warning transition-colors underline">
+        Parents info
+      </a>
+    </div>
+
+    <footer class="bg-bp-darker w-full px-8 py-8 md:px-16 lg:px-20 md:py-12 pt-24 md:pt-32" style="clip-path: polygon(0 0%, 100% 15%, 100% 100%, 0% 100%); background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px; background-repeat: repeat;">
+      <div class="max-w-6xl mx-auto">
+        <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a></p>
+        <p class="max-w-3xl text-white/75 text-sm md:text-base mb-8">
+          Hack Club is a 501(c)(3) nonprofit and network of 60k+ technical high schoolers. We believe you learn best by building so we're creating community and providing grants so you can make awesome projects. In the past few years, we've 
+          <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://summer.hackclub.com/">partnered with GitHub to run Summer of Making</a>, 
+          <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://github.com/hackclub/the-hacker-zephyr">hosted the world's longest hackathon on land</a>, and 
+          <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://www.youtube.com/watch?v=QvCoISXfcE8">ran Canada's largest high school hackathon</a>.<br><br>At Hack Club, students aren't just learning, they're shipping.
+        </p>
+        <div class="flex flex-wrap gap-x-16 gap-y-8">
+          <div class="flex flex-col">
+            <p class="mb-3 text-base md:text-lg font-rc-full">Hack Club</p>
+            <div class="text-sm md:text-base space-y-1">
+              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philosophy/" target="_blank">Philosophy</a>
+              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/team/" target="_blank">Our Team &amp; Board</a>
+              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/brand/" target="_blank">Branding</a>
+              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philanthropy/" target="_blank">Donate</a>
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <p class="mb-3 text-base md:text-lg font-rc-full">Resources</p>
+            <div class="text-sm md:text-base space-y-1">
+              <a class="block hover:text-bp-warning transition-colors" href="https://events.hackclub.com/" target="_blank">Community Events</a>
+              <a class="block hover:text-bp-warning transition-colors" href="https://jams.hackclub.com/" target="_blank">Jams</a>
+              <a class="block hover:text-bp-warning transition-colors" href="https://workshops.hackclub.com/" target="_blank">Workshops</a>
+              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/conduct/" target="_blank">Code of Conduct</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+<% end %>
