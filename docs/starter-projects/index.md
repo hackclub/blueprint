@@ -17,6 +17,7 @@
         <div class="flex-grow flex items-center justify-center mt-2">
           <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
         </div>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
       </div>
       <div class="bg-[#A78BFA] text-white font-semibold py-2">START NOW →</div>
     </div>
@@ -26,10 +27,11 @@
     <div class="flex flex-col h-full group border-2 border-[#FF6B6B] bg-[#4A1515] hover:bg-[#5A2020] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
       <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
         <p class="text-2xl font-semibold text-white">Super Easy LED Chaser</p>
-        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Makes an LED blink</i></p>
         <div class="flex-grow flex items-center justify-center mt-2">
           <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ee58578602bd9e8b538751e26df216372164efef_image.png" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
         </div>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
       </div>
       <div class="bg-[#FF6B6B] text-white font-semibold py-2">START NOW →</div>
     </div>
@@ -43,6 +45,7 @@
         <div class="flex-grow flex items-center justify-center mt-2">
           <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/de46c106573fb5001fc260372f0709ae17f415cd_split-keyboard.webp" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
         </div>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Journaling required</i></p>
       </div>
       <div class="bg-[#F59E0B] text-white font-semibold py-2">START NOW →</div>
     </div>
@@ -56,6 +59,7 @@
         <div class="flex-grow flex items-center justify-center mt-2">
           <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7ff0a9fd824e4b8dffc3ca41986e322d2cf1f80e_midi.webp" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
         </div>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Journaling required</i></p>
       </div>
       <div class="bg-[#10B981] text-white font-semibold py-2">START NOW →</div>
     </div>
@@ -69,6 +73,7 @@
         <div class="flex-grow flex items-center justify-center mt-2">
           <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/407de94a01cd82c1a37107d7e00efa5f2f7c0d0c_custom-devboard.webp" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
         </div>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Journaling required</i></p>
       </div>
       <div class="bg-[#4ECDC4] text-white font-semibold py-2">START NOW →</div>
     </div>
