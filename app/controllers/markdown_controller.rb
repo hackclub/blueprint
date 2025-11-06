@@ -5,7 +5,8 @@ class MarkdownController < ApplicationController
   SECTION_CONFIG = {
     "about" => { suffix: "About Blueprint", index_title: "About - Blueprint" },
     "resources" => { suffix: "Resources", index_title: "Resources - Blueprint" },
-    "starter-projects" => { suffix: "Starter Projects", index_title: "Starter Projects - Blueprint" }
+    "starter-projects" => { suffix: "Starter Projects", index_title: "Starter Projects - Blueprint" },
+    "hackpad" => { suffix: "Hackpad", index_title: "Build your own mini-keyboard - Blueprint" }
   }.freeze
 
   def about
@@ -18,6 +19,10 @@ class MarkdownController < ApplicationController
 
   def starter_projects
     render_section("starter-projects", params[:slug])
+  end
+
+  def hackpad
+    render_section("hackpad", params[:slug])
   end
 
   # backwards compatibility

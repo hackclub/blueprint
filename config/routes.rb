@@ -140,6 +140,9 @@ Rails.application.routes.draw do
   get "starter-projects", to: "markdown#starter_projects", as: :starter_projects
   get "starter-projects/*slug", to: "markdown#starter_projects"
 
+  get "hackpad", to: "markdown#hackpad", as: :hackpad
+  get "hackpad/*slug", to: "markdown#hackpad"
+
   get "faq", to: "markdown#faq", as: :faq
 
   get "prototype", to: "prototype#index", as: :prototype

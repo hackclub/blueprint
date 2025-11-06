@@ -1,5 +1,6 @@
 <% nav_links = {
     "Dashboard" => user_logged_in? ? home_path : login_path,
+    "Hackpad" => hackpad_path,
     "About Blueprint" => about_path,
     # "My Projects" => user_logged_in? ? projects_path : login_path,
     "Starter Projects" => starter_projects_path,
@@ -16,7 +17,7 @@
 <% if active_projects_count > 5 %>
   <% nav_links = nav_links.to_a.insert(2, ["My Projects", projects_path]).to_h %>
 <% end %>
-<% submenu = ["About Blueprint", "Starter Projects", "Design Resources"] %>
+<% submenu = ["About Blueprint", "Starter Projects", "Design Resources", "Hackpad"] %>
 
 <% normalize_path = ->(p) { p.to_s.sub(%r{/$}, "") } %>
 <% req = normalize_path.call(request.path) %>
@@ -121,40 +122,13 @@
 
 <div 
   data-controller="modal"
-  data-action="modal:show-enable-pro@window->modal#show modal:hide-enable-pro@window->modal#hide modal:toggle-enable-pro@window->modal#toggle modal:next-enable-pro@window->modal#next"
-  data-modal-starting-step-value="0"
-  class="fixed inset-0 z-50 hidden">
-  <div class="fixed inset-0 flex items-center justify-center p-4">
-    <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-0" do %>
-      <div data-modal-target="step" class="space-y-6">
-        <div>
-          <p class="text-3xl font-rc-full">Link your GitHub account</p>
-          <p>GitHub is where you can store your project files!<br>We'll automatically sync your journals to GitHub</p>
-        </div>
-        <div class="max-w-xl bg-gray-500">
-          <%= video_tag "https://hc-cdn.hel1.your-objectstorage.com/s/v3/aebc2a690812ca959742fcd99214b4ff527f0b3f_github-intro.mp4", autoplay: true, loop: true, muted: true, playsinline: true, preload: 'metadata', class: 'object-fit', type: 'video/mp4' %>
-        </div>
-        <%= render "shared/button", 
-            text: "Link GitHub Account!",
-            class: "w-full",
-            url: github_login_path,
-            html_options: { data: { turbo: false } }
-            %>
-      </div>
-    <% end %>
-    <div data-modal-target="overlay" class="fixed inset-0 z-40 bg-black/50"></div>
-  </div>
-</div>
-
-<div 
-  data-controller="modal"
   data-action="modal:show-toggle-pro-modal@window->modal#show modal:hide-toggle-pro-modal@window->modal#hide"
   class="fixed inset-0 z-50 hidden">
   <div class="fixed inset-0 flex items-center justify-center p-4">
     <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-6" do %>
       <div class="space-y-1">
         <p class="text-3xl font-rc-full">Are you sure?</p>
-        <p class="text-xl">Only enable pro mode if you've done hardware projects before.</p>
+        <p class="text-xl">You should only enable pro mode if you've done hardware projects before.</p>
       </div>
       <%= render "shared/button", 
           text: "Enable Pro Mode",
