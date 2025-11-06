@@ -10,7 +10,7 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8 mb-12">
   <a href="/starter-projects/hackpad" class="block h-full">
-    <div class="flex flex-col h-full group border-2 border-[#A78BFA] bg-[#2D1B4E] hover:bg-[#3D2B5E] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
+    <div class="flex flex-col h-full group border-2 border-[#FF6B6B] bg-[#4A1515] hover:bg-[#5A2020] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
       <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
         <p class="text-2xl font-semibold text-white">Hackpad</p>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Build a custom mechanical keypad</i></p>
@@ -19,12 +19,12 @@
         </div>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
       </div>
-      <div class="bg-[#A78BFA] text-white font-semibold py-2">START NOW →</div>
+      <div class="bg-[#FF6B6B] text-white font-semibold py-2">START NOW →</div>
     </div>
   </a>
 
   <a href="/starter-projects/blinky" class="block h-full">
-    <div class="flex flex-col h-full group border-2 border-[#FF6B6B] bg-[#4A1515] hover:bg-[#5A2020] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
+    <div class="flex flex-col h-full group border-2 border-[#F59E0B] bg-[#4D3A1A] hover:bg-[#5D4A2A] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
       <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
         <p class="text-2xl font-semibold text-white">Super Easy LED Chaser</p>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Makes an LED blink</i></p>
@@ -33,7 +33,7 @@
         </div>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
       </div>
-      <div class="bg-[#FF6B6B] text-white font-semibold py-2">START NOW →</div>
+      <div class="bg-[#F59E0B] text-white font-semibold py-2">START NOW →</div>
     </div>
   </a>
 
@@ -52,7 +52,7 @@
   </a>
 
   <a href="/starter-projects/midi" class="block h-full">
-    <div class="flex flex-col h-full group border-2 border-[#10B981] bg-[#1A4D3A] hover:bg-[#255D4A] max-w-4xl justify-center text-center transition-colors duration-150 hover:rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
+    <div class="flex flex-col h-full group border-2 border-[#3B82F6] bg-[#1E3A5F] hover:bg-[#2E4A6F] max-w-4xl justify-center text-center transition-colors duration-150 hover:rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
       <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
         <p class="text-2xl font-semibold text-white">Midi Keyboard</p>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Create music with your custom MIDI controller</i></p>
@@ -61,12 +61,12 @@
         </div>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Journaling required</i></p>
       </div>
-      <div class="bg-[#10B981] text-white font-semibold py-2">START NOW →</div>
+      <div class="bg-[#3B82F6] text-white font-semibold py-2">START NOW →</div>
     </div>
   </a>
 
   <a href="/starter-projects/devboard" class="block h-full">
-    <div class="flex flex-col h-full group border-2 border-[#4ECDC4] bg-[#1A3D3A] hover:bg-[#254D4A] max-w-4xl justify-center text-center transition-colors duration-150 hover:rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
+    <div class="flex flex-col h-full group border-2 border-[#A78BFA] bg-[#2D1B4E] hover:bg-[#3D2B5E] max-w-4xl justify-center text-center transition-colors duration-150 hover:rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
       <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
         <p class="text-2xl font-semibold text-white">Custom Devboard</p>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Design your own development board</i></p>
@@ -75,12 +75,12 @@
         </div>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Journaling required</i></p>
       </div>
-      <div class="bg-[#4ECDC4] text-white font-semibold py-2">START NOW →</div>
+      <div class="bg-[#A78BFA] text-white font-semibold py-2">START NOW →</div>
     </div>
   </a>
 </div>
 
-<div class="mt-12 p-6 bg-bp-darker/50 rounded-lg border-l-4 border-bp-warning">
+<div class="mt-12 p-6 bg-bp-darker/50 border-l-4 border-bp-warning">
   <h4 class="text-xl font-rc-full mb-2">Note about projects made with the community provided guides:</h4>
   <p class="text-white/80">You <strong>can not</strong> simply just submit a copy of the tutorials above. You need to do something to make it your own. This means something different for each project. Maybe add custom keys, neopixel LED's, make a custom MIDI.</p>
 </div>
