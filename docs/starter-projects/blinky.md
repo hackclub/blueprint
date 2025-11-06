@@ -301,7 +301,7 @@ Your PCB (in your PCB editor do File → Export → EasyEDA)
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ab6f09e8041e0c5eb56a74e34a87aab1e8a936c6_image.png)
 
-## Upload your files o GitHub
+## Upload your files to GitHub
 
 Go back to the GitHub repo you created at the start.
 
@@ -321,7 +321,18 @@ Drag in your:
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8116375daf649aa342be5d409e010a5769f5ed81_image.png)
 
-You can then click to commit your changes and your repo is done! 
+You can then click to commit your changes.
+
+
+Finally, edit your ReadME
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/383215c7b9b871788025c40fd95b2cab387938d2_image.png)
+
+Drag in your PCB screenshot (this should be the same screenshot).
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/11e08e488bc6c1098c1bc86ea0699b3e83aface1_image.png)
+
+Commit this change as well. 
+
+NOTE: ALL projects you make for Blueprint must have a project photo in your ReadME. 
 
 ## Getting a JLCPCB Price
 
