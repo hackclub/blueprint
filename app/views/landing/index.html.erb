@@ -108,28 +108,37 @@
         <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0">
         
         <!-- Hero title -->
-        <div class="absolute top-0 left-0 right-0 flex flex-col items-center justify-center min-h-screen space-y-20" data-landing-target="heroContent">
-          <div class="space-y-2">
-            <div class="text-center text-lg md:text-2xl font-rc-full md:-mb-3">Hack Club presents</div>
-            <div class="relative flex flex-col items-center">
-              <h1 class="text-7xl md:text-[10rem]/40 font-rcgl-full">Blueprint</h1>
-              <p class="p-0.5 md:p-1 ml-auto text-sm mr-4 md:-mr-8 md:text-4xl font-rc-full rotate-5 bg-bp-dark -mt-3 md:-mt-7">...then build</p>
-            </div>
-            <div class="text-center text-sm md:text-2xl font-rc-full mx-4">
-              <h2 class="hidden md:block">Design a hardware project → Get funding to build it</h2>
-              <h2 class="hidden md:block">For ages 13 to 18. Ends December 1, 2025</h2>
+        <div class="absolute top-0 left-0 right-0 flex items-center justify-center min-h-screen" data-landing-target="heroContent">
+          <div class="w-full max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+              <!-- Left: logo + caption + CTA -->
+              <div class="space-y-4 md:space-y-6 text-center md:text-left">
+                <div class="text-lg md:text-2xl font-rc-full">Hack Club presents</div>
+                <%= image_tag "blueprint_logo.png", alt: "Blueprint", class: "mx-auto md:mx-0 w-64 md:w-[28rem] h-auto" %>
+                
+                <div class="text-sm md:text-2xl font-rc-full">
+                  <h2 class="hidden md:block">Design a hardware project → Get funding to build it</h2>
+                  <h2 class="hidden md:block">For ages 13 to 18. Ends December 1, 2025</h2>
 
-              <h2 class="md:hidden">Design a hardware project</h2>
-              <h2 class="md:hidden">Get funding to build it</h2>
-              <h2 class="md:hidden">For ages 13 to 18</h2>
-              <h2 class="md:hidden">Ends December 1, 2025</h2>
-            </div>
-          </div>
-          <div class="flex flex-col items-center px-4 py-3 space-y-2 md:space-y-4 text-sm border-2 md:px-12 md:py-6 md:pb-8 md:text-2xl bg-bp-dark">
-            <p class="text-lg md:text-2xl font-rc-full">Start making & get free stickers!</p>
-            <div class="flex w-full" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
-              <input type="email" data-email-redirect-target="input" class="w-full text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
-              <button type="button" data-action="click->email-redirect#go" class="px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
+                  <h2 class="md:hidden">Design a hardware project</h2>
+                  <h2 class="md:hidden">Get funding to build it</h2>
+                  <h2 class="md:hidden">For ages 13 to 18</h2>
+                  <h2 class="md:hidden">Ends December 1, 2025</h2>
+                </div>
+
+                <div class="flex flex-col items-center md:items-start px-4 py-3 space-y-2 md:space-y-4 text-sm border-2 md:px-12 md:py-6 md:pb-8 md:text-2xl bg-bp-dark">
+                  <p class="text-lg md:text-2xl font-rc-full">Start making & get free stickers!</p>
+                  <div class="flex w-full" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
+                    <input type="email" data-email-redirect-target="input" class="w-full text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
+                    <button type="button" data-action="click->email-redirect#go" class="px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: hero image -->
+              <div class="flex justify-center md:justify-end">
+                <%= image_tag "orpheuspadpic.png", alt: "Blueprint project example", class: "w-full max-w-xl md:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg wobble-1" %>
+              </div>
             </div>
           </div>
         </div>
