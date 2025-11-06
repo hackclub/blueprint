@@ -39,9 +39,6 @@ Rails.application.configure do
   # Change to :null_store to avoid any caching.
   config.cache_store = :memory_store
 
-  # Disable Ahoy tracking in development for better performance
-  Ahoy.track_visits_immediately = false
-
   # Store uploaded files on the cloudflare r2 (see config/storage.yml for options).
   config.active_storage.service = :cloudflare
   config.active_storage.routes_prefix = "/user-attachments"
