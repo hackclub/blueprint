@@ -1,6 +1,0 @@
-[submodule "app/views/prototype"]
-	path = app/views/prototype
-	url = ../blueprint-prototype-views.git
-[submodule "public/assets/prototype"]
-	path = public/assets/prototype
-	url = ../blueprint-prototype-assets.git
