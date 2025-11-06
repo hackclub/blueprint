@@ -10,7 +10,7 @@
 <% else %>
   <% first_time = !current_user.projects.where(is_deleted: false).any? %>
   <section class="flex flex-col items-center grow space-y-6">
-    <div class="w-full flex flex-col grow items-center max-w-5xl text-center p-8 pb-2 space-y-12 font-rc-full" data-controller="paginate stepped-progress ysws-selector" data-paginate-index-value="<%= (@is_after_gh_link ? 2 : 0) + (first_time ? 0 : 1) %>" data-stepped-progress-current-step-value="<%= (@is_after_gh_link ? 3 : 1) + (first_time ? 0 : 1) %>" id="steps-controller">
+    <div class="w-full flex flex-col grow items-center max-w-5xl text-center p-8 pb-2 space-y-12 font-rc-full" data-controller="paginate stepped-progress ysws-selector" data-paginate-index-value="<%= (@is_after_gh_link ? 2 : 0) %>" data-stepped-progress-current-step-value="<%= (@is_after_gh_link ? 3 : 1) %>" id="steps-controller">
       
       <%# HEADING %>
       <p class="font-rc-full text-4xl">Let's start <%= first_time ? "your first" : "a" %> project</p>
