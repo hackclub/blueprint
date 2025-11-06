@@ -69,4 +69,9 @@ class UsersController < ApplicationController
   rescue StandardError => e
     render json: { ok: false, error: e.message }, status: :internal_server_error
   end
+
+  def toggle_pro
+    current_user.update!(is_pro: !current_user.is_pro)
+    redirect_back(fallback_location: root_path)
+  end
 end

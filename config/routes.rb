@@ -118,6 +118,7 @@ Rails.application.routes.draw do
     post :invite_to_slack, on: :collection
     post :mcg_check, on: :collection
     post :update_timezone, on: :collection
+    post :toggle_pro, on: :collection
   end
 
   # About

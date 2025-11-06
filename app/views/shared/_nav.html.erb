@@ -10,6 +10,7 @@
     "FAQ" => faq_path,
     "Admin" => current_user&.special_perms? ? admin_root_path : nil
 } %>
+<% pro_only_links = ["About Blueprint", "Starter Projects", "Design Resources", "Explore", "Leaderboard", "Shop", "FAQ"] %>
 
 <% active_projects_count = user_logged_in? ? Rails.cache.fetch([current_user.id, "active_projects_count", current_user.projects.maximum(:updated_at)]) { current_user.projects.where(is_deleted: false).count } : 0 %>
 <% if active_projects_count > 5 %>
@@ -43,9 +44,11 @@
             <% match = has_submenu ? "prefix" : "exact" %>
             <% submenu_base_path = has_submenu ? normalize_path.call(path) : nil %>
             <% active = current_nav == name %>
+            <% is_pro_only = pro_only_links.include?(name) %>
+            <% is_disabled = is_pro_only && user_logged_in? && !current_user.is_pro %>
 
             <% if has_submenu && active %>
-              <div class="flex flex-col btn btn-nav text-base submenu p-0 gap-0" data-nav-target="link" data-nav-match="prefix" data-nav-base="<%= submenu_base_path %>">
+              <div class="flex flex-col btn btn-nav text-base submenu p-0 gap-0 <%= is_disabled ? "opacity-50 pointer-events-none" : "" %>" data-nav-target="link" data-nav-match="prefix" data-nav-base="<%= submenu_base_path %>">
                 <%= render "shared/button", url: path, text: name, variant: :none, class: "text-base p-0 hover:bg-bp-lighter w-full submenu-btn" %>
                 <ul data-nav-target="submenu" data-submenu-base="<%= submenu_base_path %>" class="flex-col hidden w-full pb-3 text-sm text-center">
                   <% index_meta = meta_for_url(submenu_base_path, submenu_base_path) rescue nil %>
@@ -63,11 +66,30 @@
                 </ul>
               </div>
             <% else %>
-              <%= render "shared/button", url: path, text: name, variant: active ? :nav_active : :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""}", html_options: { data: { nav_target: "link", nav_match: match } } %>
+              <%= render "shared/button", url: is_disabled ? "#" : path, text: name, variant: (active && !is_disabled) ? :nav_active : :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""} #{is_disabled ? "opacity-50 pointer-events-none" : ""}", html_options: { data: { nav_target: "link", nav_match: match } } %>
             <% end %>
         <% end %>
     </div>
     <% if user_logged_in? %>
+        <% if current_user.is_pro %>
+          <%= button_to toggle_pro_users_path, method: :post, class: "text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer", data: { turbo: false } do %>
+            <p>Pro mode</p>
+            <div class="h-5 rounded-full w-10 bg-green-500 justify-end flex items-center">
+              <div class="size-4 rounded-full bg-white mx-0.5"></div>
+            </div>
+          <% end %>
+        <% else %>
+          <button type="button"
+            data-controller="modal"
+            data-modal-target-id-value="toggle-pro-modal"
+            data-action="click->modal#show"
+            class="text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer">
+            <p>Pro mode</p>
+            <div class="h-5 rounded-full w-10 bg-bp-darker flex items-center">
+              <div class="size-4 rounded-full bg-white mx-0.5"></div>
+            </div>
+          </button>
+        <% end %>
         <div class="flex flex-col space-y-1">
             <% if session[:original_id] %>
                 <%= button_to admin_stop_impersonating_path, method: :post, class: "text-bp-warning text-sm mb-2 cursor-pointer", form: { data: { turbo: false } } do %>
@@ -96,3 +118,51 @@
         <%= render "shared/button", url: login_path(redirect_to: request.fullpath), text: "Log in" %>
     <% end %>
 </nav>
+
+<div 
+  data-controller="modal"
+  data-action="modal:show-enable-pro@window->modal#show modal:hide-enable-pro@window->modal#hide modal:toggle-enable-pro@window->modal#toggle modal:next-enable-pro@window->modal#next"
+  data-modal-starting-step-value="0"
+  class="fixed inset-0 z-50 hidden">
+  <div class="fixed inset-0 flex items-center justify-center p-4">
+    <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-0" do %>
+      <div data-modal-target="step" class="space-y-6">
+        <div>
+          <p class="text-3xl font-rc-full">Link your GitHub account</p>
+          <p>GitHub is where you can store your project files!<br>We'll automatically sync your journals to GitHub</p>
+        </div>
+        <div class="max-w-xl bg-gray-500">
+          <%= video_tag "https://hc-cdn.hel1.your-objectstorage.com/s/v3/aebc2a690812ca959742fcd99214b4ff527f0b3f_github-intro.mp4", autoplay: true, loop: true, muted: true, playsinline: true, preload: 'metadata', class: 'object-fit', type: 'video/mp4' %>
+        </div>
+        <%= render "shared/button", 
+            text: "Link GitHub Account!",
+            class: "w-full",
+            url: github_login_path,
+            html_options: { data: { turbo: false } }
+            %>
+      </div>
+    <% end %>
+    <div data-modal-target="overlay" class="fixed inset-0 z-40 bg-black/50"></div>
+  </div>
+</div>
+
+<div 
+  data-controller="modal"
+  data-action="modal:show-toggle-pro-modal@window->modal#show modal:hide-toggle-pro-modal@window->modal#hide"
+  class="fixed inset-0 z-50 hidden">
+  <div class="fixed inset-0 flex items-center justify-center p-4">
+    <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-6" do %>
+      <div class="space-y-1">
+        <p class="text-3xl font-rc-full">Are you sure?</p>
+        <p class="text-xl">Only enable pro mode if you've done hardware projects before.</p>
+      </div>
+      <%= render "shared/button", 
+          text: "Enable Pro Mode",
+          url: toggle_pro_users_path,
+          class: "w-full",
+          html_options: { method: :post, data: { turbo: false } }
+          %>
+    <% end %>
+    <div data-modal-target="overlay" class="fixed inset-0 z-40 bg-black/50" data-action="click->modal#hide"></div>
+  </div>
+</div>

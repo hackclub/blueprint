@@ -143,7 +143,8 @@ export default class extends Controller {
   toggleVariant(el, active) {
     const ACTIVE = "btn-nav-active"
     const INACTIVE = "btn-nav"
-    if (active) {
+    const isDisabled = el.classList.contains("pointer-events-none")
+    if (active && !isDisabled) {
       el.classList.add(ACTIVE)
       el.classList.remove(INACTIVE)
     } else {
