@@ -1,6 +1,8 @@
 | title       | Guides                                    |
 | ----------- | ----------------------------------------- |
 | description | Kick off with these guides for Blueprint. |
+| unlisted | true |
+
 
 <h1>Starter Projects</h1>
 
