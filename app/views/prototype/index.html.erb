@@ -87,19 +87,10 @@
       </div>
     </section>
 
-    <!-- Divider (bottom) -->
-    <div class="w-full select-none pointer-events-none -mb-px z-10">
-      <%= image_tag "prototype/divider-tilt-up.png",
-        alt: "",
-        class: "w-full h-auto",
-        draggable: false,
-        "aria-hidden": true
-      %>
-    </div>
 
     <!-- How can I qualify section -->
-    <section class="w-full py-12 md:pt-20 px-4 md:px-8 lg:px-12">
-      <div class="bg-[#500E0E] flex m-4 md:m-8 lg:m-12">
+    <section class="w-full grid-bg">
+      <div class="bg-bp-dark flex" style="clip-path: polygon(0 5%, 100% 0%, 100% 95%, 0% 100%);">
         <div class="px-6 py-12 md:px-12 md:py-20 w-full flex items-center">
           <div class="w-full max-w-4xl mx-auto space-y-8 text-center">
             <h2 class="text-4xl md:text-6xl font-rc-full">How can I qualify?</h2>
@@ -111,11 +102,15 @@
               <p>
                 You have <span class="font-bold text-bp-warning">5 or more "prototype points"</span> on Hack Club Blueprint.
               </p>
+                  <!-- Learn More Button -->
+    <div class="w-full flex justify-center px-4 md:px-8 lg:px-12">
+      <%= render "shared/button", url: home_path, text: "Learn more", variant: :outline, class: "bg-bp-dark border-2 px-8 py-4 md:px-12 md:py-6 text-xl md:text-3xl font-rc-full hover:bg-white hover:text-bp-dark transition-colors" %>
+    </div>
               <p>
                 This could mean one tier 1 project, a tier 2 and 3 project, etc.
               </p>
               <p>
-                <span class="font-bold">Travel Stipends</span> are $100 by default and can go up to $400 by building more projects
+                <span class="font-bold text-bp-warning">Travel Stipends</span> are $100 by default and can go up to $400 by building more projects
               </p>
             </div>
 
@@ -131,20 +126,8 @@
       </div>
     </section>
 
-    <!-- Learn More Button -->
-    <div class="w-full flex justify-center px-4 md:px-8 lg:px-12">
-      <%= render "shared/button", url: home_path, text: "Learn more", variant: :primary, class: "bg-[#500E0E] hover:bg-[#6D1010] border-0 px-8 py-4 md:px-12 md:py-6 text-xl md:text-3xl font-rc-full text-white" %>
-    </div>
 
-        <!-- Divider (bottom) -->
-    <div class="w-full select-none pointer-events-none -mb-px">
-      <%= image_tag "prototype/divider-tilt-down.png",
-        alt: "",
-        class: "w-full h-auto",
-        draggable: false,
-        "aria-hidden": true
-      %>
-    </div>
+
 
     <!-- Previous Hackathon Video -->
     <section class="w-full py-12 md:py-20 px-4 md:px-8 lg:px-12">
