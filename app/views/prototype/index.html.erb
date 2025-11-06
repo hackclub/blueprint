@@ -160,8 +160,7 @@
             title="Undercity Hackathon"
             frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen
-            class="rounded-lg">
+            allowfullscreen>
           </iframe>
         </div>
       </div>
@@ -174,32 +173,35 @@
       </a>
     </div>
 
-    <footer class="bg-bp-darker w-full px-8 py-8 md:px-16 lg:px-20 md:py-12 pt-24 md:pt-32" style="clip-path: polygon(0 0%, 100% 15%, 100% 100%, 0% 100%); background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px; background-repeat: repeat;">
-      <div class="max-w-6xl mx-auto">
-        <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a></p>
-        <p class="max-w-3xl text-white/75 text-sm md:text-base mb-8">
-          Hack Club is a 501(c)(3) nonprofit and network of 60k+ technical high schoolers. We believe you learn best by building so we're creating community and providing grants so you can make awesome projects. In the past few years, we've 
-          <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://summer.hackclub.com/">partnered with GitHub to run Summer of Making</a>, 
-          <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://github.com/hackclub/the-hacker-zephyr">hosted the world's longest hackathon on land</a>, and 
-          <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://www.youtube.com/watch?v=QvCoISXfcE8">ran Canada's largest high school hackathon</a>.<br><br>At Hack Club, students aren't just learning, they're shipping.
-        </p>
-        <div class="flex flex-wrap gap-x-16 gap-y-8">
-          <div class="flex flex-col">
-            <p class="mb-3 text-base md:text-lg font-rc-full">Hack Club</p>
-            <div class="text-sm md:text-base space-y-1">
-              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philosophy/" target="_blank">Philosophy</a>
-              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/team/" target="_blank">Our Team &amp; Board</a>
-              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/brand/" target="_blank">Branding</a>
-              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philanthropy/" target="_blank">Donate</a>
+    <footer class="relative w-full">
+      <%= image_tag "prototype/prototype_footer.png", alt: "", class: "absolute inset-0 w-full h-full object-cover", "aria-hidden": true, style: "clip-path: polygon(0 15%, 100% 0%, 100% 100%, 0% 100%);" %>
+      <div class="relative w-full px-8 py-8 md:px-16 lg:px-20 md:py-12 pt-24 md:pt-32">
+        <div class="max-w-6xl mx-auto">
+          <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a></p>
+          <p class="max-w-3xl text-white/75 text-sm md:text-base mb-8">
+            Hack Club is a 501(c)(3) nonprofit and network of 60k+ technical high schoolers. We believe you learn best by building so we're creating community and providing grants so you can make awesome projects. In the past few years, we've 
+            <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://summer.hackclub.com/">partnered with GitHub to run Summer of Making</a>, 
+            <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://github.com/hackclub/the-hacker-zephyr">hosted the world's longest hackathon on land</a>, and 
+            <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://www.youtube.com/watch?v=QvCoISXfcE8">ran Canada's largest high school hackathon</a>.<br><br>At Hack Club, students aren't just learning, they're shipping.
+          </p>
+          <div class="flex flex-wrap gap-x-16 gap-y-8">
+            <div class="flex flex-col">
+              <p class="mb-3 text-base md:text-lg font-rc-full">Hack Club</p>
+              <div class="text-sm md:text-base space-y-1">
+                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philosophy/" target="_blank">Philosophy</a>
+                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/team/" target="_blank">Our Team &amp; Board</a>
+                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/brand/" target="_blank">Branding</a>
+                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philanthropy/" target="_blank">Donate</a>
+              </div>
             </div>
-          </div>
-          <div class="flex flex-col">
-            <p class="mb-3 text-base md:text-lg font-rc-full">Resources</p>
-            <div class="text-sm md:text-base space-y-1">
-              <a class="block hover:text-bp-warning transition-colors" href="https://events.hackclub.com/" target="_blank">Community Events</a>
-              <a class="block hover:text-bp-warning transition-colors" href="https://jams.hackclub.com/" target="_blank">Jams</a>
-              <a class="block hover:text-bp-warning transition-colors" href="https://workshops.hackclub.com/" target="_blank">Workshops</a>
-              <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/conduct/" target="_blank">Code of Conduct</a>
+            <div class="flex flex-col">
+              <p class="mb-3 text-base md:text-lg font-rc-full">Resources</p>
+              <div class="text-sm md:text-base space-y-1">
+                <a class="block hover:text-bp-warning transition-colors" href="https://events.hackclub.com/" target="_blank">Community Events</a>
+                <a class="block hover:text-bp-warning transition-colors" href="https://jams.hackclub.com/" target="_blank">Jams</a>
+                <a class="block hover:text-bp-warning transition-colors" href="https://workshops.hackclub.com/" target="_blank">Workshops</a>
+                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/conduct/" target="_blank">Code of Conduct</a>
+              </div>
             </div>
           </div>
         </div>
