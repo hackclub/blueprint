@@ -102,7 +102,7 @@
             <%= render "shared/button", text: "< Back", variant: :none, class: "p-0", html_options: { data: { action: "click->paginate#prev click->stepped-progress#prev" } }%>
             <div>
               <%= render "shared/button", text: "I'm using another Git host", variant: :none, html_options: { data: { action: "click->paginate#next click->stepped-progress#next" } }%>
-              <%= render "shared/button", text: "Go link account >", url: github_login_path, html_options: { data: {turbo_prefetch: false } } %>
+              <%= render "shared/button", text: "Go link repo >", url: github_login_path, html_options: { data: {turbo_prefetch: false } } %>
             </div>
           </div>
         </div>
