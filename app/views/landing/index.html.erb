@@ -174,7 +174,7 @@
             </div>
             <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
               <%= image_tag "landing/parts_cropped.png", class: "w-full h-auto mb-4" %>
-              <p class="md:text-lg font-rc-full">We ship the parts</p>
+              <p class="md:text-lg font-rc-full">We ship the parts (you get a macropad)</p>
             </div>
           </div>
           <div class="flex justify-center mt-8 md:mt-12">
@@ -183,27 +183,42 @@
         </div>
       </section>
 
-      <!-- Divider Image -->
-      <div class="w-full py-8 md:py-16">
-        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
-      </div>
-
       <div class="space-y-12">
-        <p class="text-xl text-center md:text-3xl">Here's what others are working on</p>
+        <p class="text-xl text-center md:text-3xl">Here are some hackpads so far:</p>
         <div class="overflow-hidden">
-          <div class="flex h-64 space-x-8 space-y-8 carousel md:h-84">
-            <% @featured_projects.shuffle.each do |project| %>
-              <a href="<%= project[:url] %>" target="_blank" rel="noopener noreferrer" class="flex flex-col w-40 h-full md:w-72 shrink-0 bg-bp-darker" data-carousel-target="item">
-                <div class="h-20 bg-gray-200 bg-center bg-no-repeat bg-cover md:h-40" style="background-image: url('<%= image_path(project[:image]) %>')"></div>
-                <div class="flex flex-col p-2 space-y-2 md:p-4 grow">
-                  <p class="text-base font-bold md:text-xl"><%= project[:title] %> <span class="text-xs">by <%= project[:author] %></span></p>
-                  <p class="text-xs md:text-base"><%= project[:description] %></p>
-                </div>
-              </a>
+          <div class="flex h-64 space-x-8 carousel md:h-84 animate-scroll">
+            <% @community_projects.each do |project| %>
+              <div class="flex w-40 h-full md:w-72 shrink-0">
+                <div class="w-full h-full bg-gray-200 bg-center bg-no-repeat bg-cover" style="background-image: url('<%= project[:image] %>')"></div>
+              </div>
+            <% end %>
+            <% @community_projects.each do |project| %>
+              <div class="flex w-40 h-full md:w-72 shrink-0">
+                <div class="w-full h-full bg-gray-200 bg-center bg-no-repeat bg-cover" style="background-image: url('<%= project[:image] %>')"></div>
+              </div>
             <% end %>
           </div>
         </div>
       </div>
+      
+      <style>
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        
+        .animate-scroll {
+          animation: scroll 20s linear infinite;
+        }
+        
+        .animate-scroll:hover {
+          animation-play-state: paused;
+        }
+      </style>
 
       <!-- Divider Image -->
       <div class="w-full py-8 md:py-16">
@@ -254,7 +269,7 @@
            <div class="space-y-12">
         <div class="overflow-hidden">
           <div class="flex h-64 space-x-8 space-y-8 carousel md:h-84">
-            <% @featured_projects.shuffle.each do |project| %>
+            <% @pro_projects.shuffle.each do |project| %>
               <a href="<%= project[:url] %>" target="_blank" rel="noopener noreferrer" class="flex flex-col w-40 h-full md:w-72 shrink-0 bg-bp-darker" data-carousel-target="item">
                 <div class="h-20 bg-gray-200 bg-center bg-no-repeat bg-cover md:h-40" style="background-image: url('<%= image_path(project[:image]) %>')"></div>
                 <div class="flex flex-col p-2 space-y-2 md:p-4 grow">

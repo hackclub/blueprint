@@ -26,7 +26,87 @@ class LandingController < ApplicationController
   private
 
   def set_featured_projects
-    @featured_projects = [
+    @community_projects = [
+        {
+          title: "Serenity",
+          url: "https://github.com/The-UnknownHacker/Serenity",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/7d356e0df304801e02072f3740b6f05e545adea3_image__28_.png",
+          description: "Touch-based drumpad with ESP32-S3, copper PCB sensing, microSD storage, and configurable sound layers",
+          author: "The-UnknownHacker"
+        },
+        {
+          title: "CyberTrust",
+          url: "https://github.com/Aahil78/CyberTrust",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9b742720c3d9744d063ebf16b100c4c3143a2fc4_Image_from_iOS__2_.jpg",
+          description: "RP2350A-based USB security key with user presence button and neopixel",
+          author: "Aahil78"
+        },
+        {
+          title: "Nexo-BT",
+          url: "https://github.com/Arrow-07/NexoBT",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9a0505725a9ae6b40626841e47de45d0d1193296_image__27_.png",
+          description: "Wireless music receiver with balanced XLR outputs using ESP32 and PCM5102APWR DAC",
+          author: "Arrow-07"
+        },
+        {
+          title: "KeyDeck",
+          url: "https://github.com/CJBrandi/KeyDeck/",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/66ad39ad0517dddf1f898374511b821cf32b5a55_APC_0031-hdr.jpg",
+          description: "Simple macropad with 2 status LEDs, each button runs a different shortcut",
+          author: "CJBrandi"
+        },
+        {
+          title: "bop",
+          url: "https://github.com/ShuchirJ/bop",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/8512795d05da190eeb2e3d020ad350866a647ec9_20251105_213807.jpg",
+          description: "Bluetooth audio receiver with line level and headphone level outputs",
+          author: "ShuchirJ"
+        },
+        {
+          title: "Fulmen",
+          url: "https://github.com/AethelVeritas/Fulmen/tree/main",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9c4b16c116de2369826cbeade229397ba3ab4452_image.png",
+          description: "Small ergonomic low-profile wireless keyboard, reversible design",
+          author: "AethelVeritas"
+        },
+        {
+          title: "Serenity",
+          url: "https://github.com/The-UnknownHacker/Serenity",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/7d356e0df304801e02072f3740b6f05e545adea3_image__28_.png",
+          description: "Touch-based drumpad with ESP32-S3, copper PCB sensing, microSD storage, and configurable sound layers",
+          author: "The-UnknownHacker"
+        },
+        {
+          title: "CyberTrust",
+          url: "https://github.com/Aahil78/CyberTrust",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9b742720c3d9744d063ebf16b100c4c3143a2fc4_Image_from_iOS__2_.jpg",
+          description: "RP2350A-based USB security key with user presence button and neopixel",
+          author: "Aahil78"
+        },
+        {
+          title: "Nexo-BT",
+          url: "https://github.com/Arrow-07/NexoBT",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9a0505725a9ae6b40626841e47de45d0d1193296_image__27_.png",
+          description: "Wireless music receiver with balanced XLR outputs using ESP32 and PCM5102APWR DAC",
+          author: "Arrow-07"
+        },
+        {
+          title: "KeyDeck",
+          url: "https://github.com/CJBrandi/KeyDeck/",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/66ad39ad0517dddf1f898374511b821cf32b5a55_APC_0031-hdr.jpg",
+          description: "Simple macropad with 2 status LEDs, each button runs a different shortcut",
+          author: "CJBrandi"
+        },
+        {
+          title: "bop",
+          url: "https://github.com/ShuchirJ/bop",
+          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/8512795d05da190eeb2e3d020ad350866a647ec9_20251105_213807.jpg",
+          description: "Bluetooth audio receiver with line level and headphone level outputs",
+          author: "ShuchirJ"
+        }
+      ]
+
+    @pro_projects = [
         {
           title: "Serenity",
           url: "https://github.com/The-UnknownHacker/Serenity",
