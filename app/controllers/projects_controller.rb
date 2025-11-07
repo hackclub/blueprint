@@ -77,6 +77,8 @@ class ProjectsController < ApplicationController
             order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], journal_entries.id::int)", entry_ids.map(&:to_i) ])
             all_entries = JournalEntry.where(id: entry_ids).includes(project: :user).where(projects: { is_deleted: false }).references(:projects).order(Arel.sql(order_clause))
             @pagy, @journal_entries = pagy_array(all_entries.to_a, items: 20)
+          else
+            redirect_to explore_path(sort: "new", type: "journals", page: params[:page]) and return
           end
         end
       else
