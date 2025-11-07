@@ -522,6 +522,7 @@ class Project < ApplicationRecord
 
     if user.ysws_verified.nil? || user.ysws_verified == false
       update!(review_status: :awaiting_idv)
+      user.update(is_pro: true) unless user.is_pro?
       return
     end
 
@@ -561,6 +562,10 @@ class Project < ApplicationRecord
 
   def can_ship?
     review_status.nil? || design_needs_revision? || build_needs_revision? || awaiting_idv? || design_approved? || build_approved?
+  end
+
+  def is_currently_build?
+    design_approved? || build_pending? || build_approved? || build_needs_revision? || build_rejected?
   end
 
   def followed_by?(user)
