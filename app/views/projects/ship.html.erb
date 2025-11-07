@@ -43,25 +43,27 @@
                 class: "input px-3 mt-1 block w-full" %>
         </div>
 
-        <div data-controller="cart-screenshots" data-paginate-target="page" data-cart-screenshots-needs-funding-value="<%= @project.needs_funding %>" data-cart-screenshots-has-existing-value="<%= @project.cart_screenshots.attached? %>">
-          <div class="pt-2 space-y-2">
-            <div>
-              <%= f.label :cart_screenshots, "Cart screenshots", class: "block text-xl font-rc-full" %>
-              <p>Upload screenshots of checkout pages showing the items you will buy and their prices.<p>
+        <% if @project.ysws != "hackpad" %>
+          <div data-controller="cart-screenshots" data-paginate-target="page" data-cart-screenshots-needs-funding-value="<%= @project.needs_funding %>" data-cart-screenshots-has-existing-value="<%= @project.cart_screenshots.attached? %>">
+            <div class="pt-2 space-y-2">
+              <div>
+                <%= f.label :cart_screenshots, "Cart screenshots", class: "block text-xl font-rc-full" %>
+                <p>Upload screenshots of checkout pages showing the items you will buy and their prices.<p>
+              </div>
+              <%= f.file_field :cart_screenshots, multiple: true, direct_upload: true, accept: "image/*", class: "input w-full space-x-2", data: { action: "change->cart-screenshots#filesChanged", cart_screenshots_target: "input" } %>
+              <p class="hidden text-sm text-bp-danger" data-cart-screenshots-target="error">
+                <% if @project.errors[:cart_screenshots].present? %><%= @project.errors[:cart_screenshots].first %><% end %>
+              </p>
+              <div class="grid grid-cols-2 gap-3 md:grid-cols-3" data-cart-screenshots-target="previews"></div>
             </div>
-            <%= f.file_field :cart_screenshots, multiple: true, direct_upload: true, accept: "image/*", class: "input w-full space-x-2", data: { action: "change->cart-screenshots#filesChanged", cart_screenshots_target: "input" } %>
-            <p class="hidden text-sm text-bp-danger" data-cart-screenshots-target="error">
-              <% if @project.errors[:cart_screenshots].present? %><%= @project.errors[:cart_screenshots].first %><% end %>
-            </p>
-            <div class="grid grid-cols-2 gap-3 md:grid-cols-3" data-cart-screenshots-target="previews"></div>
           </div>
-        </div>
+        <% end %>
 
         <div class="flex items-center gap-3" data-controller="checkbox-visual">
           <%= f.check_box :print_legion, class: "sr-only", data: { checkbox_visual_target: "checkbox", action: "change->checkbox-visual#toggle" } %>
           <%= f.label :print_legion, class: "flex items-center gap-3 cursor-pointer" do %>
             <div class="checkbox check-darker" data-checkbox-visual-target="visual"></div>
-            <span class="text-lg">I have a 3D print and need it printed by someone else</span>
+            <span class="text-lg"><%= @project.ysws == "hackpad" ? "I don't have a 3D printer and need my case printed by someone else" : "I have a 3D print and need it printed by someone else" %></span>
           <% end %>
         </div>
 
