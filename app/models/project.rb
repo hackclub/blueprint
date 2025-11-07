@@ -120,8 +120,6 @@ class Project < ApplicationRecord
                      size: { less_than: 5.megabytes }
   validates :demo_picture, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],
                            size: { less_than: 5.megabytes }
-
-                           size: { less_than: 5.megabytes }
   validates :cart_screenshots, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],
                                size: { less_than: 10.megabytes }
 
