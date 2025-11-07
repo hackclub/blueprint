@@ -202,21 +202,6 @@
             </div>
       </div>
 
-      <!-- Prototype Banner -->
-      <section class="w-full">
-        <!-- Red stripes above/below -->
-        <div class="bg-[#6D1010] py-10 md:py-10 min-h-screen flex items-center grid-bg" style="clip-path: polygon(0 5%, 100% 0, 100% 95%, 0% 100%);">
-          <!-- Full-width maroon band with slanted edges -->
-          <div class="relative bg-[#6D1010] overflow-hidden w-full" style="clip-path: polygon(0 8%, 100% 0, 100% 92%, 0% 100%);">
-            <!-- Content -->
-            <div class="relative flex items-center justify-center">
-              <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
       <!-- For seasoned people-->
       <div class="w-full py-16 md:py-24">
         <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
@@ -226,6 +211,20 @@
         <h2 class="text-3xl md:text-5xl font-rc-full mb-4">Already a pro?</h2>
         <p class="text-lg md:text-xl">Blueprint is for everyone! Get up to $400 USD from Hack Club for *any* hardware project, ranging from mechanical keyboards to 3D printers.</p>
       </div>
+
+      <!-- Prototype Banner -->
+      <section class="w-full">
+        <!-- Red stripes above/below -->
+        <div class="bg-[#6D1010] py-10 md:py-20 min-h-screen flex items-center grid-bg" style="clip-path: polygon(0 5%, 100% 0, 100% 95%, 0% 100%);">
+          <!-- Full-width maroon band with slanted edges -->
+          <div class="relative bg-[#6D1010] overflow-hidden w-full" style="clip-path: polygon(0 8%, 100% 0, 100% 92%, 0% 100%);">
+            <!-- Content -->
+            <div class="relative flex items-center justify-center">
+              <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
+            </div>
+          </div>
+        </div>
+      </section>
 
 
       <!-- Divider Image -->
@@ -265,23 +264,6 @@
         </div>
       </div>
 
-      <div class="space-y-8 mt-12 md:mt-24 mx-4">
-        <h2 class="text-3xl text-center md:text-5xl">FAQ</h2>
-        <div class="flex justify-center">
-          <div class="max-w-6xl grow grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <% faq.each do |item| %>
-              <%= render "shared/card", class: "flex flex-col px-4 py-3 md:px-8 md:py-6" do %>
-                <h3 class="mb-3 text-sm font-bold md:text-xl text-bp-success"><%= item[:question] %></h3>
-                <p class="text-xs md:text-base"><%= item[:answer] %></p>
-              <% end %>
-            <% end %>
-          </div>
-        </div>
-        <div class="text-center md:text-xl">
-          <p>Have more questions? Check out our <a href="/faq" class="underline">full FAQ!</a></p>
-        </div>
-      </div>
-
       <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl mt-12 md:mt-24">
           <p class="text-lg uppercase md:text-3xl font-rc-full">Get started</p>
           <div class="flex" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
@@ -293,7 +275,26 @@
 
     <footer class="w-full mt-12 md:mt-24 relative">
       <%= image_tag "blueprint_footer.png", alt: "", class: "w-full h-auto", "aria-hidden": true, style: "mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);" %>
-      <div class="absolute inset-0 flex items-center justify-center z-20">
+      <div class="absolute inset-0 flex flex-col justify-between z-20 py-8 md:py-12">
+        <!-- FAQ Section (Top Half) -->
+        <div class="space-y-8 mx-4 pt-12 md:pt-24">
+          <h2 class="text-3xl text-center md:text-5xl">FAQ</h2>
+          <div class="flex justify-center">
+            <div class="max-w-6xl grow grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+              <% faq.each do |item| %>
+                <%= render "shared/card", class: "flex flex-col px-4 py-3 md:px-8 md:py-6" do %>
+                  <h3 class="mb-3 text-sm font-bold md:text-xl text-bp-success"><%= item[:question] %></h3>
+                  <p class="text-xs md:text-base"><%= item[:answer] %></p>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+          <div class="text-center md:text-xl">
+            <p>Have more questions? Check out our <a href="/faq" class="underline">full FAQ!</a></p>
+          </div>
+        </div>
+
+        <!-- Footer Content (Bottom Half) -->
         <div class="max-w-6xl mx-auto p-8 md:p-12">
           <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a></p>
           <p class="max-w-3xl text-white/75 text-sm md:text-base mb-8">
