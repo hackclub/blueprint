@@ -40,12 +40,6 @@
             <% else %>
               <%= link_to task[:msg], new_project_path, class: "underline underline-offset-2" %>
             <% end %>
-          <% elsif name == :post_journal %>
-            <% if done %>
-              <p class="line-through"><%= task[:msg] %></p>
-            <% else %>
-              <%= link_to task[:msg], projects_path, class: "underline underline-offset-2" %>
-            <% end %>
           <% else %>
             <% if done %>
               <p class="line-through"><%= task[:msg] %></p>
