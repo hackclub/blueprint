@@ -55,8 +55,8 @@
       <div class="flex flex-col space-y-1">
         <div class="flex items-center space-x-4">
           <p>Created by <%= render "shared/user_inline", user: @project.user %></p>
-          <% if @project.needs_funding == false %>
-            <p class="px-3 rounded-full bg-bp-dark">No Grant</p>
+          <% if @project.ysws == "hackpad" %>
+            <p class="px-3 rounded-full bg-bp-dark">Hackpad</p>
           <% elsif @project.tier %>
             <p class="px-3 rounded-full bg-bp-dark">Tier <%= @project.tier %></p>
           <% end %>
