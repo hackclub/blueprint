@@ -67,6 +67,7 @@ Rails.application.routes.draw do
   get "landing" => "landing#authed", as: :landing
 
   get "sorry" => "sorry#index", as: :sorry
+  get "adult" => "adult#index", as: :adult
 
   # Referral system
   get "r/:id" => "referral#show", as: :referral
@@ -83,6 +84,8 @@ Rails.application.routes.draw do
   get "auth/idv" => "auth#idv", as: :idv
   get "auth/idv/start" => "auth#idv_start", as: :idv_start
   get "idv_callback" => "auth#idv_callback", as: :idv_callback
+  get "auth/age" => "auth#age", as: :age_verification
+  post "auth/age" => "auth#submit_age"
 
   get "/utm_source" => "landing#utm_source", as: :utm_source
   get "/utm_source=feedback-email" => "landing#utm_source", as: :utm_source_feedback_email

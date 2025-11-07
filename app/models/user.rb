@@ -902,6 +902,10 @@ class User < ApplicationRecord
     role != "user"
   end
 
+  def is_adult?
+    birthday.present? && birthday < 18.years.ago
+  end
+
   private
 
   def sync_to_gorse

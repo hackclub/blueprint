@@ -1,7 +1,8 @@
 class AuthController < ApplicationController
-  allow_unauthenticated_access only: %i[ index new create create_email track ]
+  allow_unauthenticated_access only: %i[ index new create create_email track submit_age ]
   rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to slack_login_url, alert: "Try again later." }
   skip_forgery_protection only: %i[ track ]
+  skip_before_action :redirect_to_age, only: %i[ age submit_age ]
 
   layout false
 
@@ -288,6 +289,43 @@ class AuthController < ApplicationController
     end
 
     redirect_to home_path, notice: "Successfully linked your identity."
+  end
+
+  def age
+    render "age", layout: false
+  end
+
+  def submit_age
+    unless current_user
+      redirect_to login_path, alert: "Please log in first"
+      return
+    end
+
+    birthday = params[:birthday]
+    if birthday.blank?
+      redirect_to age_verification_path, alert: "Please enter your birthday"
+      return
+    end
+
+    begin
+      birthday_date = Date.parse(birthday)
+    rescue ArgumentError
+      redirect_to age_verification_path, alert: "Invalid date format"
+      return
+    end
+
+    age = ((Time.zone.now - birthday_date.to_time) / 1.year.seconds).floor
+
+    if age < 13
+      current_user.update!(birthday: birthday_date, is_banned: true, ban_type: :age)
+      redirect_to sorry_path, alert: "You must be at least 13 years old to use Blueprint"
+    elsif age > 18
+      current_user.update!(birthday: birthday_date)
+      redirect_to home_path, notice: "Thanks! You can still refer teens to Blueprint for rewards"
+    else
+      current_user.update!(birthday: birthday_date)
+      redirect_to home_path, notice: "Welcome to Blueprint!"
+    end
   end
 
   private

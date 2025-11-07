@@ -1,16 +1,23 @@
-<% nav_links = {
-    "Dashboard" => user_logged_in? ? home_path : login_path,
-    "Hackpad" => hackpad_path,
-    "About Blueprint" => about_path,
-    # "My Projects" => user_logged_in? ? projects_path : login_path,
-    "Starter Projects" => starter_projects_path,
-    "Design Resources" => resources_path,
-    "Explore" => explore_path,
-    "Leaderboard" => leaderboard_path,
-    "Shop" => toolbag_path,
-    "FAQ" => faq_path,
-    "Admin" => current_user&.special_perms? ? admin_root_path : nil
-} %>
+<% if current_user && current_user.is_adult? %>
+  <% nav_links = {
+      "Dashboard" => user_logged_in? ? adult_path : login_path,
+      "Admin" => current_user&.special_perms? ? admin_root_path : nil
+  } %>
+<% else %>
+  <% nav_links = {
+      "Dashboard" => user_logged_in? ? home_path : login_path,
+      "Hackpad" => hackpad_path,
+      "About Blueprint" => about_path,
+      # "My Projects" => user_logged_in? ? projects_path : login_path,
+      "Starter Projects" => starter_projects_path,
+      "Design Resources" => resources_path,
+      "Explore" => explore_path,
+      "Leaderboard" => leaderboard_path,
+      "Shop" => toolbag_path,
+      "FAQ" => faq_path,
+      "Admin" => current_user&.special_perms? ? admin_root_path : nil
+  } %>
+<% end %>
 <% pro_only_links = ["About Blueprint", "Starter Projects", "Design Resources", "Explore", "Leaderboard", "Shop", "FAQ"] %>
 
 <% active_projects_count = user_logged_in? ? Rails.cache.fetch([current_user.id, "active_projects_count", current_user.projects.maximum(:updated_at)]) { current_user.projects.where(is_deleted: false).count } : 0 %>
@@ -72,24 +79,26 @@
         <% end %>
     </div>
     <% if user_logged_in? %>
-        <% if current_user.is_pro %>
-          <%= button_to toggle_pro_users_path, method: :post, class: "text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer", data: { turbo: false } do %>
-            <p>Pro mode</p>
-            <div class="h-5 rounded-full w-10 bg-green-500 justify-end flex items-center">
-              <div class="size-4 rounded-full bg-white mx-0.5"></div>
-            </div>
+        <% unless current_user.is_adult? %>
+          <% if current_user.is_pro %>
+            <%= button_to toggle_pro_users_path, method: :post, class: "text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer", data: { turbo: false } do %>
+              <p>Pro mode</p>
+              <div class="h-5 rounded-full w-10 bg-green-500 justify-end flex items-center">
+                <div class="size-4 rounded-full bg-white mx-0.5"></div>
+              </div>
+            <% end %>
+          <% else %>
+            <button type="button"
+              data-controller="modal"
+              data-modal-target-id-value="toggle-pro-modal"
+              data-action="click->modal#show"
+              class="text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer">
+              <p>Pro mode</p>
+              <div class="h-5 rounded-full w-10 bg-bp-darker flex items-center">
+                <div class="size-4 rounded-full bg-white mx-0.5"></div>
+              </div>
+            </button>
           <% end %>
-        <% else %>
-          <button type="button"
-            data-controller="modal"
-            data-modal-target-id-value="toggle-pro-modal"
-            data-action="click->modal#show"
-            class="text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer">
-            <p>Pro mode</p>
-            <div class="h-5 rounded-full w-10 bg-bp-darker flex items-center">
-              <div class="size-4 rounded-full bg-white mx-0.5"></div>
-            </div>
-          </button>
         <% end %>
         <div class="flex flex-col space-y-1">
             <% if session[:original_id] %>
@@ -104,8 +113,12 @@
                     <img src="<%= avatar_url %>" alt="<%= name %>'s avatar" class="rounded-lg size-12">
                     <div>
                         <p class="w-32 truncate whitespace-nowrap"><%= name %> <%= current_user.created_at < DateTime.new(2025,10,4,4,0,0) ? "🚀" : "" %></p>
-                        <% cache [current_user, "tickets-v2"] do %>
-                          <p><%= pluralize(current_user.tickets, "ticket") %></p>
+                        <% if current_user.is_adult? %>
+                          <p>Adult</p>
+                        <% else %>
+                          <% cache [current_user, "tickets-v2"] do %>
+                            <p><%= pluralize(current_user.tickets, "ticket") %></p>
+                          <% end %>
                         <% end %>
                     </div>
                 </div>
