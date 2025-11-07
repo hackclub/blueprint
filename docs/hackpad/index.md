@@ -7,33 +7,46 @@
 
 Hey! Want to make your own macropad but have absolutely no clue where to start? You found the right place! In this tutorial, we're going to make a 4-key macropad as an example. **For a full submission, you will have to edit it to be your own** (add a extra keys?? a knob?? OLED screen? up to you!)
 
-**Read over the [FAQ](/faq) first so that you have an idea of what you're working with!**
 
-This process is going to be broken into 3 parts, each with its own sub-parts:
-- [PCB Design](#pcb_design)
-  - [Drawing the schematic](#schematic)
-  - [Routing the PCB](#routing)
-  - [Adding 3D models](#3d_models)
-- [Case Design](#case)
-  - [Creating the bottom](#bottom)
-  - [Creating the top](#top)
-  - [Finishing touches](#finishing)
-- [Firmware](#firmware)
-  - [kmk!](#kmk)
+This process is going to be broken into roughly 4 parts, each with its own sub-parts:
+
+- **Initial Setup**
+- **PCB (Printed Circuit Board) Design**
+- **Case Design**
+- **Configuring firmware**
 
 
-If you're unsure about anything, send a message in #hackpad! We have so many eager people to help. (Please try searching your question in the search bar first.)
+If you're unsure about anything, send a message in #blueprint! We have so many eager people to help.
 
-There's also [this](/resources) giant wall of resources to reference!
+There's also [this](/hackpad/resources) giant wall of resources to reference!
 
 Lets start with:
 
-<a name="pcb_design"/>
+## Initial Setup
+
+Inital setup is super simple! First, install the necessary pre-requesite software:
+
+- [KiCAD](https://www.kicad.org/), an open source PCB designer tool
+- [Fusion360](https://www.autodesk.com/products/fusion-360/overview), a parametric 3D modeling software.
+- [VSCode](https://code.visualstudio.com/) is an open-source code editor. Not necessary but highly recommended!
+
+While all of that is installing, let's start with creating a new project! Make sure to read the full instructions before proceeding.
+
+First, head on over to the "dashboard" page and scroll down. You'll see a "my projects" tab! Click "Create new project"
+
+![img](https://hc-cdn.hel1.your-objectstorage.com/s/v3/2550ab6f4c0a711cfed3ee300800bc3298de3458_image__24_.png)
+
+Then, fill in a title + description for your project:
+
+![filling_in_project_info!!](https://hc-cdn.hel1.your-objectstorage.com/s/v3/2de46802025c02ddd6ffb2513550721304a018b2_image__23_.png)
+
+After that, come back here! You're officially done all the setup, so now we can move onto...
+
 ## Designing your PCB
 
-For this guide we're going to be using [KiCad](https://www.kicad.org/), which is an open source PCB designer tool.   
+We're going to be using KiCAD for this part of the guide! Make sure you have it open
 
-To start, we're going to have to install the kicad library! We are going to use the following respository:
+To start, we're going to have to install a KiCAD library. We are going to use the following respository:
 
 - [OPL Kicad Library](https://github.com/Seeed-Studio/OPL_Kicad_Library/) 
 
@@ -45,7 +58,7 @@ There are many tutorials on how to install libraries! Google is your best friend
   Your browser does not support the video tag.
 </video>
 
-<a name="schematic"/>
+
 ### Drawing the Schematic
 
 Start by opening up KiCad, a window will pop up, create a new project then click on the "Schematic Editor" button:
