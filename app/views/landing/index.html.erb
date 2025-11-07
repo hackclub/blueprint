@@ -153,10 +153,6 @@
         </div>
       </div>
 
-            <!-- Divider Image -->
-      <div class="w-full py-8 md:py-16">
-        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
-      </div>
 
       <!-- How It Works Section -->
       <section class="py-12 md:py-20">
@@ -213,36 +209,29 @@
         <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
       </div>
 
-      <div class="flex flex-row md:text-xl max-w-4xl mx-auto space-y-4 px-4">
-        <div>
-        <h2 class="text-3xl">Join our community</h2>
-        <div class="">
-          <p class="md:text-xl">Join a community of 50,000+ other teens in building projects!</p>
-          <p class="md:text-xl">We'll be running weekly events such as AMAs with YouTubers like <a class="underline" href="https://www.youtube.com/channel/UCO8DQrSp5yEP937qNqTooOw" target="_blank">Strange Parts</a>, <a class="underline" href="https://www.youtube.com/zackfreedman" target="_blank">Zack Freedman</a>, and more!</p>
-          <p class="md:text-xl">Meet other people making viral projects</p>
+      <!-- Join Community Section -->
+      <section class="w-full">
+        <div class="flex flex-row md:text-xl max-w-4xl mx-auto space-y-4 px-4 py-8 md:py-12">
+          <div>
+            <h2 class="text-3xl">Join our community</h2>
+            <div class="">
+              <p class="md:text-xl">Join a community of 50,000+ other teens in building projects!</p>
+              <p class="md:text-xl">We'll be running weekly events such as AMAs with YouTubers like <a class="underline" href="https://www.youtube.com/channel/UCO8DQrSp5yEP937qNqTooOw" target="_blank">Strange Parts</a>, <a class="underline" href="https://www.youtube.com/zackfreedman" target="_blank">Zack Freedman</a>, and more!</p>
+              <p class="md:text-xl">Meet other people making viral projects</p>
+            </div>
           </div>
         </div>
-        <div>
-            <img>
-            </div>
-      </div>
-
-      <!-- For seasoned people-->
-      <div class="w-full py-16 md:py-24">
-        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
-      </div>
-      
-      <div class="text-center max-w-4xl mx-auto px-4">
-        <h2 class="text-3xl md:text-5xl font-rc-full mb-4">Already a pro?</h2>
-        <p class="text-lg md:text-xl">Blueprint is for everyone! Get up to $400 USD from Hack Club for *any* hardware project, ranging from mechanical keyboards to 3D printers.</p>
-      </div>
+        <div class="w-full relative z-10 mb-[-15%]" style="clip-path: polygon(0 0, 100% 5%, 100% 100%, 0% 100%);">
+          <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/32c3fcc393f284f0c16fe89a79b69ef954cfa098_image.png" alt="" class="w-full h-auto object-cover" />
+        </div>
+      </section>
 
       <!-- Prototype Banner -->
-      <section class="w-full">
+      <section class="w-full relative">
         <!-- Red stripes above/below -->
-        <div class="bg-[#6D1010] py-10 md:py-20 min-h-screen flex items-center grid-bg" style="clip-path: polygon(0 5%, 100% 0, 100% 95%, 0% 100%);">
+        <div class="bg-[#6D1010] pt-16 pb-10 md:pt-40 md:pb-20 lg:pt-28 min-h-[40svh] md:min-h-[60vh] lg:min-h-[75vh] flex items-center grid-bg" style="clip-path: polygon(0 10%, 100% 4%, 100% 96%, 0% 100%);">
           <!-- Full-width maroon band with slanted edges -->
-          <div class="relative bg-[#6D1010] overflow-hidden w-full" style="clip-path: polygon(0 8%, 100% 0, 100% 92%, 0% 100%);">
+          <div class="relative bg-[#6D1010] overflow-hidden w-full" style="clip-path: polygon(0 13%, 100% 7%, 100% 93%, 0% 99%);">
             <!-- Content -->
             <div class="relative flex items-center justify-center">
               <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
@@ -251,6 +240,22 @@
         </div>
       </section>
 
+      <!-- For seasoned people-->
+      <div class="w-full py-16 md:py-24">
+        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
+      </div>
+      
+      <div class="text-center max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl md:text-5xl font-rc-full mb-4">Already a pro?</h2>
+        <p class="text-lg md:text-xl mb-8">Blueprint is for everyone! Get up to $400 USD from Hack Club for *any* hardware project, ranging from mechanical keyboards to 3D printers.</p>
+        <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl">
+          <p class="text-lg uppercase md:text-3xl font-rc-full">Get started</p>
+          <div class="flex" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
+            <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
+            <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
+          </div>
+        </div>
+      </div>
 
       <!-- Divider Image -->
       <div class="w-full py-8 md:py-16">
@@ -261,41 +266,18 @@
         <h2 class="text-3xl md:text-5xl font-rc-full">Not a teen? Join us!</h2>
       </div>
 
+      <div class="max-w-4xl mx-auto px-4 py-8 md:py-12">
+        <div class="flex flex-col items-center space-y-6">
+          <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/8ea48b3bca3d08a1998de970931f7ced3bfaf567_gpu.png" alt="AMD Radeon RX 9070 XT GPU" class="w-full max-w-2xl h-auto" />
+          <p class="text-lg md:text-2xl text-center">Every teen you refer to Blueprint gives you a chance to win rx 9070 xt GPU</p>
+          <%= render "shared/button", text: "Sign up for referral program", url: "/referrals", class: "px-8 py-3 text-lg md:text-xl" %>
+        </div>
+      </div>
 
       <!-- Divider Image -->
       <div class="w-full py-8 md:py-16">
         <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
       </div>
-      <div class="mx-4 flex justify-center">
-        <div class="max-w-4xl md:text-xl border-bp-warning border-4 grow p-6 md:p-12 bg-bp-warning/10 space-y-8">
-          <div class="text-center space-y-2">
-            <h2 class="text-xl md:text-3xl text-bp-warning">The last time we did this</h2>
-            <p>Stats from <a href="https://hackclub.com/onboard" class="underline">Hack Club OnBoard</a></p>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 text-center">
-            <div>
-              <p class="font-rc-full text-4xl text-bp-warning">$150,000+</p>
-              <p>Given out</p>
-            </div>
-            <div>
-              <p class="font-rc-full text-4xl text-bp-warning">1000+</p>
-              <p>Projects made</p>
-            </div>
-            <div>
-              <p class="font-rc-full text-4xl text-bp-warning">7,000+</p>
-              <p>Hours logged</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl mt-12 md:mt-24">
-          <p class="text-lg uppercase md:text-3xl font-rc-full">Get started</p>
-          <div class="flex" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
-            <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
-            <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
-          </div>
-        </div>
     </main>
 
     <footer class="w-full mt-12 md:mt-24 relative">
