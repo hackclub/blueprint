@@ -299,18 +299,18 @@
     </main>
 
     <footer class="w-full mt-12 md:mt-24 relative">
-      <%= image_tag "blueprint_footer.png", alt: "", class: "w-full h-auto", "aria-hidden": true, style: "mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);" %>
+      <%= image_tag "blueprint_footer.png", alt: "", class: "w-full h-auto", "aria-hidden": true, style: "mask-image: linear-gradient(to bottom, transparent 0%, black 50%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 50%, black 100%);" %>
       <div class="absolute inset-0 flex flex-col justify-between z-20 py-8 md:py-12">
         <!-- FAQ Section (Top Half) -->
         <div class="space-y-8 mx-4 pt-12 md:pt-24">
           <h2 class="text-3xl text-center md:text-5xl">FAQ</h2>
           <div class="flex justify-center">
-            <div class="max-w-6xl grow grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div class="max-w-6xl grow grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
               <% faq.each do |item| %>
-                <%= render "shared/card", class: "flex flex-col px-4 py-3 md:px-8 md:py-6" do %>
+                <div>
                   <h3 class="mb-3 text-sm font-bold md:text-xl text-bp-success"><%= item[:question] %></h3>
                   <p class="text-xs md:text-base"><%= item[:answer] %></p>
-                <% end %>
+                </div>
               <% end %>
             </div>
           </div>
