@@ -63,7 +63,7 @@ There are many tutorials on how to install libraries! Google is your best friend
 
 Start by opening up KiCad, a window will pop up, create a new project then click on the "Schematic Editor" button:
 
-<img src="/docs/v2/schematicbutton.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/70f2f1950d3af13329ddc7f8ece3524070d409bc_schematicbutton.png" class="max-w-96" />
 
 This should open up a new window with your schematic editor! Once you're in, press the A key on your keyboard. This should open up a menu where you can add **symbols** for your different components! Search for the following to add them:
 - XIAO-RP2040-DIP (your microcontroller)
@@ -74,40 +74,39 @@ Start by placing these symbols down. They don't have to be in any particular ord
 
 To rotate the symbols, click R. And to mirror them, click X.
 
-<img src="/docs/v2/placedcomponents.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/a9799b37f799c031eaea7cc270ab54e7a4945bd8_placedcomponents.png" class="max-w-96" />
 
 Afterwards, it should look something like this ^^
 
 Now it's time to start wiring. Hit the W key on your keyboard to start wiring! This should make a green wire appear. Connect your components like so:
 
-<img src="/docs/v2/wiredcomponents.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/9fbe3988e8ac09c42483ad2d9dff7e7fc7f40ff5_wiredcomponents.png" class="max-w-96" />
 
 Don't forget to add the GND and +5V symbols! Press P and search for it.
 
 Once all the components are connected, we can start assigning **footprints** to the symbols we have here. Footprints are what gets physically drawn on the PCB. To do this, click the "run footprint assignment tool" in the top right.
 
-<img src="/docs/v2/assignfootprints.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/f5b7fde1908bf5ec3dbaa8bc26f9c6b95d97a84e_assignfootprints.png" class="max-w-96" />
 
 This should open up a window where you can assign different footprints to your components! Assign them based on the image below:
 
-<img src="/docs/v2/assignedfootprints.png" className="max-w-200" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/596082103b4e031d3848b221f73384f03f4b611a_assignedfootprints.png" class="max-w-200" />
 
 Once you're done, you can hit apply & save schematic. We're now officially done with the schematic! Onto making the pcb itself:
 
-<a name="routing"/>
 ### Routing the PCB
 
 Great job on finishing the schematic! Hit this button to open the PCB editor: 
 
-<img src="/docs/v2/switchtopcb.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/8decb4a5e5188aacec38a99c6ec868b58be838c2_switchtopcb.png" class="max-w-96" />
 
 Hit the "Update PCB from schematic" button in the top right. This will bring in all your parts!
 
-<img src="/docs/v2/updatefromschematic.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/d1c6b55d3c015423db630ccb10cf966c0816a99a_updatefromschematic.png" class="max-w-96" />
 
 Click anywhere on your screen to place your components down, it should look something like this:
 
-<img src="/docs/v2/pcbstart.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/d1796f34df89ab20e6b6357175b3757a9ff6bef5_pcbstart.png" class="max-w-96" />
 
 First, to be able to better place the components, we would need to change the grid. 
 
@@ -115,11 +114,11 @@ Grids are used to allow efficient placement, movement and connection between sym
 
 Select the button at the top that says "1.2700 mm (50 mils)". You can use this menu to change what grid you are on. Then click on Edit Grids...
 
-<img src="/docs/v2/grid.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/a720050b61b09862e984bd28d0a6751f90422016_grid.png" class="max-w-96" />
 
 You should have the following menu open:
 
-<img src="/docs/v2/editgrid.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/140e75affeaabf2daaf654f516a5dc5195c323d0_editgrid.png" class="max-w-96" />
 
 Now click on the + button at the bottom left, and enter "2.38125" in the field named "X". Press Ok, then click on Ok again. Now you have defined a custom grid!
 (this is the distance between the switches divided by 8. 19.05mm / 8 = 2.38125mm)
@@ -130,63 +129,63 @@ Select a footprint, drag it around to move it (Or if you prefer, click a compone
 
 When placing the switches, I recommend you to use the newly defined grid of 2.38125 mm (Select it in the menu), and for placing other components, I recommend a grid of 0.10000 mm. **Important**: While moving the switches, select the blue circle at the center, this will make sure all the switches are alighed properly. You should align the outer while lines of the switches as so:
 
-<img src="/docs/v2/align.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6863a3637ac91daf5f2e5618aed19f3d94fdcb47_align.png" class="max-w-96" />
 
 There is a front side and back side of the board. You can tell them apart by color
 
-<img src="/docs/v2/frontback.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/1e70eb3e035e4a0ab0c1506dd30a3815efd292c7_frontback.png" class="max-w-96" />
 
 If you want to put the footprint on the back side, press F. Here is what the footprints look like on different sides:
 
-<img src="/docs/v2/compfrontback.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e6e0a19a9a9bfe61edc63ff76a0c996582391120_compfrontback.png" class="max-w-96" />
 
 Move, rotate and flip your footprints into a design that you like! It should look something like this:
 
-<img src="/docs/v2/placedfootprints.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6863a3637ac91daf5f2e5618aed19f3d94fdcb47_placedfootprints.png" class="max-w-96" />
 
 You need to define the outline of the board. Select the Edge.Cuts layer on the right toolbar.
 
-<img src="/docs/v2/righttoolbar.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/d3ff3725449696af6d0497027fe858c387154c2d_righttoolbar.png" class="max-w-96" />
 
 Now, you can use the "Draw Rectangle" button to draw the boarders of the board:
 
-<img src="/docs/v2/edgecutsselect.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/d543d12062fe70b729e9883742257d3fc4398488_edgecutsselect.png" class="max-w-96" />
 
 This shall be the size of your physical board.
 
 **IMPORTANT**! Remember to have the head of the XIAO poking out of the Edge.Cuts rectangle. This is mandatory to be able to plug your USB cable in.
 
-<img src="/docs/v2/xiaohead.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/3982f14c0636b7a40997d86e759bc43331c58ee6_xiaohead.png" class="max-w-96" />
 
 Now it's time to route the PCB! Hit X on your keyboard and hit any golden pad with a thin blue line poking out of it. It should dim the entire screen, show you which direction you need to go with a thin blue line and highlight the destination:
 
-<img src="/docs/v2/routing.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/84c2d9ef431116b35206cfe1ea5605e951019885_routing.png" class="max-w-96" />
 
 Join the highlighted pads together. If there isn't enough space on the front side, or there is a trace already present that is blocking you, you can route on the back side by clicking B.Cu on the right toolbar. At the same time, if you want to change sides during routing, press V and a via shall be added, which will transfer your trace to the other side of the board:
 
-<img src="/docs/v2/via.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/2c5f108cb7c1ad9cf0ad669468cf0373f9133a81_via.png" class="max-w-96" />
 
 **Attention**! Wires and pads of different colors (except golden) can't be connected together directly! You must via to the other side.
 
 Continue until there are no thin blue lines on the screen! Your final product should look something like this:
 
-<img src="/docs/v2/finalpcb.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/af8a5ad6b744cfb84090242997957f54410acdbd_finalpcb.png" class="max-w-96" />
 
 Also, it is **VERY IMPORTANT** that you brand your hackpad! Put the name of your hackpad on any silkscreen of your PCB. Do this by using the text tool. Also, write "XIAO HERE" on the side you would like your XIAO to be placed on. 
 
 To do this select F.Silkscreen (If your xiao is on the back side, use B.Silkscreen when placing the "XIAO HERE" text), and click on the add text button:
 
-<img src="/docs/v2/addtext.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6fb7d15b52317c1d7432c048de06de5e4fa4fd64_addtext.png" class="max-w-96" />
 
 Enter your text and place it down! 
 
-<img src="/docs/v2/realfinalpcb.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/2a961bf38e363dd35b0679e5a4c1e2f20199db90_realfinalpcb.png" class="max-w-96" />
 
 If you want to add some pictures to your PCB to make it even more personal, [check this out!](/advancedguide#silkscreen)
 
 Good work! You're almost done with the PCB. Let's run the DRC to make sure the PCB works. The silkscreen warnings you see are okay, make sure there are no more errors! Here is a [list of all DRC errors you might encounter](/errors)
 
-<img src="/docs/v2/drcbutton.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/87367f8b352a2d1233f1c35a03dd8a67efe5a2b0_drcbutton.png" class="max-w-96" />
 
 PS. You might need to change tabs to see all errors. (Click on "Unconnected Items")
 
@@ -194,7 +193,6 @@ Thats all for your PCB! Great job.
 
 If you aren't satisfied and wan't something more advanced, [check out the advanced PCB guide!](/advancedPCB)
 
-<a name="case"/>
 ## Creating your case
 
 This guide uses [Fusion360](https://www.autodesk.com/products/fusion-360/personal) for designing the case. You can use other software, but it may be harder to follow along!
@@ -207,13 +205,12 @@ On the top left you should see a small keyboard. Now click the keys that doesn't
 
 After you made the layout match your macropad, switch to the "Raw Data" tab in the middle:
 
-<img src="/docs/v2/layout.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e577de2f63de0008edf4683ab1525982798272c7_layout.png" class="max-w-96" />
 
 Copy the text inside the textbox, and paste it into ai03's plate generator.
 
 After that, scroll down, look at the preview to verify if it conforms to your macropad, and then press download DXF.
 
-<a name="case_design_fusion"/>
 ## Creating your case in Fusion360
 
 Fusion360 has a [free plan for students](https://www.autodesk.com/education/home), you can create a education account. You can also use [Autodesk Fusion for personal use](https://www.autodesk.com/products/fusion-360/personal) After you have your account, either download the native Fusion360 application, or [use this magic link](https://fusion.online.autodesk.com/webapp?submit_button=Launch+Autodesk+Fusion) to launch it directly in your browser :D
@@ -222,17 +219,16 @@ If you are using the browser version, don't forget to save regularly, since your
 
 I **strongly** recommend you use the desktop application if you are on a supported platform, since the web one is buggy and super slow.
 
-<a name="bottom"/>
 ### Creating the bottom
 Start by creating a new project, and a new component, this is better for organization.
 
-<img src="/docs/v2/fusioncomp.png" className="max-w-96" />
-<img src="/docs/v2/newcomponent.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ba29ae66ece9794dacbab6be26b730b618e27288_fusioncomp.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ba29ae66ece9794dacbab6be26b730b618e27288_newcomponent.png" class="max-w-96" />
 
 Now go back to KiCAD PCB editor and click on your Edge.Cuts outline. In the bottom left of your screen, you can find the length and widgth of your PCB. Alternatively, measure the dimensions of your board with the ruler tool. Click on one end of your Edge.Cuts and click again on the other end.
 
-<img src="/docs/v2/ruler.png" className="max-w-96" />
-<img src="/docs/v2/pcbsize.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/b89bd15fbe8d457d09eadc0e244eea7ad64f721d_ruler.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/21420ec275e3d644176ed17ee0e4e8e315474a41_pcbsize.png" class="max-w-96" />
 
 If you used the Edge.Cuts outline, the width and height of your board are the widgth and height listed.
 
@@ -240,65 +236,65 @@ If you used the ruler tool, the width of the board is the absolute value of x (4
 
 Next, create a sketch by by pressing the green + button on the top left, then clicking the bottom orange retangle at the center of the screen.
 
-<img src="/docs/v2/1sketch1.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ba29ae66ece9794dacbab6be26b730b618e27288_1sketch1.png" class="max-w-96" />
 
 Create a rectangle that is 1mm bigger than your hackpad's PCB. For example, my PCB is 41mm x 62.7mm, I added 1mm to each size on the sketch. To set the size of a rectangle, click on the Sketch dimension button (You might need to expand the "Create" menu to see it, or press the D key), then click on the edge you wan't to define the length.
 
-<img src="/docs/v2/fusionrect.png" className="max-w-96" />
-<img src="/docs/v2/fusiondim.png" className="max-w-96" />
-<img src="/docs/v2/1sketch2.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/80bf23120968456e67f2a8fc478b4f4cadca7e49_fusionrect.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/80bf23120968456e67f2a8fc478b4f4cadca7e49_fusiondim.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/80bf23120968456e67f2a8fc478b4f4cadca7e49_1sketch2.png" class="max-w-96" />
 
 Create another rectangle with 20mm extra on each dimension! (I will have 61mm x 82.7mm):
 
-<img src="/docs/v2/fusionrect2.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/3c5a322be956e5f732e0d509895a6cdd8b89992f_fusionrect2.png" class="max-w-96" />
 
 Center this rectangle by pressing the dimension button, press one edge of the small rectangle then the corresponding edge of the big rectangle and setting the values to 9.5mm. (You only need to constrain one of the horizontal edges, and one of the vertical edges)
 
-<img src="/docs/v2/fusionrect3.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/3c5a322be956e5f732e0d509895a6cdd8b89992f_fusionrect3.png" class="max-w-96" />
 
 Now use the circle tool to draw 4 circles, one at each corner of the larger rectangle. Set the diameter to 3.4mm when creating the circle, or use the sketch dimension tool to set their size to 3.4mm. Then, use the dimension tool to set their distance to their corresponding edges to 5mm (by clicking on their centers, then the corresponding edge):
 
-<img src="/docs/v2/fusioncircle.png" className="max-w-96" />
-<img src="/docs/v2/fusioncircledim.png" className="max-w-96" />
-<img src="/docs/v2/fusioncircle2.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusioncircle.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusioncircledim.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusioncircle2.png" class="max-w-96" />
 
 Now add 4 more circles, this time with a diameter of 6mm. Select the center of the small circle when you place the larger circle's center point, or select the coincident tool, and click on the centers of corresponding circles to align them.
 
-<img src="/docs/v2/fusioncoincident.png" className="max-w-96" />
-<img src="/docs/v2/fusionfinishsketch.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusioncoincident.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusionfinishsketch.png" class="max-w-96" />
 
 Press "Finish sketch" (green checkmark at top right of screen), then select all the outer circles (shift click) and press extrude (E key or the button at the top). In the extrude menu, select Offset in Start, and enter 3.1mm as the Offset, then enter 9.9 mm in the Distance field and click ok:
 
-<img src="/docs/v2/fusionextrude.png" className="max-w-96" />
-<img src="/docs/v2/fusionselect.png" className="max-w-96" />
-<img src="/docs/v2/fusionextrudemenu.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e5012fc0a662c8d120b6730ee0e57937496b3fbd_fusionextrude.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e5012fc0a662c8d120b6730ee0e57937496b3fbd_fusionselect.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e5012fc0a662c8d120b6730ee0e57937496b3fbd_fusionextrudemenu.png" class="max-w-96" />
 
 Now, you must re-show the object be opening the Sketches folder on the left, and clicking the eye icon to the left of Sketch1. Then select the outer rectangle and press extrude. This time the Start shall be "Profile Plane" (and will be this for all future extrudes), and set the distance to 13mm:
 
-<img src="/docs/v2/fusionshow.png" className="max-w-96" />
-<img src="/docs/v2/fusionextrude2.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/5b2e76d3daebd0d8af8f9f68e4643daa3f35253e_fusionshow.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/5b2e76d3daebd0d8af8f9f68e4643daa3f35253e_fusionextrude2.png" class="max-w-96" />
 
 Now, click the center square, and extrude it by 3mm. You can move arround and you will see something like this:
 
-<img src="/docs/v2/fusioncasehalf.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/5b2e76d3daebd0d8af8f9f68e4643daa3f35253e_fusioncasehalf.png" class="max-w-96" />
 
 That's the base of your case done!
 
 Now go to kicad and measure the distance from the edge of the PCB to the USB port using the ruler tool
 
-<img src="/docs/v2/kicadusbdist.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/de05c35d940dc2e5c5594e6fe47bd7abb88cd91b_kicadusbdist.png" class="max-w-96" />
 
 Now select the top of the case:
 
-<img src="/docs/v2/fusiontop.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/29df5be214c13403164543b583d88b3cacceac95_fusiontop.png" class="max-w-96" />
 
 And create a new sketch (Create Sketch button). Draw a rectangle at the top, and place your starting point on the top edge, and ending point on the inner top edge. Now define it's width to 18.5mm (You can define it by clicking on the left edge, then the right edge with the distance tool). After that, set the distance from the left of the rectangle to the left edge of the case to x_distance_in_kicad+5.75mm:
 
-<img src="/docs/v2/fusionhole.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/d00ca2f93d6ff63d960e7b0566ed7b6612867672_fusionhole.png" class="max-w-96" />
 
 Click finish sketch, select the rectangle we just drew and press extrude. This time set the distance to -7.5mm
 
-<img src="/docs/v2/fusioncase.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/29df5be214c13403164543b583d88b3cacceac95_fusioncase.png" class="max-w-96" />
 
 Now we finished the bottom case! Congratulations!
 
@@ -308,74 +304,70 @@ To download the resulting STEP file on the web, go to [https://myhub.autodesk360
 
 Right now our case looks a little ugly, its so blocky! Lets round the vertical edges, press the Fillet button found in the top, and click on each edge and make it 5mm. Should look as such:
 
-<img src="/docs/v2/fillet.png" className="max-w-96" />
-<img src="/docs/v2/edgeround.png" className="max-w-96" />
-<img src="/docs/v2/fusiongfinaltop.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/37804a2891e02800f2d4b3f953a398ee5353fc98_fillet.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/37804a2891e02800f2d4b3f953a398ee5353fc98_edgeround.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/37804a2891e02800f2d4b3f953a398ee5353fc98_fusiongfinaltop.png" class="max-w-96" />
 
-<a name="top"/>
 ### Creating the top
 
 Next, we will make the other half of our case. Start by clicking new design.
 
-<img src="/docs/v2/fusionnewdesign.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/1480f89f7a6e146650ec11668c9c065be4103dc8_fusionnewdesign.png" class="max-w-96" />
 
 Now go to the INSERT menu, expand it and click "Insert DXF". Select the dxf file we generated at the start (in the web you need to first click Upload from Fusion Team..., upload it from there, click refresh then select the file), and click ok. Now delete the outer lines surrounding the keyholes. You should have something like this:
 
-<img src="/docs/v2/fusionholes.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/1480f89f7a6e146650ec11668c9c065be4103dc8_fusionholes.png" class="max-w-96" />
 
 Now select everything and click on the Lock button
 
-<img src="/docs/v2/fusionlock.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/1480f89f7a6e146650ec11668c9c065be4103dc8_fusionlock.png" class="max-w-96" />
 
 Go back to KiCAD PCB editor and measure the dimensions of your board with the ruler tool. Click on one end of your Edge.Cuts and click again on the other end. You can also select your Edge.Cuts and find the width and height in the bottom right.
 
-<img src="/docs/v2/ruler.png" className="max-w-96" />
-<img src="/docs/v2/swoffset.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/b89bd15fbe8d457d09eadc0e244eea7ad64f721d_ruler.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/b89bd15fbe8d457d09eadc0e244eea7ad64f721d_swoffset.png" class="max-w-96" />
 
 Now lets create a new rectangle, define it's width and height be the same as the size of the top plate. Set the distance between the left keyhole end and the left rectangle edge the x distance you just measured + 9.5 (for me it's 3.99+9.5). Same for the bottom edge of the keyhole and bottom edge of the rectangle, y distance + 9.5.
 
-<img src="/docs/v2/fusionalmost.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e577de2f63de0008edf4683ab1525982798272c7_fusionalmost.png" class="max-w-96" />
 
 Add another rectangle, this time with it's start starting on the top line of our rectangle. Set it's width to 18.5mm and height to 31mm. After that use the distance tool to set the distance from the left of the innder rectangle to the left edge of the outer rectangle to x_distance_in_kicad+5.75mm
 
 Add 4 more circles of 3.4mm and set their position to 5mm from the edges with the distance tool:
 
-<img src="/docs/v2/fusionfinalsketch.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/63d310314e568bb206df0790c421d427adc29860_fusionfinalsketch.png" class="max-w-96" />
 
 Click finish sketch, and pad out the main part by 1.5mm.
 
-<img src="/docs/v2/fusionplate.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/d39d3891cd4c372befaecadd1fbe95cea39c60ad_fusionplate.png" class="max-w-96" />
 
 But currently the plate is kinda ugly. Do the same things with the fillet as the case:
 
-<img src="/docs/v2/fusionplatefinal.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/d39d3891cd4c372befaecadd1fbe95cea39c60ad_fusionplatefinal.png" class="max-w-96" />
 
 You finished your plate!! Congrats 🎉
 
-<a name="finishing"/>
 ### Finishing Touches
 
 Next, we will brand our case! This part will not be seen and is for us to be able to keep track of who's submission is whos. Go to the bottom of the case, or somewhere that won't be seen, and create a new sketch. Make a text box, and enter the name of your hackpad on it. 
 
-<img src="/docs/v2/createtext.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7fc1b459839b1c49adb20cfa302670cfce15576f_createtext.png" class="max-w-96" />
 
 Extrude this sketch 0.2mm INTO the case, don't worry about the overhang! If you are getting an error when extruding, keep the font as Arial.
 
-<img src="/docs/v2/extrudedtext.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/f4cb3ff26d029cec2fa3b397f2d326a499374baf_extrudedtext.png" class="max-w-96" />
 
 Thats it! Your case is now done.
 
 I would also recommend importing 3d models of all your components to test fit everything: 
 
-<img src="/docs/v2/testedcase.png" className="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/b90f22b0f1ab616c9e65910eb893d49988192a25_testedcase.png" class="max-w-96" />
 
-<a name="firmware"/>
 ## Firmware
 
 You can use the [QMK firmware](https://qmk.fm/) project as firmware! You can find out how to port your keyboard here: \
 [QMK Porting Guide](https://docs.qmk.fm/porting_your_keyboard_to_qmk)
 
-<a name="kmk"/>
 Or if you wish, you can use kmk. It's made in python and can be hot reloaded.
 
 Here is the starter code, with explanations in the comments:
@@ -429,4 +421,4 @@ The board should automatically restart and be recognised as a new external drive
 # Next steps
 We just made a pretty cool macropad, but obviously there's a lot of cooler stuff out there - that's up to you to figure out! Again, don't copy this guide 1:1, add your own design into it.
 
-Or maybe do you think you are done? Check out how to submit [here](/submitting)
+Or maybe do you think you are done? Check out how to submit [here](/hackpad/submitting)
