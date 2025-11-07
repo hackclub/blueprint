@@ -7,4 +7,6 @@ Sentry.init do |config|
   # Add data like request headers and IP for users,
   # see https://docs.sentry.io/platforms/ruby/data-management/data-collected/ for more info
   config.send_default_pii = true
+
+  config.environment = Rails.env.staging? ? "staging" : Rails.env
 end
