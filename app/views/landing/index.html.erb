@@ -113,11 +113,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
               <!-- Left: logo + caption + CTA -->
               <div class="space-y-4 md:space-y-6 text-center md:text-left">
-                <div class="text-lg md:text-2xl font-rc-full">Hack Club presents</div>
+                <div class="text-lg md:text-2xl font-rc-full">Hack Club presents...</div>
                 <%= image_tag "blueprint_logo.png", alt: "Blueprint", class: "mx-auto md:mx-0 w-64 md:w-[28rem] h-auto" %>
                 
                 <div class="text-sm md:text-2xl font-rc-full">
-                  <h2 class="hidden md:block">Build a macropad - get it sent from Hack Club for free!</h2>
+                  <h2 class="hidden md:block mb-2 md:text-3xl">Build a macropad - get it sent from Hack Club for free!</h2>
                   <h2 class="hidden md:block">For ages 13 to 18. Ends January 1st, 2026</h2>
 
                   <h2 class="md:hidden">Build a macropad</h2>
@@ -130,7 +130,7 @@
                   <p class="text-lg md:text-2xl font-rc-full">Start making & get free stickers!</p>
                   <div class="flex w-full" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
                     <input type="email" data-email-redirect-target="input" class="w-full text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
-                    <button type="button" data-action="click->email-redirect#go" class="px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
+                    <button type="button" data-action="click->email-redirect#go" class="px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Start</button>
                   </div>
                 </div>
               </div>
@@ -153,19 +153,50 @@
         </div>
       </div>
 
+            <!-- Divider Image -->
+      <div class="w-full py-8 md:py-16">
+        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
+      </div>
+
+      <div class="text-center text-5xl max-w-6xl mx-auto md:mb-12">
+        <h2>Here's How It Works:</h2>
       <div class="flex flex-row items-center justify-center gap-4 md:gap-8 mt-12 md:mt-24 mx-4">
-        <div class="flex-1 max-w-xs text-center">
-          <%= image_tag "landing/hackpad/cad_design.png", class: "w-full h-auto" %>
-          <p>Design a case</p>
+<div class="flex-1 max-w-xs text-center relative overflow-hidden px-12 py-8">
+  <div
+    class="absolute inset-0 pointer-events-none select-none"
+    style="
+      background-image: url('<%= asset_path("landing/hackpad/papier.png") %>');
+      background-size: 100% auto;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform: rotate(90deg) scale(1.5);
+      transform-origin: center;
+      "
+  ></div>
+
+  <div class="relative z-10">
+    <%= image_tag "landing/hackpad/cad_design.png", class: "w-full h-auto" %>
+    <p>Design a case</p>
+  </div>
+</div>
+        <div class="flex-1 max-w-xs text-center relative overflow-hidden p-4">
+          <div class="absolute inset-0" style="background-image: url('<%= asset_path("landing/hackpad/papier.png") %>'); background-size: cover; background-position: center; background-repeat: no-repeat; transform: rotate(90deg) scale(1.5); transform-origin: center;"></div>
+          <div class="relative z-10">
+            <%= image_tag "landing/hackpad/pcb_design.png", class: "w-full h-auto" %>
+            <p>Design a PCB</p>
+          </div>
         </div>
-        <div class="flex-1 max-w-xs text-center">
-          <%= image_tag "landing/hackpad/pcb_design.png", class: "w-full h-auto" %>
-          <p>Design a PCB</p>
+        <div class="flex-1 max-w-xs text-center relative overflow-hidden p-4">
+          <div class="absolute inset-0" style="background-image: url('<%= asset_path("landing/hackpad/papier.png") %>'); background-size: cover; background-position: center; background-repeat: no-repeat; transform: rotate(90deg) scale(1.5); transform-origin: center;"></div>
+          <div class="relative z-10">
+            <%= image_tag "landing/hackpad/firmware.png", class: "w-full h-auto" %>
+            <p>Design firmware</p>
+          </div>
         </div>
-        <div class="flex-1 max-w-xs text-center">
-          <%= image_tag "landing/hackpad/firmware.png", class: "w-full h-auto" %>
-          <p>Design firmware</p>
-        </div>
+      </div>
+      <div>
+        <%= image_tag "landing/hackpad/kit_components.png", class: "w-full h-auto" %>
+        <div>
       </div>
           </div>
       </div>
@@ -175,16 +206,67 @@
         <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
       </div>
 
-      <div>
-        <%= image_tag "prototype/prototype_logo.png", class: "w-full h-auto" %>
+      <div class="flex flex-row md:text-xl max-w-4xl mx-auto space-y-4 px-4">
+        <div>
+        <h2 class="text-3xl">Join our community</h2>
+        <div class="">
+          <p class="md:text-xl">Join a community of 50,000+ other teens in building projects!</p> 
+          <p class="md:text-xl">We run weekly events like AMAs with people such as Strange Parts, Zack Freedman, and more!</p>
+          </div>    
+        </div>
+        <div>
+            <img>
+            </div>
+      </div>
+
+      <!-- AMD Prototype -->
+      <div class="w-full py md:py-16">
+        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
+      </div>
+
+<div class="relative min-h-screen flex items-center justify-center">
+  <div
+    class="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none select-none"
+    style="background-image: url('<%= image_path('prototype/prototype_bg.png') %>');"
+  >
+    <div class="relative p-8 md:p-16">
+    <%= image_tag "prototype/prototype_logo.png", class: "w-full h-auto" %>
+    <div class="text-center text-xl">
+        <p>Build a project and join us for Prototype, a 3 day hardware hackathon in the Bay Area! Valid for US students only</p>
+        </div>
+  </div>
+  </div>
+
+</div>
+
+
+      <!-- For seasoned people-->
+      <div class="w-full py-16 md:py-24">
+        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
+      </div>
+      
+      <div class="">
+        <h2 class="text-3xl">Already a pro?</h2>
+        <p class="text-xl">Blueprint is for everyone! Get up to $400 USD from Hack Club for *any* hardware project, ranging from mechanical keyboards to 3D printers.
+
+        </p>
       </div>
 
 
       <!-- Divider Image -->
-      <div class="w-full py-16 md:py-24">
+      <div class="w-full py-8 md:py-16">
         <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
       </div>
 
+      <div>
+        <h2 class="text-3xl">Not a teen? Join us!</h2>
+        </div>
+
+
+      <!-- Divider Image -->
+      <div class="w-full py-8 md:py-16">
+        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
+      </div>
       <div class="mx-4 flex justify-center">
         <div class="max-w-4xl md:text-xl border-bp-warning border-4 grow p-6 md:p-12 bg-bp-warning/10 space-y-8">
           <div class="text-center space-y-2">
