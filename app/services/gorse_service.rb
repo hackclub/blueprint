@@ -25,7 +25,7 @@ class GorseService
     end
 
     def sync_user(user)
-      return if ENV["SKIP_GORSE"]
+      return if ENV["SKIP_GORSE"] == "true"
       response = with_retry do
         connection.post("/api/user") do |req|
           req.headers["X-API-KEY"] = api_key
@@ -42,7 +42,7 @@ class GorseService
     end
 
     def delete_user(user)
-      return if ENV["SKIP_GORSE"]
+      return if ENV["SKIP_GORSE"] == "true"
       response = with_retry do
         connection.delete("/api/user/#{CGI.escape(user.id.to_s)}") do |req|
           req.headers["X-API-KEY"] = api_key
@@ -53,7 +53,7 @@ class GorseService
     end
 
     def sync_item(item)
-      return if ENV["SKIP_GORSE"]
+      return if ENV["SKIP_GORSE"] == "true"
       case item
       when Project
         sync_project_item(item)
@@ -65,7 +65,7 @@ class GorseService
     end
 
     def delete_item(item)
-      return if ENV["SKIP_GORSE"]
+      return if ENV["SKIP_GORSE"] == "true"
       case item
       when Project
         delete_project_item(item)
@@ -77,7 +77,7 @@ class GorseService
     end
 
     def delete_item_by_id(item_id)
-      return if ENV["SKIP_GORSE"]
+      return if ENV["SKIP_GORSE"] == "true"
       response = with_retry do
         connection.delete("/api/item/#{CGI.escape(item_id.to_s)}") do |req|
           req.headers["X-API-KEY"] = api_key
@@ -88,7 +88,7 @@ class GorseService
     end
 
     def sync_feedback(feedback_type, user_id, item, timestamp)
-      return if ENV["SKIP_GORSE"]
+      return if ENV["SKIP_GORSE"] == "true"
       events = []
 
       prefixed_id = case item
@@ -125,7 +125,7 @@ class GorseService
     end
 
     def delete_feedback(feedback_type, user_id, item_id)
-      return if ENV["SKIP_GORSE"]
+      return if ENV["SKIP_GORSE"] == "true"
       response = with_retry do
         connection.delete("/api/feedback/#{CGI.escape(feedback_type.to_s)}/#{CGI.escape(user_id.to_s)}/#{CGI.escape(item_id.to_s)}") do |req|
           req.headers["X-API-KEY"] = api_key
@@ -136,7 +136,7 @@ class GorseService
     end
 
     def get_user_recommendation(user_id, page = 1, per_page = 21, type: :project)
-      return [] if ENV["SKIP_GORSE"]
+      return [] if ENV["SKIP_GORSE"] == "true"
       offset = (page - 1) * per_page
 
       response = with_retry do
@@ -158,7 +158,7 @@ class GorseService
     end
 
     def get_popular_items(page = 1, per_page = 21, type: :project)
-      return [] if ENV["SKIP_GORSE"]
+      return [] if ENV["SKIP_GORSE"] == "true"
       offset = (page - 1) * per_page
       category = type == :entry ? "entry" : "project"
 
