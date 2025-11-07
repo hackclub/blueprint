@@ -464,6 +464,7 @@ class ProjectsController < ApplicationController
       :needs_funding,
       :funding_needed_cents,
       :print_legion,
+      :needs_soldering_iron,
       :skip_gh_sync,
       cart_screenshots: []
     )

@@ -6,7 +6,7 @@
 <% else %>
   <% nav_links = {
       "Dashboard" => user_logged_in? ? home_path : login_path,
-      "Hackpad" => hackpad_path,
+      "Hackpad" => user_logged_in? ? (current_user.is_pro ? nil : hackpad_path) : nil,
       "About Blueprint" => about_path,
       # "My Projects" => user_logged_in? ? projects_path : login_path,
       "Starter Projects" => starter_projects_path,
@@ -98,24 +98,26 @@
     </div>
     <% if user_logged_in? %>
         <% unless current_user.is_adult? %>
-          <% if current_user.is_pro %>
-            <%= button_to toggle_pro_users_path, method: :post, class: "text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer", data: { turbo: false } do %>
-              <p>Expert Mode</p>
-              <div class="h-5 rounded-full w-10 bg-green-500 justify-end flex items-center">
-                <div class="size-4 rounded-full bg-white mx-0.5"></div>
-              </div>
+          <% if !current_user.projects.where(is_deleted: false).where.not(review_status: nil).exists? || !current_user.is_pro %>
+            <% if current_user.is_pro %>
+              <%= button_to toggle_pro_users_path, method: :post, class: "text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer", data: { turbo: false } do %>
+                <p>Expert Mode</p>
+                <div class="h-5 rounded-full w-10 bg-green-500 justify-end flex items-center">
+                  <div class="size-4 rounded-full bg-white mx-0.5"></div>
+                </div>
+              <% end %>
+            <% else %>
+              <button type="button"
+                data-controller="modal"
+                data-modal-target-id-value="toggle-pro-modal"
+                data-action="click->modal#show"
+                class="text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer">
+                <p>Expert Mode</p>
+                <div class="h-5 rounded-full w-10 bg-bp-darker flex items-center">
+                  <div class="size-4 rounded-full bg-white mx-0.5"></div>
+                </div>
+              </button>
             <% end %>
-          <% else %>
-            <button type="button"
-              data-controller="modal"
-              data-modal-target-id-value="toggle-pro-modal"
-              data-action="click->modal#show"
-              class="text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer">
-              <p>Expert Mode</p>
-              <div class="h-5 rounded-full w-10 bg-bp-darker flex items-center">
-                <div class="size-4 rounded-full bg-white mx-0.5"></div>
-              </div>
-            </button>
           <% end %>
         <% end %>
         <div class="flex flex-col space-y-1">

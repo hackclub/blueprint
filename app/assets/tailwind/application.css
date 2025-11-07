@@ -1,214 +1,214 @@
 @import "tailwindcss";
 
 @theme {
-    --color-bp-lighter: #344b6a;
-    --color-bp-dark: #0e305b;
-    --color-bp-darker: #081c35;
-    --color-bp-light: #dbe4ee;
-    --color-bp-danger: #fe8e86;
-    --color-bp-danger-darker: #bd4c44;
-    --color-bp-warning: #ffc857;
-    --color-bp-success: #a8f0ae;
+  --color-bp-lighter: #344b6a;
+  --color-bp-dark: #0e305b;
+  --color-bp-darker: #081c35;
+  --color-bp-light: #dbe4ee;
+  --color-bp-danger: #fe8e86;
+  --color-bp-danger-darker: #bd4c44;
+  --color-bp-warning: #ffc857;
+  --color-bp-success: #a8f0ae;
 
-    --font-rcgl-full: "R&C Guidelines Full", "Poppins", sans-serif;
-    --font-rcgl-dark: "R&C Guidelines Dark", "Poppins", sans-serif;
-    --font-rcgl-light: "R&C Guidelines", "Poppins", sans-serif;
-    --font-rcgl-empty: "R&C Guidelines Empty", "Poppins", sans-serif;
+  --font-rcgl-full: "R&C Guidelines Full", "Poppins", sans-serif;
+  --font-rcgl-dark: "R&C Guidelines Dark", "Poppins", sans-serif;
+  --font-rcgl-light: "R&C Guidelines", "Poppins", sans-serif;
+  --font-rcgl-empty: "R&C Guidelines Empty", "Poppins", sans-serif;
 
-    --font-rc-full: "R&C Basic Full", "Poppins", sans-serif;
-    --font-rc-dark: "R&C Basic Dark", "Poppins", sans-serif;
-    --font-rc-light: "R&C Basic", "Poppins", sans-serif;
-    --font-rc-empty: "R&C Basic Empty", "Poppins", sans-serif;
+  --font-rc-full: "R&C Basic Full", "Poppins", sans-serif;
+  --font-rc-dark: "R&C Basic Dark", "Poppins", sans-serif;
+  --font-rc-light: "R&C Basic", "Poppins", sans-serif;
+  --font-rc-empty: "R&C Basic Empty", "Poppins", sans-serif;
 
-    --font-content: "Phantom Sans", "Poppins", sans-serif;
+  --font-content: "Phantom Sans", "Poppins", sans-serif;
 }
 
 :root {
-    @apply bg-bp-dark text-white font-content overscroll-none;
+  @apply bg-bp-dark text-white font-content overscroll-none;
 }
 
 @layer base {
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        @apply font-rc-full;
-    }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-rc-full;
+  }
 }
 
 .grid-bg {
-    background-image: linear-gradient(
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px
-        ),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 50px 50px;
-    background-position: 0 0, 0 0;
-    /* background-attachment: fixed; */
-    position: relative;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: 0 0, 0 0;
+  /* background-attachment: fixed; */
+  position: relative;
 }
 
 /* Grain overlay atop grid */
 .grainy-bg::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse, #000000b1, transparent);
-    opacity: 0.4;
-    filter: url(#grainy);
-    mix-blend-mode: multiply;
-    pointer-events: none;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse, #000000b1, transparent);
+  opacity: 0.4;
+  filter: url(#grainy);
+  mix-blend-mode: multiply;
+  pointer-events: none;
 }
 
 .carousel {
-    animation: carousel 720s linear infinite;
+  animation: carousel 720s linear infinite;
 }
 
 @keyframes carousel {
-    0% {
-        transform: translateX(0%);
-    }
-    50% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(0%);
-    }
+  0% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
 }
 
 .wobble-1 {
-    animation: wobble 3s ease-in-out infinite;
+  animation: wobble 3s ease-in-out infinite;
 }
 
 .wobble-2 {
-    animation: wobble 3.5s ease-in-out infinite;
-    animation-delay: -1s;
+  animation: wobble 3.5s ease-in-out infinite;
+  animation-delay: -1s;
 }
 
 .wobble-3 {
-    animation: wobble 2.5s ease-in-out infinite;
-    animation-delay: -2s;
+  animation: wobble 2.5s ease-in-out infinite;
+  animation-delay: -2s;
 }
 @keyframes wobble {
-    0%,
-    100% {
-        transform: rotate(-2deg);
-    }
-    50% {
-        transform: rotate(2deg);
-    }
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
 }
 
 @keyframes float {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-15px);
-    }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
 }
 .float-arrow {
-    animation: float 2s ease-in-out infinite;
+  animation: float 2s ease-in-out infinite;
 }
 
 @layer components {
-    .bg-hatch {
-        background-image: url("hatch.svg");
-    }
+  .bg-hatch {
+    background-image: url("hatch.svg");
+  }
 
-    .btn {
-        @apply inline-flex items-center justify-center gap-2 text-xl py-2 px-6 motion-safe:transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-rc-full;
-    }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 text-xl py-2 px-6 motion-safe:transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-rc-full;
+  }
 
-    .btn-primary {
-        @apply border-2 border-white bg-white text-gray-900 hover:bg-bp-light hover:border-bp-light disabled:hover:bg-white disabled:hover:border-white;
-    }
+  .btn-primary {
+    @apply border-2 border-white bg-white text-gray-900 hover:bg-bp-light hover:border-bp-light disabled:hover:bg-white disabled:hover:border-white;
+  }
 
-    .btn-outline {
-        @apply border-2 border-white text-white hover:bg-white/10 disabled:hover:bg-transparent;
-    }
+  .btn-outline {
+    @apply border-2 border-white text-white hover:bg-white/10 disabled:hover:bg-transparent;
+  }
 
-    .btn-inset {
-        @apply bg-bp-dark inset-shadow-sm inset-shadow-black/25 hover:bg-bp-lighter;
-    }
+  .btn-inset {
+    @apply bg-bp-dark inset-shadow-sm inset-shadow-black/25 hover:bg-bp-lighter;
+  }
 
-    .btn-nav {
-        @apply bg-bp-dark !py-[6px] inset-shadow-sm inset-shadow-black/25 hover:bg-bp-lighter;
-    }
+  .btn-nav {
+    @apply bg-bp-dark !py-[6px] inset-shadow-sm inset-shadow-black/25 hover:bg-bp-lighter;
+  }
 
-    .btn-nav-active:not(.submenu) {
-        @apply border-2 border-white bg-bp-dark hover:bg-bp-lighter;
-    }
+  .btn-nav-active:not(.submenu) {
+    @apply border-2 border-white bg-bp-dark hover:bg-bp-lighter;
+  }
 
-    .btn-nav-active.submenu {
-        @apply border-2 border-white bg-bp-dark;
-    }
+  .btn-nav-active.submenu {
+    @apply border-2 border-white bg-bp-dark;
+  }
 
-    .btn-nav-active.submenu .submenu-btn {
-        @apply py-1.5! pt-2!;
-    }
+  .btn-nav-active.submenu .submenu-btn {
+    @apply py-1.5! pt-2!;
+  }
 
-    .btn-nav-active.nav-submenu-container {
-        @apply hover:bg-bp-dark pt-0! px-0! gap-0!;
-    }
+  .btn-nav-active.nav-submenu-container {
+    @apply hover:bg-bp-dark pt-0! px-0! gap-0!;
+  }
 
-    .btn-nav-active > .nav-submenu-btn {
-        @apply w-full py-1.5! hover:bg-bp-lighter motion-safe:transition-colors;
-    }
-    .input {
-        @apply text-left text-xl py-2 px-4 appearance-none outline-0 border-2;
-    }
+  .btn-nav-active > .nav-submenu-btn {
+    @apply w-full py-1.5! hover:bg-bp-lighter motion-safe:transition-colors;
+  }
+  .input {
+    @apply text-left text-xl py-2 px-4 appearance-none outline-0 border-2;
+  }
 
-    .select {
-        @apply relative appearance-none gap-2 text-xl border-2 outline-0;
-    }
+  .select {
+    @apply relative appearance-none gap-2 text-xl border-2 outline-0;
+  }
 
-    .select::before,
-    .select::after {
-        @apply absolute right-4 pointer-events-none;
-        content: "";
-    }
+  .select::before,
+  .select::after {
+    @apply absolute right-4 pointer-events-none;
+    content: "";
+  }
 
-    .select::before {
-        @apply border-l-[4.8] border-r-[4.8] border-b-[4.8] border-l-transparent border-r-transparent border-b-white top-[40%];
-    }
+  .select::before {
+    @apply border-l-[4.8] border-r-[4.8] border-b-[4.8] border-l-transparent border-r-transparent border-b-white top-[40%];
+  }
 
-    .select::after {
-        @apply border-l-[4.8] border-r-[4.8] border-t-[4.8] border-l-transparent border-r-transparent border-t-white top-[55%];
-    }
+  .select::after {
+    @apply border-l-[4.8] border-r-[4.8] border-t-[4.8] border-l-transparent border-r-transparent border-t-white top-[55%];
+  }
 
-    .select select {
-        @apply appearance-none outline-0 w-full py-2 px-6 pr-12;
-    }
+  .select select {
+    @apply appearance-none outline-0 w-full py-2 px-6 pr-12;
+  }
 
-    .pagy.nav {
-        @apply space-x-2;
-    }
+  .pagy.nav {
+    @apply space-x-2;
+  }
 
-    .pagy.nav .current {
-        @apply underline;
-    }
+  .pagy.nav .current {
+    @apply underline;
+  }
 
-    .checkbox {
-        @apply border-2 size-4;
-    }
+  .checkbox {
+    @apply border-2 size-4;
+  }
 
-    .checkbox.checked {
-        @apply bg-white relative;
-    }
+  .checkbox.checked {
+    @apply bg-white relative;
+  }
 
-    .checkbox.checked.check-darker:not(.check-cross):after {
-        @apply absolute top-0 left-0 border-l-3 border-b-3 border-bp-darker w-3 h-2 content-[''] -rotate-45;
-    }
+  .checkbox.checked.check-darker:not(.check-cross):after {
+    @apply absolute top-0 left-0 border-l-3 border-b-3 border-bp-darker w-3 h-2 content-[''] -rotate-45;
+  }
 
-    .checkbox.checked.check-dark:not(.check-cross):after {
-        @apply absolute top-0 left-0 border-l-3 border-b-3 border-bp-dark w-3 h-2 content-[''] -rotate-45;
-    }
+  .checkbox.checked.check-dark:not(.check-cross):after {
+    @apply absolute top-0 left-0 border-l-3 border-b-3 border-bp-dark w-3 h-2 content-[''] -rotate-45;
+  }
 
-    /* .checkbox.checked.check-cross.check-darker:before {
+  /* .checkbox.checked.check-cross.check-darker:before {
     @apply absolute -top-0.5 left-[4.5px] border-l-3 border-bp-darker h-4 content-[''] rotate-45;
   }
 
@@ -229,351 +229,351 @@
 
 /* Markdown-rendered content */
 .markdown {
-    /* Base */
-    @apply text-white/80 leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word tracking-wide;
+  /* Base */
+  @apply text-white/80 leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word tracking-wide;
 
-    /* Trim outer whitespace */
-    > *:first-child {
-        @apply mt-0;
-    }
-    > *:last-child {
-        @apply mb-0;
-    }
+  /* Trim outer whitespace */
+  > *:first-child {
+    @apply mt-0;
+  }
+  > *:last-child {
+    @apply mb-0;
+  }
 
-    /* Headings */
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        @apply font-rc-full text-white;
-    }
-    h1 {
-        @apply mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
-    }
-    h2 {
-        @apply mt-10 mb-3 pb-2 text-4xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
-    }
+  /* Headings */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-rc-full text-white;
+  }
+  h1 {
+    @apply mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
+  }
+  h2 {
+    @apply mt-10 mb-3 pb-2 text-4xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
+  }
 
-    h3 {
-        @apply mt-10 mb-2 text-3xl;
-    }
+  h3 {
+    @apply mt-10 mb-2 text-3xl;
+  }
 
-    /*Same as H2 but as a green accent color*/
-    h4 {
-        @apply text-bp-success mt-10 mb-3 pb-2 text-3xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
-    }
+  /*Same as H2 but as a green accent color*/
+  h4 {
+    @apply text-bp-success mt-10 mb-3 pb-2 text-3xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
+  }
 
-    /*Same as h1 but it has the fancy blueprint lines*/
-    h5 {
-        @apply mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
-    }
-    h6 {
-        @apply mt-3 mb-2 text-lg;
-    }
+  /*Same as h1 but it has the fancy blueprint lines*/
+  h5 {
+    @apply mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
+  }
+  h6 {
+    @apply mt-3 mb-2 text-lg;
+  }
 
-    /* Paragraphs */
-    p {
-        @apply my-6 print:my-4 text-lg leading-relaxed;
-    }
+  /* Paragraphs */
+  p {
+    @apply my-6 print:my-4 text-lg leading-relaxed;
+  }
 
-    /* Emphasis */
-    em,
-    i {
-        font-style: italic !important;
-    }
+  /* Emphasis */
+  em,
+  i {
+    font-style: italic !important;
+  }
 
-    /* Links */
-    a {
-        @apply underline decoration-white/30 underline-offset-2 text-bp-warning hover:decoration-white print:no-underline print:text-black;
-    }
+  /* Links */
+  a {
+    @apply underline decoration-white/30 underline-offset-2 text-bp-warning hover:decoration-white print:no-underline print:text-black;
+  }
 
-    /* Lists */
-    ul {
-        @apply my-2 list-disc list-inside print:my-2 text-lg leading-relaxed pl-0;
-    }
-    ol {
-        @apply my-2 list-decimal list-inside print:my-2 text-lg leading-relaxed;
-    }
-    li {
-        @apply print:my-0;
-    }
-    li p {
-        @apply print:my-0;
-    }
-    li > ul,
-    li > ol {
-        @apply ml-4;
-    }
+  /* Lists */
+  ul {
+    @apply my-2 list-disc list-inside print:my-2 text-lg leading-relaxed pl-0;
+  }
+  ol {
+    @apply my-2 list-decimal list-inside print:my-2 text-lg leading-relaxed;
+  }
+  li {
+    @apply print:my-0;
+  }
+  li p {
+    @apply print:my-0;
+  }
+  li > ul,
+  li > ol {
+    @apply ml-4;
+  }
 
-    /* Code */
-    code {
-        @apply inline rounded bg-bp-darker px-1 py-0 text-sm font-mono print:bg-white print:text-black;
-    }
-    pre {
-        @apply my-4 overflow-x-auto rounded-lg bg-bp-darker p-2 print:bg-white print:border-black/20;
-    }
-    pre code {
-        @apply bg-transparent p-0 text-inherit inline;
-    }
+  /* Code */
+  code {
+    @apply inline rounded bg-bp-darker px-1 py-0 text-sm font-mono print:bg-white print:text-black;
+  }
+  pre {
+    @apply my-4 overflow-x-auto rounded-lg bg-bp-darker p-2 print:bg-white print:border-black/20;
+  }
+  pre code {
+    @apply bg-transparent p-0 text-inherit inline;
+  }
 
-    /* Blockquote */
-    blockquote {
-        @apply my-4 border-l-4 border-white/50 pl-4 italic text-white/80 print:border-black/20 print:text-black;
-    }
+  /* Blockquote */
+  blockquote {
+    @apply my-4 border-l-4 border-white/50 pl-4 italic text-white/80 print:border-black/20 print:text-black;
+  }
 
-    /* Horizontal rule */
-    hr {
-        @apply my-6 border-t border-white/50 print:border-black/20;
-    }
+  /* Horizontal rule */
+  hr {
+    @apply my-6 border-t border-white/50 print:border-black/20;
+  }
 
-    /* Images */
+  /* Images */
+  img {
+    @apply w-auto h-auto max-w-[min(100%,64rem)] max-h-[80vh] my-4 block mx-auto;
+  }
+
+  @media print {
     img {
-        @apply w-auto h-auto max-w-[min(100%,64rem)] max-h-[80vh] my-4 block mx-auto;
+      max-width: 100%;
+      max-height: none;
+    }
+  }
+
+  .external-image-callout {
+    @apply w-full text-center bg-bp-darker py-2;
+  }
+
+  /* Tables */
+  table {
+    @apply w-full table-auto text-left border-collapse my-6;
+  }
+  thead th {
+    @apply border-b border-white/30 py-2 px-3 print:border-black/40;
+  }
+  tbody td {
+    @apply border-b border-white/10 py-2 px-3 align-top print:border-black/20;
+  }
+  tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  pre {
+    display: block;
+  }
+
+  aside {
+    @apply my-6 p-4 bg-bp-darker border-l-4 border-bp-light rounded-r-lg;
+  }
+
+  code {
+    .nocode {
+      background-color: none;
+      color: #ffffff;
+    }
+    .str {
+      color: #ffa0a0;
+    }
+    .kwd {
+      color: #f0e68c;
+    }
+    .com {
+      color: #87ceeb;
+    }
+    .typ {
+      color: #98fb98;
+    }
+    .lit {
+      color: #cd5c5c;
+    }
+    .pun {
+      color: #fff;
+    }
+    .pln {
+      color: #fff;
+    }
+    .tag {
+      color: #f0e68c;
+    }
+    .atn {
+      color: #bdb76b;
+    }
+    .atv {
+      color: #ffa0a0;
+    }
+    .dec {
+      color: #98fb98;
+    }
+
+    /* Specify class=linenums on a pre to get line numbering */
+    ol.linenums {
+      margin-top: 0;
+      margin-bottom: 0;
+      color: #aeaeae;
+    }
+    li.L0,
+    li.L1,
+    li.L2,
+    li.L3,
+    li.L5,
+    li.L6,
+    li.L7,
+    li.L8 {
+      list-style-type: none;
     }
 
     @media print {
-        img {
-            max-width: 100%;
-            max-height: none;
-        }
+      background-color: none;
+      .str,
+      code .str {
+        color: #060;
+      }
+      .kwd,
+      code .kwd {
+        color: #006;
+      }
+      .com,
+      code .com {
+        color: #600;
+        font-style: italic;
+      }
+      .typ,
+      code .typ {
+        color: #404;
+      }
+      .lit,
+      code .lit {
+        color: #044;
+      }
+      .pun,
+      code .pun {
+        color: #440;
+      }
+      .pln,
+      code .pln {
+        color: #000;
+      }
+      .tag,
+      code .tag {
+        color: #006;
+      }
+      .atn,
+      code .atn {
+        color: #404;
+      }
+      .atv,
+      code .atv {
+        color: #060;
+      }
     }
-
-    .external-image-callout {
-        @apply w-full text-center bg-bp-darker py-2;
-    }
-
-    /* Tables */
-    table {
-        @apply w-full table-auto text-left border-collapse my-6;
-    }
-    thead th {
-        @apply border-b border-white/30 py-2 px-3 print:border-black/40;
-    }
-    tbody td {
-        @apply border-b border-white/10 py-2 px-3 align-top print:border-black/20;
-    }
-    tbody tr:last-child td {
-        @apply border-b-0;
-    }
-
-    pre {
-        display: block;
-    }
-
-    aside {
-        @apply my-6 p-4 bg-bp-darker border-l-4 border-bp-light rounded-r-lg;
-    }
-
-    code {
-        .nocode {
-            background-color: none;
-            color: #ffffff;
-        }
-        .str {
-            color: #ffa0a0;
-        }
-        .kwd {
-            color: #f0e68c;
-        }
-        .com {
-            color: #87ceeb;
-        }
-        .typ {
-            color: #98fb98;
-        }
-        .lit {
-            color: #cd5c5c;
-        }
-        .pun {
-            color: #fff;
-        }
-        .pln {
-            color: #fff;
-        }
-        .tag {
-            color: #f0e68c;
-        }
-        .atn {
-            color: #bdb76b;
-        }
-        .atv {
-            color: #ffa0a0;
-        }
-        .dec {
-            color: #98fb98;
-        }
-
-        /* Specify class=linenums on a pre to get line numbering */
-        ol.linenums {
-            margin-top: 0;
-            margin-bottom: 0;
-            color: #aeaeae;
-        }
-        li.L0,
-        li.L1,
-        li.L2,
-        li.L3,
-        li.L5,
-        li.L6,
-        li.L7,
-        li.L8 {
-            list-style-type: none;
-        }
-
-        @media print {
-            background-color: none;
-            .str,
-            code .str {
-                color: #060;
-            }
-            .kwd,
-            code .kwd {
-                color: #006;
-            }
-            .com,
-            code .com {
-                color: #600;
-                font-style: italic;
-            }
-            .typ,
-            code .typ {
-                color: #404;
-            }
-            .lit,
-            code .lit {
-                color: #044;
-            }
-            .pun,
-            code .pun {
-                color: #440;
-            }
-            .pln,
-            code .pln {
-                color: #000;
-            }
-            .tag,
-            code .tag {
-                color: #006;
-            }
-            .atn,
-            code .atn {
-                color: #404;
-            }
-            .atv,
-            code .atv {
-                color: #060;
-            }
-        }
-    }
+  }
 }
 
 .markdown.timeline-journal {
-    .external-image-callout {
-        @apply bg-bp-dark!;
-    }
+  .external-image-callout {
+    @apply bg-bp-dark!;
+  }
 
-    pre,
-    code {
-        @apply bg-bp-dark!;
-    }
+  pre,
+  code {
+    @apply bg-bp-dark!;
+  }
 }
 
 /* Marksmith editor overrides to match app theme */
 @layer components {
-    /* Increase specificity and force overrides against gem utilities */
-    .marksmith.marksmith-editor-wrapper {
-        background-color: var(--color-bp-dark) !important;
-        color: #fff !important;
-        border: 2px solid #fff !important;
-        border-radius: 0 !important; /* square */
-        outline-width: 0 !important; /* remove focus ring */
-    }
-    .marksmith .marksmith-toolbar {
-        background-color: var(--color-bp-dark) !important;
-        color: #fff !important;
-        border-bottom: 2px solid #fff !important;
-        border-top-left-radius: 0 !important;
-        border-top-right-radius: 0 !important;
-    }
-    .marksmith .marksmith-editor-content {
-        background-color: var(--color-bp-darker) !important;
-        width: 100% !important;
-    }
-    .marksmith .marksmith-textarea {
-        background-color: var(--color-bp-darker) !important;
-        color: #fff !important;
-    }
-    .marksmith .marksmith-textarea::placeholder {
-        color: rgba(255, 255, 255, 0.4) !important;
-    }
-    .marksmith .marksmith-preview-pane {
-        background-color: var(--color-bp-dark) !important;
-        color: #fff;
-        width: 100% !important;
-        height: 22.37rem !important; /* kind of cooked but it works */
-        overflow-y: auto;
-        padding: 1rem !important;
-    }
-    .marksmith .marksmith-loading-indicator .double-bounce1,
-    .marksmith .marksmith-loading-indicator .double-bounce2 {
-        background-color: #fff !important;
-    }
-    .marksmith .marksmith-bottom-toolbar {
-        background-color: var(--color-bp-dark) !important;
-        color: #fff !important;
-        border-top: 2px solid #fff !important;
-        border-bottom-left-radius: 0 !important;
-        border-bottom-right-radius: 0 !important;
-        font-family: var(--font-content), ui-sans-serif, system-ui, sans-serif !important;
-    }
-    .marksmith .marksmith-help-link,
-    .marksmith .marksmith-upload-button,
-    .marksmith .marksmith-gallery-link {
-        color: #fff !important;
-    }
-    .marksmith .marksmith-help-link svg {
-        width: 1.1rem;
-        height: 1.1rem;
-        display: inline-block;
-        vertical-align: middle;
-        margin-right: 0.375rem;
-        flex-shrink: 0;
-        fill: currentColor;
-    }
+  /* Increase specificity and force overrides against gem utilities */
+  .marksmith.marksmith-editor-wrapper {
+    background-color: var(--color-bp-dark) !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+    border-radius: 0 !important; /* square */
+    outline-width: 0 !important; /* remove focus ring */
+  }
+  .marksmith .marksmith-toolbar {
+    background-color: var(--color-bp-dark) !important;
+    color: #fff !important;
+    border-bottom: 2px solid #fff !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+  }
+  .marksmith .marksmith-editor-content {
+    background-color: var(--color-bp-darker) !important;
+    width: 100% !important;
+  }
+  .marksmith .marksmith-textarea {
+    background-color: var(--color-bp-darker) !important;
+    color: #fff !important;
+  }
+  .marksmith .marksmith-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+  }
+  .marksmith .marksmith-preview-pane {
+    background-color: var(--color-bp-dark) !important;
+    color: #fff;
+    width: 100% !important;
+    height: 22.37rem !important; /* kind of cooked but it works */
+    overflow-y: auto;
+    padding: 1rem !important;
+  }
+  .marksmith .marksmith-loading-indicator .double-bounce1,
+  .marksmith .marksmith-loading-indicator .double-bounce2 {
+    background-color: #fff !important;
+  }
+  .marksmith .marksmith-bottom-toolbar {
+    background-color: var(--color-bp-dark) !important;
+    color: #fff !important;
+    border-top: 2px solid #fff !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    font-family: var(--font-content), ui-sans-serif, system-ui, sans-serif !important;
+  }
+  .marksmith .marksmith-help-link,
+  .marksmith .marksmith-upload-button,
+  .marksmith .marksmith-gallery-link {
+    color: #fff !important;
+  }
+  .marksmith .marksmith-help-link svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.375rem;
+    flex-shrink: 0;
+    fill: currentColor;
+  }
 
-    /* Two-tab styling (Write / Preview) */
-    .marksmith .bp-ms-tabs {
-        height: 100% !important;
-    }
-    .marksmith .bp-ms-tab {
-        color: #fff !important;
-        background: transparent;
-        border: none !important;
-        height: 100% !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        padding: 0 1rem; /* increased horizontal padding */
-        font-family: var(--font-content), ui-sans-serif, system-ui, sans-serif !important;
-    }
-    .marksmith .bp-ms-tab.active {
-        background: #fff !important; /* white bg when active */
-        color: var(--color-bp-dark) !important; /* bp-dark text when active */
-    }
+  /* Two-tab styling (Write / Preview) */
+  .marksmith .bp-ms-tabs {
+    height: 100% !important;
+  }
+  .marksmith .bp-ms-tab {
+    color: #fff !important;
+    background: transparent;
+    border: none !important;
+    height: 100% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0 1rem; /* increased horizontal padding */
+    font-family: var(--font-content), ui-sans-serif, system-ui, sans-serif !important;
+  }
+  .marksmith .bp-ms-tab.active {
+    background: #fff !important; /* white bg when active */
+    color: var(--color-bp-dark) !important; /* bp-dark text when active */
+  }
 
-    /* Toolbar button hover and sizing */
-    .marksmith .marksmith-action-bar > * {
-        height: 100% !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        padding: 0 0.75rem !important;
-        border-radius: 0 !important; /* square corners */
-        background: transparent; /* allow per-button classes to override */
-        color: #fff; /* allow per-button classes to override */
-    }
-    .marksmith .marksmith-action-bar > *:hover {
-        background: var(--color-bp-light); /* full-area hover */
-        color: var(--color-bp-dark);
-    }
+  /* Toolbar button hover and sizing */
+  .marksmith .marksmith-action-bar > * {
+    height: 100% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0 0.75rem !important;
+    border-radius: 0 !important; /* square corners */
+    background: transparent; /* allow per-button classes to override */
+    color: #fff; /* allow per-button classes to override */
+  }
+  .marksmith .marksmith-action-bar > *:hover {
+    background: var(--color-bp-light); /* full-area hover */
+    color: var(--color-bp-dark);
+  }
 }

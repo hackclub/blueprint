@@ -517,11 +517,9 @@ class Project < ApplicationRecord
       throw "Project is already shipped!"
     end
 
-    if Flipper.enabled?(:new_ship_flow_10_06, user)
-      if user.ysws_verified.nil? || user.ysws_verified == false
-        update!(review_status: :awaiting_idv)
-        return
-      end
+    if user.ysws_verified.nil? || user.ysws_verified == false
+      update!(review_status: :awaiting_idv)
+      return
     end
 
     # Check if project has an approved admin design review (one-way gate: design -> build)
@@ -538,6 +536,8 @@ class Project < ApplicationRecord
       # No explicit design param and no approved review - use needs_funding
       update!(review_status: needs_funding? ? :design_pending : :build_pending)
     end
+
+    user.update(is_pro: true) unless user.is_pro?
   end
 
   def passed_idv!
