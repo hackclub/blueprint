@@ -56,7 +56,8 @@
             <% is_disabled = is_pro_only && user_logged_in? && !current_user.is_pro %>
 
             <% if has_submenu && active %>
-              <div class="flex flex-col btn btn-nav text-base submenu p-0 gap-0 <%= is_disabled ? "opacity-50 pointer-events-none" : "" %>" data-nav-target="link" data-nav-match="prefix" data-nav-base="<%= submenu_base_path %>">
+              <% submenu_content = capture do %>
+                <div class="flex flex-col btn btn-nav text-base submenu p-0 gap-0 <%= is_disabled ? "opacity-50 pointer-events-none" : "" %>" data-nav-target="link" data-nav-match="prefix" data-nav-base="<%= submenu_base_path %>">
                 <%= render "shared/button", url: path, text: name, variant: :none, class: "text-base p-0 hover:bg-bp-lighter w-full submenu-btn" %>
                 <ul data-nav-target="submenu" data-submenu-base="<%= submenu_base_path %>" class="flex-col hidden w-full pb-3 text-sm text-center">
                   <% index_meta = meta_for_url(submenu_base_path, submenu_base_path) rescue nil %>
@@ -73,8 +74,22 @@
                   <% end %>
                 </ul>
               </div>
+              <% end %>
+              <% if is_disabled %>
+                <div data-controller="tooltip" data-tooltip-text-value="Enable expert mode to access" class="w-full">
+                  <%= submenu_content %>
+                </div>
+              <% else %>
+                <%= submenu_content %>
+              <% end %>
             <% else %>
-              <%= render "shared/button", url: is_disabled ? "#" : path, text: name, variant: (active && !is_disabled) ? :nav_active : :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""} #{is_disabled ? "opacity-50 pointer-events-none" : ""}", html_options: { data: { nav_target: "link", nav_match: match } } %>
+              <% if is_disabled %>
+                <div data-controller="tooltip" data-tooltip-text-value="Enable expert mode to access" class="w-full">
+                  <%= render "shared/button", url: "#", text: name, variant: :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""} opacity-50 pointer-events-none w-full", html_options: { data: { nav_target: "link", nav_match: match }, aria: { disabled: true } } %>
+                </div>
+              <% else %>
+                <%= render "shared/button", url: path, text: name, variant: active ? :nav_active : :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""}", html_options: { data: { nav_target: "link", nav_match: match } } %>
+              <% end %>
             <% end %>
         <% end %>
     </div>
