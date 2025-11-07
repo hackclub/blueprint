@@ -3,7 +3,7 @@
     <%= render "shared/card" do %>
       <h1 class="text-4xl">Start a new project</h1>
       <% unless current_user.is_pro? %>
-        <p class="text-xl">Give your Hackpad a name and a brief description!</p>
+        <p class="text-xl">Give your project a name and a brief description!</p>
       <% end %>
       <%= form_with model: @project, html: { class: "space-y-6" } do |f| %>
         <% if @project.errors.any? %>
@@ -22,7 +22,7 @@
           <%= f.text_field :title,
                 required: true,
                 class: "input px-3 w-full",
-                placeholder: current_user.is_pro? ? nil : 'Orpheus Pad' %>
+                placeholder: current_user.is_pro? ? nil : 'sam\'s macropad!' %>
         </div>
 
         <div>
@@ -31,7 +31,7 @@
                 required: true,
                 rows: 6,
                 class: "input px-3 mt-1 block w-full",
-                placeholder: current_user.is_pro? ? nil : "A fully featured, Hack Club styled 4-key macropad with a screen, an encoder and 2 rgb leds...\n\nWhat do you want yours to look like and do?" %>
+                placeholder: current_user.is_pro? ? nil : "My personal macropad for video editing! I plan on adding 6 keys and an OLED screen to display status" %>
         </div>
 
         <div>

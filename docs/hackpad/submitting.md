@@ -1,35 +1,31 @@
-# How to submit your project
+# Submitting your project
 
 Finally finished your hackpad? Nice job! Follow along and we're going to make sure you have everything necessary to *ship* your project, which includes:
 
 - Creating a new GitHub Repository
 - Structuring your project files
-- Creating production files
 - Adding a README
 - Filling out the submission form
-
 
 ## Create a new GitHub Repository
 GitHub is a website that allows you to host your project files! A GitHub repository is an individual project that you can share with others
 
 GitHub has an awesome guide on how to create & manage repositories. You can find it here: [Creating a new repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository)
 
-Once you create a repository, make sure to clone it! Cloning it downloads a local copy to your computer & lets you sync it with the version on GitHub servers. GitHub also has a guide on this! You can find it here: [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+Once you create a repository, make sure to clone it! Cloning a repository downloads a local copy to your computer & lets you sync it with the version on GitHub servers. GitHub also has a guide on this! You can find it here: [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 
 **Once you have it cloned locally, drag and drop all your project files into the folder!**
 
-<a name="structure"/>
 ## Structuring your project design files
-To make reviewing easier, we need to make sure that the source files of our project are formatted in a way that's complete & easy to navigate.
+To publish your project, we need to make sure that the source files of our project are formatted in a way that's complete & easy to navigate.
 
 ### 1) Make sure you have everything necessary:
 
 Before we organize anything, make sure 
-- A *complete* CAD model of the assembled case in .STEP, .STP or .3MF format
+- A *complete* CAD model of the assembled case in .STEP or .STP file format!
     - This should include the PCB (a blank rectangle is okay!) and all parts of the case
-- Original firmware for your macropad. QMK, KMK, ZMK, etc derivatives are valid
 
-Additionally, make sure you meet the following requirements:
+Additionally, make sure your project follows the requirements:
 - Your design uses a through-hole Seeed XIAO RP2040 as the main MCU
 - Your PCB is smaller or equal to 100mmx100mm
 - Your case fits within 200x200x100mm (length / width / height)
@@ -54,39 +50,7 @@ This should contain the source files for your firmware. main.py if you're using 
 
 In total, you should have 3 folders in your project folder.
 
-<a name="export"/>
-## Creating production files
-Nice job on organizing your design files! Next, we need to create the manufacturing files that will actually be used to build your project.
 
-This is separate from the source files, which are usually a reference to check out & iterate on your design.
-
-Before moving on, create a folder called "production"
-
-### 1) Export your PCB
-Depending on your tool of choice, the exact workflow will be different. What you want to do is export your PCB as a set of files called Gerbers, which are basically instructions for the manufacturer to build your PCB. It should be compressed into a .zip file.
-
-The internet will help you out on this one. The end file you get should be named gerbers.zip and contain all the production files in it.
-
-Put it inside the "production" folder
-
-### 2) Export your Case parts
-Each individual part of the case should be exported into its respective files. For example, if you have a top, bottom, and middle part, you should have 3 files:
-- Top.STEP
-- Bottom.STEP
-- Middle.STEP 
-
-If you can't export them as STEPs, STLs are okay too!
-
-Put all of these files in the "production" folder as well
-
-### 3) Compile your firmware
-This step is going to depend on what you used specifically, for QMK the resulting file should be named firmware.uf2
-
-If you are using KMK, you'll just have a main.py file.
-
-Either way, put them in the "production" folder
-
-<a name="readme"/>
 ## Adding a README
 A README is essential to all open-source projects. It allows people to know more about you and your project without having to dig into every single 
 
@@ -105,32 +69,21 @@ It'll be different for each hackpad, but good examples of what I'm looking for a
 - [Ducc's Fidget Toy](https://github.com/hackclub/hackpad/blob/main/hackpads/Duccs%20Fidget%20Toy/README.md)
 - [Cyaopad](https://github.com/hackclub/hackpad/blob/main/hackpads/cyaopad/README.md)
 
-## Make a ship post!
+## Sync your repository
 
-Next, you should make a ship post in #highway-pitstop on slack! Format it like so:
+After adding all your files, you need to sync it with the remote. 
 
-**Hackpad name:** Orpheuspad
+(insert instructions)!
 
-**GitHub Repo:** https://github.com/qcoral/orpheuspad
 
-**Description:** This is a 4-key macropad with a rotary encoder, OLED, and neopixel! It's meant to showcase all the different parts in a small, polished project
+## Send your project for review!
 
-(attach some images of your hackpad)
+Now you need to submit your project for review! To do this, head on over to the "Dashboard tab"
 
-**You'll need to make a post to get feedback on your project, so don't forget this step!**
+Next, hit "submit design!" it'll prompt you to add a github repository
 
-## Fill out the form!
-First, double check your submission against the [Orpheuspad](https://github.com/hackclub/hackpad/tree/main/hackpads/orpheuspad) example to make sure you have the correct structure. Everything should match exactly, except for the filenames.
 
-Here's what it should look like
 
-<img src="/docs/v2/tree2.png" className="max-w-96" />
-
-If anything is unclear, make sure to ask in #hackpad!
-
-Once everything is organized, you can fill out the following form!
-
-[Submission Form](https://forms.hackclub.com/highway)
 
 ### After submitting
 If everything went correctly, your submission will be reviewed (and hopefully approved!) by @alexren. You'll get a reply to your #highway-pitstop post, so MAKE SURE TO MAKE ONE!
@@ -140,8 +93,8 @@ If it's approved, then you'll get:
 - A $18 Card grant to buy a soldering iron, if requested.
 - A $15 Card grant to buy your PCB + Get a 3D printed case from another Hack Clubber!
 
-If it's rejected, you'll get feedback on what you need to change!
+If it needs updates, you'll get feedback on what you need to change!
 
-For many of you, the firmware may not work the first try. That's okay! Keep working at it until it's fixed; if you send a video in #hackpad showing it working, I'll ship you a free custom hack-club keycap and sticker!
+Any questions? Check out the [FAQ](/hackpad/faq)
 
-Any questions? Check out the [FAQ](/faq)
+Drop me a follow on [GitHub](https://github.com/qcoral)!
