@@ -2,7 +2,7 @@ class AuthController < ApplicationController
   allow_unauthenticated_access only: %i[ index new create create_email track submit_age ]
   rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to slack_login_url, alert: "Try again later." }
   skip_forgery_protection only: %i[ track ]
-  skip_before_action :redirect_to_age, only: %i[ age submit_age ]
+  skip_before_action :redirect_to_age, only: %i[ age submit_age destroy ]
 
   layout false
 
