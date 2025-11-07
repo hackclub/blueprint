@@ -16,11 +16,13 @@
 <section class="flex flex-col items-center space-y-6 grow">
   <div class="flex flex-col w-full max-w-4xl min-h-full m-8 space-y-12">
     <div class="print:hidden">
-      <%= render "shared/button",
-        url: safe_path(params[:return_to]) || explore_path(type: "projects"),
-        text: "← Back to Projects",
-        variant: :primary,
-        html_options: { data: { controller: "back", action: "click->back#go" } } %>
+      <% if current_user.is_pro? %>
+        <%= render "shared/button",
+          url: safe_path(params[:return_to]) || explore_path(type: "projects"),
+          text: "← Back to Projects",
+          variant: :primary,
+          html_options: { data: { controller: "back", action: "click->back#go" } } %>
+      <% end %>
     </div>
     <%= render "shared/card", class: "flex flex-col space-y-6" do %>
       <div class="h-48 -mx-8 -mt-6 bg-gray-200 bg-center bg-cover" style="background-image: url('<%= @project.display_banner ? url_for(@project.display_banner) : nil %>')">
@@ -79,7 +81,14 @@
       </div>
     <% end %>
     <% if current_user.present? && current_user == @project.user %>
-      <%= render "journal_form", project: @project %>
+      <% if @project.ysws == "hackpad" %>
+        <%= render "shared/card", class: "h-64 flex justify-center items-center text-xl" do %>
+          <p class="block text-3xl font-rc-full">Journaling is not required</p>
+          <p>Most projects will require a journal, but Hackpad projects do not.</p>
+        <% end %>
+      <% else %>
+        <%= render "journal_form", project: @project %>
+      <% end %>
     <% elsif current_user.present? %>
       <%= render 'shared/card' do %>
         <%= render 'kudos/kudos_form', project: @project %>

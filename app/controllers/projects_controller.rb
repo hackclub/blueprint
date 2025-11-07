@@ -203,6 +203,15 @@ class ProjectsController < ApplicationController
     end
     params[:project].delete(:ysws_other)
 
+    if !current_user.is_pro
+      params[:project][:ysws] = "hackpad"
+
+      if current_user.projects.where(ysws: "hackpad", is_deleted: false).exists?
+        redirect_to new_project_path, alert: "You can only make one hackpad!"
+        return
+      end
+    end
+
     @project = current_user.projects.build(project_params)
     if @project.save
       ahoy.track("project_create", project_id: @project.id, user_id: current_user&.id)

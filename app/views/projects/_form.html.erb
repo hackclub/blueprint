@@ -14,8 +14,7 @@
     <%= f.label :title, class: "block text-xl font-medium font-rc-full" %>
     <%= f.text_field :title,
           required: true,
-          class: "input px-3 w-full",
-          data: { project_validator_target: "title", action: "input->project-validator#validate change->project-validator#validate" } %>
+          class: "input px-3 w-full" %>
   </div>
 
   <div>
@@ -23,107 +22,49 @@
     <%= f.text_area :description,
           required: true,
           rows: 6,
-          class: "input px-3 mt-1 block w-full",
-          data: { project_validator_target: "description", action: "input->project-validator#validate change->project-validator#validate" } %>
+          class: "input px-3 mt-1 block w-full" %>
   </div>
 
   <div>
-    <div class="flex items-center">
-      <div>
-        <%= f.label :repo_link, class: "block text-xl font-medium font-rc-full" %>
-      </div>
-      <div class="grow"></div>
-      <%= render "shared/button", text: "Configure GitHub", class: "py-1 px-2 text-base", url: github_login_path, html_options: { target: "_blank" } %>
-    </div>
+    <%= f.label :repo_link, class: "block text-xl font-medium font-rc-full" %>
     <%= f.text_field :repo_link,
           placeholder: "https://github.com/...",
-          class: "input px-3 mt-1 block w-full",
-          data: {
-            project_validator_target: "repo",
-            action: "input->project-validator#queueRepoCheck change->project-validator#queueRepoCheck"
-          } %>
-    <div class="flex justify-end mt-1 space-x-2 text-sm text-right">
-      <p data-project-validator-target="status">You must have write access to the repository.</p>
-    </div>
+          class: "input px-3 mt-1 block w-full" %>
   </div>
 
-  <div>
-    <%= f.label :banner, class: "block text-xl font-medium font-rc-full" %>
-    <div class="flex items-center gap-3 mt-1" data-controller="file-input">
-      <%= f.file_field :banner, direct_upload: true, id: "project_banner_input", class: "hidden", data: { file_input_target: "input" }, "data-action": "change->file-input#update" %>
-      <label for="project_banner_input" class="btn btn-outline">Choose file</label>
-      <span data-file-input-target="filename" data-placeholder="No file selected">No file selected</span>
-    </div>
-  </div>
-
-  <% unless Flipper.enabled?(:new_flow, current_user) %>
-    <div data-controller="ysws">
-      <%= f.label :ysws, "Are you following a guide?", class: "block text-xl font-medium font-rc-full" %>
-      <div class="mt-2 space-y-2">
-        <div class="w-full text-left text-white select bg-bp-dark">
-          <% ysws_options = [
-            ["I am not following a guide", "none"],
-            ["Custom Devboard", "devboard"],
-            ["Midi Keyboard", "midi"],
-            ["Split Keyboard", "splitkb"],
-            ["Blinky LED Chaser Board (Journal not required)", "led"],
-            ["Hackpad (Journal not required)", "hackpad"],
-            ["Other", "other"]
-          ] %>
-          <% predefined_values = ysws_options.map { |label, value| value } %>
-          <% current_ysws = @project.ysws.presence %>
-          <% selected_value = current_ysws.nil? ? "none" : (predefined_values.include?(current_ysws) ? current_ysws : "other") %>
-          <% other_value = (current_ysws && !predefined_values.include?(current_ysws)) ? current_ysws : nil %>
-          <%= f.select :ysws, ysws_options, { selected: selected_value }, { data: { ysws_target: "select", action: "change->ysws#toggle" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
+  <div data-controller="funding-amount"
+    data-funding-amount-tier-max-cents-value="<%= { 1 => 40000, 2 => 20000, 3 => 10000, 4 => 5000, 5 => 2500 }.to_json %>">
+    <% if @project.ysws != "hackpad" %>
+      <div class="space-y-6">
+        <div>
+          <div>
+            <%= f.label :tier, "What tier should this project be?", class: "block text-xl font-medium font-rc-full" %>
+            <p class="text-lg">We may adjust this as we see fit.<br>If you're unsure what to pick, check the <a href="/docs" target="_blank" class="underline text-bp-warning">tier docs</a>.</p>
+          </div>
+          <div class="w-full text-left text-white select bg-bp-dark">
+            <%= f.select :tier, Project.tier_options, { include_blank: false, selected: @project.tier || 5 }, { class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);", data: { funding_amount_target: "tierSelect", action: "change->funding-amount#tierChanged" } } %>
+          </div>
         </div>
-        <div class="<%= other_value ? '' : 'hidden' %>" data-ysws-target="otherField">
-          <%= f.label :ysws_other, "Please specify:", class: "block text-sm font-medium mb-1" %>
-          <%= f.text_field :ysws_other, value: other_value, data: { ysws_target: "otherInput", action: "input->ysws#validate" }, class: "input px-3 w-full", placeholder: "Enter name of the guide..." %>
+        <div>
+          <%= f.label :funding_needed, "How much funding do you need?", class: "block text-xl font-medium font-rc-full" %>
+          <p>You do not need to spend up to your tier maximum.</p>
+          <div class="relative">
+            <span class="absolute text-lg -translate-y-1/2 left-3 top-1/2">$</span>
+            <input type="text"
+              placeholder="0.00"
+              data-funding-amount-target="input"
+              data-action="input->funding-amount#formatInput"
+              class="w-full pl-8 input"
+              value="<%= @project.funding_needed_cents > 0 ? '%.2f' % (@project.funding_needed_cents / 100.0) : '' %>">
+            <%= f.hidden_field :funding_needed_cents, data: { funding_amount_target: "hidden" }, value: @project.funding_needed_cents %>
+          </div>
+          <p class="hidden text-sm text-bp-danger" data-funding-amount-target="error"></p>
         </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
 
-  <% unless Flipper.enabled?(:new_flow, current_user) %>
-    <div>
-      <div>
-        <%= f.label :needs_funding, "Do you need a grant to build your project?", class: "block text-xl font-medium font-rc-full" %>
-        <p class="text-sm">You will get extra tickets if you don't need funding. <a href="/docs#what-are-tickets-how-do-i-earn-them" target="_blank" class="text-bp-warning underline">Learn more</a></p>
-      </div>
-      <div class="flex gap-4 mt-2">
-        <%= f.label :needs_funding_true, class: "flex items-center gap-2 cursor-pointer" do %>
-          <%= f.radio_button :needs_funding, true, class: "hidden peer" %>
-          <div class="border-2 size-4 peer-checked:bg-white"></div>
-          <span>I need funding</span>
-        <% end %>
-        <%= f.label :needs_funding_false, class: "flex items-center gap-2 cursor-pointer" do %>
-          <%= f.radio_button :needs_funding, false, class: "hidden peer" %>
-          <div class="border-2 size-4 peer-checked:bg-white"></div>
-          <span>I don't need funding or am already building</span>
-        <% end %>
-      </div>
+    <div class="mt-6">
+      <%= f.submit (@project.new_record? ? "Create project" : "Update project"), class: "btn btn-primary block w-full", data: { funding_amount_target: "submit" } %>
     </div>
-  <% end %>
-
-  <div>
-    <div>
-      <%= f.label :skip_gh_sync, "Publish journal to GitHub repository", class: "block text-xl font-medium font-rc-full" %>
-    </div>
-    <div class="flex gap-4 mt-2">
-      <%= f.label :skip_gh_sync_false, class: "flex items-center gap-2 cursor-pointer" do %>
-        <%= f.radio_button :skip_gh_sync, false, class: "hidden peer" %>
-        <div class="border-2 size-4 peer-checked:bg-white"></div>
-        <span>I want to automatically publish my journal (recommended)</span>
-      <% end %>
-      <%= f.label :skip_gh_sync_true, class: "flex items-center gap-2 cursor-pointer" do %>
-        <%= f.radio_button :skip_gh_sync, true, class: "hidden peer" %>
-        <div class="border-2 size-4 peer-checked:bg-white"></div>
-        <span>I don't want this</span>
-      <% end %>
-    </div>
-  </div>
-
-  <div>
-    <%= f.submit (@project.new_record? ? "Create project" : "Update project"), class: "btn btn-primary block w-full", data: { project_validator_target: "submit" } %>
   </div>
 <% end %>

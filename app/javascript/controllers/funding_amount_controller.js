@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "hidden", "error", "tierSelect"]
+  static targets = ["input", "hidden", "error", "tierSelect", "submit"]
   static values = {
     tierMaxCents: Object
   }
@@ -53,10 +53,12 @@ export default class extends Controller {
       this.showError(`Amount cannot exceed $${maxDollars} for Tier ${tier}`)
       this.inputTarget.classList.add('border-bp-danger')
       this.inputTarget.classList.remove('border-bp-muted')
+      this.disableSubmit()
     } else {
       this.clearError()
       this.inputTarget.classList.remove('border-bp-danger')
       this.inputTarget.classList.add('border-bp-muted')
+      this.enableSubmit()
     }
   }
 
@@ -71,6 +73,20 @@ export default class extends Controller {
     if (this.hasErrorTarget) {
       this.errorTarget.textContent = ''
       this.errorTarget.classList.add('hidden')
+    }
+  }
+
+  disableSubmit() {
+    if (this.hasSubmitTarget) {
+      this.submitTarget.disabled = true
+      this.submitTarget.classList.add('opacity-50', 'cursor-not-allowed')
+    }
+  }
+
+  enableSubmit() {
+    if (this.hasSubmitTarget) {
+      this.submitTarget.disabled = false
+      this.submitTarget.classList.remove('opacity-50', 'cursor-not-allowed')
     }
   }
 }
