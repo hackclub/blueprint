@@ -171,6 +171,10 @@ class ProjectsController < ApplicationController
     end
 
     prepare_ship_state
+
+    if @project.is_currently_build?
+      render "build_ship" and return
+    end
   end
 
   def follow
@@ -227,6 +231,10 @@ class ProjectsController < ApplicationController
     @project = current_user.projects.find_by(id: params[:id], is_deleted: false)
     not_found unless @project
     not_found unless @project.can_edit?
+
+    if @project.is_currently_build?
+      render "build_edit" and return
+    end
   end
 
   def update
@@ -237,19 +245,21 @@ class ProjectsController < ApplicationController
     has_ship = params.dig(:project, :ship).present?
     params[:project].delete(:ship) if has_ship
 
-    if params.dig(:project, :ysws) == "none"
-      params[:project][:ysws] = nil
-    elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
-      params[:project][:ysws] = params[:project][:ysws_other]
-    end
-    params[:project].delete(:ysws_other)
+    # if params.dig(:project, :ysws) == "none"
+    #   params[:project][:ysws] = nil
+    # elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
+    #   params[:project][:ysws] = params[:project][:ysws_other]
+    # end
+    # params[:project].delete(:ysws_other)
 
     # Compute print_legion from radio inputs
-    if params.dig(:project, :has_3d_print).present? && params.dig(:project, :needs_3d_print_help).present?
-      has_3d = params[:project][:has_3d_print] == "yes"
-      needs_help = params[:project][:needs_3d_print_help] == "yes"
-      params[:project][:print_legion] = (has_3d && needs_help)
-    end
+    # if params.dig(:project, :has_3d_print).present? && params.dig(:project, :needs_3d_print_help).present?
+    #   has_3d = params[:project][:has_3d_print] == "yes"
+    #   needs_help = params[:project][:needs_3d_print_help] == "yes"
+    #   params[:project][:print_legion] = (has_3d && needs_help)
+    # end
+
+    form_to_render = has_ship ? (@project.is_currently_build? ? "build_ship" : "ship") : (@project.is_currently_build? ? "build_edit" : "edit")
 
     # Apply incoming attributes first so attachments are reflected on the model
     @project.assign_attributes(project_params)
@@ -262,7 +272,57 @@ class ProjectsController < ApplicationController
       unless @project.cart_screenshots.attached? || has_new_uploads
         prepare_ship_state
         @project.errors.add(:cart_screenshots, "are required when requesting funding")
-        render :ship, status: :unprocessable_entity and return
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream: turbo_stream.replace(
+              "form_errors",
+              partial: "projects/form_errors"
+            ), status: :unprocessable_entity
+          end
+          format.html do
+            render form_to_render, status: :unprocessable_entity
+          end
+        end
+        return
+      end
+    end
+
+    if has_ship && @project.is_currently_build?
+      prepare_ship_state
+
+      if @project.demo_link.blank?
+        @project.errors.add(:demo_link, "is required")
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream: turbo_stream.replace(
+              "form_errors",
+              partial: "projects/form_errors"
+            ), status: :unprocessable_entity
+          end
+          format.html do
+            render form_to_render, status: :unprocessable_entity
+          end
+        end
+        return
+      end
+
+      pending_picture = @project.attachment_changes["demo_picture"]
+      has_new_picture = pending_picture && pending_picture.respond_to?(:attachable) && pending_picture.attachable.present?
+
+      unless @project.demo_picture.attached? || has_new_picture
+        @project.errors.add(:demo_picture, "is required")
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream: turbo_stream.replace(
+              "form_errors",
+              partial: "projects/form_errors"
+            ), status: :unprocessable_entity
+          end
+          format.html do
+            render form_to_render, status: :unprocessable_entity
+          end
+        end
+        return
       end
     end
 
@@ -283,7 +343,7 @@ class ProjectsController < ApplicationController
           if current_user.idv_linked?
             redirect_to project_path(@project), notice: "Project shipped."
           else
-            render "ship_idv", status: 303
+            redirect_to project_path(@project), status: :see_other
           end
         else
           @project.ship!
@@ -293,7 +353,20 @@ class ProjectsController < ApplicationController
         redirect_to project_path(@project), notice: "Project updated."
       end
     else
-      render :edit, status: :unprocessable_entity
+      # Prepare state for ship forms if needed
+      prepare_ship_state if has_ship && (form_to_render == "build_ship" || form_to_render == "ship")
+
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "form_errors",
+            partial: "projects/form_errors"
+          ), status: :unprocessable_entity
+        end
+        format.html do
+          render form_to_render, status: :unprocessable_entity
+        end
+      end
     end
   end
 
@@ -456,6 +529,7 @@ class ProjectsController < ApplicationController
       :description,
       :repo_link,
       :demo_link,
+      :demo_picture,
       :readme_link,
       :project_type,
       :banner,

@@ -1,0 +1,12 @@
+<%= turbo_frame_tag "form_errors" do %>
+  <% if @project.errors.any? %>
+    <div class="p-4 mb-6 text-red-900 rounded-md bg-bp-danger">
+      <p><strong><%= pluralize(@project.errors.count, "error") %></strong> prevented this project from being saved:</p>
+      <ul class="pl-5 list-disc">
+        <% @project.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>

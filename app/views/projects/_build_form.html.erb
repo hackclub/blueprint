@@ -1,0 +1,81 @@
+<%= form_with model: @project, html: { class: "space-y-6", data: { controller: "project-validator", project_validator_project_id_value: @project.id } } do |f| %>
+  <% if @project.errors.any? %>
+    <div class="p-4 text-red-900 rounded-md bg-bp-danger">
+      <p><strong><%= pluralize(@project.errors.count, "error") %></strong> prevented this project from being saved:</p>
+      <ul class="pl-5 list-disc">
+        <% @project.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, class: "block text-xl font-medium font-rc-full" %>
+    <%= f.text_field :title,
+          required: true,
+          class: "input px-3 w-full" %>
+  </div>
+
+  <div>
+    <%= f.label :description, class: "block text-xl font-medium font-rc-full" %>
+    <%= f.text_area :description,
+          required: true,
+          rows: 6,
+          class: "input px-3 mt-1 block w-full" %>
+  </div>
+
+  <div>
+    <%= f.label :demo, "Demo Link (optional)", class: "block text-xl font-medium font-rc-full" %>
+    <p>Once you're finished, record a video of your project working and share it on YouTube or Reddit.</p>
+    <%= f.text_field :demo,
+          class: "input px-3 w-full",
+          placeholder: "https://www.youtube.com/..." %>
+  </div>
+
+  <div>
+    <%= f.label :demo_picture, "Picture of your project (optional)", class: "block text-xl font-medium font-rc-full" %>
+    <p>Once you're finished, take a picture of your project! This will also be your project's banner.</p>
+    <div class="flex items-center gap-3 mt-1" data-controller="file-input">
+      <%= f.file_field :demo_picture, direct_upload: true, id: "project_banner_input", class: "hidden", data: { file_input_target: "input" }, "data-action": "change->file-input#update" %>
+      <label for="project_banner_input" class="btn btn-outline"><%= @project.demo_picture.attached? ? "Replace image" : "Choose file" %></label>
+      <span data-file-input-target="filename" data-placeholder="No file selected">No file selected</span>
+    </div>
+  </div>
+
+  <div data-controller="funding-amount"
+    data-funding-amount-tier-max-cents-value="<%= { 1 => 40000, 2 => 20000, 3 => 10000, 4 => 5000, 5 => 2500 }.to_json %>">
+    <% if @project.ysws != "hackpad" %>
+      <div class="space-y-6">
+        <div>
+          <div>
+            <%= f.label :tier, "What tier should this project be?", class: "block text-xl font-medium font-rc-full" %>
+            <p class="text-lg">We may adjust this as we see fit.<br>If you're unsure what to pick, check the <a href="/docs" target="_blank" class="underline text-bp-warning">tier docs</a>.</p>
+          </div>
+          <div class="w-full text-left text-white select bg-bp-dark">
+            <%= f.select :tier, Project.tier_options, { include_blank: false, selected: @project.tier || 5 }, { class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);", data: { funding_amount_target: "tierSelect", action: "change->funding-amount#tierChanged" } } %>
+          </div>
+        </div>
+        <div>
+          <%= f.label :funding_needed, "How much funding do you need?", class: "block text-xl font-medium font-rc-full" %>
+          <p>You do not need to spend up to your tier maximum.</p>
+          <div class="relative">
+            <span class="absolute text-lg -translate-y-1/2 left-3 top-1/2">$</span>
+            <input type="text"
+              placeholder="0.00"
+              data-funding-amount-target="input"
+              data-action="input->funding-amount#formatInput"
+              class="w-full pl-8 input"
+              value="<%= @project.funding_needed_cents > 0 ? '%.2f' % (@project.funding_needed_cents / 100.0) : '' %>">
+            <%= f.hidden_field :funding_needed_cents, data: { funding_amount_target: "hidden" }, value: @project.funding_needed_cents %>
+          </div>
+          <p class="hidden text-sm text-bp-danger" data-funding-amount-target="error"></p>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="mt-6">
+      <%= f.submit (@project.new_record? ? "Create project" : "Update project"), class: "btn btn-primary block w-full", data: { funding_amount_target: "submit" } %>
+    </div>
+  </div>
+<% end %>
