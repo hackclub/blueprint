@@ -82,7 +82,7 @@
         <% unless current_user.is_adult? %>
           <% if current_user.is_pro %>
             <%= button_to toggle_pro_users_path, method: :post, class: "text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer", data: { turbo: false } do %>
-              <p>Pro mode</p>
+              <p>Toggle Expert Mode</p>
               <div class="h-5 rounded-full w-10 bg-green-500 justify-end flex items-center">
                 <div class="size-4 rounded-full bg-white mx-0.5"></div>
               </div>
@@ -93,7 +93,7 @@
               data-modal-target-id-value="toggle-pro-modal"
               data-action="click->modal#show"
               class="text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer">
-              <p>Pro mode</p>
+              <p>Expert Mode</p>
               <div class="h-5 rounded-full w-10 bg-bp-darker flex items-center">
                 <div class="size-4 rounded-full bg-white mx-0.5"></div>
               </div>
@@ -138,17 +138,28 @@
   data-action="modal:show-toggle-pro-modal@window->modal#show modal:hide-toggle-pro-modal@window->modal#hide"
   class="fixed inset-0 z-50 hidden">
   <div class="fixed inset-0 flex items-center justify-center p-4">
-    <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-6" do %>
+    <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-6 max-w-3xl" do %>
       <div class="space-y-1">
-        <p class="text-3xl font-rc-full">Are you sure?</p>
-        <p class="text-xl">You should only enable pro mode if you've done hardware projects before.</p>
+        <p class="text-3xl font-rc-full ">Are you sure?</p>
+        <p class="text-lg mb-4 text-gray-200">Heads up! You're about to enter expert mode. </p>
+        <p class="text-lg mb-4 text-gray-200">You'll get access to more features & the ability to make other projects, <b>but you'll be held to higher quality standards to be approved</b></p>
+        <p class="text-lg text-gray-200">If you're new to hardware, we recommend staying on normal mode - you'll automatically unlock the rest after finishing your first project! </p>
       </div>
-      <%= render "shared/button", 
-          text: "Enable Pro Mode",
-          url: toggle_pro_users_path,
-          class: "w-full",
-          html_options: { method: :post, data: { turbo: false } }
-          %>
+      <div class="space-y-4">
+        <%= render "shared/button", 
+            text: "Enable Expert Mode",
+            url: toggle_pro_users_path,
+            class: "w-full",
+            variant: :warning,
+            html_options: { method: :post, data: { turbo: false } }
+            %>
+        <%= render "shared/button",
+            text: "Stay on Normal Mode",
+            class: "w-full",
+            variant: :outline,
+            html_options: { data: { action: "click->modal#hide" } }
+            %>
+      </div>
     <% end %>
     <div data-modal-target="overlay" class="fixed inset-0 z-40 bg-black/50" data-action="click->modal#hide"></div>
   </div>

@@ -6,7 +6,7 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
       <% unless current_user.is_pro %>
-        <a href="/hackpad" class="bg-bp-darker">
+        <a href="/hackpad" class="bg-bp-darker col-span-2">
           <%= render 'shared/card', class: 'flex flex-col hover:bg-white/3 motion-safe:transition-colors' do %>
             <p class="text-2xl md:text-3xl font-rc-full">Welcome! Start your first project with a mini-keyboard</p>
             <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" alt="Mini Keyboard Example" class="my-4 max-w-md mx-auto" />
@@ -26,9 +26,9 @@
         <% end %>
           <%= render 'viral_projects' %>
       <% else %>
+        <%= render 'tasks' %>
         <%= render 'announcements' %>
         <%= render 'projects' %>
-        <%= render 'viral_projects' %>
       <% end %>
     </div>
   </div>
