@@ -249,13 +249,31 @@
         <h2 class="text-3xl md:text-5xl font-rc-full mb-4">Already a pro?</h2>
         <p class="text-lg md:text-xl mb-8">Blueprint is for everyone! Get up to $400 USD from Hack Club for *any* hardware project, ranging from mechanical keyboards to 3D printers.</p>
         <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl">
-          <p class="text-lg uppercase md:text-3xl font-rc-full">Get started</p>
+
+           <div class="space-y-12">
+        <div class="overflow-hidden">
+          <div class="flex h-64 space-x-8 space-y-8 carousel md:h-84">
+            <% @featured_projects.shuffle.each do |project| %>
+              <a href="<%= project[:url] %>" target="_blank" rel="noopener noreferrer" class="flex flex-col w-40 h-full md:w-72 shrink-0 bg-bp-darker" data-carousel-target="item">
+                <div class="h-20 bg-gray-200 bg-center bg-no-repeat bg-cover md:h-40" style="background-image: url('<%= image_path(project[:image]) %>')"></div>
+                <div class="flex flex-col p-2 space-y-2 md:p-4 grow">
+                  <p class="text-base font-bold md:text-xl"><%= project[:title] %> <span class="text-xs">by <%= project[:author] %></span></p>
+                  <p class="text-xs md:text-base"><%= project[:description] %></p>
+                </div>
+              </a>
+            <% end %>
+          </div>
+        </div>
+      </div>
+          <p class="text-lg uppercase md:text-3xl font-rc-full mt-10">Get started</p>
           <div class="flex" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
             <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
             <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
           </div>
         </div>
       </div>
+
+      
 
       <!-- Divider Image -->
       <div class="w-full py-8 md:py-16">
