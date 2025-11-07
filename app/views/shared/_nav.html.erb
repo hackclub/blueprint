@@ -97,7 +97,7 @@
         <% unless current_user.is_adult? %>
           <% if current_user.is_pro %>
             <%= button_to toggle_pro_users_path, method: :post, class: "text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer", data: { turbo: false } do %>
-              <p>Toggle Expert Mode</p>
+              <p>Expert Mode</p>
               <div class="h-5 rounded-full w-10 bg-green-500 justify-end flex items-center">
                 <div class="size-4 rounded-full bg-white mx-0.5"></div>
               </div>
