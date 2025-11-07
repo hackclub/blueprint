@@ -14,11 +14,10 @@
       "Explore" => explore_path,
       "Leaderboard" => leaderboard_path,
       "Shop" => toolbag_path,
-      "FAQ" => faq_path,
       "Admin" => current_user&.special_perms? ? admin_root_path : nil
   } %>
 <% end %>
-<% pro_only_links = ["About Blueprint", "Starter Projects", "Design Resources", "Explore", "Leaderboard", "Shop", "FAQ"] %>
+<% pro_only_links = ["About Blueprint", "Starter Projects", "Design Resources", "Leaderboard", "Shop"] %>
 
 <% active_projects_count = user_logged_in? ? Rails.cache.fetch([current_user.id, "active_projects_count", current_user.projects.maximum(:updated_at)]) { current_user.projects.where(is_deleted: false).count } : 0 %>
 <% if active_projects_count > 5 %>

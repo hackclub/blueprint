@@ -35,7 +35,7 @@ class MarkdownController < ApplicationController
   end
 
   def faq
-    render_from_base Rails.root.join("docs"), "faq", { suffix: "FAQ", index_title: "FAQ - Blueprint", url_prefix: "/faq" }
+    redirect_to "/about/faq"
   end
 
   private
