@@ -113,10 +113,15 @@ class Project < ApplicationRecord
   validates :funding_needed_cents, numericality: { greater_than_or_equal_to: 0 }
   validate :funding_needed_within_tier_max
   has_one_attached :banner
+  has_one_attached :demo_picture
   has_many_attached :cart_screenshots
 
   validates :banner, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],
                      size: { less_than: 5.megabytes }
+  validates :demo_picture, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],
+                           size: { less_than: 5.megabytes }
+
+                           size: { less_than: 5.megabytes }
   validates :cart_screenshots, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],
                                size: { less_than: 10.megabytes }
 
