@@ -218,6 +218,17 @@
         .animate-scroll:hover {
           animation-play-state: paused;
         }
+        
+        /* Increase all text sizes globally */
+        body {
+          font-size: 1.125rem; /* 18px base instead of 16px */
+        }
+        
+        @media (min-width: 768px) {
+          body {
+            font-size: 1.25rem; /* 20px on larger screens */
+          }
+        }
       </style>
 
       <!-- Divider Image -->
