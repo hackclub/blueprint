@@ -6,31 +6,29 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
       <% unless current_user.is_pro %>
-        <a href="/hackpad" class="bg-bp-darker col-span-2">
-          <%= render 'shared/card', class: 'flex flex-col hover:bg-white/3 motion-safe:transition-colors border-2 border-bp-warning border-solid' do %>
-            <p class="text-2xl md:text-3xl font-rc-full mb-8">Build your first hardware project. Start with Hackpad!</p>
-            <div class="flex flex-col md:flex-row gap-4 md:gap-6">
-              <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" alt="Mini Keyboard Example" class="w-full md:w-1/2 max-w-md my-auto" />
-              <div class="text-xl pr-2 mb-0 flex flex-col space-y-4">
-                <%# 
-                  <div class="flex-1 pb-8"><b>Hackpad</b> is a program a part of Blueprint designed to help you build your very own <b>mini keypad</b> (macropad)</div>
-                  <div class="flex-1 pb-8">Follow along our guide, submit it, and get all the parts sent to you!</div>
-                %>
-                <div class="grow flex flex-col space-y-4 items-center">
-                  <ol class="list-decimal ml-8 w-full max-w-xl space-y-2">
-                    <li><span class="font-bold">Join 1000 other teenagers on the Hack Club slack.</span><br>Need help or want feedback? Chat with peers in our global Slack.</li>
-                    <li><span class="font-bold">Follow our guide and design a mini keyboard.</span><br>We have a step-by-step guide to get your started. We'll teach you all the skills you need, from 3D modelling to writing code.</li>
-                    <li><span class="font-bold">Get the parts shipped to you for free.</span><br>Hack Club will ship you everything you need to build it. We'll give you a grant to manufacture the circuit board.</li>
-                  </ol>
-                </div>
-                
-                <div class="btn btn-primary bg-bp-warning text-xl md:text-2xl border-0 text-center">
-                  Learn how to build your own custom macropad ->
-                </div> 
+        <%= render 'shared/card', class: 'col-span-2 flex flex-col motion-safe:transition-colors border-2 border-bp-warning border-solid' do %>
+          <p class="text-2xl md:text-3xl font-rc-full mb-8">Build your first hardware project. Start with Hackpad!</p>
+          <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+            <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" alt="Mini Keyboard Example" class="w-full md:w-1/2 max-w-md my-auto" />
+            <div class="text-xl pr-2 mb-0 flex flex-col space-y-4">
+              <%# 
+                <div class="flex-1 pb-8"><b>Hackpad</b> is a program a part of Blueprint designed to help you build your very own <b>mini keypad</b> (macropad)</div>
+                <div class="flex-1 pb-8">Follow along our guide, submit it, and get all the parts sent to you!</div>
+              %>
+              <div class="grow flex flex-col space-y-4 items-center">
+                <ol class="list-decimal ml-8 w-full max-w-xl space-y-2">
+                  <li><span class="font-bold">Join 1000 other teenagers on the <button type="button" data-controller="modal" data-modal-target-id-value="slack-join" data-action="click->modal#show" class="text-bp-warning underline cursor-pointer">Hack Club Slack</button>.</span><br>Need help or want feedback? Chat with peers in our global Slack.</li>
+                  <li><span class="font-bold">Follow our guide and design a mini keyboard.</span><br>We have a step-by-step guide to get your started. We'll teach you all the skills you need, from 3D modelling to writing code.</li>
+                  <li><span class="font-bold">Get the parts shipped to you for free.</span><br>Hack Club will ship you everything you need to build it. We'll give you a grant to manufacture the circuit board.</li>
+                </ol>
               </div>
+              
+              <a class="btn btn-primary bg-bp-warning text-xl md:text-2xl border-0 text-center hover:bg-bp-warning-darker" href="/hackpad">
+                Learn how to build your own custom macropad ->
+              </a> 
             </div>
-          <% end %>
-        </a>
+          </div>
+        <% end %>
       <% end %>
       <% if current_user.is_pro %>
         <%= render 'projects' %>
@@ -45,6 +43,7 @@
         <%= render 'tasks' %>
         <%= render 'announcements' %>
         <%= render 'projects' %>
+        <%= render 'viral_projects' %>
       <% end %>
     </div>
   </div>
