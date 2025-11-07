@@ -834,7 +834,7 @@ class User < ApplicationRecord
   end
 
   def identity_vault_oauth_link(callback_url, state: nil)
-    if Rails.env.development? && ENV["BYPASS_IDV"] == "true"
+    if ENV["BYPASS_IDV"] == "true"
       return idv_callback_url
     end
     IdentityVaultService.authorize_url(callback_url, {
@@ -845,7 +845,7 @@ class User < ApplicationRecord
   end
 
   def link_identity_vault_callback(callback_url, code)
-    return if Rails.env.development? && ENV["BYPASS_IDV"] == "true"
+    return if ENV["BYPASS_IDV"] == "true"
 
     code_response = IdentityVaultService.exchange_token(callback_url, code)
 
@@ -868,21 +868,21 @@ class User < ApplicationRecord
   end
 
   def fetch_idv(access_token = nil)
-    if Rails.env.development? && ENV["BYPASS_IDV"] == "true"
+    if ENV["BYPASS_IDV"] == "true"
       return {}
     end
     IdentityVaultService.me(access_token || identity_vault_access_token)
   end
 
   def idv_linked?
-    if Rails.env.development? && ENV["BYPASS_IDV"] == "true"
+    if ENV["BYPASS_IDV"] == "true"
       return true
     end
     identity_vault_access_token.present?
   end
 
   def refresh_idv_data!
-    if Rails.env.development? && ENV["BYPASS_IDV"] == "true"
+    if ENV["BYPASS_IDV"] == "true"
       update!(ysws_verified: true)
     end
 
