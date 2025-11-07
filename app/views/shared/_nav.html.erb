@@ -25,6 +25,7 @@
   <% nav_links = nav_links.to_a.insert(2, ["My Projects", projects_path]).to_h %>
 <% end %>
 <% submenu = ["About Blueprint", "Starter Projects", "Design Resources", "Hackpad"] %>
+<% always_show_submenu = ["Hackpad"] %>
 
 <% normalize_path = ->(p) { p.to_s.sub(%r{/$}, "") } %>
 <% req = normalize_path.call(request.path) %>
@@ -54,12 +55,14 @@
             <% active = current_nav == name %>
             <% is_pro_only = pro_only_links.include?(name) %>
             <% is_disabled = is_pro_only && user_logged_in? && !current_user.is_pro %>
+            <% always_expand = always_show_submenu.include?(name) %>
+            <% show_submenu = has_submenu && (active || always_expand) %>
 
-            <% if has_submenu && active %>
+            <% if show_submenu %>
               <% submenu_content = capture do %>
                 <div class="flex flex-col btn btn-nav text-base submenu p-0 gap-0 <%= is_disabled ? "opacity-50 pointer-events-none" : "" %>" data-nav-target="link" data-nav-match="prefix" data-nav-base="<%= submenu_base_path %>">
                 <%= render "shared/button", url: path, text: name, variant: :none, class: "text-base p-0 hover:bg-bp-lighter w-full submenu-btn" %>
-                <ul data-nav-target="submenu" data-submenu-base="<%= submenu_base_path %>" class="flex-col hidden w-full pb-3 text-sm text-center">
+                <ul data-nav-target="submenu" data-submenu-base="<%= submenu_base_path %>" class="flex-col w-full pb-3 text-sm text-center <%= 'hidden' unless always_expand %>">
                   <% index_meta = meta_for_url(submenu_base_path, submenu_base_path) rescue nil %>
                   <% unless index_meta&.dig(:unlisted) %>
                     <li class="w-full">
