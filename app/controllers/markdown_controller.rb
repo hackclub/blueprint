@@ -1,5 +1,5 @@
 class MarkdownController < ApplicationController
-  allow_unauthenticated_access only: %i[ show docs guides faq ]
+  allow_unauthenticated_access only: %i[ show docs guides faq hackpad ]
   skip_before_action :set_current_user, if: :turbo_frame_request?
 
   SECTION_CONFIG = {
