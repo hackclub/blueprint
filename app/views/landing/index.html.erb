@@ -117,21 +117,22 @@
                 <%= image_tag "blueprint_logo.png", alt: "Blueprint", class: "mx-auto md:mx-0 w-64 md:w-[28rem] h-auto" %>
                 
                 <div class="text-sm md:text-2xl font-rc-full">
-                  <h2 class="hidden md:block mb-2 md:text-3xl">Build a macropad - get it sent from Hack Club for free!</h2>
+                  <h2 class="hidden md:block mb-2 md:text-3xl">Design a macropad - get it sent from Hack Club for free!</h2>
                   <h2 class="hidden md:block">For ages 13 to 18. Ends January 1st, 2026</h2>
 
-                  <h2 class="md:hidden">Build a macropad</h2>
+                  <h2 class="md:hidden">Design a macropad</h2>
                   <h2 class="md:hidden">Get the parts for free</h2>
                   <h2 class="md:hidden">For ages 13 to 18</h2>
                   <h2 class="md:hidden">Ends January 1st, 2026</h2>
                 </div>
 
                 <div class="flex flex-col items-center md:items-start px-4 py-3 space-y-2 md:space-y-4 text-sm border-2 md:px-12 md:py-6 md:pb-8 md:text-2xl bg-bp-dark">
-                  <p class="text-lg md:text-2xl font-rc-full">Start making & get free stickers!</p>
+                  <p class="text-lg md:text-2xl font-rc-full">Learn how & get free stickers!</p>
                   <div class="flex w-full" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
                     <input type="email" data-email-redirect-target="input" class="w-full text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
-                    <button type="button" data-action="click->email-redirect#go" class="px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Start</button>
+                    <button type="button" data-action="click->email-redirect#go" class="px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Get started</button>
                   </div>
+                  <%# <p class="text-sm">Get free stickers when you sign up!</p> %>
                 </div>
               </div>
 

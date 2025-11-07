@@ -55,9 +55,9 @@
       <% if current_user.free_stickers_claimed? %>
           <%= render "shared/button", text: "Claimed!", class: "w-full", html_options: { disabled: true } %>
       <% elsif current_user.tasks.completed? %>
-        <%= render "shared/button", text: "Claim Stickers", class: "w-full", url: "https://forms.hackclub.com/t/6MhoMy5dY7us?ID=#{current_user.slack_id}&BPID=#{current_user.id}&email=#{current_user.email}", html_options: { target: "_blank" } %>
+        <%= render "shared/button", text: "Free Stickers!", class: "w-full", url: "https://forms.hackclub.com/t/6MhoMy5dY7us?ID=#{current_user.slack_id}&BPID=#{current_user.id}&email=#{current_user.email}", html_options: { target: "_blank" } %>
       <% else %>
-        <%= render "shared/button", text: "Claim Stickers", class: "w-full", html_options: { disabled: true } %>
+        <%= render "shared/button", text: "Free Stickers!", class: "w-full", html_options: { disabled: true } %>
       <% end %>
     </div>
   </div>

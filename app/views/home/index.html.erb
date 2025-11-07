@@ -7,11 +7,17 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
       <% unless current_user.is_pro %>
         <a href="/hackpad" class="bg-bp-darker col-span-2">
-          <%= render 'shared/card', class: 'flex flex-col hover:bg-white/3 motion-safe:transition-colors' do %>
-            <p class="text-2xl md:text-3xl font-rc-full">Welcome! Start your first project with a mini keypad!</p>
-            <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" alt="Mini Keyboard Example" class="my-4 max-w-md mx-auto" />
-            <div class="font-rc-full text-lg md:text-2xl bg-bp-warning text-bp-dark grow px-6 md:px-8 text-center py-3 md:py-1 min-h-[44px] flex items-center justify-center">
-              Build your own custom Hackpad
+          <%= render 'shared/card', class: 'flex flex-col hover:bg-white/3 motion-safe:transition-colors border-2 border-bp-warning border-solid' do %>
+            <p class="text-2xl md:text-3xl font-rc-full mb-8">Build your first hardware project. Start with Hackpad!</p>
+            <div class="flex flex-col md:flex-row gap-4 md:gap-6 items-center">
+              <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" alt="Mini Keyboard Example" class="w-full md:w-1/2 max-w-md pr-12" />
+              <div class="text-xl pr-2 mb-0">
+                <div class="flex-1 pb-8"><b>Hackpad</b> is a program a part of Blueprint designed to help you build your very own <b>mini keypad</b> (macropad)</div>
+                <div class="flex-1 pb-8">Follow along our guide, submit it, and get all the parts sent to you!</div>
+                <div class="font-rc-full text-lg md:text-2xl bg-bp-warning text-bp-dark grow px-6 md:px-8 text-center py-3 md:py-1 min-h-[44px] flex items-center justify-center mt-4">
+              Learn how to build your own custom macropad ->
+                </div>
+              </div>
             </div>
           <% end %>
         </a>

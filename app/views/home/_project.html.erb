@@ -8,8 +8,11 @@
           <%= link_to project_path(project), class: "grow" do %>
               <p class="text-lg md:text-2xl font-rc-full"><%= project.title %></p>
           <% end %>
-          <%= render "shared/button", url: project_path(project), variant: :inset, text: "New Journal Entry", class: "text-sm md:text-base bg-bp-warning text-bp-dark hover:bg-bp-warning/80 min-h-[44px]" %>
-          <%= render "shared/button", url: ship_project_path(project), variant: :inset, text: "Submit", class: "text-sm md:text-base min-h-[44px]" %>
+          <% unless project.ysws == "hackpad" %>
+            <%= render "shared/button", url: project_path(project), variant: :inset, text: "New Journal Entry", class: "text-sm md:text-base bg-bp-warning text-bp-dark hover:bg-bp-warning/80 min-h-[44px]" %>
+            <%= render "shared/button", url: ship_project_path(project), variant: :inset, text: "Submit", class: "text-sm md:text-base min-h-[44px]" %>
+          <% end %>
+            <%= render "shared/button", url: ship_project_path(project), variant: :inset, text: "Submit", class: "text-sm md:text-base min-h-[44px] bg-bp-warning text-bp-dark" %>
       </div>
   </div>
 <% end %>
