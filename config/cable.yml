@@ -4,7 +4,7 @@
 # to make the web console appear.
 
 development:
-  adapter: async
+  adapter: solid_cable
 
 test:
   adapter: test
