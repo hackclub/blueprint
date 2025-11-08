@@ -286,10 +286,9 @@
 
       <!-- Prototype Banner -->
       <section class="w-full relative">
-        <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
-        <div class="absolute left-0 right-0 flex justify-center" style="bottom: 20%;">
-          <%= render "shared/button", text: "Learn More About Prototype", url: "https://blueprint.hackclub.com/prototype", class: "px-3 py-1.5 md:px-8 md:py-3 text-sm md:text-xl", style: "background-color: #6D1010 !important; border-color: #6D1010 !important; color: #6D1010 !important;" %>
-        </div>
+        <a href="/prototype" class="block">
+          <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
+        </a>
       </section>
       
       <div class="text-center max-w-4xl mx-auto px-4 py-30">
