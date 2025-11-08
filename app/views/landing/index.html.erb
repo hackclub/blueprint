@@ -233,8 +233,8 @@
       </style>
 
       <!-- Divider Image -->
-      <div class="w-full py-8 md:py-16">
-        <%= image_tag "landing/flag_divider.png", class: "w-full h-auto opacity-75" %>
+      <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
+        <%= image_tag "landing/flag_divider.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
       </div>
 
       <!-- Join Community Section -->
@@ -257,8 +257,11 @@
       </section>
 
       <!-- Prototype Banner -->
-      <section class="w-full">
+      <section class="w-full relative">
         <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
+        <div class="absolute left-0 right-0 flex justify-center" style="bottom: 20%;">
+          <%= render "shared/button", text: "Learn More About Prototype", url: "https://prototype.hackclub.com", class: "px-3 py-1.5 md:px-8 md:py-3 text-sm md:text-xl", style: "background-color: #6D1010 !important; border-color: #6D1010 !important; color: #6D1010 !important;" %>
+        </div>
       </section>
       
       <div class="text-center max-w-4xl mx-auto px-4 py-10">
