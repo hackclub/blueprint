@@ -239,21 +239,12 @@
 
       <!-- Join Community Section -->
       <section class="w-full">
-        <div class="flex flex-row md:text-xl max-w-4xl mx-auto space-y-4 px-4 py-8 md:py-12">
-          <div class="space-y-2">
-            <h2 class="text-3xl md:text-5xl">Join our community</h2>
-            <div class="">
-              <p class="md:text-xl">Join a community of 50,000+ other teens in building projects!</p>
-              <p class="md:text-xl">We'll be running weekly events such as AMAs with YouTubers like <a class="underline" href="https://www.youtube.com/channel/UCO8DQrSp5yEP937qNqTooOw" target="_blank">Strange Parts</a>, <a class="underline" href="https://www.youtube.com/zackfreedman" target="_blank">Zack Freedman</a>, and more!</p>
-              <p class="md:text-xl">Meet other people making viral projects</p>
-            </div>
-          </div>
-        </div>
-
         <div class="w-full mt-8 md:mt-12 flex justify-center">
           <%= image_tag "landing/friends.png", alt: "Community", class: "w-full max-w-4xl h-auto" %>
         </div>
-        
+        <div class="flex justify-center mt-8 md:mt-12">
+          <%= render "shared/button", text: "Join Hack Club Community", url: "https://hackclub.com/slack", class: "px-8 py-3 text-lg md:text-xl" %>
+        </div>
       </section>
 
       <!-- Prototype Banner -->
@@ -264,7 +255,7 @@
         </div>
       </section>
       
-      <div class="text-center max-w-4xl mx-auto px-4 py-10">
+      <div class="text-center max-w-4xl mx-auto px-4 py-30">
         <h2 class="text-3xl md:text-5xl font-rc-full mb-4">Already a pro?</h2>
         <p class="text-lg md:text-xl mb-8">Blueprint is for everyone! Get up to $400 USD from Hack Club for *any* hardware project, ranging from mechanical keyboards to 3D printers.</p>
         <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl">
@@ -296,7 +287,7 @@
 
       <!-- Divider Image -->
       <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
-        <%= image_tag "landing/flag_divider.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+        <%= image_tag "landing/flag_divider_in.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
       </div>
 
       <div class="text-center max-w-4xl mx-auto px-4">
@@ -313,7 +304,7 @@
 
       <!-- Divider Image -->
       <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
-        <%= image_tag "landing/flag_divider.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+        <%= image_tag "landing/flag_divider_out.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
       </div>
     </main>
 
