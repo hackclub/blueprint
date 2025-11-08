@@ -233,7 +233,7 @@
 
       <!-- Divider Image -->
       <div class="w-full py-8 md:py-16">
-        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
+        <%= image_tag "landing/flag_divider.png", class: "w-full h-auto opacity-75" %>
       </div>
 
       <!-- Join Community Section -->
@@ -248,31 +248,19 @@
             </div>
           </div>
         </div>
-        <div class="w-full relative z-10 mb-[-15%]" style="clip-path: polygon(0 0, 100% 5%, 100% 100%, 0% 100%);">
-          <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/32c3fcc393f284f0c16fe89a79b69ef954cfa098_image.png" alt="" class="w-full h-auto object-cover" />
+
+        <div class="w-full mt-8 md:mt-12 flex justify-center">
+          <%= image_tag "landing/friends.png", alt: "Community", class: "w-full max-w-4xl h-auto" %>
         </div>
+        
       </section>
 
       <!-- Prototype Banner -->
-      <section class="w-full relative">
-        <!-- Red stripes above/below -->
-        <div class="bg-[#6D1010] pt-16 pb-10 md:pt-40 md:pb-20 lg:pt-28 min-h-[40svh] md:min-h-[60vh] lg:min-h-[75vh] flex items-center grid-bg" style="clip-path: polygon(0 10%, 100% 4%, 100% 96%, 0% 100%);">
-          <!-- Full-width maroon band with slanted edges -->
-          <div class="relative bg-[#6D1010] overflow-hidden w-full" style="clip-path: polygon(0 13%, 100% 7%, 100% 93%, 0% 99%);">
-            <!-- Content -->
-            <div class="relative flex items-center justify-center">
-              <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
-            </div>
-          </div>
-        </div>
+      <section class="w-full">
+        <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
       </section>
-
-      <!-- For seasoned people-->
-      <div class="w-full py-16 md:py-24">
-        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
-      </div>
       
-      <div class="text-center max-w-4xl mx-auto px-4">
+      <div class="text-center max-w-4xl mx-auto px-4 py-10">
         <h2 class="text-3xl md:text-5xl font-rc-full mb-4">Already a pro?</h2>
         <p class="text-lg md:text-xl mb-8">Blueprint is for everyone! Get up to $400 USD from Hack Club for *any* hardware project, ranging from mechanical keyboards to 3D printers.</p>
         <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl">
@@ -303,8 +291,8 @@
       
 
       <!-- Divider Image -->
-      <div class="w-full py-8 md:py-16">
-        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
+      <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
+        <%= image_tag "landing/flag_divider.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
       </div>
 
       <div class="text-center max-w-4xl mx-auto px-4">
@@ -320,8 +308,8 @@
       </div>
 
       <!-- Divider Image -->
-      <div class="w-full py-8 md:py-16">
-        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
+      <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
+        <%= image_tag "landing/flag_divider.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
       </div>
     </main>
 
