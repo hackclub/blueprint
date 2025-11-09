@@ -7,13 +7,18 @@ class HomeController < ApplicationController
                              .includes(:banner_attachment, :latest_journal_entry)
 
     if current_user.is_pro?
-      begin
-        geo_data = Geocoder.search(request.remote_ip).first
-        user_country = geo_data&.country_code
-        @show_bp_progress = user_country&.upcase == "US"
-      rescue => e
-        Rails.logger.error("Geocoding failed: #{e.message}")
-        @show_bp_progress = false
+      ip = request.remote_ip
+      if Rails.env.development? && (ip == "127.0.0.1" || ip == "::1")
+        @show_bp_progress = true
+      else
+        begin
+          geo_data = Geocoder.search(ip).first
+          user_country = geo_data&.country_code
+          @show_bp_progress = user_country&.upcase == "US"
+        rescue => e
+          Rails.logger.error("Geocoding failed: #{e.message}")
+          @show_bp_progress = false
+        end
       end
     else
       @show_bp_progress = false
