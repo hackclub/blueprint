@@ -11,14 +11,7 @@ class HomeController < ApplicationController
       if Rails.env.development? && (ip == "127.0.0.1" || ip == "::1")
         @show_bp_progress = true
       else
-        begin
-          geo_data = Geocoder.search(ip).first
-          user_country = geo_data&.country_code
-          @show_bp_progress = user_country&.upcase == "US"
-        rescue => e
-          Rails.logger.error("Geocoding failed: #{e.message}")
-          @show_bp_progress = false
-        end
+        @show_bp_progress = us_ip?(ip)
       end
     else
       @show_bp_progress = false
@@ -27,13 +20,33 @@ class HomeController < ApplicationController
     if @show_bp_progress
       weights = { 1 => 60, 2 => 50, 3 => 40, 4 => 30, 5 => 20 }
       approved = current_user.projects
-                  .where(is_deleted: false)
-                  .where(review_status: [ "design_approved", "build_approved" ])
+                  .where(is_deleted: false, review_status: [ "design_approved", "build_approved" ])
                   .select(:tier, :approved_tier)
       @bp_progress = approved.sum do |p|
         t = (p.approved_tier.presence || p.tier).to_i
         weights[t] || 0
       end
+      @bp_progress = @bp_progress.to_i.clamp(0, 500)
     end
+  end
+
+  private
+
+  def us_ip?(ip)
+    return false if ip.blank?
+
+    ipaddr = IPAddr.new(ip) rescue nil
+    return false if ipaddr&.private? || ipaddr&.loopback? || ipaddr&.link_local?
+
+    country = Rails.cache.fetch("geo:#{ip}", expires_in: 12.hours) do
+      Timeout.timeout(0.5) do
+        Geocoder.search(ip).first&.country_code&.upcase
+      end
+    rescue => e
+      Rails.logger.warn("Geocoding failed: #{e.class}")
+      nil
+    end
+
+    country == "US"
   end
 end

@@ -1,7 +1,7 @@
-| title       | Parents                           |
+| title       | Prototype Parents                          |
 | ----------- | ---------------------------------- |
 | description | Parent's Guide to Blueprint to Prototype |  
-| unlisted | true |
+| unlisted | false |
 
 
 # Parent's Guide to Blueprint to Prototype
