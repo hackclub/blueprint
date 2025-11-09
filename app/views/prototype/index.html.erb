@@ -141,16 +141,48 @@
       </div>
     </section>
 
-    <!-- Parent Info Link -->
-    <div class="w-full flex justify-center py-8 px-4 md:px-8 lg:px-12">
-      <a href="/about/parents" class="text-xl md:text-2xl font-rc-full text-white hover:text-bp-warning transition-colors underline">
-        Parents info
-      </a>
-    </div>
+    <footer class="relative w-full min-h-[600px] md:min-h-[800px]">
+      <%= image_tag "prototype/prototype_footer.png", alt: "", class: "absolute inset-0 w-full h-full object-cover", "aria-hidden": true, style: "clip-path: polygon(0 8%, 100% 0%, 100% 100%, 0% 100%);" %>
+      <div class="relative w-full px-8 py-8 md:px-16 lg:px-20 md:py-12 pt-24 md:pt-40">
+        <!-- FAQ Section -->
+        <div class="space-y-8 mx-auto max-w-6xl mb-12">
+          <h2 class="text-3xl text-center md:text-5xl font-rc-full">FAQ</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+              <h3 class="mb-3 font-bold text-lg md:text-xl text-bp-warning">When is Prototype?</h3>
+              <p class="text-base md:text-lg">December 19-21, 2025 at AMD HQ in Austin, Texas</p>
+            </div>
+            <div>
+              <h3 class="mb-3 font-bold text-lg md:text-xl text-bp-warning">How do I qualify?</h3>
+              <p class="text-base md:text-lg">You need more than 100% prototype progress on Hack Club Blueprint</p>
+            </div>
+            <div>
+              <h3 class="mb-3 font-bold text-lg md:text-xl text-bp-warning">Who can attend?</h3>
+              <p class="text-base md:text-lg">Any teenagers aged 13-18 who have qualified</p>
+            </div>
+            <div>
+              <h3 class="mb-3 font-bold text-lg md:text-xl text-bp-warning">What will I build?</h3>
+              <p class="text-base md:text-lg">You'll use AI and custom hardware attachments to complete challenges (announced day of)</p>
+            </div>
+            <div>
+              <h3 class="mb-3 font-bold text-lg md:text-xl text-bp-warning">What do I get?</h3>
+              <p class="text-base md:text-lg">An AMD MiniPC, a Hugging Face Le Robot arm, and hardware to fully customize it</p>
+            </div>
+            <div>
+              <h3 class="mb-3 font-bold text-lg md:text-xl text-bp-warning">Do I need prior experience?</h3>
+              <p class="text-base md:text-lg">Not at all! We welcome beginners and provide resources to help you learn.</p>
+            </div>
+          </div>
+          <div class="text-center md:text-xl pt-4">
+            <p>Have more questions? Check out our <a href="/faq" class="underline hover:text-bp-warning transition-colors">full FAQ!</a></p>
+          </div>
+          <div class="w-full flex justify-center py-4">
+            <a href="/about/parents" class="text-xl md:text-2xl font-rc-full text-white hover:text-bp-warning transition-colors underline">
+              Parents info
+            </a>
+          </div>
+        </div>
 
-    <footer class="relative w-full">
-      <%= image_tag "prototype/prototype_footer.png", alt: "", class: "absolute inset-0 w-full h-full object-cover", "aria-hidden": true, style: "clip-path: polygon(0 15%, 100% 0%, 100% 100%, 0% 100%);" %>
-      <div class="relative w-full px-8 py-8 md:px-16 lg:px-20 md:py-12 pt-24 md:pt-32">
         <div class="max-w-6xl mx-auto">
           <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a></p>
           <p class="max-w-3xl text-white/75 text-sm md:text-base mb-8">
