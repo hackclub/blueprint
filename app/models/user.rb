@@ -52,8 +52,8 @@ class User < ApplicationRecord
   has_many :kudos, dependent: :destroy
   has_many :shop_orders, dependent: :destroy
 
-  has_many :ahoy_visits
-  has_many :ahoy_events
+  has_many :ahoy_visits, class_name: "Ahoy::Visit"
+  has_many :ahoy_events, class_name: "Ahoy::Event"
 
   # Simple referrer: a user may have one referrer (another User)
   belongs_to :referrer, class_name: "User", optional: true

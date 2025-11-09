@@ -1,0 +1,24 @@
+<%= render 'shared/card', class: 'col-span-1 md:col-span-2 space-y-3' do %>
+  <div class="flex items-center justify-between">
+    <div>
+      <h3 class="text-xl md:text-2xl font-rc-full">Blueprint Progress</h3>
+      <p class="text-sm opacity-80">Cumulative across approved projects</p>
+    </div>
+    <div class="text-2xl md:text-3xl font-bold"><%= @bp_progress %>%</div>
+  </div>
+
+  <div class="mt-2">
+    <div class="w-full h-4 md:h-5 rounded bg-blue-950/60 ring-1 ring-blue-900/60 overflow-hidden">
+      <div
+        class="h-full bg-blue-600 transition-all"
+        style="width: <%= [@bp_progress, 100].min %>%; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.10) 0 2px, transparent 2px 8px); background-blend-mode: overlay;">
+      </div>
+    </div>
+
+    <% if @bp_progress > 100 %>
+      <p class="mt-1 text-xs opacity-80">
+        You exceeded the goal by <%= @bp_progress - 100 %>% — keep going!
+      </p>
+    <% end %>
+  </div>
+<% end %>
