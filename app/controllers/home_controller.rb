@@ -6,8 +6,18 @@ class HomeController < ApplicationController
                              .limit(10)
                              .includes(:banner_attachment, :latest_journal_entry)
 
-    last_country = current_user.ahoy_visits.order(started_at: :desc).limit(1).pick(:country)
-    @show_bp_progress = current_user.is_pro? && last_country == "US"
+    if current_user.is_pro?
+      begin
+        geo_data = Geocoder.search(request.remote_ip).first
+        user_country = geo_data&.country_code
+        @show_bp_progress = user_country&.upcase == "US"
+      rescue => e
+        Rails.logger.error("Geocoding failed: #{e.message}")
+        @show_bp_progress = false
+      end
+    else
+      @show_bp_progress = false
+    end
 
     if @show_bp_progress
       weights = { 1 => 60, 2 => 50, 3 => 40, 4 => 30, 5 => 20 }
