@@ -7,9 +7,9 @@
   <% nav_links = {
       "Dashboard" => user_logged_in? ? home_path : login_path,
       "Hackpad" => user_logged_in? ? (current_user.is_pro ? nil : hackpad_path) : nil,
-      "About Blueprint" => about_path,
+      "Custom Projects" => about_path,
       # "My Projects" => user_logged_in? ? projects_path : login_path,
-      "Starter Projects" => starter_projects_path,
+      "Guided Projects" => starter_projects_path,
       "Design Resources" => resources_path,
       "Explore" => explore_path,
       "Leaderboard" => leaderboard_path,
