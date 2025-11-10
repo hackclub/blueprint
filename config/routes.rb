@@ -150,6 +150,8 @@ Rails.application.routes.draw do
 
   get "prototype", to: "prototype#index", as: :prototype
 
+  resources :posters, only: [ :show ]
+
   namespace :admin do
     post "stop_impersonating", to: "users#stop_impersonating"
 
