@@ -16,7 +16,7 @@
 <section class="flex flex-col items-center space-y-6 grow">
   <div class="flex flex-col w-full max-w-4xl min-h-full m-8 space-y-12">
     <div class="print:hidden">
-      <% if current_user.is_pro? %>
+      <% if current_user && current_user.is_pro? %>
         <%= render "shared/button",
           url: safe_path(params[:return_to]) || explore_path(type: "projects"),
           text: "← Back to Projects",
