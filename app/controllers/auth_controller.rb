@@ -3,6 +3,7 @@ class AuthController < ApplicationController
   rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to slack_login_url, alert: "Try again later." }
   skip_forgery_protection only: %i[ track ]
   skip_before_action :redirect_to_age, only: %i[ age submit_age destroy ]
+  skip_before_action :redirect_adults, only: %i[ destroy ]
 
   layout false
 
