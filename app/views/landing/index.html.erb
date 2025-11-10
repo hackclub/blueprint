@@ -107,8 +107,8 @@
       </div>
 
       <div class="absolute top-0 left-0 right-0 bg-bottom bg-no-repeat bg-cover pointer-events-none select-none -z-10" data-landing-target="heroOutline"
-           style="background-image: url('<%= image_path('hero-outline.jpg') %>'); mask-image: linear-gradient(170deg, rgba(0,0,0,0) 100%, rgba(0,0,0,1) 100%);">
-        <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0">
+           style="background-image: url('<%= image_path('hero-outline.webp') %>'); mask-image: linear-gradient(170deg, rgba(0,0,0,0) 100%, rgba(0,0,0,1) 100%);">
+           <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0">
       </div>
 
     
@@ -122,8 +122,8 @@
               <!-- Left: logo + caption + CTA -->
               <div class="space-y-4 md:space-y-6 text-center md:text-left">
                 <div class="text-base md:text-2xl font-rc-full">Hack Club presents...</div>
-                <%= image_tag "blueprint_logo.png", alt: "Blueprint", class: "mx-auto md:mx-0 w-48 md:w-[28rem] h-auto hidden md:block" %>
-                <%= image_tag "blueprint_logo_centered.png", alt: "Blueprint", class: "w-full max-w-xs mx-auto h-auto md:hidden" %>
+                <%= image_tag "blueprint_logo.webp", alt: "Blueprint", class: "mx-auto md:mx-0 w-48 md:w-[28rem] h-auto hidden md:block" %>
+                <%= image_tag "blueprint_logo_centered.webp", alt: "Blueprint", class: "w-full max-w-xs mx-auto h-auto md:hidden" %>
                 
                 <div class="space-y-1 md:space-y-0 text-sm md:text-2xl font-rc-full">
                   <h2 class="hidden md:block mb-2 md:text-3xl">Design a macropad - get it sent from Hack Club for free!</h2>
@@ -148,8 +148,8 @@
 
               <!-- Right: hero image -->
               <div class="justify-center hidden md:flex md:justify-end group z-10 wobble-1">
-                <%= image_tag "hackpad.png", alt: "Blueprint project example", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg group-hover:hidden" %>
-                <%= image_tag "hackpad_inside.png", alt: "Blueprint project xpexample", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg hidden group-hover:block" %>
+                <%= image_tag "hackpad.webp", alt: "Blueprint project example", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg group-hover:hidden" %>
+                <%= image_tag "hackpad_inside.webp", alt: "Blueprint project xpexample", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg hidden group-hover:block" %>
               </div>
             </div>
           </div>
@@ -172,19 +172,19 @@
           <h2 class="text-2xl md:text-5xl text-center font-rc-full mb-6 md:mb-12">Here's How It Works:</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-screen-2xl mx-auto">
             <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
-              <%= image_tag "landing/hackpad/cad_design.png", class: "w-full h-auto mb-4" %>
+              <%= image_tag "landing/hackpad/cad_design.webp", class: "w-full h-auto mb-4" %>
               <p class="md:text-lg font-rc-full">Design a case</p>
             </div>
             <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
-              <%= image_tag "landing/hackpad/pcb_design.png", class: "w-full h-auto mb-4" %>
+              <%= image_tag "landing/hackpad/pcb_design.webp", class: "w-full h-auto mb-4" %>
               <p class="md:text-lg font-rc-full">Design a PCB</p>
             </div>
             <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
-              <%= image_tag "landing/hackpad/firmware.png", class: "w-full h-auto mb-4" %>
+              <%= image_tag "landing/hackpad/firmware.webp", class: "w-full h-auto mb-4" %>
               <p class="md:text-lg font-rc-full">Write firmware</p>
             </div>
             <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
-              <%= image_tag "landing/parts_cropped.png", class: "w-full h-auto mb-4" %>
+              <%= image_tag "landing/parts_cropped.webp", class: "w-full h-auto mb-4" %>
               <p class="md:text-lg font-rc-full">We ship the parts (you get a macropad)</p>
             </div>
           </div>
@@ -266,7 +266,7 @@
 
       <!-- Divider Image -->
       <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
-        <%= image_tag "landing/flag_divider.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+        <%= image_tag "landing/flag_divider.webp", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
       </div>
 
       <!-- Join Community Section -->
@@ -274,7 +274,7 @@
         <div class="w-full flex justify-center">
           <div class="w-full max-w-7xl">
             <div class="relative">
-              <%= image_tag "landing/people.png", alt: "Community", class: "w-full h-auto block" %>
+              <%= image_tag "landing/people.webp", alt: "Community", class: "w-full h-auto block" %>
               <div class="absolute top-4 left-4 right-4 bottom-4 md:top-8 md:left-8 md:right-8 md:bottom-8 bg-black/60 p-6 md:p-8">
                 <h2 class="text-4xl mb-4">Join our community</h2>
                 <div class="space-y-2">
@@ -284,7 +284,7 @@
                 </div>
               </div>
             </div>
-            <%= image_tag "landing/ama.png", alt: "Community AMAs", class: "w-full h-auto block" %>
+            <%= image_tag "landing/ama.webp", alt: "Community AMAs", class: "w-full h-auto block" %>
           </div>
         </div>
         <div class="flex justify-center mt-8 mb-10 md:mt-12">
@@ -295,7 +295,7 @@
       <!-- Prototype Banner -->
       <section class="w-full relative">
         <a href="/prototype" class="block">
-          <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
+          <%= image_tag "landing/prototype_landing_banner.webp", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
         </a>
       </section>
       
@@ -331,7 +331,7 @@
 
       <!-- Divider Image -->
       <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
-        <%= image_tag "landing/flag_divider_in.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+        <%= image_tag "landing/flag_divider_in.webp", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
       </div>
 
       <div class="text-center max-w-4xl mx-auto px-4">
@@ -348,12 +348,12 @@
 
       <!-- Divider Image -->
       <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
-        <%= image_tag "landing/flag_divider_out.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+        <%= image_tag "landing/flag_divider_out.webp", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
       </div>
     </main>
 
     <footer class="w-full relative">
-      <%= image_tag 'blueprint_footer.png', class: "absolute left-0 right-0 bottom-0", style: "mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)" %>
+      <%= image_tag 'blueprint_footer.webp', class: "absolute left-0 right-0 bottom-0", style: "mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)" %>
       <% 2.times do |i| %>
         <div class="<%= i == 0 ? 'absolute left-0 right-0 bottom-0' : 'invisible' %>">
           <!-- FAQ Section -->

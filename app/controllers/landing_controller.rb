@@ -29,49 +29,49 @@ class LandingController < ApplicationController
     @community_projects = [
         {
           country: "Singapore",
-          image: "landing/community_projects/tongyu.png",
+          image: "landing/community_projects/tongyu.webp",
           age: "18",
           author: "tongyu"
         },
         {
           country: "Canada",
-          image: "landing/community_projects/jamdotjar.jpg",
+          image: "landing/community_projects/jamdotjar.webp",
           age: "14",
           author: "Jamdotjar"
         },
         {
           country: "United States",
-          image: "landing/community_projects/elijah.png",
+          image: "landing/community_projects/elijah.webp",
           age: "16",
           author: "Elijah"
         },
         {
           country: "United States",
-          image: "landing/community_projects/ben-park.jpg",
+          image: "landing/community_projects/ben-park.webp",
           age: "17",
           author: "Ben Park"
         },
         {
           country: "Canada",
-          image: "landing/community_projects/hex4.jpg",
+          image: "landing/community_projects/hex4.webp",
           age: "13",
           author: "hex4"
         },
         {
           country: "United States",
-          image: "landing/community_projects/egg-splats.png",
+          image: "landing/community_projects/egg-splats.webp",
           age: "15",
           author: "Egg_Splats"
         },
         {
           country: "United States",
-          image: "landing/community_projects/koji-ino.png",
+          image: "landing/community_projects/koji-ino.webp",
           age: "15",
           author: "Koji Ino"
         },
         {
           country: "India",
-          image: "landing/community_projects/daamin.png",
+          image: "landing/community_projects/daamin.webp",
           age: "16",
           author: "Daamin"
       }

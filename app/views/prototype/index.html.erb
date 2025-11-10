@@ -4,7 +4,7 @@
     <!-- Banner -->
     <section class="relative w-full">
       <div class="absolute inset-0 bg-black/40 z-10"></div>
-      <%= image_tag "prototype/prototype_banner_narrow.png",
+      <%= image_tag "prototype/prototype_banner_narrow.webp",
         alt: "Prototype banner",
         class: "block w-full h-auto select-none",
         draggable: false,
@@ -15,7 +15,7 @@
         <div class="space-y-1">
           <div class="space-y-2">
             <div class="relative flex flex-col items-center">
-              <%= image_tag "prototype/prototype_logo.png",
+              <%= image_tag "prototype/prototype_logo.webp",
                 alt: "Prototype",
                 class: "h-40 md:h-72 w-auto"
               %>
@@ -74,7 +74,7 @@
         <div class="relative overflow-hidden min-h-[150px] md:min-h-[280px] z-99">
           <div
             class="absolute inset-0 bg-no-repeat bg-center bg-contain md:scale-110 wobble-2 md:hover:scale-130 motion-safe:transition-transform duration-300 ease-out will-change-transform select-none pointer-events-none"
-            style="background-image: url('<%= image_path("prototype/prototype_parts.png") %>');"
+            style="background-image: url('<%= image_path("prototype/prototype_parts.webp") %>');"
             aria-hidden="true">
           </div>
         </div>
@@ -97,9 +97,9 @@
                 You have <span class="font-bold text-bp-warning">more than 100% prototype progress</span> on Hack Club Blueprint.
               </p>
                   <!-- Learn More Button -->
-    <div class="w-full flex justify-center px-4 md:px-8 lg:px-12">
-      <%= render "shared/button", url: home_path, text: "Learn more", variant: :outline, class: "bg-bp-dark border-2 px-8 py-4 md:px-12 md:py-6 text-xl md:text-3xl font-rc-full hover:bg-white hover:text-bp-dark transition-colors" %>
-    </div>
+                  <div class="w-full flex justify-center px-4 md:px-8 lg:px-12">
+                    <%= render "shared/button", url: user_logged_in? ? home_path : root_path, text: "Learn more", variant: :outline, class: "bg-bp-dark border-2 px-8 py-4 md:px-12 md:py-6 text-xl md:text-3xl font-rc-full hover:bg-white hover:text-bp-dark transition-colors" %>
+                  </div>
               <p>
                 This could mean one tier 1 project, a tier 2 and 3 project, etc.
               </p>
