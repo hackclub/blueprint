@@ -1,4 +1,4 @@
-<% cache [project, project.display_banner] do %>
+<% cache [project, project.display_banner, project.review_status] do %>
   <div class="flex flex-col h-full space-y-3 md:space-y-4 w-64 md:w-82 flex-shrink-0">
       <%= link_to project_path(project) do %>
           <div class="bg-gray-200 bg-center bg-cover h-24 md:h-28" style="background-image: url('<%= project.display_banner ? url_for(project.display_banner) : nil %>')">
@@ -7,12 +7,16 @@
       <div class="flex flex-col space-y-2 grow">
           <%= link_to project_path(project), class: "grow" do %>
               <p class="text-lg md:text-2xl font-rc-full"><%= project.title %></p>
+              <% if project.review_status.present? %>
+                <p class="text-xs md:text-sm opacity-75 mt-1">
+                  Status: <%= project.review_status.titleize %>
+                </p>
+              <% end %>
           <% end %>
-          <% unless project.ysws == "hackpad" %>
-            <%= render "shared/button", url: project_path(project), variant: :inset, text: "New Journal Entry", class: "text-sm md:text-base bg-bp-warning text-bp-dark hover:bg-bp-warning/80 min-h-[44px]" %>
+          <%= render "shared/button", url: project_path(project), variant: :inset, text: "New Journal Entry", class: "text-sm md:text-base bg-bp-warning text-bp-dark hover:bg-bp-warning/80 min-h-[44px]" %>
+          <% if project.can_ship? %>
             <%= render "shared/button", url: ship_project_path(project), variant: :inset, text: "Submit", class: "text-sm md:text-base min-h-[44px]" %>
           <% end %>
-            <%= render "shared/button", url: ship_project_path(project), variant: :inset, text: "Submit", class: "text-sm md:text-base min-h-[44px] bg-bp-warning text-bp-dark" %>
       </div>
   </div>
 <% end %>
