@@ -89,6 +89,7 @@ Rails.application.routes.draw do
 
   get "/utm_source" => "landing#utm_source", as: :utm_source
   get "/utm_source=feedback-email" => "landing#utm_source", as: :utm_source_feedback_email
+  get "/amd" => "amd#index", as: :amd
 
   get "home" => "home#index", as: :home
 
