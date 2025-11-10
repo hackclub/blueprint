@@ -74,21 +74,22 @@
       </filter>
     </svg>
     
+    <%= render "shared/notice" %>
+    
     <!-- Prototype Event Banner -->
-    <div class="w-full text-white text-center py-3 md:py-4 px-4 fixed top-0 left-0 right-0 z-[200]" style="background-color: #6D1010;">
+    <div class="w-full text-white text-center py-3 md:py-4 px-4 relative z-50" style="background-color: #6D1010;">
       <a href="/prototype" class="font-rc-full text-sm md:text-xl hover:underline">
         🇺🇸 USA teenager? Join our in person hardware event this December! →
       </a>
     </div>
     
-    <%= render "shared/notice" %>
-    <main data-controller="landing" class="pt-24 md:pt-24">
-      <div class="fixed left-0 z-100" style="top: calc(3.5rem + 2rem);">
+    <main data-controller="landing" class="relative">
+      <div class="fixed top-8 left-0 z-100">
         <a href="https://hackclub.com?utm_source=blueprint" target="_blank">
           <%= inline_svg 'hackclub-logo.svg', class: 'h-10 md:h-16' %>
         </a>
       </div>
-      <div class="fixed right-4 md:right-8 z-100" style="top: calc(3.5rem + 2rem); --tw-top-md: calc(4rem + 2rem);" class="md:!top-[var(--tw-top-md)]">
+      <div class="fixed top-4 md:top-8 right-4 md:right-8 z-100">
         <% if current_user.present? %>
           <%= render "shared/button", url: home_path, text: "Go home", variant: :outline, class: "bg-bp-dark border-2 px-2 py-1 md:px-4 md:py-2 text-base md:text-xl" %>
         <% else %>

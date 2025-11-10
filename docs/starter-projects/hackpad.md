@@ -163,8 +163,6 @@ Run DRC to check for errors:
 
 You’re done with the PCB 🎉
 
-For more advanced design, check out the [advanced PCB guide](/advancedPCB).
-
 ---
 
 ## Creating your Case

@@ -181,17 +181,14 @@ Enter your text and place it down!
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/2a961bf38e363dd35b0679e5a4c1e2f20199db90_realfinalpcb.png" class="max-w-96" />
 
-If you want to add some pictures to your PCB to make it even more personal, [check this out!](/advancedguide#silkscreen)
 
-Good work! You're almost done with the PCB. Let's run the DRC to make sure the PCB works. The silkscreen warnings you see are okay, make sure there are no more errors! Here is a [list of all DRC errors you might encounter](/errors)
+Good work! You're almost done with the PCB. Let's run the DRC to make sure the PCB works. The silkscreen warnings you see are okay, make sure there are no more errors!
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/87367f8b352a2d1233f1c35a03dd8a67efe5a2b0_drcbutton.png" class="max-w-96" />
 
 PS. You might need to change tabs to see all errors. (Click on "Unconnected Items")
 
 Thats all for your PCB! Great job.
-
-If you aren't satisfied and wan't something more advanced, [check out the advanced PCB guide!](/advancedPCB)
 
 ## Creating your case
 
