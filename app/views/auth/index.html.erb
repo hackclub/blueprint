@@ -44,11 +44,10 @@
           <div class="text-center">
             <h1 class="text-4xl pb-2">Hey! Welcome to Blueprint!</h1>
             <% if params[:email].present? %>
-              <p>Join to get free stickers!<p>
+              <p>Join to get free stickers! (if you are aged 13-18)<p>
             <% else %>
               <p>If you don't already have an account, we'll make one for you<p>
             <% end %>
-            <p>Blueprint is for teenagers 18 and younger only.
           </div>
           <div class="flex flex-col items-center space-y-4 w-full">
             <% unless params[:email].present? %>
