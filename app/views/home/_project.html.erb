@@ -15,7 +15,7 @@
           <% end %>
           <%= render "shared/button", url: project_path(project), variant: :inset, text: "New Journal Entry", class: "text-sm md:text-base bg-bp-warning text-bp-dark hover:bg-bp-warning/80 min-h-[44px]" %>
           <% if project.can_ship? %>
-            <%= render "shared/button", url: ship_project_path(project), variant: :inset, text: "Submit", class: "text-sm md:text-base min-h-[44px]" %>
+            <%= render "shared/button", url: ship_project_path(project), variant: :inset, text: project.submit_button_text, class: "text-sm md:text-base min-h-[44px]" %>
           <% end %>
       </div>
   </div>

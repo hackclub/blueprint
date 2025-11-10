@@ -568,6 +568,18 @@ class Project < ApplicationRecord
     design_approved? || build_pending? || build_approved? || build_needs_revision? || build_rejected?
   end
 
+  def submit_button_text
+    if design_needs_revision?
+      "Submit Design Re-review"
+    elsif build_needs_revision?
+      "Submit Build Re-review"
+    elsif design_approved? || build_approved?
+      "Submit Build Review"
+    else
+      "Submit Design Review"
+    end
+  end
+
   def followed_by?(user)
     user.followed_projects.include?(self)
   end
