@@ -34,7 +34,7 @@
             <% if current_user.present? %>
               <% if current_user == @project.user %>
                 <% if @project.can_edit? %>
-                  <%= render "shared/button", text: @project.submit_button_text, url: ship_project_path(@project), class: "py-1 px-6" %>
+                  <%= render "shared/button", text: h(@project.submit_button_text), url: ship_project_path(@project), class: "py-1 px-6" %>
                   <%= render "shared/button", text: "Edit", url: edit_project_path(@project), class: "py-1 px-6" %>
                   <%= render "shared/button", text: "Delete", class: "py-1 px-6", html_options: { data: { controller: "modal", action: "click->modal#show", modal_target_id_value: "delete-project" } } %>
                 <% end %>

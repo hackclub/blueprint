@@ -63,7 +63,7 @@ end %>
   <% if label_from_block %>
     <% parts << label %>
   <% else %>
-    <% parts << content_tag(:span, label) %>
+    <% parts << content_tag(:span, h(label)) %>
   <% end %>
 <% end %>
 
