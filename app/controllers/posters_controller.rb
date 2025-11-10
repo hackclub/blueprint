@@ -1,4 +1,6 @@
 class PostersController < ApplicationController
+  skip_before_action :redirect_adults
+
   include PosterHelper
 
   require "prawn"
