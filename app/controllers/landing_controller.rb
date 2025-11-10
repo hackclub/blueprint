@@ -29,49 +29,49 @@ class LandingController < ApplicationController
     @community_projects = [
         {
           country: "Singapore",
-          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/7d356e0df304801e02072f3740b6f05e545adea3_image__28_.png",
+          image: "landing/community_projects/tongyu.png",
           age: "18",
           author: "tongyu"
         },
         {
           country: "Canada",
-          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9b742720c3d9744d063ebf16b100c4c3143a2fc4_Image_from_iOS__2_.jpg",
+          image: "landing/community_projects/jamdotjar.jpg",
           age: "14",
           author: "Jamdotjar"
         },
         {
           country: "United States",
-          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9a0505725a9ae6b40626841e47de45d0d1193296_image__27_.png",
+          image: "landing/community_projects/elijah.png",
           age: "16",
           author: "Elijah"
         },
         {
           country: "United States",
-          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/66ad39ad0517dddf1f898374511b821cf32b5a55_APC_0031-hdr.jpg",
+          image: "landing/community_projects/ben-park.jpg",
           age: "17",
           author: "Ben Park"
         },
         {
           country: "Canada",
-          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/8512795d05da190eeb2e3d020ad350866a647ec9_20251105_213807.jpg",
+          image: "landing/community_projects/hex4.jpg",
           age: "13",
           author: "hex4"
         },
         {
           country: "United States",
-          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9c4b16c116de2369826cbeade229397ba3ab4452_image.png",
+          image: "landing/community_projects/egg-splats.png",
           age: "15",
           author: "Egg_Splats"
         },
         {
           country: "United States",
-          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/8a5f335919a33e5a579b1fe080e0334de61a6b40_PXL_20251105_210920914.png",
+          image: "landing/community_projects/koji-ino.png",
           age: "15",
           author: "Koji Ino"
         },
         {
           country: "India",
-          image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/0136432c656b8c9c54f89f78c7d13cd91cddefe1_HEIF_Image.png",
+          image: "landing/community_projects/daamin.png",
           age: "16",
           author: "Daamin"
       }

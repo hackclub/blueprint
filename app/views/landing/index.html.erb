@@ -193,7 +193,7 @@
             <% @community_projects.each do |project| %>
               <div class="flex w-32 md:w-72 h-full shrink-0">
                 <div class="relative w-full h-full overflow-hidden border border-white/10 bg-bp-darker group rounded-md">
-                  <div class="absolute inset-0 bg-gray-200 bg-center bg-no-repeat bg-cover" style="background-image: url('<%= project[:image] %>')"></div>
+                  <div class="absolute inset-0 bg-gray-200 bg-center bg-no-repeat bg-cover" style="background-image: url('<%= image_path(project[:image]) %>')"></div>
                   <div class="absolute inset-0 transition-colors bg-black/0 group-hover:bg-black/10"></div>
                   <div class="absolute bottom-0 left-0 right-0 p-1.5 md:p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                     <p class="text-xs md:text-base font-bold leading-tight">
