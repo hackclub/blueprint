@@ -1,5 +1,7 @@
 class SorryController < ApplicationController
   skip_before_action :redirect_banned_users, only: :index
+  skip_before_action :redirect_to_age
+  skip_before_action :redirect_adults
 
   layout false
 
