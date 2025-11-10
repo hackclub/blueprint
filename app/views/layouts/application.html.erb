@@ -44,8 +44,9 @@
   </head>
 
   <% markdown_page = controller_name == "markdown" %>
+  <% body_controllers = [ ("timezone" if current_user), "turbo-redirect" ].compact.join(' ') %>
 
-  <body class="<%= markdown_page ? '' : 'grid-bg grainy-bg' %>" <%= "data-controller=timezone".html_safe if current_user %>>
+  <body class="<%= markdown_page ? '' : 'grid-bg grainy-bg' %>" data-controller="<%= body_controllers %>">
     <svg width="0" height="0" class="block">
       <filter id="grainy" x="0" y="0" width="100%" height="100%">
         <feTurbulence type="fractalNoise" baseFrequency=".5" numOctaves="2"/>

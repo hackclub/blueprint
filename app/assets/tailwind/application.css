@@ -8,7 +8,10 @@
   --color-bp-danger: #fe8e86;
   --color-bp-danger-darker: #bd4c44;
   --color-bp-warning: #ffc857;
+  --color-bp-warning-darker: #e6a23c;
   --color-bp-success: #a8f0ae;
+  --color-pt-light: #6D1010;
+  --color-pt-dark: #500E0E;
 
   --font-rcgl-full: "R&C Guidelines Full", "Poppins", sans-serif;
   --font-rcgl-dark: "R&C Guidelines Dark", "Poppins", sans-serif;
@@ -230,7 +233,7 @@
 /* Markdown-rendered content */
 .markdown {
   /* Base */
-  @apply text-white/85 leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word tracking-wide;
+  @apply text-white/80 leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word tracking-wide;
 
   /* Trim outer whitespace */
   > *:first-child {
@@ -257,12 +260,12 @@
   }
 
   h3 {
-    @apply mt-10 mb-2 text-3xl;
+    @apply mt-10 mb-2 text-2xl;
   }
 
   /*Same as H2 but as a green accent color*/
   h4 {
-    @apply text-bp-success mt-10 mb-3 pb-2 text-3xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
+    @apply text-bp-success mt-10 mb-3 pb-2 text-2xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
   }
 
   /*Same as h1 but it has the fancy blueprint lines*/
@@ -278,6 +281,12 @@
     @apply my-6 print:my-4 text-lg leading-relaxed;
   }
 
+  /* Strong */
+  strong,
+  b {
+    @apply text-white;
+  }
+
   /* Emphasis */
   em,
   i {
@@ -291,10 +300,10 @@
 
   /* Lists */
   ul {
-    @apply my-4 list-disc list-inside print:my-2 text-lg leading-relaxed;
+    @apply my-2 list-disc list-inside print:my-2 text-lg leading-relaxed pl-0;
   }
   ol {
-    @apply my-4 list-decimal list-inside print:my-2 text-lg leading-relaxed;
+    @apply my-2 list-decimal list-inside print:my-2 text-lg leading-relaxed;
   }
   li {
     @apply print:my-0;

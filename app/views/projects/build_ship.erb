@@ -1,0 +1,9 @@
+<section class="flex flex-col items-center grow">
+  <% from_ship = params[:from_ship]%>
+  <%= render "shared/button", text: "Back", url: from_ship ? ship_project_path(@project) : project_path(@project), class: "mr-auto py-0.5 px-4 text-base"%>
+  <div class="w-full max-w-3xl space-y-4 min-h-full flex flex-col m-8">
+    <%= render "shared/card" do %>
+      <%= render "build_ship_form" %>
+    <% end %>
+  </div>
+</section>

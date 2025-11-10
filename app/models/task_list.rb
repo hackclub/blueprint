@@ -29,14 +29,6 @@ class TaskList < ApplicationRecord
       create_project: {
         met: user.projects.any?,
         msg: "Start your first project"
-      },
-      link_github: {
-        met: user.github_user?,
-        msg: "Link your GitHub account"
-      },
-      post_journal: {
-        met: user.journal_entries.any?,
-        msg: "Post your first journal entry"
       }
     }
   end

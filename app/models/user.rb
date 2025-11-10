@@ -13,6 +13,7 @@
 #  internal_notes              :text
 #  is_banned                   :boolean          default(FALSE), not null
 #  is_mcg                      :boolean          default(FALSE), not null
+#  is_pro                      :boolean          default(FALSE)
 #  last_active                 :datetime
 #  role                        :integer          default("user"), not null
 #  timezone_raw                :string
@@ -51,8 +52,8 @@ class User < ApplicationRecord
   has_many :kudos, dependent: :destroy
   has_many :shop_orders, dependent: :destroy
 
-  has_many :ahoy_visits
-  has_many :ahoy_events
+  has_many :ahoy_visits, class_name: "Ahoy::Visit"
+  has_many :ahoy_events, class_name: "Ahoy::Event"
 
   # Simple referrer: a user may have one referrer (another User)
   belongs_to :referrer, class_name: "User", optional: true
@@ -833,6 +834,9 @@ class User < ApplicationRecord
   end
 
   def identity_vault_oauth_link(callback_url, state: nil)
+    if ENV["BYPASS_IDV"] == "true"
+      return idv_callback_url
+    end
     IdentityVaultService.authorize_url(callback_url, {
                                          prefill: {
                                            email: email
@@ -841,6 +845,8 @@ class User < ApplicationRecord
   end
 
   def link_identity_vault_callback(callback_url, code)
+    return if ENV["BYPASS_IDV"] == "true"
+
     code_response = IdentityVaultService.exchange_token(callback_url, code)
 
     access_token = code_response[:access_token]
@@ -862,16 +868,26 @@ class User < ApplicationRecord
   end
 
   def fetch_idv(access_token = nil)
+    if ENV["BYPASS_IDV"] == "true"
+      return {}
+    end
     IdentityVaultService.me(access_token || identity_vault_access_token)
   end
 
   def idv_linked?
+    if ENV["BYPASS_IDV"] == "true"
+      return true
+    end
     identity_vault_access_token.present?
   end
 
   def refresh_idv_data!
+    if ENV["BYPASS_IDV"] == "true"
+      update!(ysws_verified: true)
+    end
+
     return unless idv_linked?
-    return if ysws_verified == true
+    return if ysws_verified
 
     idv_data = fetch_idv
 
@@ -899,6 +915,10 @@ class User < ApplicationRecord
 
   def special_perms?
     role != "user"
+  end
+
+  def is_adult?
+    birthday.present? && birthday < 19.years.ago
   end
 
   private

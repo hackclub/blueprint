@@ -113,10 +113,13 @@ class Project < ApplicationRecord
   validates :funding_needed_cents, numericality: { greater_than_or_equal_to: 0 }
   validate :funding_needed_within_tier_max
   has_one_attached :banner
+  has_one_attached :demo_picture
   has_many_attached :cart_screenshots
 
   validates :banner, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],
                      size: { less_than: 5.megabytes }
+  validates :demo_picture, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],
+                           size: { less_than: 5.megabytes }
   validates :cart_screenshots, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],
                                size: { less_than: 10.megabytes }
 
@@ -174,7 +177,7 @@ class Project < ApplicationRecord
       if uri && %w[http https].include?(uri.scheme) && uri.host.present?
         host = uri.host.downcase.sub(/\Awww\./, "")
         parts = uri.path.to_s.split("/").reject(&:blank?)
-        
+
         if host == "github.com" && parts.size >= 2
           # GitHub URL - extract org and repo
           org = parts[0]
@@ -470,13 +473,15 @@ class Project < ApplicationRecord
   end
 
   def sync_github_journal!
+    return true
+
     return unless user&.github_user? && repo_link.present?
     return if skip_gh_sync?
-    
+
     # Only sync if it's a GitHub repo
     parsed = parse_repo
     return unless parsed && parsed[:org].present? && parsed[:repo_name].present?
-    
+
     GithubJournalSyncJob.perform_later(id)
   end
 
@@ -487,7 +492,7 @@ class Project < ApplicationRecord
   end
 
   def self.tier_options
-      tier_amounts = { 1 => "$400 max", 2 => "$200 max", 3 => "$100 max", 4 => "$50 max", 5 => "$25 max" }
+      tier_amounts = { 1 => "$0 - $400", 2 => "$0 - $200", 3 => "$0 - $100", 4 => "$0 - $50", 5 => "$0 - $25" }
       Project.tiers.map { |key, value| [ "Tier #{key} (#{tier_amounts[key.to_i]})", value ] }
   end
 
@@ -515,11 +520,10 @@ class Project < ApplicationRecord
       throw "Project is already shipped!"
     end
 
-    if Flipper.enabled?(:new_ship_flow_10_06, user)
-      if user.ysws_verified.nil? || user.ysws_verified == false
-        update!(review_status: :awaiting_idv)
-        return
-      end
+    if user.ysws_verified.nil? || user.ysws_verified == false
+      update!(review_status: :awaiting_idv)
+      user.update(is_pro: true) unless user.is_pro?
+      return
     end
 
     # Check if project has an approved admin design review (one-way gate: design -> build)
@@ -536,6 +540,8 @@ class Project < ApplicationRecord
       # No explicit design param and no approved review - use needs_funding
       update!(review_status: needs_funding? ? :design_pending : :build_pending)
     end
+
+    user.update(is_pro: true) unless user.is_pro?
   end
 
   def passed_idv!
@@ -556,6 +562,22 @@ class Project < ApplicationRecord
 
   def can_ship?
     review_status.nil? || design_needs_revision? || build_needs_revision? || awaiting_idv? || design_approved? || build_approved?
+  end
+
+  def is_currently_build?
+    design_approved? || build_pending? || build_approved? || build_needs_revision? || build_rejected?
+  end
+
+  def submit_button_text
+    if design_needs_revision?
+      "Submit Design Re-review"
+    elsif build_needs_revision?
+      "Submit Build Re-review"
+    elsif design_approved? || build_approved?
+      "Submit Build Review"
+    else
+      "Submit Design Review"
+    end
   end
 
   def followed_by?(user)

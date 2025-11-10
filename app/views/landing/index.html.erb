@@ -65,7 +65,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="grid-bg grainy-bg">
+  <body class="grid-bg grainy-bg overflow-x-hidden">
     <svg width="0" height="0" class="block">
       <filter id="grainy" x="0" y="0" width="100%" height="100%">
         <feTurbulence type="fractalNoise" baseFrequency=".3" numOctaves="2"/>
@@ -108,28 +108,41 @@
         <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0">
         
         <!-- Hero title -->
-        <div class="absolute top-0 left-0 right-0 flex flex-col items-center justify-center min-h-screen space-y-20" data-landing-target="heroContent">
-          <div class="space-y-2">
-            <div class="text-center text-lg md:text-2xl font-rc-full md:-mb-3">Hack Club presents</div>
-            <div class="relative flex flex-col items-center">
-              <h1 class="text-7xl md:text-[10rem]/40 font-rcgl-full">Blueprint</h1>
-              <p class="p-0.5 md:p-1 ml-auto text-sm mr-4 md:-mr-8 md:text-4xl font-rc-full rotate-5 bg-bp-dark -mt-3 md:-mt-7">...then build</p>
-            </div>
-            <div class="text-center text-sm md:text-2xl font-rc-full mx-4">
-              <h2 class="hidden md:block">Design a hardware project → Get funding to build it</h2>
-              <h2 class="hidden md:block">For ages 13 to 18. Ends December 1, 2025</h2>
+        <div class="absolute top-0 left-0 right-0 flex items-center justify-center min-h-screen" data-landing-target="heroContent">
+          <div class="w-full max-w-7xl mx-auto px-6 md:px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center">
+              <!-- Left: logo + caption + CTA -->
+              <div class="space-y-4 md:space-y-6 text-center md:text-left">
+                <div class="text-base md:text-2xl font-rc-full">Hack Club presents...</div>
+                <%= image_tag "blueprint_logo.png", alt: "Blueprint", class: "mx-auto md:mx-0 w-48 md:w-[28rem] h-auto hidden md:block" %>
+                <%= image_tag "blueprint_logo_centered.png", alt: "Blueprint", class: "w-full max-w-xs mx-auto h-auto md:hidden" %>
+                
+                <div class="space-y-1 md:space-y-0 text-sm md:text-2xl font-rc-full">
+                  <h2 class="hidden md:block mb-2 md:text-3xl">Design a macropad - get it sent from Hack Club for free!</h2>
+                  <h2 class="hidden md:block">No experience required!</h2>
+                  <h2 class="hidden md:block">For ages 13 to 18. Ends January 1st, 2026</h2>
 
-              <h2 class="md:hidden">Design a hardware project</h2>
-              <h2 class="md:hidden">Get funding to build it</h2>
-              <h2 class="md:hidden">For ages 13 to 18</h2>
-              <h2 class="md:hidden">Ends December 1, 2025</h2>
-            </div>
-          </div>
-          <div class="flex flex-col items-center px-4 py-3 space-y-2 md:space-y-4 text-sm border-2 md:px-12 md:py-6 md:pb-8 md:text-2xl bg-bp-dark">
-            <p class="text-lg md:text-2xl font-rc-full">Start making & get free stickers!</p>
-            <div class="flex w-full" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
-              <input type="email" data-email-redirect-target="input" class="w-full text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
-              <button type="button" data-action="click->email-redirect#go" class="px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
+                  <h2 class="md:hidden text-base">Design a macropad</h2>
+                  <h2 class="md:hidden text-base">Get the parts for free</h2>
+                  <h2 class="md:hidden text-base">For ages 13 to 18</h2>
+                  <h2 class="md:hidden text-base">Ends January 1st, 2026</h2>
+                </div>
+
+                <div class="flex flex-col items-center md:items-start px-3 py-3 space-y-2 md:space-y-4 text-sm border-2 md:px-12 md:py-6 md:pb-8 md:text-2xl bg-bp-dark mt-4 md:mt-6">
+                  <p class="text-base md:text-2xl font-rc-full">Learn how & get free stickers!</p>
+                  <div class="flex w-full" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
+                    <input type="email" data-email-redirect-target="input" class="w-full text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
+                    <button type="button" data-action="click->email-redirect#go" class="px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Get started</button>
+                  </div>
+                  <%# <p class="text-sm">Get free stickers when you sign up!</p> %>
+                </div>
+              </div>
+
+              <!-- Right: hero image -->
+              <div class="justify-center hidden md:flex md:justify-end group z-10 wobble-1">
+                <%= image_tag "hackpad.png", alt: "Blueprint project example", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg group-hover:hidden" %>
+                <%= image_tag "hackpad_inside.png", alt: "Blueprint project example", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg hidden group-hover:block" %>
+              </div>
             </div>
           </div>
         </div>
@@ -144,151 +157,247 @@
         </div>
       </div>
 
-      <div class="pb-12 mx-4 space-y-12 relative">
-        <h2 class="text-3xl text-center md:text-5xl">How this works</h2>
-        <div class="md:text-xl flex justify-center w-full">
-          <div class="grid grid-cols-1 md:grid-cols-5 bg-red- max-w-6xl grow text-center gap-y-6 md:gap-y-12">
-            <div class="bg-bp-darker col-span-1 md:col-span-3 p-6 md:p-12 space-y-4">
-              <p class="text-xl md:text-3xl font-rc-full">Design a hardware project</p>
-              <p>Draft and design up something cool! Build your project digitally first. Examples: custom keyboard, your own 3D printer, or a motor controller.</p>
+
+      <!-- How It Works Section -->
+      <section class="py-8 md:py-20">
+        <div class="w-full px-6 md:px-8 lg:px-12">
+          <h2 class="text-2xl md:text-5xl text-center font-rc-full mb-6 md:mb-12">Here's How It Works:</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-screen-2xl mx-auto">
+            <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
+              <%= image_tag "landing/hackpad/cad_design.png", class: "w-full h-auto mb-4" %>
+              <p class="md:text-lg font-rc-full">Design a case</p>
             </div>
-            <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-1 hidden md:block hover:scale-130 motion-safe:transition-transform" style="background-image: url('<%= image_path("landing/steps-projects.webp") %>');">
+            <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
+              <%= image_tag "landing/hackpad/pcb_design.png", class: "w-full h-auto mb-4" %>
+              <p class="md:text-lg font-rc-full">Design a PCB</p>
             </div>
-            <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-2 hidden md:block hover:scale-130 motion-safe:transition-transform" style="background-image: url('<%= image_path("landing/steps-journal.webp") %>');">
+            <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
+              <%= image_tag "landing/hackpad/firmware.png", class: "w-full h-auto mb-4" %>
+              <p class="md:text-lg font-rc-full">Write firmware</p>
             </div>
-            <div class="bg-bp-darker col-span-3 p-6 md:p-12 space-y-4">
-              <p class="text-3xl font-rc-full">Share your progress</p>
-              <p>Share what you've been cooking up with thousands of other teenagers through journals, and open source your design on GitHub.</p>
-            </div>
-            <div class="bg-bp-darker col-span-3 p-6 md:p-12 space-y-4">
-              <p class="text-3xl font-rc-full">Get a grant & earn cool prizes</p>
-              <p>Get a grant up to $400 to help you build your project. Earn tickets for each hour you spend building it IRL and redeem them for rewards!</p>
-            </div>
-            <div class="md:col-span-2 bg-no-repeat bg-contain scale-110 bg-center wobble-3 hidden md:block hover:scale-130 motion-safe:transition-transform" style="background-image: url('<%= image_path("landing/steps-prizes.webp") %>');">
+            <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
+              <%= image_tag "landing/parts_cropped.png", class: "w-full h-auto mb-4" %>
+              <p class="md:text-lg font-rc-full">We ship the parts (you get a macropad)</p>
             </div>
           </div>
+          <div class="flex justify-center mt-8 md:mt-12">
+            <%= render "shared/button", text: "Follow the Guide ->", url: "/auth/login", class: "px-8 py-3 text-lg md:text-xl" %>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Divider Image -->
-      <div class="w-full py-8 md:py-16">
-        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
-      </div>
-
-      <div class="space-y-12 pt-8 mx-4">
-        <div class="space-y-4">
-          <h2 class="text-3xl text-center md:text-5xl">What can I build?</h2>
-          <p class="text-xl text-center">Pick one of these tracks! Make as many projects as you can!</p>
-        </div>
-        <div class="flex justify-center md:text-xl text-center">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 md:gap-x-12 gap-y-10 max-w-6xl grow">
-            <a href="/starter-projects" class="bg-bp-darker p-6 md:p-12 space-y-6 md:hover:scale-105 md:hover:-rotate-1 md:motion-safe:transition-transform">
-              <p class="text-3xl font-rc-full">Starter projects</p>
-              <p>Best for beginners! Follow one of our guided projects and learn the skills to build hardware!</p>
-              <%= render "shared/button", variant: :primary, text: "Get started!", class: "w-full" %>
-            </a>
-            <a href="/about" class="bg-bp-darker p-6 md:p-12 space-y-6 md:hover:scale-105 md:hover:rotate-1 md:motion-safe:transition-transform">
-              <p class="text-3xl font-rc-full">Custom projects</p>
-              <p>Self-guided! Design and journal your own hardware project and make it real!</p>
-              <%= render "shared/button", variant: :primary, text: "Get started!", class: "w-full" %>
-            </a>
-            <div class="space-y-6 md:col-span-2 flex flex-col items-center">
-              <div class="space-y-4">
-                <p>Not sure what to build? Browse projects made by other teenagers for inspiration!</p>
-                <%= render "shared/button", variant: :outline, text: "Explore projects!", class: "w-full", url: explore_path %>
+      <div class="space-y-6 md:space-y-12 px-6 md:px-0">
+        <p class="text-lg md:text-3xl text-center">Here are some hackpads so far:</p>
+        <div class="overflow-hidden -mx-6 md:mx-0">
+          <div class="flex h-56 md:h-84 space-x-4 md:space-x-8 carousel animate-scroll pl-6 md:pl-0">
+            <% @community_projects.each do |project| %>
+              <div class="flex w-32 md:w-72 h-full shrink-0">
+                <div class="relative w-full h-full overflow-hidden border border-white/10 bg-bp-darker group rounded-md">
+                  <div class="absolute inset-0 bg-gray-200 bg-center bg-no-repeat bg-cover" style="background-image: url('<%= project[:image] %>')"></div>
+                  <div class="absolute inset-0 transition-colors bg-black/0 group-hover:bg-black/10"></div>
+                  <div class="absolute bottom-0 left-0 right-0 p-1.5 md:p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                    <p class="text-xs md:text-base font-bold leading-tight">
+                      <%= project[:author] %>
+                    </p>
+                    <p class="text-[10px] md:text-sm text-white/80">
+                      <%= project[:age] %> • <%= project[:country] %>
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Divider Image -->
-      <div class="w-full py-16 md:py-24">
-        <%= image_tag "divider2.webp", class: "w-full h-auto opacity-75" %>
-      </div>
-
-      <div class="mx-4 flex justify-center">
-        <div class="max-w-4xl md:text-xl border-bp-warning border-4 grow p-6 md:p-12 bg-bp-warning/10 space-y-8">
-          <div class="text-center space-y-2">
-            <h2 class="text-xl md:text-3xl text-bp-warning">The last time we did this</h2>
-            <p>Stats from <a href="https://hackclub.com/onboard" class="underline">Hack Club OnBoard</a></p>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 text-center">
-            <div>
-              <p class="font-rc-full text-4xl text-bp-warning">$150,000+</p>
-              <p>Given out</p>
-            </div>
-            <div>
-              <p class="font-rc-full text-4xl text-bp-warning">1000+</p>
-              <p>Projects made</p>
-            </div>
-            <div>
-              <p class="font-rc-full text-4xl text-bp-warning">7,000+</p>
-              <p>Hours logged</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="space-y-8 mt-12 md:mt-24 mx-4">
-        <h2 class="text-3xl text-center md:text-5xl">FAQ</h2>
-        <div class="flex justify-center">
-          <div class="max-w-6xl grow grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <% faq.each do |item| %>
-              <%= render "shared/card", class: "flex flex-col px-4 py-3 md:px-8 md:py-6" do %>
-                <h3 class="mb-3 text-sm font-bold md:text-xl text-bp-success"><%= item[:question] %></h3>
-                <p class="text-xs md:text-base"><%= item[:answer] %></p>
-              <% end %>
+            <% end %>
+            <% @community_projects.each do |project| %>
+              <div class="flex w-32 md:w-72 h-full shrink-0">
+                <div class="relative w-full h-full overflow-hidden border border-white/10 bg-bp-darker group rounded-md">
+                  <div class="absolute inset-0 bg-gray-200 bg-center bg-no-repeat bg-cover" style="background-image: url('<%= project[:image] %>')"></div>
+                  <div class="absolute inset-0 transition-colors bg-black/0 group-hover:bg-black/10"></div>
+                  <div class="absolute bottom-0 left-0 right-0 p-1.5 md:p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                    <p class="text-xs md:text-base font-bold leading-tight">
+                      <%= project[:author] %>
+                    </p>
+                    <p class="text-[10px] md:text-sm text-white/80">
+                      <%= project[:age] %> • <%= project[:country] %>
+                    </p>
+                  </div>
+                </div>
+              </div>
             <% end %>
           </div>
         </div>
-        <div class="text-center md:text-xl">
-          <p>Have more questions? Check out our <a href="/faq" class="underline">full FAQ!</a></p>
-        </div>
+      </div>
+      
+      <style>
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        
+        .animate-scroll {
+          animation: scroll 20s linear infinite;
+        }
+        
+        .animate-scroll:hover {
+          animation-play-state: paused;
+        }
+        
+        /* Increase all text sizes globally */
+        body {
+          font-size: 1.125rem; /* 18px base instead of 16px */
+        }
+        
+        @media (min-width: 768px) {
+          body {
+            font-size: 1.25rem; /* 20px on larger screens */
+          }
+        }
+      </style>
+
+      <!-- Divider Image -->
+      <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
+        <%= image_tag "landing/flag_divider.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
       </div>
 
-      <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl mt-12 md:mt-24">
-          <p class="text-lg uppercase md:text-3xl font-rc-full">Get started</p>
+      <!-- Join Community Section -->
+      <section class="w-full">
+        <div class="w-full flex justify-center">
+          <div class="w-full max-w-7xl">
+            <div class="relative">
+              <%= image_tag "landing/people.png", alt: "Community", class: "w-full h-auto block" %>
+              <div class="absolute top-4 left-4 right-4 bottom-4 md:top-8 md:left-8 md:right-8 md:bottom-8 bg-black/60 p-6 md:p-8">
+                <h2 class="text-4xl mb-4">Join our community</h2>
+                <div class="space-y-2">
+                  <p class="text-base md:text-2xl">Join a community of 50,000+ other teens in building projects!</p>
+                  <p class="text-base md:text-2xl">We'll be running weekly events such as AMAs with YouTubers like <a class="underline" href="https://www.youtube.com/channel/UCO8DQrSp5yEP937qNqTooOw" target="_blank">Strange Parts</a>, <a class="underline" href="https://www.youtube.com/zackfreedman" target="_blank">Zack Freedman</a>, and more!</p>
+                  <p class="text-base md:text-2xl">Meet other people making viral projects</p>
+                </div>
+              </div>
+            </div>
+            <%= image_tag "landing/ama.png", alt: "Community AMAs", class: "w-full h-auto block" %>
+          </div>
+        </div>
+        <div class="flex justify-center mt-8 mb-10 md:mt-12">
+          <%= render "shared/button", text: "Join Hack Club Community", url: "https://hackclub.com/slack", class: "px-8 py-3 text-lg md:text-xl" %>
+        </div>
+      </section>
+
+      <!-- Prototype Banner -->
+      <section class="w-full relative">
+        <a href="/prototype" class="block">
+          <%= image_tag "landing/prototype_landing_banner.png", alt: "Prototype - 3-day hardware hackathon at AMD HQ", class: "w-full h-auto" %>
+        </a>
+      </section>
+      
+      <div class="text-center max-w-4xl mx-auto px-4 py-30">
+        <h2 class="text-3xl md:text-5xl font-rc-full mb-4">Already a pro?</h2>
+        <p class="text-lg md:text-xl mb-8">Blueprint is for everyone! Get up to $400 USD from Hack Club for *any* hardware project, ranging from mechanical keyboards to 3D printers.</p>
+        <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl">
+
+           <div class="space-y-12">
+        <div class="overflow-hidden">
+          <div class="flex h-64 space-x-8 space-y-8 carousel md:h-84">
+            <% @pro_projects.shuffle.each do |project| %>
+              <a href="<%= project[:url] %>" target="_blank" rel="noopener noreferrer" class="flex flex-col w-40 h-full md:w-72 shrink-0 bg-bp-darker" data-carousel-target="item">
+                <div class="h-20 bg-gray-200 bg-center bg-no-repeat bg-cover md:h-40" style="background-image: url('<%= image_path(project[:image]) %>')"></div>
+                <div class="flex flex-col p-2 space-y-2 md:p-4 grow">
+                  <p class="text-base font-bold md:text-xl"><%= project[:title] %> <span class="text-xs">by <%= project[:author] %></span></p>
+                  <p class="text-xs md:text-base"><%= project[:description] %></p>
+                </div>
+              </a>
+            <% end %>
+          </div>
+        </div>
+      </div>
+          <p class="text-lg uppercase md:text-3xl font-rc-full mt-10">Get started</p>
           <div class="flex" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
             <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
             <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
           </div>
         </div>
+      </div>
+
+      
+
+      <!-- Divider Image -->
+      <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
+        <%= image_tag "landing/flag_divider_in.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+      </div>
+
+      <div class="text-center max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl md:text-5xl font-rc-full">Not a teen? You can still win!</h2>
+      </div>
+
+      <div class="max-w-4xl mx-auto px-4 py-8 md:py-12">
+        <div class="flex flex-col items-center space-y-6">
+          <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/8ea48b3bca3d08a1998de970931f7ced3bfaf567_gpu.png" alt="AMD Radeon RX 9070 XT GPU" class="w-full max-w-2xl h-auto" />
+          <p class="text-lg md:text-2xl text-center">Every teen you refer to Blueprint gives you a chance to win rx 9070 xt GPU</p>
+          <%= render "shared/button", text: "Sign up for referral program", url: "/auth/login", class: "px-8 py-3 text-lg md:text-xl" %>
+        </div>
+      </div>
+
+      <!-- Divider Image -->
+      <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
+        <%= image_tag "landing/flag_divider_out.png", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+      </div>
     </main>
 
-    <footer class="w-full mt-12 md:mt-24 relative">
-      <%= image_tag "blueprint_footer.png", alt: "", class: "w-full h-auto", "aria-hidden": true, style: "mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);" %>
-      <div class="absolute inset-0 flex items-center justify-center z-20">
-        <div class="max-w-6xl mx-auto p-8 md:p-12">
-          <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a></p>
-          <p class="max-w-3xl text-white/75 text-sm md:text-base mb-8">
-            Hack Club is a 501(c)(3) nonprofit and network of 60k+ technical high schoolers. We believe you learn best by building so we're creating community and providing grants so you can make awesome projects. In the past few years, we've 
-            <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://summer.hackclub.com/">partnered with GitHub to run Summer of Making</a>, 
-            <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://github.com/hackclub/the-hacker-zephyr">hosted the world's longest hackathon on land</a>, and 
-            <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://www.youtube.com/watch?v=QvCoISXfcE8">ran Canada's largest high school hackathon</a>.<br><br>At Hack Club, students aren't just learning, they're shipping.
-          </p>
-          <div class="flex flex-wrap gap-x-16 gap-y-8">
-            <div class="flex flex-col">
-              <p class="mb-3 text-base md:text-lg font-rc-full">Hack Club</p>
-              <div class="text-sm md:text-base space-y-1">
-                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philosophy/" target="_blank">Philosophy</a>
-                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/team/" target="_blank">Our Team &amp; Board</a>
-                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/brand/" target="_blank">Branding</a>
-                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philanthropy/" target="_blank">Donate</a>
+    <footer class="w-full relative">
+      <%= image_tag 'blueprint_footer.png', class: "absolute left-0 right-0 bottom-0", style: "mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)" %>
+      <% 2.times do |i| %>
+        <div class="<%= i == 0 ? 'absolute left-0 right-0 bottom-0' : 'invisible' %>">
+          <!-- FAQ Section -->
+          <div class="space-y-8 mx-6 pt-12 md:pt-24">
+            <h2 class="text-3xl text-center md:text-5xl">FAQ</h2>
+            <div class="flex justify-center text-center md:text-left">
+              <div class="max-w-6xl grow grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-8">
+                <% faq.each do |item| %>
+                  <div>
+                    <h3 class="mb-1 md:mb-3 font-bold text-lg md:text-xl text-bp-success"><%= item[:question] %></h3>
+                    <p class="text-base md:text-lg"><%= item[:answer] %></p>
+                  </div>
+                <% end %>
               </div>
             </div>
-            <div class="flex flex-col">
-              <p class="mb-3 text-base md:text-lg font-rc-full">Resources</p>
-              <div class="text-sm md:text-base space-y-1">
-                <a class="block hover:text-bp-warning transition-colors" href="https://events.hackclub.com/" target="_blank">Community Events</a>
-                <a class="block hover:text-bp-warning transition-colors" href="https://jams.hackclub.com/" target="_blank">Jams</a>
-                <a class="block hover:text-bp-warning transition-colors" href="https://workshops.hackclub.com/" target="_blank">Workshops</a>
-                <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/conduct/" target="_blank">Code of Conduct</a>
+            <div class="text-center md:text-xl">
+              <p>Have more questions? Check out our <a href="/faq" class="underline">full FAQ!</a></p>
+            </div>
+          </div>
+
+          <!-- Footer Content (Bottom Half) -->
+          <div class="max-w-6xl mx-auto p-8 md:p-12 mt-12">
+            <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a></p>
+            <p class="max-w-3xl text-white/75 text-sm md:text-base mb-8">
+              Hack Club is a 501(c)(3) nonprofit and network of 60k+ technical high schoolers. We believe you learn best by building so we're creating community and providing grants so you can make awesome projects. In the past few years, we've
+              <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://summer.hackclub.com/">partnered with GitHub to run Summer of Making</a>,
+              <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://github.com/hackclub/the-hacker-zephyr">hosted the world's longest hackathon on land</a>, and
+              <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://www.youtube.com/watch?v=QvCoISXfcE8">ran Canada's largest high school hackathon</a>.<br><br>At Hack Club, students aren't just learning, they're shipping.
+            </p>
+            <div class="flex flex-wrap gap-x-16 gap-y-8">
+              <div class="flex flex-col">
+                <p class="mb-3 text-base md:text-lg font-rc-full">Hack Club</p>
+                <div class="text-sm md:text-base space-y-1">
+                  <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philosophy/" target="_blank">Philosophy</a>
+                  <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/team/" target="_blank">Our Team &amp; Board</a>
+                  <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/brand/" target="_blank">Branding</a>
+                  <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philanthropy/" target="_blank">Donate</a>
+                </div>
+              </div>
+              <div class="flex flex-col">
+                <p class="mb-3 text-base md:text-lg font-rc-full">Resources</p>
+                <div class="text-sm md:text-base space-y-1">
+                  <a class="block hover:text-bp-warning transition-colors" href="https://events.hackclub.com/" target="_blank">Community Events</a>
+                  <a class="block hover:text-bp-warning transition-colors" href="https://jams.hackclub.com/" target="_blank">Jams</a>
+                  <a class="block hover:text-bp-warning transition-colors" href="https://workshops.hackclub.com/" target="_blank">Workshops</a>
+                  <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/conduct/" target="_blank">Code of Conduct</a>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+    <% end %>
     </footer>
     </div>
   </body>

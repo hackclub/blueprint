@@ -119,7 +119,10 @@ export default class extends Controller {
     this.submenuTargets.forEach((submenu) => {
       const base = (submenu.dataset.submenuBase || "").replace(/\/$/, "")
       const expanded = base && (currentPath === base || currentPath.startsWith(base + "/"))
-      submenu.classList.toggle("hidden", !expanded)
+      const alwaysExpanded = !submenu.classList.contains("hidden")
+      if (!alwaysExpanded) {
+        submenu.classList.toggle("hidden", !expanded)
+      }
     })
 
     // Update sublinks highlighting (underline active)
@@ -143,7 +146,8 @@ export default class extends Controller {
   toggleVariant(el, active) {
     const ACTIVE = "btn-nav-active"
     const INACTIVE = "btn-nav"
-    if (active) {
+    const isDisabled = el.classList.contains("pointer-events-none")
+    if (active && !isDisabled) {
       el.classList.add(ACTIVE)
       el.classList.remove(INACTIVE)
     } else {

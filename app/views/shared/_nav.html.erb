@@ -1,21 +1,30 @@
-<% nav_links = {
-    "Dashboard" => user_logged_in? ? home_path : login_path,
-    "About Blueprint" => about_path,
-    # "My Projects" => user_logged_in? ? projects_path : login_path,
-    "Starter Projects" => starter_projects_path,
-    "Design Resources" => resources_path,
-    "Explore" => explore_path,
-    "Leaderboard" => leaderboard_path,
-    "Shop" => toolbag_path,
-    "FAQ" => faq_path,
-    "Admin" => current_user&.special_perms? ? admin_root_path : nil
-} %>
+<% if current_user && current_user.is_adult? %>
+  <% nav_links = {
+      "Dashboard" => user_logged_in? ? adult_path : login_path,
+      "Admin" => current_user&.special_perms? ? admin_root_path : nil
+  } %>
+<% else %>
+  <% nav_links = {
+      "Dashboard" => user_logged_in? ? home_path : login_path,
+      "Hackpad" => user_logged_in? ? (current_user.is_pro ? nil : hackpad_path) : nil,
+      "About Blueprint" => about_path,
+      # "My Projects" => user_logged_in? ? projects_path : login_path,
+      "Starter Projects" => starter_projects_path,
+      "Design Resources" => resources_path,
+      "Explore" => explore_path,
+      "Leaderboard" => leaderboard_path,
+      "Shop" => toolbag_path,
+      "Admin" => current_user&.special_perms? ? admin_root_path : nil
+  } %>
+<% end %>
+<% pro_only_links = ["About Blueprint", "Starter Projects", "Design Resources", "Leaderboard", "Shop"] %>
 
 <% active_projects_count = user_logged_in? ? Rails.cache.fetch([current_user.id, "active_projects_count", current_user.projects.maximum(:updated_at)]) { current_user.projects.where(is_deleted: false).count } : 0 %>
 <% if active_projects_count > 5 %>
   <% nav_links = nav_links.to_a.insert(2, ["My Projects", projects_path]).to_h %>
 <% end %>
-<% submenu = ["About Blueprint", "Starter Projects", "Design Resources"] %>
+<% submenu = ["About Blueprint", "Starter Projects", "Design Resources", "Hackpad"] %>
+<% always_show_submenu = ["Hackpad"] %>
 
 <% normalize_path = ->(p) { p.to_s.sub(%r{/$}, "") } %>
 <% req = normalize_path.call(request.path) %>
@@ -27,7 +36,7 @@
 <nav id="global-nav" data-nav-target="panel" class="fixed inset-y-0 left-0 z-50 w-64 md:w-[15rem] bg-bp-darker flex flex-col py-8 px-6 print:hidden space-y-6 shadow-xl shadow-black/50 transform transition-transform duration-200 -translate-x-full md:translate-x-0 overflow-y-auto md:bottom-0 md:top-0 font-rc-full" aria-hidden="true">
     <div class="flex items-center justify-between md:block">
         <a class="text-center md:block" href="<%= user_logged_in? ? home_path : root_path %>">
-            <%= image_tag "Hack_Club_Blueprint_Logo.png", alt: "Blueprint", class: "h-12 w-auto mx-auto" %>
+            <%= image_tag "homepage_logo.png", alt: "Blueprint", class: "h-12 w-auto mx-auto" %>
         </a>
         <button type="button"
                 class="p-2 -m-2 md:hidden"
@@ -43,11 +52,16 @@
             <% match = has_submenu ? "prefix" : "exact" %>
             <% submenu_base_path = has_submenu ? normalize_path.call(path) : nil %>
             <% active = current_nav == name %>
+            <% is_pro_only = pro_only_links.include?(name) %>
+            <% is_disabled = is_pro_only && user_logged_in? && !current_user.is_pro %>
+            <% always_expand = always_show_submenu.include?(name) %>
+            <% show_submenu = has_submenu && (active || always_expand) %>
 
-            <% if has_submenu && active %>
-              <div class="flex flex-col btn btn-nav text-base submenu p-0 gap-0" data-nav-target="link" data-nav-match="prefix" data-nav-base="<%= submenu_base_path %>">
+            <% if show_submenu %>
+              <% submenu_content = capture do %>
+                <div class="flex flex-col btn btn-nav text-base submenu p-0 gap-0 <%= is_disabled ? "opacity-50 pointer-events-none" : "" %>" data-nav-target="link" data-nav-match="prefix" data-nav-base="<%= submenu_base_path %>">
                 <%= render "shared/button", url: path, text: name, variant: :none, class: "text-base p-0 hover:bg-bp-lighter w-full submenu-btn" %>
-                <ul data-nav-target="submenu" data-submenu-base="<%= submenu_base_path %>" class="flex-col hidden w-full pb-3 text-sm text-center">
+                <ul data-nav-target="submenu" data-submenu-base="<%= submenu_base_path %>" class="flex-col w-full pb-3 text-sm text-center <%= 'hidden' unless always_expand %>">
                   <% index_meta = meta_for_url(submenu_base_path, submenu_base_path) rescue nil %>
                   <% unless index_meta&.dig(:unlisted) %>
                     <li class="w-full">
@@ -62,12 +76,49 @@
                   <% end %>
                 </ul>
               </div>
+              <% end %>
+              <% if is_disabled %>
+                <div data-controller="tooltip" data-tooltip-text-value="Enable expert mode to access" class="w-full">
+                  <%= submenu_content %>
+                </div>
+              <% else %>
+                <%= submenu_content %>
+              <% end %>
             <% else %>
-              <%= render "shared/button", url: path, text: name, variant: active ? :nav_active : :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""}", html_options: { data: { nav_target: "link", nav_match: match } } %>
+              <% if is_disabled %>
+                <div data-controller="tooltip" data-tooltip-text-value="Enable expert mode to access" class="w-full">
+                  <%= render "shared/button", url: "#", text: name, variant: :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""} opacity-50 pointer-events-none w-full", html_options: { data: { nav_target: "link", nav_match: match }, aria: { disabled: true } } %>
+                </div>
+              <% else %>
+                <%= render "shared/button", url: path, text: name, variant: active ? :nav_active : :nav, class: "text-base py-1.5 #{name == "Admin" ? "text-orange-400 border-orange-400" : ""}", html_options: { data: { nav_target: "link", nav_match: match } } %>
+              <% end %>
             <% end %>
         <% end %>
     </div>
     <% if user_logged_in? %>
+        <% unless current_user.is_adult? %>
+          <% if !current_user.projects.where(is_deleted: false).where.not(review_status: nil).exists? || !current_user.is_pro %>
+            <% if current_user.is_pro %>
+              <%= button_to toggle_pro_users_path, method: :post, class: "text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer", data: { turbo: false } do %>
+                <p>Expert Mode</p>
+                <div class="h-5 rounded-full w-10 bg-green-500 justify-end flex items-center">
+                  <div class="size-4 rounded-full bg-white mx-0.5"></div>
+                </div>
+              <% end %>
+            <% else %>
+              <button type="button"
+                data-controller="modal"
+                data-modal-target-id-value="toggle-pro-modal"
+                data-action="click->modal#show"
+                class="text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer">
+                <p>Expert Mode</p>
+                <div class="h-5 rounded-full w-10 bg-bp-darker flex items-center">
+                  <div class="size-4 rounded-full bg-white mx-0.5"></div>
+                </div>
+              </button>
+            <% end %>
+          <% end %>
+        <% end %>
         <div class="flex flex-col space-y-1">
             <% if session[:original_id] %>
                 <%= button_to admin_stop_impersonating_path, method: :post, class: "text-bp-warning text-sm mb-2 cursor-pointer", form: { data: { turbo: false } } do %>
@@ -81,8 +132,12 @@
                     <img src="<%= avatar_url %>" alt="<%= name %>'s avatar" class="rounded-lg size-12">
                     <div>
                         <p class="w-32 truncate whitespace-nowrap"><%= name %> <%= current_user.created_at < DateTime.new(2025,10,4,4,0,0) ? "🚀" : "" %></p>
-                        <% cache [current_user, "tickets-v2"] do %>
-                          <p><%= pluralize(current_user.tickets, "ticket") %></p>
+                        <% if current_user.is_adult? %>
+                          <p>Adult</p>
+                        <% else %>
+                          <% cache [current_user, "tickets-v2"] do %>
+                            <p><%= pluralize(current_user.tickets, "ticket") %></p>
+                          <% end %>
                         <% end %>
                     </div>
                 </div>
@@ -96,3 +151,35 @@
         <%= render "shared/button", url: login_path(redirect_to: request.fullpath), text: "Log in" %>
     <% end %>
 </nav>
+
+<div 
+  data-controller="modal"
+  data-action="modal:show-toggle-pro-modal@window->modal#show modal:hide-toggle-pro-modal@window->modal#hide"
+  class="fixed inset-0 z-50 hidden">
+  <div class="fixed inset-0 flex items-center justify-center p-4">
+    <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-6 max-w-3xl" do %>
+      <div class="space-y-1">
+        <p class="text-3xl font-rc-full ">Are you sure?</p>
+        <p class="text-lg mb-4 text-gray-200">Heads up! You're about to enter expert mode. </p>
+        <p class="text-lg mb-4 text-gray-200">You'll get access to more features & the ability to make other projects, <b>but you'll be held to higher quality standards to be approved</b></p>
+        <p class="text-lg text-gray-200">If you're new to hardware, we recommend staying on normal mode - you'll automatically unlock the rest after finishing your first project! </p>
+      </div>
+      <div class="space-y-4">
+        <%= render "shared/button", 
+            text: "Enable Expert Mode",
+            url: toggle_pro_users_path,
+            class: "w-full",
+            variant: :warning,
+            html_options: { method: :post, data: { turbo: false } }
+            %>
+        <%= render "shared/button",
+            text: "Stay on Normal Mode",
+            class: "w-full",
+            variant: :outline,
+            html_options: { data: { action: "click->modal#hide" } }
+            %>
+      </div>
+    <% end %>
+    <div data-modal-target="overlay" class="fixed inset-0 z-40 bg-black/50" data-action="click->modal#hide"></div>
+  </div>
+</div>

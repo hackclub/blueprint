@@ -1,11 +1,12 @@
 class MarkdownController < ApplicationController
-  allow_unauthenticated_access only: %i[ show docs guides faq about resources starter_projects ]
+  allow_unauthenticated_access only: %i[ show docs guides faq about hackpad resources starter_projects ]
   skip_before_action :set_current_user, if: :turbo_frame_request?
 
   SECTION_CONFIG = {
     "about" => { suffix: "About Blueprint", index_title: "About - Blueprint" },
     "resources" => { suffix: "Resources", index_title: "Resources - Blueprint" },
-    "starter-projects" => { suffix: "Starter Projects", index_title: "Starter Projects - Blueprint" }
+    "starter-projects" => { suffix: "Starter Projects", index_title: "Starter Projects - Blueprint" },
+    "hackpad" => { suffix: "Hackpad", index_title: "Build your own mini-keyboard - Blueprint" }
   }.freeze
 
   def about
@@ -20,6 +21,10 @@ class MarkdownController < ApplicationController
     render_section("starter-projects", params[:slug])
   end
 
+  def hackpad
+    render_section("hackpad", params[:slug])
+  end
+
   # backwards compatibility
   def docs
     redirect_to about_path
@@ -30,7 +35,7 @@ class MarkdownController < ApplicationController
   end
 
   def faq
-    render_from_base Rails.root.join("docs"), "faq", { suffix: "FAQ", index_title: "FAQ - Blueprint", url_prefix: "/faq" }
+    redirect_to "/about/faq"
   end
 
   private

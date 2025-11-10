@@ -1,44 +1,59 @@
 <section class="flex justify-center">
   <div class="w-full max-w-6xl space-y-4">
     <div class="py-2 md:py-4 space-y-1">
-      <h1 class="text-3xl md:text-5xl">Home</h1>
+      <h1 class="text-3xl md:text-5xl">Dashboard</h1>
       <p class="text-lg md:text-xl">Here's what's cooking today</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-      <% unless Flipper.enabled?(:new_flow, current_user)%>
-        <% unless current_user.tasks.completed? %>
-          <%= render 'shared/card', class: 'col-span-1 md:col-span-2' do %>
-              <p class="text-2xl md:text-3xl font-rc-full">Hey! Welcome to Blueprint</p>
-              <a href="/about" class="font-rc-full text-lg md:text-2xl bg-bp-warning text-bp-dark grow px-6 md:px-8 text-center py-3 md:py-1 min-h-[44px] flex items-center justify-center">
-                Start Here!
-              </a>        
-          <% end %>
-        <% end %>
-      <% else %>
-        <% if !current_user.projects.where(is_deleted: false).any? %>
-          <%= render 'shared/card', class: 'col-span-1 md:col-span-2' do %>
-            <p class="text-2xl md:text-3xl font-rc-full">Hey! Welcome to Blueprint</p>
-            <a href="/projects/new" class="font-rc-full text-lg md:text-2xl bg-bp-warning text-bp-dark grow px-6 md:px-8 text-center py-3 md:py-1 min-h-[44px] flex items-center justify-center">
-              Start your first project!
-            </a>        
-          <% end %>
-        <% elsif !current_user.free_stickers_claimed %>
-          <%= render 'shared/card', class: 'col-span-1 md:col-span-2' do %>
-            <p class="text-2xl md:text-3xl font-rc-full">Congrats on your first project!</p>
-            <a href="https://forms.hackclub.com/t/6MhoMy5dY7us?ID=<%= current_user.slack_id %>&BPID=<%= current_user.id %>&email=<%= current_user.email %>" class="font-rc-full text-lg md:text-2xl bg-bp-success text-bp-dark grow px-6 md:px-8 text-center py-3 md:py-1 min-h-[44px] flex items-center justify-center">
-              Claim your stickers!
-            </a>
-          <% end %>
+      <% unless current_user.is_pro %>
+        <%= render 'shared/card', class: 'col-span-1 md:col-span-2 flex flex-col motion-safe:transition-colors border-2 border-bp-warning border-solid' do %>
+          <p class="text-2xl md:text-3xl font-rc-full mb-8">Build your first hardware project. Start with Hackpad!</p>
+          <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+            <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" alt="Mini Keyboard Example" class="w-full md:w-1/2 max-w-md my-auto" />
+            <div class="text-xl pr-2 mb-0 flex flex-col space-y-4">
+              <%# 
+                <div class="flex-1 pb-8"><b>Hackpad</b> is a program a part of Blueprint designed to help you build your very own <b>mini keypad</b> (macropad)</div>
+                <div class="flex-1 pb-8">Follow along our guide, submit it, and get all the parts sent to you!</div>
+              %>
+              <div class="grow flex flex-col space-y-4 items-center">
+                <div class="space-y-2">
+                  <ol class="list-decimal ml-8 w-full max-w-xl space-y-2">
+                    <li><span class="font-bold">Join 1000 other teenagers on the <% if current_user.slack_user? %><a href="https://hackclub.slack.com/archives/C083S537USC" target="_blank" class="underline text-bp-warning">Hack Club Slack</a><% else %><button type="button" data-controller="modal" data-modal-target-id-value="slack-join" data-action="click->modal#show" class="text-bp-warning underline cursor-pointer">Hack Club Slack</button><% end %>.</span><br>Need help or want feedback? Chat with peers in our global Slack.</li>
+                    <li><span class="font-bold">Follow <a href="/hackpad" class="text-bp-warning underline">our guide</a> and design a mini keyboard.</span><br>We have a step-by-step guide to get your started. We'll teach you all the skills you need, from 3D modelling to writing code.</li>
+                    <li><span class="font-bold">Get the parts shipped to you for free.</span><br>Hack Club will ship you everything you need to build it. We'll give you a grant to manufacture the circuit board.</li>
+                  </ol>
+                  <p>Hackpad only takes a weekend to complete!</p>
+                </div>
+              </div>
+               
+              <a class="btn btn-primary bg-bp-warning text-xl md:text-2xl border-0 text-center hover:bg-bp-warning-darker" href="/hackpad">
+                Learn how to build your own custom macropad ->
+              </a> 
+            </div>
+          </div>
         <% end %>
       <% end %>
-    <%= render 'projects' %>
-      <% if current_user.tasks.completed? && current_user.free_stickers_claimed %>
-        <%= render 'announcements', class: 'col-span-1 md:col-span-2' %>
+      <% if current_user.is_pro %>
+        <%= render 'projects' %>
+        <% if current_user.tasks.completed? && current_user.free_stickers_claimed %>
+          <%= render 'announcements', class: 'col-span-1 md:col-span-2' %>
+        <% else %>
+          <%= render 'tasks' %>
+          <%= render 'announcements' %>
+        <% end %>
+          <% if @show_bp_progress %>
+            <%= render 'blueprint_progress' %>
+          <% end %>
+          <%= render 'viral_projects' %>
       <% else %>
         <%= render 'tasks' %>
         <%= render 'announcements' %>
-      <% end %>
+        <%= render 'projects' %>
+        <% if @show_bp_progress %>
+          <%= render 'blueprint_progress' %>
+        <% end %>
         <%= render 'viral_projects' %>
+      <% end %>
     </div>
   </div>
 </section>

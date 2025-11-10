@@ -103,6 +103,12 @@ gem "lz_string"
 
 gem "rack-attack"
 
+gem "rqrcode"
+
+gem "prawn"
+gem "prawn-svg"
+gem "combine_pdf"
+
 gem "active_storage_validations"
 
 gem "nokogiri"

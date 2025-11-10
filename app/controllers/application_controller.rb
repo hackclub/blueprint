@@ -9,6 +9,8 @@ class ApplicationController < ActionController::Base
   before_action :set_paper_trail_whodunnit
   before_action :update_last_active
   before_action :redirect_banned_users
+  before_action :redirect_to_age
+  before_action :redirect_adults
 
   after_action :track_page_view
 
@@ -43,5 +45,20 @@ class ApplicationController < ActionController::Base
     return unless current_user.is_banned
 
     redirect_to sorry_path
+  end
+
+  def redirect_to_age
+    return unless user_logged_in?
+    return unless current_user.birthday.nil?
+
+    redirect_to age_verification_path
+  end
+
+  def redirect_adults
+    return unless user_logged_in?
+    return unless current_user.birthday.present?
+    return unless current_user.is_adult?
+
+    redirect_to adult_path
   end
 end

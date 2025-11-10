@@ -1,0 +1,62 @@
+<% content_for :title, "Blueprint for Adults" %>
+
+<% faq = [
+  {
+    question: "Where do the prizes ship from and how do customs work?",
+    answer: "The prizes will ship from the United States. Customs may apply, and you are responsible for any customs fees your country charges you to receive shipments from the USA."
+  },
+  {
+    question: "What is the shipping cost?",
+    answer: "Shipping is completely free."
+  },
+  {
+    question: "Where should I share my referral link?",
+    answer: "Posts like these (<a href='https://www.chiefdelphi.com/t/shipwrecked-a-free-event-where-you-get-flown-to-a-private-island/500502' target='_blank' class='text-bp-warning underline'>example 1</a>, <a href='https://www.reddit.com/r/teenagers/comments/1lbluyb/hack_club_free_devices_for_teens/' target='_blank' class='text-bp-warning underline'>example 2</a>, <a href='https://www.chiefdelphi.com/t/hack-club-highway-to-undercity/502005?u=zrl' target='_blank' class='text-bp-warning underline'>example 3</a>) work, sharing in group chats work, and setting your link as your Discord status works."
+  }
+] %>
+<section class="flex flex-col items-center grow space-y-8">
+  <div class="w-full max-w-3xl min-h-full flex flex-col m-8 space-y-8">
+    <%= render "shared/card", class: "flex flex-col space-y-12 py-12" do %>
+      <div class="space-y-2 text-center">
+        <h1 class="text-4xl font-rc-full">Welcome to Hack Club Blueprint!</h1>
+        <p>You're seeing this page because you're 19+ and cannot participate in Hack Club Blueprint normally.
+      </div>
+
+      <div class="space-y-3">
+        <p>There are two ways to participate in Hack Club Blueprint:</p>
+        <ol class="list-decimal list-inside space-y-3">
+          <li>Build projects like custom mini-keyboards, 3D printers, and more (ages 13-18 only)</li>
+          <li>Get teenagers to sign up for Hack Club Blueprint (any age)</li>
+        </ol>
+      </div>
+
+      <% referral = "https://#{ENV['APPLICATION_HOST']}/r/#{current_user.id}?ref=r" %>
+      <div class="space-y-3 flex flex-col items-center">
+        <h2 class="text-3xl">Join the raffle by getting people to sign up</h2>
+        <p>Share this unique link with others:</p>
+        <code class="text-xl inline font-mono bg-bp-dark px-4 py-1 rounded"><%= referral %></code>
+        <p class="text-xl">You have referred <%= pluralize(@referral_count, "person") %> so far.</p>
+      </div>
+
+      <div class="space-y-6">
+        <h2 class="text-3xl text-center">FAQ</h2>
+        <% faq.each do |item| %>
+          <div class="space-y-2">
+            <h3 class="text-xl">Q: <%= item[:question] %></h3>
+            <p>A: <%== item[:answer] %></p>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="space-y-4">
+        <h2 class="text-3xl text-center">Posters</h2>
+        <p>These posters are customized with your referral link's QR code. Print them out and put them up in your community, library, or local cafe to get more people to sign up!</p>
+        <div class="grid grid-cols-2 gap-4">
+          <embed src="/posters/1" type="application/pdf" class="w-full h-110" />
+          <embed src="/posters/2" type="application/pdf" class="w-full h-110" />
+        </div>
+        <p>You can find more resources to share Hack Club Blueprint <a href="https://drive.google.com/drive/folders/12YqdhhAkuTtEuktelwETmjKmAHx5sZ2e?usp=sharing" class="underline text-bp-warning" target="_blank">here</a>.</p>
+      </div>
+    <% end %>
+  </div>
+</section>

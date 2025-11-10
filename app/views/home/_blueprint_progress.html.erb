@@ -1,0 +1,37 @@
+<%= render 'shared/card', class: 'col-span-1 md:col-span-2 space-y-3 text-white border border-white/10 !bg-transparent relative overflow-hidden', html_options: { style: "background-image: url('#{image_path("prototype/prototype_banner_narrow.png")}'); background-size: cover; background-position: center;" } do %>
+  <div class="absolute -inset-8 bg-black/40 z-0"></div>
+  <div class="relative z-10 flex items-start justify-between gap-4">
+    <div>
+      <h3 class="text-xl md:text-2xl font-rc-full">
+        <%= link_to "Prototype", prototype_path, class: "underline decoration-transparent hover:decoration-bp-warning hover:text-bp-warning transition-colors" %> Progress
+      </h3>
+      <p class="text-sm text-white/80">Get an invitation to prototype at 100%</p>
+    </div>
+    <div class="flex items-center gap-4">
+      <%= render "shared/button", url: prototype_path, text: "Learn more", variant: :outline, class: "bg-[#6D1010] border-2 px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base font-rc-full hover:bg-white hover:text-bp-dark transition-colors whitespace-nowrap" %>
+      <div class="text-2xl md:text-3xl font-bold"><%= @bp_progress %>%</div>
+    </div>
+  </div>
+
+  <div class="relative z-10 mt-2">
+    <div
+      class="w-full h-4 md:h-5 overflow-hidden"
+      role="progressbar"
+      aria-label="Prototype progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="<%= [@bp_progress, 100].min %>"
+      style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+      <div
+        class="h-full transition-all bg-bp-warning"
+        style="width: <%= [@bp_progress, 100].min %>%; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.12) 0 2px, transparent 2px 8px); background-blend-mode: overlay;">
+      </div>
+    </div>
+
+    <% if @bp_progress > 100 %>
+      <p class="mt-1 text-xs text-white/80">
+        You exceeded the goal by <%= @bp_progress - 100 %>% — keep going!
+      </p>
+    <% end %>
+  </div>
+<% end %>

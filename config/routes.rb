@@ -67,6 +67,7 @@ Rails.application.routes.draw do
   get "landing" => "landing#authed", as: :landing
 
   get "sorry" => "sorry#index", as: :sorry
+  get "adult" => "adult#index", as: :adult
 
   # Referral system
   get "r/:id" => "referral#show", as: :referral
@@ -83,9 +84,12 @@ Rails.application.routes.draw do
   get "auth/idv" => "auth#idv", as: :idv
   get "auth/idv/start" => "auth#idv_start", as: :idv_start
   get "idv_callback" => "auth#idv_callback", as: :idv_callback
+  get "auth/age" => "auth#age", as: :age_verification
+  post "auth/age" => "auth#submit_age"
 
   get "/utm_source" => "landing#utm_source", as: :utm_source
   get "/utm_source=feedback-email" => "landing#utm_source", as: :utm_source_feedback_email
+  get "/amd" => "amd#index", as: :amd
 
   get "home" => "home#index", as: :home
 
@@ -118,6 +122,7 @@ Rails.application.routes.draw do
     post :invite_to_slack, on: :collection
     post :mcg_check, on: :collection
     post :update_timezone, on: :collection
+    post :toggle_pro, on: :collection
   end
 
   # About
@@ -139,9 +144,14 @@ Rails.application.routes.draw do
   get "starter-projects", to: "markdown#starter_projects", as: :starter_projects
   get "starter-projects/*slug", to: "markdown#starter_projects"
 
+  get "hackpad", to: "markdown#hackpad", as: :hackpad
+  get "hackpad/*slug", to: "markdown#hackpad"
+
   get "faq", to: "markdown#faq", as: :faq
 
   get "prototype", to: "prototype#index", as: :prototype
+
+  resources :posters, only: [ :show ]
 
   namespace :admin do
     post "stop_impersonating", to: "users#stop_impersonating"

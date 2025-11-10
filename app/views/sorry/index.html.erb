@@ -62,8 +62,6 @@
                 <p>Please contact the @Fraud Department on <a href="https://hack.club/slack" target="_blank" class="underline">Slack</a> if you believe this is a mistake.</p>
               <% elsif current_user.ban_type == "slack" %>
                 <p>Please contact the <a href="mailto:conduct@hackclub.com" class="underline">Slack Community Team</a> if you believe this is a mistake.</p>
-              <% elsif current_user.ban_type == "age" %>
-                <p>Please contact the Identity Verification Team via the <a href="https://hackclub.slack.com/archives/C092833JXKK" target="_blank" class="underline">#identity-help</a> channel on <a href="https://hack.club/slack" target="_blank" class="underline">Slack</a> if you believe this is a mistake.</p>
               <% else %>
                 <p>Please contact <a href="mailto:blueprint@hackclub.com" class="underline">support</a> if you believe this is a mistake.</p>
               <% end %>

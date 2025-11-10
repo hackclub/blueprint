@@ -5,14 +5,20 @@
   <% if @projects.empty? %>
     <div class="flex flex-col items-center justify-center text-center grow space-y-4 md:space-y-6">
       <p class="text-sm md:text-base">It's looking pretty empty...<br>You should change that!</p>
-      <%= render "shared/button", url: new_project_path, text: "+ Start a project", class: "min-h-[44px]" %>
+      <%= render "shared/button", url: new_project_path, text: current_user.is_pro ? "+ Start a project" : "+ Start a Hackpad", class: "min-h-[44px]" %>
     </div>
   <% else %>
     <div class="flex space-x-4 md:space-x-6 overflow-x-auto mt-2 h-full -mx-4 px-4 md:mx-0 md:px-0">
       <%= render partial: "project", collection: @projects, as: :project %>
       <div class="flex items-center justify-center h-full flex-shrink-0">
-        <%= link_to new_project_path, class: "flex items-center justify-center size-24 md:size-28 bg-hatch border-2 border-white/25 hover:bg-bp-success/20 transition-colors" do %>
-          <span class="text-3xl md:text-4xl font-bold">+</span>
+        <% if current_user.is_pro? %>
+          <%= link_to new_project_path, class: "flex items-center justify-center size-24 md:size-28 bg-hatch border-2 border-white/25 hover:bg-bp-success/20 transition-colors" do %>
+            <span class="text-3xl md:text-4xl font-bold">+</span>
+          <% end %>
+        <% else %>
+          <div class="flex items-center justify-center size-24 md:size-28 bg-hatch border-2 border-white/25 cursor-not-allowed" data-controller="tooltip" data-tooltip-text-value="Enable expert mode to create more projects">
+            <span class="text-3xl md:text-4xl font-bold">+</span>
+          </div>
         <% end %>
       </div>
     </div>

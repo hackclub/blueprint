@@ -2,6 +2,8 @@ class Admin::ApplicationController < ApplicationController
   layout "admin"
   before_action :require_admin!
   before_action :set_paper_trail_whodunnit
+  skip_before_action :redirect_banned_users
+  skip_before_action :redirect_adults
 
   private
 
