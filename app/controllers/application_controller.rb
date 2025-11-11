@@ -21,13 +21,19 @@ class ApplicationController < ActionController::Base
   private
 
   def track_page_view
-    ahoy.track "$view", {
+    return if response.redirect?
+
+    props = {
       controller: params[:controller],
       action: params[:action],
-      user_id: current_user&.id  # if you have user authentication
+      user_id: current_user&.id
     }
 
-    # Associate the visit with the user if not already associated
+    utm_params = request.query_parameters.slice("utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content")
+    props.merge!(utm_params) if utm_params.present?
+
+    ahoy.track "$view", props
+
     if user_logged_in? && ahoy.visit && ahoy.visit.user_id != current_user.id
       ahoy.visit.update(user_id: current_user.id)
     end
