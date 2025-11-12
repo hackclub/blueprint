@@ -13,6 +13,12 @@
         <% end %>
       </div>
       <p class="text-xl">Requesting: $<%= sprintf("%.2f", @project.funding_needed_cents / 100.0) %></p>
+      <% hours = (@project.journal_entries.sum(:duration_seconds) / 3600.0).round(1) %>
+      <div class="flex flex-wrap gap-6 text-xl mt-2">
+        <p>Type: <span class="font-medium"><%= @project.project_type&.humanize || "Custom" %></span></p>
+        <p>Hours: <span class="font-medium"><%= hours %>h</span></p>
+        <p>CPH: <span class="font-medium"><%= hours > 0 ? sprintf("$%.2f", (@project.funding_needed_cents / 100.0) / hours) : "–" %></span></p>
+      </div>
     </div>
     <div class="space-y-6">
       <p class="text-xl wrap-break-word"><%= @project.description %></p>
