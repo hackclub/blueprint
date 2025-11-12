@@ -32,6 +32,34 @@
           class: "input px-3 mt-1 block w-full" %>
   </div>
 
+  <% if current_user.is_pro %>
+    <div data-controller="ysws">
+      <%= f.label :ysws, "Are you following a guide?", class: "block text-xl font-medium font-rc-full" %>
+      <div class="mt-2 space-y-2">
+        <div class="w-full text-left text-white select bg-bp-dark">
+          <% ysws_options = [
+            ["I am not following a guide", "none"],
+            ["Hackpad (Journal not required)", "hackpad"],
+            ["Custom Devboard", "devboard"],
+            ["Midi Keyboard", "midi"],
+            ["Split Keyboard", "splitkb"],
+            ["Blinky LED Chaser Board (Journal not required)", "led"],
+            ["Other", "other"]
+          ] %>
+          <% predefined_values = ysws_options.map { |label, value| value } %>
+          <% current_ysws = @project.ysws.presence %>
+          <% selected_value = current_ysws.nil? ? "none" : (predefined_values.include?(current_ysws) ? current_ysws : "other") %>
+          <% other_value = (current_ysws && !predefined_values.include?(current_ysws)) ? current_ysws : nil %>
+          <%= f.select :ysws, ysws_options, { selected: selected_value }, { data: { ysws_target: "select", action: "change->ysws#toggle" }, class: "text-white bg-bp-dark", style: "color: white; background-color: var(--color-bp-dark);" } %>
+        </div>
+        <div class="<%= other_value ? '' : 'hidden' %>" data-ysws-target="otherField">
+          <%= f.label :ysws_other, "Please specify:", class: "block text-xl mb-1" %>
+          <%= f.text_field :ysws_other, value: other_value, data: { ysws_target: "otherInput", action: "input->ysws#validate" }, class: "input px-3 w-full", placeholder: "Enter name of the guide..." %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <div data-controller="funding-amount"
     data-funding-amount-tier-max-cents-value="<%= { 1 => 40000, 2 => 20000, 3 => 10000, 4 => 5000, 5 => 2500 }.to_json %>">
     <% if @project.ysws != "hackpad" %>

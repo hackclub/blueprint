@@ -202,20 +202,20 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    if params.dig(:project, :ysws) == "none"
-      params[:project][:ysws] = nil
-    elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
-      params[:project][:ysws] = params[:project][:ysws_other]
+    if !current_user.is_pro
+      params[:project][:ysws] = "hackpad"
+    else
+      if params.dig(:project, :ysws) == "none"
+        params[:project][:ysws] = nil
+      elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
+        params[:project][:ysws] = params[:project][:ysws_other]
+      end
     end
     params[:project].delete(:ysws_other)
 
-    if !current_user.is_pro
-      params[:project][:ysws] = "hackpad"
-
-      if current_user.projects.where(ysws: "hackpad", is_deleted: false).exists?
-        redirect_to new_project_path, alert: "You can only make one hackpad!"
-        return
-      end
+    if params.dig(:project, :ysws) == "hackpad" && current_user.projects.where(ysws: "hackpad", is_deleted: false).exists?
+      redirect_to new_project_path, alert: "You can only make one hackpad!"
+      return
     end
 
     @project = current_user.projects.build(project_params)
@@ -245,19 +245,16 @@ class ProjectsController < ApplicationController
     has_ship = params.dig(:project, :ship).present?
     params[:project].delete(:ship) if has_ship
 
-    # if params.dig(:project, :ysws) == "none"
-    #   params[:project][:ysws] = nil
-    # elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
-    #   params[:project][:ysws] = params[:project][:ysws_other]
-    # end
-    # params[:project].delete(:ysws_other)
-
-    # Compute print_legion from radio inputs
-    # if params.dig(:project, :has_3d_print).present? && params.dig(:project, :needs_3d_print_help).present?
-    #   has_3d = params[:project][:has_3d_print] == "yes"
-    #   needs_help = params[:project][:needs_3d_print_help] == "yes"
-    #   params[:project][:print_legion] = (has_3d && needs_help)
-    # end
+    if !current_user.is_pro
+      params[:project][:ysws] = "hackpad"
+    else
+      if params.dig(:project, :ysws) == "none"
+        params[:project][:ysws] = nil
+      elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
+        params[:project][:ysws] = params[:project][:ysws_other]
+      end
+    end
+    params[:project].delete(:ysws_other)
 
     form_to_render = has_ship ? (@project.is_currently_build? ? "build_ship" : "ship") : (@project.is_currently_build? ? "build_edit" : "edit")
 
