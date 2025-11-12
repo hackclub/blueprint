@@ -265,7 +265,7 @@ class ProjectsController < ApplicationController
     @project.assign_attributes(project_params)
 
     # Validate cart screenshots for funding projects on ship
-    if has_ship && @project.needs_funding? && @project.ysws != "hackpad"
+    if has_ship && @project.needs_funding? && @project.ysws != "hackpad" && @project.funding_needed_cents.to_i > 0
       pending = @project.attachment_changes["cart_screenshots"]
       has_new_uploads = pending && pending.respond_to?(:attachables) && pending.attachables.present?
 
