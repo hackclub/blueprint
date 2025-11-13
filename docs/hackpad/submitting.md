@@ -102,7 +102,7 @@ Finally, click "Submit it!" to send it off for review.
 
 
 ### After submitting
-If everything went correctly, your submission will be reviewed (and hopefully approved!) by @alexren. You'll get a reply to your #highway-pitstop post, so MAKE SURE TO MAKE ONE!
+
 
 If it's approved, then you'll get:
 - A hackpad kit with all the parts you need to build your hackpad.

@@ -18,6 +18,14 @@ Tickets are rewarded based on the effort you spent BUILDING your project, not th
 
 As many as you like! We just ask that you only do one of each starter project.
 
+## I don't have a soldering iron. How can I get one?
+
+You can get one as a part of Hackpad!
+
+## Can I make a Hackpad and a keyboard?
+
+Yes! 
+
 ## What can I make
 
 Anything within budget!
