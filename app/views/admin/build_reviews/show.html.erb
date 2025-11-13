@@ -12,6 +12,9 @@
           <p>Tier: <span class="<%= tier_style %> p-1 px-3 "><%= @project.tier %></span></p>
         <% end %>
       </div>
+      <% if @project.ysws.present? %>
+        <p class="text-xl mt-2">Guide: <span class="font-medium"><%= @project.ysws %></span></p>
+      <% end %>
     </div>
     <div class="space-y-6">
       <p class="text-xl wrap-break-word"><%= @project.description %></p>
