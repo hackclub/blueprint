@@ -820,7 +820,9 @@ class Project < ApplicationRecord
           "filename" => s.filename.to_s
         }
       } : nil),
-      "BP Project ID" => id
+      "BP Project ID" => id,
+      "Review Type" => build_approved? ? "Build" : (design_approved? ? "Design" : nil),
+      "Tickets Awarded" => valid_build_reviews.where(admin_review: true).sum { |review| review.tickets_awarded }
     }
 
     AirtableSync.upload_or_create!(
@@ -848,18 +850,22 @@ class Project < ApplicationRecord
   # @deprecated Use unreviewed_journal_entries instead
   def last_non_invalid_review_at
     [
-      design_reviews.where(invalidated: false).maximum(:created_at),
-      build_reviews.where(invalidated: false).maximum(:created_at)
+      design_reviews.where(invalidated: false, admin_review: true).maximum(:created_at),
+      build_reviews.where(invalidated: false, admin_review: true).maximum(:created_at)
     ].compact.max
   end
 
   # @deprecated Use unreviewed_journal_entries instead
   def last_non_invalid_build_review_at
-    build_reviews.where(invalidated: false).maximum(:created_at)
+    build_reviews.where(invalidated: false, admin_review: true).maximum(:created_at)
   end
 
   def unreviewed_journal_entries
-    journal_entries.where(review_id: nil)
+    if last_admin_build_review_entry_at
+      journal_entries.where("created_at > ?", last_admin_build_review_entry_at)
+    else
+      journal_entries
+    end
   end
 
   def journal_entries_since_last_build_review
