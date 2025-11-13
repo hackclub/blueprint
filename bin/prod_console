@@ -22,8 +22,9 @@ abort "Invalid code. Aborting. (You cannot copy paste the code)" unless response
 prod_url = ENV["PROD_DATABASE_URL"]
 abort "Missing PROD_DATABASE_URL" if prod_url.to_s.strip.empty?
 
-ENV["RAILS_ENV"] = "development"
+ENV["RAILS_ENV"] = "production"
 ENV["DATABASE_URL"] = prod_url
+ENV["BYPASS_IDV"] = "false"
 
 irbrc_content = <<~RUBY
   IRB.conf[:PROMPT][:PROD] = {
