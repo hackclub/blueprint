@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+require "dotenv/load"
+
+unpushed_migrations = `git diff origin/main -- db/migrate/`.strip
+abort "\n❌ ERROR: You have unpushed migrations. Push them to production first.\n" unless unpushed_migrations.empty?
+
+schema_changes = `git diff origin/main -- db/schema.rb`.strip
+abort "\n❌ ERROR: Schema has changed. Ensure migrations are run on production first.\n" unless schema_changes.empty?
+
+confirmation_code = Array.new(10) { [*'A'..'Z', *'a'..'z', *'0'..'9'].sample }.join
+
+puts "\n⚠️  YOU ARE CONNECTING TO THE PRODUCTION DATABASE. ARE YOU SURE YOU WANT TO PROCEED? ⚠️"
+puts "⚠️  Do not proceed if MIGRATIONS or SETTINGS are not deployed on prod ⚠️\n"
+puts "⚠️  Type this code to continue: #{confirmation_code}"
+print "⚠️  I understand and wish to proceed. Enter code: "
+
+response = $stdin.gets&.chomp
+abort "Aborting." unless response == confirmation_code
+
+prod_url = ENV["PROD_DATABASE_URL"]
+abort "Missing PROD_DATABASE_URL" if prod_url.to_s.strip.empty?
+
+ENV["RAILS_ENV"] = "production"
+ENV["DATABASE_URL"] = prod_url
+
+irbrc_content = <<~RUBY
+  IRB.conf[:PROMPT][:PROD] = {
+    PROMPT_I: "blueprint(\\e[33mdev→prod\\e[0m)> ",
+    PROMPT_S: "blueprint(\\e[33mdev→prod\\e[0m)* ",
+    PROMPT_C: "blueprint(\\e[33mdev→prod\\e[0m)* ",
+    RETURN: "=> %s\\n\\n\\e[31m⚠️  YOU ARE CONNECTED TO PRODUCTION ⚠️\\e[0m\\n"
+  }
+  IRB.conf[:PROMPT_MODE] = :PROD
+RUBY
+
+irbrc_path = "/tmp/.irbrc_prod_console"
+File.write(irbrc_path, irbrc_content)
+ENV["IRBRC"] = irbrc_path
+
+exec File.expand_path("rails", __dir__), "console"
