@@ -9,14 +9,15 @@ schema_changes = `git diff origin/main -- db/schema.rb`.strip
 abort "\n❌ ERROR: Schema has changed. Ensure migrations are run on production first.\n" unless schema_changes.empty?
 
 confirmation_code = Array.new(10) { [*'A'..'Z', *'a'..'z', *'0'..'9'].sample }.join
+display_code = confirmation_code.chars.join("\u200B")
 
 puts "\n⚠️  YOU ARE CONNECTING TO THE PRODUCTION DATABASE. ARE YOU SURE YOU WANT TO PROCEED? ⚠️"
 puts "⚠️  Do not proceed if MIGRATIONS or SETTINGS are not deployed on prod ⚠️\n"
-puts "⚠️  Type this code to continue: #{confirmation_code}"
+puts "⚠️  Type this code to continue: #{display_code}"
 print "⚠️  I understand and wish to proceed. Enter code: "
 
 response = $stdin.gets&.chomp
-abort "Aborting." unless response == confirmation_code
+abort "Invalid code. Aborting. (You cannot copy paste the code)" unless response == confirmation_code
 
 prod_url = ENV["PROD_DATABASE_URL"]
 abort "Missing PROD_DATABASE_URL" if prod_url.to_s.strip.empty?
