@@ -66,6 +66,41 @@ class ShopOrder < ApplicationRecord
 
   before_validation :freeze_unit_costs, on: :create
 
+  def self.airtable_sync_table_id
+    "tblJMlFLaFPRRAj6D"
+  end
+
+  def self.airtable_sync_sync_id
+    "B6I1BxOt"
+  end
+
+  def self.airtable_sync_field_mappings
+    {
+      "Order ID" => :id,
+      "Unit Ticket Cost" => :frozen_unit_ticket_cost,
+      "Unit Cost Cents" => :frozen_unit_usd_cost,
+      "Created at" => :created_at,
+      "Quantity" => :quantity,
+      "Status" => :state,
+      "Item" => lambda { |shop_order| shop_order.shop_item.name },
+      "User ID" => :user_id,
+      "First Name" => lambda { |shop_order| shop_order.parsed_address&.dig("first_name") },
+      "Last Name" => lambda { |shop_order| shop_order.parsed_address&.dig("last_name") },
+      "Address Line 1" => lambda { |shop_order| shop_order.parsed_address&.dig("line_1") },
+      "Address Line 2" => lambda { |shop_order| shop_order.parsed_address&.dig("line_2") },
+      "City" => lambda { |shop_order| shop_order.parsed_address&.dig("city") },
+      "State" => lambda { |shop_order| shop_order.parsed_address&.dig("state") },
+      "Postal Code" => lambda { |shop_order| shop_order.parsed_address&.dig("postal_code") },
+      "Country" => lambda { |shop_order| shop_order.parsed_address&.dig("country") }
+    }
+  end
+
+  def parsed_address
+    @parsed_address ||= JSON.parse(frozen_address) if frozen_address.present?
+  rescue JSON::ParserError
+    nil
+  end
+
   private
 
   def freeze_unit_costs
