@@ -81,6 +81,7 @@ class Project < ApplicationRecord
       "Created At" => :created_at,
       "Updated At" => :updated_at,
       "User ID" => :user_id,
+      "Needs Soldering Iron" => :needs_soldering_iron,
       "Followers" => lambda { |project| project.followers.pluck(:id).join(",") }
     }
   end
