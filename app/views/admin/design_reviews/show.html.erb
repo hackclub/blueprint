@@ -181,8 +181,7 @@
       <% if current_user.admin? %>
         <div>
           <%= f.label :ysws, "Guide Override", class: "block text-xl font-medium" %>
-          <%= f.text_field :ysws, value: @project.ysws, placeholder: "Current: #{@project.ysws.present? ? @project.ysws : 'Not set'}", class: "input px-3 mt-1 block w-full" %>
-          <p class="text-sm text-bp-muted mt-1">Set guide identifier (e.g., "led" for LED projects)</p>
+          <%= f.select :ysws, Project.guide_options, { selected: @project.ysws || "none", include_blank: false }, class: "input px-3 mt-1 block w-full" %>
         </div>
       <% end %>
 

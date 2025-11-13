@@ -510,6 +510,18 @@ class Project < ApplicationRecord
     Project.tiers.map { |key, value| [ "Tier #{key} (#{tier_multipliers[key.to_i]})", value ] }
   end
 
+  def self.guide_options
+    [
+      [ "I am not following a guide", "none" ],
+      [ "Hackpad (Journal not required)", "hackpad" ],
+      [ "Custom Devboard", "devboard" ],
+      [ "Midi Keyboard", "midi" ],
+      [ "Split Keyboard", "splitkb" ],
+      [ "Blinky LED Chaser Board (Journal not required)", "led" ],
+      [ "Other", "other" ]
+    ]
+  end
+
   def self.tier_max_cents
     { 1 => 40000, 2 => 20000, 3 => 10000, 4 => 5000, 5 => 2500 }
   end
@@ -779,10 +791,10 @@ class Project < ApplicationRecord
       "First Name" => idv_data.dig(:identity, :first_name),
       "Last Name" => idv_data.dig(:identity, :last_name),
       "Email" => user&.email,
-      "Screenshot" => (banner.attached? ? [
+      "Screenshot" => (display_banner ? [
         {
-          "url" => Rails.application.routes.url_helpers.rails_blob_url(banner, host: ENV.fetch("APPLICATION_HOST")),
-          "filename" => banner.filename.to_s
+          "url" => Rails.application.routes.url_helpers.rails_blob_url(display_banner, host: ENV.fetch("APPLICATION_HOST")),
+          "filename" => display_banner.filename.to_s
         }
       ] : nil),
       "Description" => description,

@@ -61,7 +61,8 @@ class Admin::DesignReviewsController < Admin::ApplicationController
 
     if @design_review.save
       if current_user.admin? && params[:design_review][:ysws].present?
-        @project.update(ysws: params[:design_review][:ysws])
+        ysws_value = params[:design_review][:ysws] == "none" ? nil : params[:design_review][:ysws]
+        @project.update(ysws: ysws_value)
       end
       update_project_review_status(@project, @design_review)
       redirect_to admin_random_design_review_path, notice: "Design review submitted successfully. Showing new project."
