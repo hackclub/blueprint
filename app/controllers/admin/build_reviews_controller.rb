@@ -72,7 +72,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   private
 
   def random_pick_id(scope)
-    scope.reorder(Arel.sql("RANDOM()")).limit(1).pick(:id)
+    scope.pluck(:id).sample
   end
 
   def build_review_params
