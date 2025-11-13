@@ -37,24 +37,19 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   end
 
   def show_random
-    if current_user.admin?
-      reviewed_project_id = Project.joins(:build_reviews)
-                              .where(is_deleted: false, review_status: :build_pending)
-                              .where(build_reviews: { invalidated: false })
-                              .distinct
-                              .pluck(:id)
-                              .sample
-      if reviewed_project_id
-        redirect_to admin_build_review_path(reviewed_project_id)
-        return
-      end
-    end
+    base = Project.active.build_pending
+    reviewed = base.with_valid_build_review
+    unreviewed = base.without_valid_build_review
 
-    scope = Project.where(is_deleted: false, review_status: :build_pending)
-    scope = scope.where("ysws IS NULL OR ysws != ?", "led") unless current_user.admin?
-    project = scope.order("RANDOM()").first
-    if project
-      redirect_to admin_build_review_path(project)
+    project_id =
+      if current_user.admin?
+        random_pick_id(reviewed) || random_pick_id(unreviewed)
+      else
+        random_pick_id(unreviewed.not_led)
+      end
+
+    if project_id
+      redirect_to admin_build_review_path(project_id)
     else
       redirect_to admin_build_reviews_path, alert: "No projects pending review."
     end
@@ -75,6 +70,10 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   end
 
   private
+
+  def random_pick_id(scope)
+    scope.reorder(Arel.sql("RANDOM()")).limit(1).pick(:id)
+  end
 
   def build_review_params
     params.require(:build_review).permit(:reason, :feedback, :result, :ticket_multiplier, :ticket_offset, :tier_override, :hours_override)

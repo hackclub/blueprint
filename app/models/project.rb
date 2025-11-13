@@ -49,6 +49,8 @@ class Project < ApplicationRecord
   has_many :followers, through: :follows, source: :user
   has_many :design_reviews, dependent: :destroy
   has_many :build_reviews, dependent: :destroy
+  has_many :valid_design_reviews, -> { where(invalidated: false) }, class_name: "DesignReview"
+  has_many :valid_build_reviews, -> { where(invalidated: false) }, class_name: "BuildReview"
   has_many :project_grants, dependent: :destroy
   has_many :kudos, dependent: :destroy
 
@@ -140,6 +142,13 @@ class Project < ApplicationRecord
 
     nil
   end
+
+  scope :active, -> { where(is_deleted: false) }
+  scope :not_led, -> { where("ysws IS NULL OR ysws != ?", "led") }
+  scope :with_valid_design_review, -> { joins(:valid_design_reviews).distinct }
+  scope :without_valid_design_review, -> { left_outer_joins(:valid_design_reviews).where(valid_design_reviews: { id: nil }) }
+  scope :with_valid_build_review, -> { joins(:valid_build_reviews).distinct }
+  scope :without_valid_build_review, -> { left_outer_joins(:valid_build_reviews).where(valid_build_reviews: { id: nil }) }
 
   # Order projects by most recent journal entry; fall back to project creation
   scope :order_by_recent_journal, -> {
