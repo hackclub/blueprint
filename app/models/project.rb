@@ -717,17 +717,39 @@ class Project < ApplicationRecord
     addresses = idv_data.dig(:identity, :addresses) || []
     primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
 
+    # Get approved reviews
+    approved_design_reviews = design_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
+    approved_build_reviews = build_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
+
+    # Check if there's an hours override in any approved review
+    has_override = approved_design_reviews.any? { |r| r.hours_override.present? } ||
+                   approved_build_reviews.any? { |r| r.hours_override.present? }
+
     # Check if this is an LED project
     if ysws == "led"
-      hours_for_airtable = 5
+      if !has_override
+        hours_for_airtable = 5
+      else
+        total_effective_hours = 0
+        approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+        approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+        hours_for_airtable = total_effective_hours
+      end
       reasoning = "This project followed the 555 LED blinker guide. This was a guide that we have used at workshops before and which took students new to hardware a minimum of 5 hours to complete. This project at least meets the standards of a project submitted at this event. - Clay"
+    elsif ysws == "hackpad"
+      if !has_override
+        hours_for_airtable = 15
+      else
+        total_effective_hours = 0
+        approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+        approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+        hours_for_airtable = total_effective_hours
+      end
+      reasoning = "The user was surveyed after they were approved, asking them to estimate how many hours they spent. I (Clay Nicholson) reviewed and approved the submission and placed the order. The median submission based on this data spent 15 hours, while the mean was 20.
+       This hackpad was more or less within that range of hours - nothing sticks out, so I am automatically approving these hours without reviewing the design."
     else
       # Calculate total hours from ALL journal entries
       total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0
-
-      # Get approved reviews
-      approved_design_reviews = design_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
-      approved_build_reviews = build_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
 
       # Calculate total effective hours from all approved reviews (design + build)
       total_effective_hours = 0
