@@ -118,7 +118,7 @@ Learn more: [YouTube guide](https://www.youtube.com/watch?v=5AyxuuFjZSI) or [PCB
 Click **checkout** and fill out your information.
 
 > To avoid excess shipping fees or customs, check out the Shipping Tips doc!
-> The TLDR is that you should select Global Standard Direct or Air Registered Mail for your shipping only if you can!
+> The TLDR is that you should select Global Standard Direct (or Air Registered Mail if it is cheaper) for your shipping only if you can!
 
 Then choose “Pay after Review” or “Pay Directly”, and click **Submit Order**.
 
