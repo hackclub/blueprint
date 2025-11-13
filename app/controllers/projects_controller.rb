@@ -521,7 +521,7 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(
+    permitted = params.require(:project).permit(
       :title,
       :description,
       :repo_link,
@@ -534,12 +534,17 @@ class ProjectsController < ApplicationController
       :ship,
       :ysws,
       :ysws_other,
-      :needs_funding,
       :funding_needed_cents,
       :print_legion,
       :needs_soldering_iron,
       :skip_gh_sync,
       cart_screenshots: []
     )
+
+    if current_user.is_pro
+      permitted[:needs_funding] = params[:skip_funding] != "1"
+    end
+
+    permitted
   end
 end

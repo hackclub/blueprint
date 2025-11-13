@@ -586,7 +586,7 @@ class Project < ApplicationRecord
   end
 
   def is_currently_build?
-    design_approved? || build_pending? || build_approved? || build_needs_revision? || build_rejected?
+    !needs_funding? || design_approved? || build_pending? || build_approved? || build_needs_revision? || build_rejected?
   end
 
   def submit_button_text
@@ -594,7 +594,7 @@ class Project < ApplicationRecord
       "Submit Design Re-review"
     elsif build_needs_revision?
       "Submit Build Re-review"
-    elsif design_approved? || build_approved?
+    elsif design_approved? || build_approved? || !needs_funding?
       "Submit Build Review"
     else
       "Submit Design Review"
@@ -652,7 +652,7 @@ class Project < ApplicationRecord
     elsif design_rejected?
       review = design_reviews.where(result: "rejected", invalidated: false).last
       if review && review.feedback.present? && review.reviewer&.slack_id.present?
-        msg += "Your Blueprint project *#{title}* has been rejected. You won't be able to submit again.Here's some feedback from your inspector, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
+        msg += "Your Blueprint project *#{title}* has been rejected. You won't be able to submit again. Here's some feedback from your inspector, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
         msg += "*Recommended tier:* #{review.tier_override}\n\n" if review.tier_override.present?
         msg += "*Grant to expect:* $#{'%.2f' % (review.grant_override_cents / 100.0)}\n\n" if review.grant_override_cents.present?
         msg += "<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
@@ -662,8 +662,10 @@ class Project < ApplicationRecord
     elsif design_approved?
       msg += "Your Blueprint project *#{title}* has passed the design review! You should receive an email from HCB about your grant in a few business days.\n\n"
 
-      msg += "*Grant approved:* $#{'%.2f' % (approved_funding_cents / 100.0)}\n\n" if approved_funding_cents.present?
-      msg += "*Tier approved:* #{approved_tier}\n\n" if approved_tier.present?
+      if ysws != "hackpad" && ysws != "led"
+        msg += "*Grant approved:* $#{'%.2f' % (approved_funding_cents / 100.0)}\n\n" if approved_funding_cents.present?
+        msg += "*Tier approved:* #{approved_tier}\n\n" if approved_tier.present?
+      end
 
       admin_review = design_reviews.where(admin_review: true, result: "approved", invalidated: false).order(created_at: :desc).first
       if admin_review && admin_review.feedback.present? && admin_review.reviewer&.slack_id.present?
