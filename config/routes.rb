@@ -172,7 +172,6 @@ Rails.application.routes.draw do
       resources :users, only: [ :index, :show ] do
         post :grant_reviewer, on: :member
         post :revoke_to_user, on: :member
-        patch :update_internal_notes, on: :member
         post :impersonate, on: :member
       end
 
@@ -193,7 +192,9 @@ Rails.application.routes.draw do
       post "build_reviews/:id", to: "build_reviews#create", as: :build_review_create
 
       resources :projects, only: [ :index, :show ]
-      resources :users, only: [ :index, :show, :update ]
+      resources :users, only: [ :index, :show, :update ] do
+        patch :update_internal_notes, on: :member
+      end
     end
   end
 end
