@@ -848,17 +848,11 @@ class Project < ApplicationRecord
     end
   end
 
-  # @deprecated Use unreviewed_journal_entries instead
-  def last_non_invalid_review_at
-    [
-      design_reviews.where(invalidated: false, admin_review: true).maximum(:created_at),
-      build_reviews.where(invalidated: false, admin_review: true).maximum(:created_at)
-    ].compact.max
-  end
-
-  # @deprecated Use unreviewed_journal_entries instead
-  def last_non_invalid_build_review_at
-    build_reviews.where(invalidated: false, admin_review: true).maximum(:created_at)
+  def last_admin_build_review_entry_at
+    build_reviews
+      .where(result: :approved, invalidated: false, admin_review: true)
+      .joins(:journal_entries)
+      .maximum("journal_entries.created_at")
   end
 
   def unreviewed_journal_entries
