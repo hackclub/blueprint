@@ -41,8 +41,8 @@ class Admin::UsersController < Admin::ApplicationController
   def update_internal_notes
     @user = User.find(params[:id])
 
-    frozen_notes = params[:user][:frozen_internal_notes]
-    current_notes = @user.internal_notes
+    frozen_notes = params[:user][:frozen_internal_notes].presence
+    current_notes = @user.internal_notes.presence
 
     if frozen_notes != current_notes
       @conflict_frozen = frozen_notes
