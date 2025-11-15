@@ -3,8 +3,6 @@
 | description | Kick off with these guides for Blueprint. |
 | unlisted    | false                                      |
 
-Made by @Cyao
-
 # Make your own Hackpad! 
 
 Hey! Want to make your own macropad but have absolutely no clue where to start? You found the right place! In this tutorial, we're going to make a 4-key macropad as an example. **For a full submission, you will have to edit it to be your own** (add a extra keys?? a knob?? OLED screen? up to you!)
