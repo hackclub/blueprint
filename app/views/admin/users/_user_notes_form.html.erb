@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "user_notes_#{user.id}" do %>
   <div id="user_notes_flash_#{user.id}" class="mb-4">
     <% if flash[:notice] %>
-      <div class="p-3 bg-bp-success/20 border-2 border-bp-success rounded text-bp-success">
+      <div class="p-3 bg-bp-success/20 border-2 border-bp-success rounded text-bp-success" data-controller="auto-dismiss">
         <%= flash[:notice] %>
       </div>
     <% end %>
