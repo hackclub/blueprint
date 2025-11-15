@@ -3,7 +3,7 @@
 | description | Kick off with these guides for Blueprint. |
 | unlisted    | false                                      |
 
-Made by @alexren
+Made by @Cyao
 
 # Make your own Hackpad! 
 
