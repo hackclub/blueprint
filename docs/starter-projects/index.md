@@ -9,7 +9,7 @@
 <p class="text-xl mb-8">Follow and modify one of these awesome projects</p>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8 mb-12">
-  <a href="/starter-projects/hackpad" class="block h-full">
+<a href="../hackpad/index.md" class="block h-full">
     <div class="flex flex-col h-full group border-2 border-[#FF6B6B] bg-[#4A1515] hover:bg-[#5A2020] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
       <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
         <p class="text-2xl font-semibold text-white">Hackpad</p>

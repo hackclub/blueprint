@@ -7,19 +7,42 @@
 
 Hey! Want to make your own macropad but have absolutely no clue where to start? You found the right place! In this tutorial, we're going to make a 4-key macropad as an example. **For a full submission, you will have to edit it to be your own** (add a extra keys?? a knob?? OLED screen? up to you!)
 
+**Read over the [FAQ](/faq) first so that you have an idea of what you're working with!**
 
 This process is going to be broken into roughly 4 parts, each with its own sub-parts:
 
-- **Initial Setup**
-- **PCB (Printed Circuit Board) Design**
-- **Case Design**
-- **Configuring firmware**
-
+- [Make your own Hackpad!](#make-your-own-hackpad)
+  - [Initial Setup](#initial-setup)
+  - [Designing your PCB](#designing-your-pcb)
+    - [Drawing the Schematic](#drawing-the-schematic)
+    - [Routing the PCB](#routing-the-pcb)
+  - [Creating your case](#creating-your-case)
+  - [Creating your case in Fusion360](#creating-your-case-in-fusion360)
+    - [Creating the bottom](#creating-the-bottom)
+    - [Creating the top](#creating-the-top)
+    - [Finishing Touches](#finishing-touches)
+  - [Firmware](#firmware)
+- [Next steps](#next-steps)
 
 If you're unsure about anything, send a message in #blueprint! We have so many eager people to help.
 
 There's also [this](/hackpad/resources) giant wall of resources to reference!
 
+ List of approved parts
+
+Here is the list of parts that come with the kit! Feel free to use anything in it
+
+- Seeed XIAO RP2040 - since you're soldering, you can mount it SMD style! Please note it is significantly harder than doing it through-hole, so if it's your first time soldering I would avoid it.
+- Through-hole 1N4148 Diodes (Max 20x)
+- MX-Style switches (Max 16x)
+- EC11 Rotary encoders (Max 2x)
+- 0.91 inch OLED displays (Max 1x) (make sure the pin order is GND-VCC-SCL-SDA, otherwise it WILL NOT WORK)
+- Blank DSA keycaps (White)
+- SK6812 MINI-E LEDs (Max 16x)
+- M3x16mm screws
+- [M3x5mx4mm heatset inserts](https://www.aliexpress.us/item/2255800046543591.html)
+- 3D PRINTED CASE ONLY. NO ACRYLIC.
+  
 Lets start with:
 
 ## Initial Setup
@@ -141,7 +164,7 @@ If you want to put the footprint on the back side, press F. Here is what the foo
 
 Move, rotate and flip your footprints into a design that you like! It should look something like this:
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6863a3637ac91daf5f2e5618aed19f3d94fdcb47_placedfootprints.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/placedfootprints.png" class="max-w-96" />
 
 You need to define the outline of the board. Select the Edge.Cuts layer on the right toolbar.
 
@@ -202,7 +225,7 @@ On the top left you should see a small keyboard. Now click the keys that doesn't
 
 After you made the layout match your macropad, switch to the "Raw Data" tab in the middle:
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e577de2f63de0008edf4683ab1525982798272c7_layout.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/layout.png" class="max-w-96" />
 
 Copy the text inside the textbox, and paste it into ai03's plate generator.
 
@@ -219,7 +242,7 @@ I **strongly** recommend you use the desktop application if you are on a support
 ### Creating the bottom
 Start by creating a new project, and a new component, this is better for organization.
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ba29ae66ece9794dacbab6be26b730b618e27288_fusioncomp.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusioncomp.png" class="max-w-96" />
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ba29ae66ece9794dacbab6be26b730b618e27288_newcomponent.png" class="max-w-96" />
 
 Now go back to KiCAD PCB editor and click on your Edge.Cuts outline. In the bottom left of your screen, you can find the length and widgth of your PCB. Alternatively, measure the dimensions of your board with the ruler tool. Click on one end of your Edge.Cuts and click again on the other end.
@@ -233,13 +256,13 @@ If you used the ruler tool, the width of the board is the absolute value of x (4
 
 Next, create a sketch by by pressing the green + button on the top left, then clicking the bottom orange retangle at the center of the screen.
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ba29ae66ece9794dacbab6be26b730b618e27288_1sketch1.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/1sketch1.png" class="max-w-96" />
 
 Create a rectangle that is 1mm bigger than your hackpad's PCB. For example, my PCB is 41mm x 62.7mm, I added 1mm to each size on the sketch. To set the size of a rectangle, click on the Sketch dimension button (You might need to expand the "Create" menu to see it, or press the D key), then click on the edge you wan't to define the length.
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/80bf23120968456e67f2a8fc478b4f4cadca7e49_fusionrect.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/80bf23120968456e67f2a8fc478b4f4cadca7e49_fusiondim.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/80bf23120968456e67f2a8fc478b4f4cadca7e49_1sketch2.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusiondim.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/1sketch2.png" class="max-w-96" />
 
 Create another rectangle with 20mm extra on each dimension! (I will have 61mm x 82.7mm):
 
@@ -247,29 +270,29 @@ Create another rectangle with 20mm extra on each dimension! (I will have 61mm x 
 
 Center this rectangle by pressing the dimension button, press one edge of the small rectangle then the corresponding edge of the big rectangle and setting the values to 9.5mm. (You only need to constrain one of the horizontal edges, and one of the vertical edges)
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/3c5a322be956e5f732e0d509895a6cdd8b89992f_fusionrect3.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusionrect3.png" class="max-w-96" />
 
 Now use the circle tool to draw 4 circles, one at each corner of the larger rectangle. Set the diameter to 3.4mm when creating the circle, or use the sketch dimension tool to set their size to 3.4mm. Then, use the dimension tool to set their distance to their corresponding edges to 5mm (by clicking on their centers, then the corresponding edge):
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusioncircle.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusioncircledim.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusioncircle.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusioncircledim.png" class="max-w-96" />
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusioncircle2.png" class="max-w-96" />
 
 Now add 4 more circles, this time with a diameter of 6mm. Select the center of the small circle when you place the larger circle's center point, or select the coincident tool, and click on the centers of corresponding circles to align them.
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusioncoincident.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusionfinishsketch.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusioncoincident.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusionfinishsketch.png" class="max-w-96" />
 
 Press "Finish sketch" (green checkmark at top right of screen), then select all the outer circles (shift click) and press extrude (E key or the button at the top). In the extrude menu, select Offset in Start, and enter 3.1mm as the Offset, then enter 9.9 mm in the Distance field and click ok:
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e5012fc0a662c8d120b6730ee0e57937496b3fbd_fusionextrude.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e5012fc0a662c8d120b6730ee0e57937496b3fbd_fusionselect.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e5012fc0a662c8d120b6730ee0e57937496b3fbd_fusionextrudemenu.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusionselect.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusionextrudemenu.png" class="max-w-96" />
 
 Now, you must re-show the object be opening the Sketches folder on the left, and clicking the eye icon to the left of Sketch1. Then select the outer rectangle and press extrude. This time the Start shall be "Profile Plane" (and will be this for all future extrudes), and set the distance to 13mm:
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/5b2e76d3daebd0d8af8f9f68e4643daa3f35253e_fusionshow.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/5b2e76d3daebd0d8af8f9f68e4643daa3f35253e_fusionextrude2.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusionshow.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusionextrude2.png" class="max-w-96" />
 
 Now, click the center square, and extrude it by 3mm. You can move arround and you will see something like this:
 
@@ -283,7 +306,7 @@ Now go to kicad and measure the distance from the edge of the PCB to the USB por
 
 Now select the top of the case:
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/29df5be214c13403164543b583d88b3cacceac95_fusiontop.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusiontop.png" class="max-w-96" />
 
 And create a new sketch (Create Sketch button). Draw a rectangle at the top, and place your starting point on the top edge, and ending point on the inner top edge. Now define it's width to 18.5mm (You can define it by clicking on the left edge, then the right edge with the distance tool). After that, set the distance from the left of the rectangle to the left edge of the case to x_distance_in_kicad+5.75mm:
 
@@ -302,14 +325,14 @@ To download the resulting STEP file on the web, go to [https://myhub.autodesk360
 Right now our case looks a little ugly, its so blocky! Lets round the vertical edges, press the Fillet button found in the top, and click on each edge and make it 5mm. Should look as such:
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/37804a2891e02800f2d4b3f953a398ee5353fc98_fillet.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/37804a2891e02800f2d4b3f953a398ee5353fc98_edgeround.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/37804a2891e02800f2d4b3f953a398ee5353fc98_fusiongfinaltop.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/edgeround.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusiongfinaltop.png" class="max-w-96" />
 
 ### Creating the top
 
 Next, we will make the other half of our case. Start by clicking new design.
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/1480f89f7a6e146650ec11668c9c065be4103dc8_fusionnewdesign.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusionnewdesign.png" class="max-w-96" />
 
 Now go to the INSERT menu, expand it and click "Insert DXF". Select the dxf file we generated at the start (in the web you need to first click Upload from Fusion Team..., upload it from there, click refresh then select the file), and click ok. Now delete the outer lines surrounding the keyholes. You should have something like this:
 
@@ -317,12 +340,12 @@ Now go to the INSERT menu, expand it and click "Insert DXF". Select the dxf file
 
 Now select everything and click on the Lock button
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/1480f89f7a6e146650ec11668c9c065be4103dc8_fusionlock.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusionlock.png" class="max-w-96" />
 
 Go back to KiCAD PCB editor and measure the dimensions of your board with the ruler tool. Click on one end of your Edge.Cuts and click again on the other end. You can also select your Edge.Cuts and find the width and height in the bottom right.
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/b89bd15fbe8d457d09eadc0e244eea7ad64f721d_ruler.png" class="max-w-96" />
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/b89bd15fbe8d457d09eadc0e244eea7ad64f721d_swoffset.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/swoffset.png" class="max-w-96" />
 
 Now lets create a new rectangle, define it's width and height be the same as the size of the top plate. Set the distance between the left keyhole end and the left rectangle edge the x distance you just measured + 9.5 (for me it's 3.99+9.5). Same for the bottom edge of the keyhole and bottom edge of the rectangle, y distance + 9.5.
 
@@ -336,7 +359,7 @@ Add 4 more circles of 3.4mm and set their position to 5mm from the edges with th
 
 Click finish sketch, and pad out the main part by 1.5mm.
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/d39d3891cd4c372befaecadd1fbe95cea39c60ad_fusionplate.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusionplate.png" class="max-w-96" />
 
 But currently the plate is kinda ugly. Do the same things with the fillet as the case:
 
