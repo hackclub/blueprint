@@ -36,16 +36,31 @@
   <%= render "shared/card" do %>
     <p class="text-3xl pb-4 font-rc-full">Shipping Address</p>
     <% if @shop_order.parsed_address %>
-      <div class="text-xl space-y-2">
-        <p><strong>Name:</strong> <%= @shop_order.parsed_address["first_name"] %> <%= @shop_order.parsed_address["last_name"] %></p>
-        <p><strong>Address Line 1:</strong> <%= @shop_order.parsed_address["line_1"] %></p>
+      <% address_parts = [
+        "#{@shop_order.parsed_address["first_name"]} #{@shop_order.parsed_address["last_name"]}",
+        @shop_order.parsed_address["line_1"],
+        @shop_order.parsed_address["line_2"],
+        @shop_order.parsed_address["city"],
+        @shop_order.parsed_address["state"],
+        @shop_order.parsed_address["postal_code"],
+        @shop_order.parsed_address["country"],
+        @shop_order.phone_number
+      ].compact.reject(&:blank?) %>
+      <% full_address = address_parts.join("\n") %>
+      <div class="text-xl space-y-2 p-4">
+        <p class="cursor-pointer hover:bg-white/5 px-2 py-1 rounded transition-colors" onclick="navigator.clipboard.writeText('<%= j "#{@shop_order.parsed_address["first_name"]} #{@shop_order.parsed_address["last_name"]}" %>'); event.stopPropagation();"><strong>Name:</strong> <%= @shop_order.parsed_address["first_name"] %> <%= @shop_order.parsed_address["last_name"] %></p>
+        <p class="cursor-pointer hover:bg-white/5 px-2 py-1 rounded transition-colors" onclick="navigator.clipboard.writeText('<%= j @shop_order.parsed_address["line_1"] %>'); event.stopPropagation();"><strong>Address Line 1:</strong> <%= @shop_order.parsed_address["line_1"] %></p>
         <% if @shop_order.parsed_address["line_2"].present? %>
-          <p><strong>Address Line 2:</strong> <%= @shop_order.parsed_address["line_2"] %></p>
+          <p class="cursor-pointer hover:bg-white/5 px-2 py-1 rounded transition-colors" onclick="navigator.clipboard.writeText('<%= j @shop_order.parsed_address["line_2"] %>'); event.stopPropagation();"><strong>Address Line 2:</strong> <%= @shop_order.parsed_address["line_2"] %></p>
         <% end %>
-        <p><strong>City:</strong> <%= @shop_order.parsed_address["city"] %></p>
-        <p><strong>State:</strong> <%= @shop_order.parsed_address["state"] %></p>
-        <p><strong>Postal Code:</strong> <%= @shop_order.parsed_address["postal_code"] %></p>
-        <p><strong>Country:</strong> <%= @shop_order.parsed_address["country"] %></p>
+        <p class="cursor-pointer hover:bg-white/5 px-2 py-1 rounded transition-colors" onclick="navigator.clipboard.writeText('<%= j @shop_order.parsed_address["city"] %>'); event.stopPropagation();"><strong>City:</strong> <%= @shop_order.parsed_address["city"] %></p>
+        <p class="cursor-pointer hover:bg-white/5 px-2 py-1 rounded transition-colors" onclick="navigator.clipboard.writeText('<%= j @shop_order.parsed_address["state"] %>'); event.stopPropagation();"><strong>State:</strong> <%= @shop_order.parsed_address["state"] %></p>
+        <p class="cursor-pointer hover:bg-white/5 px-2 py-1 rounded transition-colors" onclick="navigator.clipboard.writeText('<%= j @shop_order.parsed_address["postal_code"] %>'); event.stopPropagation();"><strong>Postal Code:</strong> <%= @shop_order.parsed_address["postal_code"] %></p>
+        <p class="cursor-pointer hover:bg-white/5 px-2 py-1 rounded transition-colors" onclick="navigator.clipboard.writeText('<%= j @shop_order.parsed_address["country"] %>'); event.stopPropagation();"><strong>Country:</strong> <%= @shop_order.parsed_address["country"] %></p>
+        <% if @shop_order.phone_number.present? %>
+          <p class="cursor-pointer hover:bg-white/5 px-2 py-1 rounded transition-colors" onclick="navigator.clipboard.writeText('<%= j @shop_order.phone_number %>'); event.stopPropagation();"><strong>Phone:</strong> <%= @shop_order.phone_number %></p>
+        <% end %>
+        <p class="text-sm text-bp-muted mt-2">Click any field to copy it</p>
       </div>
     <% else %>
       <p class="text-xl">No address information available.</p>

@@ -12,6 +12,7 @@
 #  hold_reason             :string
 #  internal_notes          :string
 #  on_hold_at              :datetime
+#  phone_number            :string
 #  quantity                :integer
 #  rejected_at             :datetime
 #  rejection_reason        :string

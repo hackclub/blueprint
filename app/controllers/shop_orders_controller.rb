@@ -55,6 +55,6 @@ class ShopOrdersController < ApplicationController
   private
 
   def shop_order_params
-    params.require(:shop_order).permit(:quantity, :frozen_address)
+    params.require(:shop_order).permit(:quantity, :frozen_address, :phone_number)
   end
 end
