@@ -16,6 +16,7 @@
 #  rejected_at             :datetime
 #  rejection_reason        :string
 #  state                   :integer          default("pending"), not null
+#  tracking_number         :string
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  approved_by_id          :bigint

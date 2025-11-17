@@ -1,0 +1,89 @@
+<div class="mb-10">
+  <%= render "shared/button", text: "Back", url: admin_root_path, class: "py-0" %>
+</div>
+<section class="space-y-6">
+  <div class="flex flex-col space-y-8">
+    <div class="flex flex-col">
+      <h1 class="pb-2 text-4xl">Shop Orders</h1>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <%= form_with url: admin_shop_orders_path, method: :get, local: true, class: "flex items-center gap-3" do %>
+      <label for="status" class="text-xl">Filter by Status:</label>
+      <%= select_tag :status, options_for_select([
+        ["All", "all"],
+        ["Pending", "pending"],
+        ["Awaiting Verification", "awaiting_verification"],
+        ["Approved", "approved"],
+        ["Fulfilled", "fufilled"],
+        ["Rejected", "rejected"],
+        ["On Hold", "on_hold"]
+      ], params[:status].presence || "pending"), class: "input px-3", onchange: "this.form.submit()" %>
+    <% end %>
+  </div>
+
+  <div class="border-2 border-white rounded-none">
+    <!-- Header row -->
+    <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white">
+      <div class="col-span-1">ID</div>
+      <div class="col-span-2">User</div>
+      <div class="col-span-2">Item</div>
+      <div class="col-span-1">Qty</div>
+      <div class="col-span-1">Tickets</div>
+      <div class="col-span-1">USD</div>
+      <div class="col-span-2">Status</div>
+      <div class="col-span-1">Date</div>
+      <div class="col-span-1">Actions</div>
+    </div>
+
+    <!-- Rows -->
+    <% if @shop_orders.present? %>
+      <% @shop_orders.each do |order| %>
+        <% status_color = case order.state
+          when "pending" then "text-bp-warning"
+          when "approved" then "text-bp-success"
+          when "fufilled" then "text-white"
+          when "rejected" then "text-bp-danger"
+          when "on_hold" then "text-bp-warning"
+          else "text-white"
+          end %>
+        <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0">
+          <div class="flex items-center col-span-1 py-2"><%= order.id %></div>
+          <div class="flex items-center col-span-2">
+            <% if order.user %>
+              <%= link_to order.user.display_name, admin_user_path(order.user), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
+            <% else %>
+              <p>–</p>
+            <% end %>
+          </div>
+          <div class="flex items-center col-span-2">
+            <%= order.shop_item.name %>
+          </div>
+          <div class="flex items-center col-span-1">
+            <%= order.quantity %>
+          </div>
+          <div class="flex items-center col-span-1">
+            <%= order.frozen_unit_ticket_cost || 0 %>
+          </div>
+          <div class="flex items-center col-span-1">
+            $<%= sprintf("%.2f", (order.frozen_unit_usd_cost || 0) / 100.0) %>
+          </div>
+          <div class="flex items-center col-span-2 <%= status_color %>">
+            <%= order.state.humanize %>
+          </div>
+          <div class="flex items-center col-span-1">
+            <%= order.created_at.strftime("%m/%d/%y") %>
+          </div>
+          <div class="flex items-center col-span-1">
+            <div class="flex items-center gap-2">
+              <%= render "shared/button", text: "View", url: admin_shop_order_path(order), class: "text-sm py-0 px-2" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="px-4 py-6 text-center text-white/70">No orders found.</div>
+    <% end %>
+  </div>
+</section>

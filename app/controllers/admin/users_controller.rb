@@ -28,14 +28,44 @@ class Admin::UsersController < Admin::ApplicationController
 
   def grant_reviewer
     @user = User.find(params[:id])
-    @user.update!(role: "reviewer")
-    redirect_to admin_user_path(@user), notice: "User granted reviewer role"
+    @user.update!(reviewer: true)
+    redirect_to admin_user_path(@user), notice: "User granted reviewer permissions"
+  end
+
+  def revoke_reviewer
+    @user = User.find(params[:id])
+    @user.update!(reviewer: false)
+    redirect_to admin_user_path(@user), notice: "Reviewer permissions revoked"
+  end
+
+  def grant_fulfiller
+    @user = User.find(params[:id])
+    @user.update!(fulfiller: true)
+    redirect_to admin_user_path(@user), notice: "User granted fulfiller permissions"
+  end
+
+  def revoke_fulfiller
+    @user = User.find(params[:id])
+    @user.update!(fulfiller: false)
+    redirect_to admin_user_path(@user), notice: "Fulfiller permissions revoked"
+  end
+
+  def grant_admin
+    @user = User.find(params[:id])
+    @user.update!(admin: true)
+    redirect_to admin_user_path(@user), notice: "User granted admin permissions"
+  end
+
+  def revoke_admin
+    @user = User.find(params[:id])
+    @user.update!(admin: false)
+    redirect_to admin_user_path(@user), notice: "Admin permissions revoked"
   end
 
   def revoke_to_user
     @user = User.find(params[:id])
-    @user.update!(role: "user")
-    redirect_to admin_user_path(@user), notice: "User role revoked to user"
+    @user.update!(admin: false, reviewer: false, fulfiller: false)
+    redirect_to admin_user_path(@user), notice: "All permissions revoked"
   end
 
   def update_internal_notes

@@ -135,7 +135,7 @@
                         <% if current_user.is_adult? %>
                           <p>Adult</p>
                         <% else %>
-                          <% cache [current_user, "tickets-v2"] do %>
+                          <% cache [current_user, "tickets-v2", current_user.received_build_reviews.maximum(:updated_at), current_user.manual_ticket_adjustments.maximum(:updated_at), current_user.shop_orders.maximum(:updated_at)] do %>
                             <p><%= pluralize(current_user.tickets, "ticket") %></p>
                           <% end %>
                         <% end %>

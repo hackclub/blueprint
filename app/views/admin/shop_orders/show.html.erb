@@ -1,0 +1,137 @@
+<section class="space-y-6">
+  <div class="flex items-center justify-between">
+    <%= render "shared/button", text: "Back", url: admin_shop_orders_path, class: "py-0" %>
+  </div>
+
+  <%= render "shared/card" do %>
+    <div class="flex flex-col justify-between space-y-1">
+      <h1 class="pb-2 text-4xl">Order #<%= @shop_order.id %></h1>
+      <div>
+        <p>By <%= render "shared/user_inline", user: @shop_order.user, admin_view: true %> on <%= @shop_order.created_at.strftime("%B %d, %Y") %></p>
+      </div>
+      <div class="flex justify-start text-xl mt-4">
+        <% status_style = case @shop_order.state
+          when "pending" then "bg-bp-warning text-bp-darker"
+          when "approved" then "bg-bp-success text-bp-darker"
+          when "fufilled" then "bg-white text-bp-darker"
+          when "rejected" then "bg-bp-danger text-bp-darker"
+          when "on_hold" then "bg-bp-warning text-bp-darker"
+          else "bg-bp-dark text-white"
+          end %>
+        <p>Status: <span class="<%= status_style %> p-1 px-3"><%= @shop_order.state.humanize %></span></p>
+      </div>
+    </div>
+    <div class="space-y-6">
+      <div class="text-xl">
+        <p><strong>Item:</strong> <%= @shop_order.shop_item.name %></p>
+        <p><strong>Quantity:</strong> <%= @shop_order.quantity %></p>
+        <p><strong>Unit Ticket Cost:</strong> <%= @shop_order.frozen_unit_ticket_cost || 0 %> tickets</p>
+        <p><strong>Unit USD Cost:</strong> $<%= sprintf("%.2f", (@shop_order.frozen_unit_usd_cost || 0) / 100.0) %></p>
+        <p><strong>Total Ticket Cost:</strong> <%= (@shop_order.frozen_unit_ticket_cost || 0) * @shop_order.quantity %> tickets</p>
+        <p><strong>Total USD Cost:</strong> $<%= sprintf("%.2f", ((@shop_order.frozen_unit_usd_cost || 0) * @shop_order.quantity) / 100.0) %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <%= render "shared/card" do %>
+    <p class="text-3xl pb-4 font-rc-full">Shipping Address</p>
+    <% if @shop_order.parsed_address %>
+      <div class="text-xl space-y-2">
+        <p><strong>Name:</strong> <%= @shop_order.parsed_address["first_name"] %> <%= @shop_order.parsed_address["last_name"] %></p>
+        <p><strong>Address Line 1:</strong> <%= @shop_order.parsed_address["line_1"] %></p>
+        <% if @shop_order.parsed_address["line_2"].present? %>
+          <p><strong>Address Line 2:</strong> <%= @shop_order.parsed_address["line_2"] %></p>
+        <% end %>
+        <p><strong>City:</strong> <%= @shop_order.parsed_address["city"] %></p>
+        <p><strong>State:</strong> <%= @shop_order.parsed_address["state"] %></p>
+        <p><strong>Postal Code:</strong> <%= @shop_order.parsed_address["postal_code"] %></p>
+        <p><strong>Country:</strong> <%= @shop_order.parsed_address["country"] %></p>
+      </div>
+    <% else %>
+      <p class="text-xl">No address information available.</p>
+    <% end %>
+  <% end %>
+
+  <%= render "shared/card" do %>
+    <p class="text-3xl pb-4 font-rc-full">Order History</p>
+    <div class="space-y-4 text-xl">
+      <p><strong>Created:</strong> <%= @shop_order.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+      <% if @shop_order.approved_at %>
+        <p><strong>Approved:</strong> <%= @shop_order.approved_at.strftime("%B %d, %Y at %I:%M %p") %> by <%= render "shared/user_inline", user: @shop_order.approved_by, admin_view: true %></p>
+      <% end %>
+      <% if @shop_order.fufilled_at %>
+        <p><strong>Fulfilled:</strong> <%= @shop_order.fufilled_at.strftime("%B %d, %Y at %I:%M %p") %> by <%= render "shared/user_inline", user: @shop_order.fufilled_by, admin_view: true %></p>
+        <% if @shop_order.fufillment_usd_cost %>
+          <p><strong>Fulfillment Cost:</strong> $<%= sprintf("%.2f", @shop_order.fufillment_usd_cost / 100.0) %></p>
+        <% end %>
+        <% if @shop_order.tracking_number.present? %>
+          <p><strong>Tracking:</strong>
+            <% if @shop_order.tracking_number.match?(/\Ahttps?:\/\//) %>
+              <%= link_to "Tracking link", @shop_order.tracking_number, target: "_blank", rel: "noopener noreferrer", class: "underline" %>
+            <% else %>
+              <%= @shop_order.tracking_number %>
+            <% end %>
+          </p>
+        <% end %>
+      <% end %>
+      <% if @shop_order.rejected_at %>
+        <p><strong>Rejected:</strong> <%= @shop_order.rejected_at.strftime("%B %d, %Y at %I:%M %p") %> by <%= render "shared/user_inline", user: @shop_order.rejected_by, admin_view: true %></p>
+        <% if @shop_order.rejection_reason.present? %>
+          <p><strong>Rejection Reason:</strong> <%= @shop_order.rejection_reason %></p>
+        <% end %>
+      <% end %>
+      <% if @shop_order.on_hold_at %>
+        <p><strong>Put on Hold:</strong> <%= @shop_order.on_hold_at.strftime("%B %d, %Y at %I:%M %p") %> by <%= render "shared/user_inline", user: @shop_order.on_hold_by, admin_view: true %></p>
+        <% if @shop_order.hold_reason.present? %>
+          <p><strong>Hold Reason:</strong> <%= @shop_order.hold_reason %></p>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= render "shared/card" do %>
+    <p class="text-3xl pb-4 font-rc-full">Internal Notes</p>
+    <%= form_with url: update_notes_admin_shop_order_path(@shop_order), method: :patch, html: { class: "space-y-4" } do |f| %>
+      <%= text_area_tag :internal_notes, @shop_order.internal_notes, rows: 4, placeholder: "Add internal notes about this order", class: "input px-3 mt-1 block w-full" %>
+      <%= f.button "Save Notes", type: "submit", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+
+  <% unless @shop_order.fufilled? || @shop_order.rejected? %>
+    <%= render "shared/card" do %>
+      <p class="text-3xl pb-4 font-rc-full"><%= @shop_order.on_hold? ? "Un-hold or Reject" : "Hold or Reject" %></p>
+      <div class="space-y-4">
+        <%= text_area_tag :reason, @shop_order.hold_reason, rows: 3, placeholder: "Reason for putting on hold or rejecting", class: "input px-3 mt-1 block w-full", id: "reason_field" %>
+        <div class="flex gap-4">
+          <%= form_with url: hold_admin_shop_order_path(@shop_order), method: :post, html: { class: "flex-1" } do |f| %>
+            <%= hidden_field_tag :hold_reason, "", id: "hold_reason_hidden" %>
+            <%= f.button (@shop_order.on_hold? ? "Remove Hold" : "Put on Hold"), type: "submit", class: "btn btn-primary w-full bg-bp-warning border-bp-warning", onclick: "document.getElementById('hold_reason_hidden').value = document.getElementById('reason_field').value" %>
+          <% end %>
+          <%= form_with url: reject_admin_shop_order_path(@shop_order), method: :post, html: { class: "flex-1" } do |f| %>
+            <%= hidden_field_tag :rejection_reason, "", id: "rejection_reason_hidden" %>
+            <%= f.button "Reject Order", type: "submit", class: "btn btn-primary w-full bg-bp-danger border-bp-danger", data: { turbo_confirm: "Are you sure you want to reject this order?" }, onclick: "document.getElementById('rejection_reason_hidden').value = document.getElementById('reason_field').value" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <%= render "shared/card" do %>
+      <p class="text-3xl pb-4 font-rc-full">Fulfill Order</p>
+      <%= form_with url: fulfill_admin_shop_order_path(@shop_order), method: :post, html: { class: "space-y-4" } do |f| %>
+        <div>
+          <%= label_tag :fufillment_usd_cost_dollars, "Fulfillment Cost (USD)", class: "block text-xl font-medium" %>
+          <%= number_field_tag :fufillment_usd_cost_dollars, (@shop_order.shop_item.usd_cost / 100.0 * @shop_order.quantity if @shop_order.shop_item.usd_cost), step: 0.01, placeholder: "Enter actual cost in dollars", class: "input px-3 mt-1 block w-full" %>
+        </div>
+        <div>
+          <%= label_tag :internal_notes, "Internal Notes (order ID, etc.)", class: "block text-xl font-medium" %>
+          <%= text_area_tag :internal_notes, @shop_order.internal_notes, rows: 3, placeholder: "Add internal notes about this order", class: "input px-3 mt-1 block w-full" %>
+        </div>
+        <div>
+          <%= label_tag :tracking, "Tracking Number", class: "block text-xl font-medium" %>
+          <%= text_field_tag :tracking, nil, placeholder: "Enter tracking number", class: "input px-3 mt-1 block w-full" %>
+        </div>
+        <%= f.button "Mark as Fulfilled", type: "submit", class: "btn btn-primary bg-bp-success border-bp-success" %>
+      <% end %>
+    <% end %>
+  <% end %>
+</section>

@@ -37,6 +37,22 @@
                   <span class="text-bp-muted">Ordered:</span>
                   <span class="ml-1"><%= order.created_at.strftime("%B %d, %Y") %></span>
                 </div>
+                <% if order.fufilled? %>
+                  <div>
+                    <span class="text-bp-muted">Fulfilled:</span>
+                    <span class="ml-1"><%= order.fufilled_at.strftime("%B %d, %Y") %></span>
+                  </div>
+                  <% if order.tracking_number.present? %>
+                    <div>
+                      <% if order.tracking_number.match?(/\Ahttps?:\/\//) %>
+                        <%= link_to "Tracking link", order.tracking_number, target: "_blank", rel: "noopener noreferrer", class: "underline hover:text-white" %>
+                      <% else %>
+                        <span class="text-bp-muted">Tracking:</span>
+                        <span class="ml-1"><%= order.tracking_number %></span>
+                      <% end %>
+                    </div>
+                  <% end %>
+                <% end %>
               </div>
             </div>
 

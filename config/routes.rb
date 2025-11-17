@@ -171,12 +171,25 @@ Rails.application.routes.draw do
       resources :allowed_emails, only: [ :index, :create, :destroy ]
 
       resources :users, only: [ :index, :show ] do
+        post :grant_admin, on: :member
+        post :revoke_admin, on: :member
         post :grant_reviewer, on: :member
+        post :revoke_reviewer, on: :member
+        post :grant_fulfiller, on: :member
+        post :revoke_fulfiller, on: :member
         post :revoke_to_user, on: :member
         post :impersonate, on: :member
       end
 
       resources :hcb_transactions, only: [ :index ]
+
+      resources :shop_orders, only: [ :index, :show ] do
+        post :approve, on: :member
+        post :reject, on: :member
+        post :hold, on: :member
+        post :fulfill, on: :member
+        patch :update_notes, on: :member
+      end
     end
 
     constraints ReviewerConstraint do
