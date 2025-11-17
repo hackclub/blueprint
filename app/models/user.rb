@@ -249,7 +249,6 @@ class User < ApplicationRecord
 
       user = User.find_or_create_by!(email: email) do |user|
         user.is_banned = false
-        user.role = :user
         user.referrer_id = referrer_id
       end
       return user
