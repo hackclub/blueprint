@@ -50,14 +50,6 @@
         </div>
       </div>
     </div>
-
-    <div class="flex items-center gap-3" data-controller="checkbox-visual">
-      <%= check_box_tag :skip_funding, "1", !@project.needs_funding, class: "sr-only", data: { checkbox_visual_target: "checkbox", action: "change->checkbox-visual#toggle" } %>
-      <%= label_tag :skip_funding, class: "flex items-center gap-3 cursor-pointer" do %>
-        <div class="checkbox check-darker" data-checkbox-visual-target="visual"></div>
-        <span class="text-lg">I don't need funding as I have all the parts to build it. I want to exchange my funding for tickets instead.</span>
-      <% end %>
-    </div>
   <% end %>
 
   <div data-controller="funding-amount"
@@ -95,4 +87,14 @@
       <%= f.submit (@project.new_record? ? "Create project" : "Update project"), class: "btn btn-primary block w-full", data: { funding_amount_target: "submit" } %>
     </div>
   </div>
+
+  <% if current_user.is_pro %>
+    <div class="flex items-center gap-3" data-controller="checkbox-visual">
+      <%= check_box_tag :skip_funding, "1", !@project.needs_funding, class: "sr-only", data: { checkbox_visual_target: "checkbox", action: "change->checkbox-visual#toggle" } %>
+      <%= label_tag :skip_funding, class: "flex items-center gap-3 cursor-pointer" do %>
+        <div class="checkbox check-darker" data-checkbox-visual-target="visual"></div>
+        <span class="text-lg">I don't need funding as I have all the parts to build it. I want to exchange my funding for tickets instead.</span>
+      <% end %>
+    </div>
+  <% end %>
 <% end %>
