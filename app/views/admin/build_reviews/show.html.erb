@@ -1,5 +1,20 @@
 <section class="space-y-6">
-  <%= render "shared/button", text: "Back", url: admin_build_reviews_path, class: "py-0" %>
+  <div class="flex items-center justify-between">
+    <%= render "shared/button", text: "Back", url: admin_build_reviews_path, class: "py-0" %>
+    <% if current_user.admin? %>
+      <% button_label = case @project.review_status
+        when "design_pending" then "Move to Build Queue"
+        when "design_needs_revision" then "Move to Build Needs-Revision"
+        when "build_pending" then "Move to Design Queue"
+        when "build_needs_revision" then "Move to Design Needs-Revision"
+        when "design_approved" then "Open Build Review"
+        else nil
+        end %>
+      <% if button_label %>
+        <%= button_to button_label, switch_review_phase_admin_project_path(@project), method: :post, class: "btn btn-primary bg-bp-warning text-bp-dark border-bp-warning", data: { turbo_confirm: "Are you sure? This will change the queue and may invalidate prior reviews for that phase and notify the user." } %>
+      <% end %>
+    <% end %>
+  </div>
   <%= render "shared/card" do %>
     <div class="flex flex-col justify-between space-y-1" >
       <h1 class="pb-2 text-4xl">Project #<%= @project.id %>, <%= link_to @project.title, admin_project_path(@project), class: "underline" %></h1>
