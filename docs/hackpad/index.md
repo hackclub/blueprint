@@ -28,7 +28,7 @@ If you're unsure about anything, send a message in #blueprint! We have so many e
 
 There's also [this](/hackpad/resources) giant wall of resources to reference!
 
- List of approved parts
+### List of approved parts
 
 Here is the list of parts that come with the kit! Feel free to use anything in it
 

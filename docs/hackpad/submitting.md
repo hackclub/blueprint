@@ -30,7 +30,7 @@ Additionally, make sure your project follows the requirements:
 - Your PCB is smaller or equal to 100mmx100mm
 - Your case fits within 200x200x100mm (length / width / height)
 - You have less than 16 inputs (switches, encoders, etc)
-- You are using [approved parts only](/parts)
+- You are using [approved parts only](/hackpad#list-of-approved-parts)
 - The PCB only uses 2 layers
 - Your case only has 3D printed parts, no acrylic or laser cut parts
 
