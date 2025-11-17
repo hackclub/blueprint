@@ -48,6 +48,15 @@ class ReviewerConstraint
   end
 end
 
+class FulfillerConstraint
+  def self.matches?(request)
+    return false unless request.session[:user_id]
+
+    user = User.find_by(id: request.session[:user_id])
+    user&.fulfiller_perms?
+  end
+end
+
 Rails.application.routes.draw do
   resources :shop_items, only: [ :new, :create ]
   resources :shop_orders, only: [ :index, :new, :create ]
@@ -182,14 +191,6 @@ Rails.application.routes.draw do
       end
 
       resources :hcb_transactions, only: [ :index ]
-
-      resources :shop_orders, only: [ :index, :show ] do
-        post :approve, on: :member
-        post :reject, on: :member
-        post :hold, on: :member
-        post :fulfill, on: :member
-        patch :update_notes, on: :member
-      end
     end
 
     constraints ReviewerConstraint do
@@ -208,6 +209,16 @@ Rails.application.routes.draw do
       resources :projects, only: [ :index, :show ]
       resources :users, only: [ :index, :show, :update ] do
         patch :update_internal_notes, on: :member
+      end
+    end
+
+    constraints FulfillerConstraint do
+      resources :shop_orders, only: [ :index, :show ] do
+        post :approve, on: :member
+        post :reject, on: :member
+        post :hold, on: :member
+        post :fulfill, on: :member
+        patch :update_notes, on: :member
       end
     end
   end

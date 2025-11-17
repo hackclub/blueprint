@@ -13,7 +13,7 @@
             <%= render "shared/button", variant: :outline, text: "Design Review (#{Project.where(is_deleted: false, review_status: :design_pending).count.to_i})", url: admin_design_reviews_path %>
             <%= render "shared/button", variant: :outline, text: "Build Review (#{Project.where(is_deleted: false, review_status: :build_pending).count.to_i})", url: admin_build_reviews_path %>
           <% end %>
-          <% if current_user.admin? %>
+          <% if current_user.fulfiller_perms? %>
             <%= render "shared/button", variant: :outline, text: "Shop Orders (#{ShopOrder.where(state: :pending).count.to_i})", url: admin_shop_orders_path %>
           <% end %>
         </div>

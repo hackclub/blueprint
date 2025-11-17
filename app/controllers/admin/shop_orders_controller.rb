@@ -1,4 +1,7 @@
 class Admin::ShopOrdersController < Admin::ApplicationController
+  skip_before_action :require_admin!
+  before_action :require_fulfiller_perms!
+
   def index
     @shop_orders = ShopOrder.includes(:user, :shop_item, :approved_by, :fufilled_by, :rejected_by, :on_hold_by)
 
@@ -78,5 +81,13 @@ class Admin::ShopOrdersController < Admin::ApplicationController
     @shop_order = ShopOrder.find(params[:id])
     @shop_order.update!(internal_notes: params[:internal_notes])
     redirect_to admin_shop_order_path(@shop_order), notice: "Notes updated."
+  end
+
+  private
+
+  def require_fulfiller_perms!
+    unless current_user&.fulfiller_perms?
+      redirect_to main_app.root_path, alert: "You are not authorized to access this page."
+    end
   end
 end
