@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_06_224816) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_17_201352) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -420,6 +420,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_224816) do
     t.jsonb "frozen_address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "tracking_number"
+    t.string "phone_number"
     t.index ["approved_by_id"], name: "index_shop_orders_on_approved_by_id"
     t.index ["fufilled_by_id"], name: "index_shop_orders_on_fufilled_by_id"
     t.index ["on_hold_by_id"], name: "index_shop_orders_on_on_hold_by_id"
@@ -590,7 +592,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_224816) do
     t.string "slack_id"
     t.string "username"
     t.string "timezone_raw"
-    t.integer "role", default: 0, null: false
     t.boolean "is_banned", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -608,6 +609,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_224816) do
     t.integer "ban_type"
     t.date "birthday"
     t.boolean "is_pro", default: false
+    t.boolean "reviewer", default: false, null: false
+    t.boolean "fulfiller", default: false, null: false
+    t.boolean "admin", default: false, null: false
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
   end
 

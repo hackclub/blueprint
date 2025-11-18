@@ -49,6 +49,8 @@ class Project < ApplicationRecord
   has_many :followers, through: :follows, source: :user
   has_many :design_reviews, dependent: :destroy
   has_many :build_reviews, dependent: :destroy
+  has_many :valid_design_reviews, -> { where(invalidated: false) }, class_name: "DesignReview"
+  has_many :valid_build_reviews, -> { where(invalidated: false) }, class_name: "BuildReview"
   has_many :project_grants, dependent: :destroy
   has_many :kudos, dependent: :destroy
 
@@ -79,6 +81,7 @@ class Project < ApplicationRecord
       "Created At" => :created_at,
       "Updated At" => :updated_at,
       "User ID" => :user_id,
+      "Needs Soldering Iron" => :needs_soldering_iron,
       "Followers" => lambda { |project| project.followers.pluck(:id).join(",") }
     }
   end
@@ -141,6 +144,13 @@ class Project < ApplicationRecord
     nil
   end
 
+  scope :active, -> { where(is_deleted: false) }
+  scope :not_led, -> { where("ysws IS NULL OR ysws != ?", "led") }
+  scope :with_valid_design_review, -> { joins(:valid_design_reviews).distinct }
+  scope :without_valid_design_review, -> { left_outer_joins(:valid_design_reviews).where(valid_design_reviews: { id: nil }) }
+  scope :with_valid_build_review, -> { joins(:valid_build_reviews).distinct }
+  scope :without_valid_build_review, -> { left_outer_joins(:valid_build_reviews).where(valid_build_reviews: { id: nil }) }
+
   # Order projects by most recent journal entry; fall back to project creation
   scope :order_by_recent_journal, -> {
     left_joins(:journal_entries)
@@ -151,6 +161,7 @@ class Project < ApplicationRecord
 
   before_validation :normalize_repo_link
   before_validation :set_funding_needed_cents_to_zero_if_no_funding
+  before_validation :set_hackpad_tier
   after_update_commit :sync_github_journal!, if: -> { saved_change_to_repo_link? && repo_link.present? }
   after_update :invalidate_design_reviews_on_resubmit, if: -> { saved_change_to_review_status? && design_pending? }
   after_update :invalidate_build_reviews_on_resubmit, if: -> { saved_change_to_review_status? && build_pending? }
@@ -501,6 +512,18 @@ class Project < ApplicationRecord
     Project.tiers.map { |key, value| [ "Tier #{key} (#{tier_multipliers[key.to_i]})", value ] }
   end
 
+  def self.guide_options
+    [
+      [ "I am not following a guide", "none" ],
+      [ "Hackpad (Journal not required)", "hackpad" ],
+      [ "Custom Devboard", "devboard" ],
+      [ "Midi Keyboard", "midi" ],
+      [ "Split Keyboard", "splitkb" ],
+      [ "Blinky LED Chaser Board (Journal not required)", "led" ],
+      [ "Other", "other" ]
+    ]
+  end
+
   def self.tier_max_cents
     { 1 => 40000, 2 => 20000, 3 => 10000, 4 => 5000, 5 => 2500 }
   end
@@ -565,7 +588,7 @@ class Project < ApplicationRecord
   end
 
   def is_currently_build?
-    design_approved? || build_pending? || build_approved? || build_needs_revision? || build_rejected?
+    !needs_funding? || design_approved? || build_pending? || build_approved? || build_needs_revision? || build_rejected?
   end
 
   def submit_button_text
@@ -573,7 +596,7 @@ class Project < ApplicationRecord
       "Submit Design Re-review"
     elsif build_needs_revision?
       "Submit Build Re-review"
-    elsif design_approved? || build_approved?
+    elsif design_approved? || build_approved? || !needs_funding?
       "Submit Build Review"
     else
       "Submit Design Review"
@@ -631,7 +654,7 @@ class Project < ApplicationRecord
     elsif design_rejected?
       review = design_reviews.where(result: "rejected", invalidated: false).last
       if review && review.feedback.present? && review.reviewer&.slack_id.present?
-        msg += "Your Blueprint project *#{title}* has been rejected. You won't be able to submit again.Here's some feedback from your inspector, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
+        msg += "Your Blueprint project *#{title}* has been rejected. You won't be able to submit again. Here's some feedback from your inspector, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
         msg += "*Recommended tier:* #{review.tier_override}\n\n" if review.tier_override.present?
         msg += "*Grant to expect:* $#{'%.2f' % (review.grant_override_cents / 100.0)}\n\n" if review.grant_override_cents.present?
         msg += "<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
@@ -641,8 +664,10 @@ class Project < ApplicationRecord
     elsif design_approved?
       msg += "Your Blueprint project *#{title}* has passed the design review! You should receive an email from HCB about your grant in a few business days.\n\n"
 
-      msg += "*Grant approved:* $#{'%.2f' % (approved_funding_cents / 100.0)}\n\n" if approved_funding_cents.present?
-      msg += "*Tier approved:* #{approved_tier}\n\n" if approved_tier.present?
+      if ysws != "hackpad" && ysws != "led"
+        msg += "*Grant approved:* $#{'%.2f' % (approved_funding_cents / 100.0)}\n\n" if approved_funding_cents.present?
+        msg += "*Tier approved:* #{approved_tier}\n\n" if approved_tier.present?
+      end
 
       admin_review = design_reviews.where(admin_review: true, result: "approved", invalidated: false).order(created_at: :desc).first
       if admin_review && admin_review.feedback.present? && admin_review.reviewer&.slack_id.present?
@@ -708,17 +733,39 @@ class Project < ApplicationRecord
     addresses = idv_data.dig(:identity, :addresses) || []
     primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
 
+    # Get approved reviews
+    approved_design_reviews = design_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
+    approved_build_reviews = build_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
+
+    # Check if there's an hours override in any approved review
+    has_override = approved_design_reviews.any? { |r| r.hours_override.present? } ||
+                   approved_build_reviews.any? { |r| r.hours_override.present? }
+
     # Check if this is an LED project
     if ysws == "led"
-      hours_for_airtable = 5
+      if !has_override
+        hours_for_airtable = 5
+      else
+        total_effective_hours = 0
+        approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+        approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+        hours_for_airtable = total_effective_hours
+      end
       reasoning = "This project followed the 555 LED blinker guide. This was a guide that we have used at workshops before and which took students new to hardware a minimum of 5 hours to complete. This project at least meets the standards of a project submitted at this event. - Clay"
+    elsif ysws == "hackpad"
+      if !has_override
+        hours_for_airtable = 15
+      else
+        total_effective_hours = 0
+        approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+        approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+        hours_for_airtable = total_effective_hours
+      end
+      reasoning = "The user was surveyed after they were approved, asking them to estimate how many hours they spent. I (Clay Nicholson) reviewed and approved the submission and placed the order. The median submission based on this data spent 15 hours, while the mean was 20.
+       This hackpad was more or less within that range of hours - nothing sticks out, so I am automatically approving these hours without reviewing the design."
     else
       # Calculate total hours from ALL journal entries
       total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0
-
-      # Get approved reviews
-      approved_design_reviews = design_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
-      approved_build_reviews = build_reviews.where(result: "approved", invalidated: false, admin_review: true).order(created_at: :asc)
 
       # Calculate total effective hours from all approved reviews (design + build)
       total_effective_hours = 0
@@ -748,10 +795,10 @@ class Project < ApplicationRecord
       "First Name" => idv_data.dig(:identity, :first_name),
       "Last Name" => idv_data.dig(:identity, :last_name),
       "Email" => user&.email,
-      "Screenshot" => (banner.attached? ? [
+      "Screenshot" => (display_banner ? [
         {
-          "url" => Rails.application.routes.url_helpers.rails_blob_url(banner, host: ENV.fetch("APPLICATION_HOST")),
-          "filename" => banner.filename.to_s
+          "url" => Rails.application.routes.url_helpers.rails_blob_url(display_banner, host: ENV.fetch("APPLICATION_HOST")),
+          "filename" => display_banner.filename.to_s
         }
       ] : nil),
       "Description" => description,
@@ -775,7 +822,9 @@ class Project < ApplicationRecord
           "filename" => s.filename.to_s
         }
       } : nil),
-      "BP Project ID" => id
+      "BP Project ID" => id,
+      "Review Type" => build_approved? ? "Build" : (design_approved? ? "Design" : nil),
+      "Tickets Awarded" => valid_build_reviews.where(admin_review: true).sum { |review| review.tickets_awarded }
     }
 
     AirtableSync.upload_or_create!(
@@ -800,21 +849,19 @@ class Project < ApplicationRecord
     end
   end
 
-  # @deprecated Use unreviewed_journal_entries instead
-  def last_non_invalid_review_at
-    [
-      design_reviews.where(invalidated: false).maximum(:created_at),
-      build_reviews.where(invalidated: false).maximum(:created_at)
-    ].compact.max
-  end
-
-  # @deprecated Use unreviewed_journal_entries instead
-  def last_non_invalid_build_review_at
-    build_reviews.where(invalidated: false).maximum(:created_at)
+  def last_admin_build_review_entry_at
+    build_reviews
+      .where(result: :approved, invalidated: false, admin_review: true)
+      .joins(:journal_entries)
+      .maximum("journal_entries.created_at")
   end
 
   def unreviewed_journal_entries
-    journal_entries.where(review_id: nil)
+    if last_admin_build_review_entry_at
+      journal_entries.where("created_at > ?", last_admin_build_review_entry_at)
+    else
+      journal_entries
+    end
   end
 
   def journal_entries_since_last_build_review
@@ -838,6 +885,10 @@ class Project < ApplicationRecord
 
   def set_funding_needed_cents_to_zero_if_no_funding
     self.funding_needed_cents = 0 unless needs_funding?
+  end
+
+  def set_hackpad_tier
+    self.tier = 4 if ysws == "hackpad" && tier.blank?
   end
 
   def funding_needed_within_tier_max

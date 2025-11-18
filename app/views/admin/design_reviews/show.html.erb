@@ -1,5 +1,22 @@
 <section class="space-y-6">
-  <%= render "shared/button", text: "Back", url: admin_design_reviews_path, class: "py-0" %>
+  <div class="flex items-center justify-between">
+    <%= render "shared/button", text: "Back", url: admin_design_reviews_path, class: "py-0" %>
+    <!-- Debug: User admin? <%= current_user&.admin? %>, Status: <%= @project.review_status %> -->
+    <% if current_user&.admin? %>
+      <% button_label = case @project.review_status
+        when "design_pending" then "Move to Build Queue"
+        when "design_needs_revision" then "Move to Build Needs-Revision"
+        when "build_pending" then "Move to Design Queue"
+        when "build_needs_revision" then "Move to Design Needs-Revision"
+        when "design_approved" then "Open Build Review"
+        else nil
+        end %>
+      <!-- Debug: Button label: <%= button_label %> -->
+      <% if button_label.present? %>
+        <%= button_to button_label, switch_review_phase_admin_project_path(@project), method: :post, class: "btn btn-primary bg-bp-warning text-bp-dark border-bp-warning", data: { turbo_confirm: "Are you sure? This will change the queue and may invalidate prior reviews for that phase and notify the user." } %>
+      <% end %>
+    <% end %>
+  </div>
   <%= render "shared/card" do %>
     <div class="flex flex-col justify-between space-y-1" >
       <h1 class="pb-2 text-4xl">Project #<%= @project.id %>, <%= link_to @project.title, admin_project_path(@project), class: "underline" %></h1>
@@ -13,6 +30,12 @@
         <% end %>
       </div>
       <p class="text-xl">Requesting: $<%= sprintf("%.2f", @project.funding_needed_cents / 100.0) %></p>
+      <% hours = (@project.journal_entries.sum(:duration_seconds) / 3600.0).round(1) %>
+      <div class="flex flex-wrap gap-6 text-xl mt-2">
+        <p>Type: <span class="font-medium"><%= @project.ysws || "Custom" %></span></p>
+        <p>Hours: <span class="font-medium"><%= hours %>h</span></p>
+        <p>CPH: <span class="font-medium"><%= hours > 0 ? sprintf("$%.2f", (@project.funding_needed_cents / 100.0) / hours) : "–" %></span></p>
+      </div>
     </div>
     <div class="space-y-6">
       <p class="text-xl wrap-break-word"><%= @project.description %></p>
@@ -168,6 +191,13 @@
         <%= f.label :grant_override_cents, "Grant Override (cents)", class: "block text-xl font-medium" %>
         <%= f.number_field :grant_override_cents, placeholder: "Leave blank for default (#{@project.funding_needed_cents})", class: "input px-3 mt-1 block w-full" %>
       </div>
+
+      <% if current_user.admin? %>
+        <div>
+          <%= f.label :ysws, "Guide Override", class: "block text-xl font-medium" %>
+          <%= f.select :ysws, Project.guide_options, { selected: @project.ysws || "none", include_blank: false }, class: "input px-3 mt-1 block w-full" %>
+        </div>
+      <% end %>
 
       <div>
         <%= f.label :reason, "Internal Reason", class: "block text-xl font-medium" %>

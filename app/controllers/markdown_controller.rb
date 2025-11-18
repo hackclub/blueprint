@@ -31,7 +31,11 @@ class MarkdownController < ApplicationController
   end
 
   def guides
-    redirect_to resources_path
+    if params[:slug].present?
+      redirect_to "/starter-projects/#{params[:slug]}"
+    else
+      redirect_to resources_path
+    end
   end
 
   def faq

@@ -6,7 +6,7 @@
 
 ## When does this program end?
 
-Currently, the end-date of Blueprint is December 1st. You’ll still have time after that to build & earn tickets.
+Currently, the end-date of Blueprint is January 1st. You’ll still have time after that to build & earn tickets.
 
 ## How can I earn tickets?
 
@@ -18,6 +18,14 @@ Tickets are rewarded based on the effort you spent BUILDING your project, not th
 
 As many as you like! We just ask that you only do one of each starter project.
 
+## I don't have a soldering iron. How can I get one?
+
+You can get one as a part of Hackpad!
+
+## Can I make a Hackpad and a keyboard?
+
+Yes! 
+
 ## What can I make
 
 Anything within budget!
@@ -25,6 +33,11 @@ Anything within budget!
 ## How long may reviews take?
 
 Reviews may vary in time! They can take a week or more. We try to review as soon as possible :) 
+
+## How do I top-up my grant? 
+
+If you need a topup for your approved project, use this topup form: https://forms.hackclub.com/blueprint-topup
+
 
 ## What tier is my project? What about X idea, or Y?
 
@@ -81,9 +94,9 @@ DM Kashsuks!
 
 Yes for code, no for Journals
 
-## I'm 18 and just started college, would I still be eligible for a grant for my project through blueprint?
+## I'm 18, would I still be eligible for a grant for my project through blueprint?
 
-As long as you join blueprint before you turn 19, you’re good!
+As long as you join Blueprint before you turn 19, you’re good! For Prototype, as long as you're still 18 by the end of the event, you're okay!
 
 ## Are hackatime-banned individuals allowed to participate?
 
@@ -97,9 +110,9 @@ You're free to use it to experiment with layouts and make design decisions, but 
 
 Yes!
 
-## Can people get tickets after December first?
+## Can people get tickets after January first?
 
-Yes! The submission is due December 1st, but there's going to be time after to build & spend tickets.
+Yes! The submission is due January 1st, but there's going to be time after to build & spend tickets.
 
 ## Can I use auto-routing software?
 
@@ -109,5 +122,5 @@ No. You must do your routing manually.
 
 PRs are accepted and appreciated! If you are willing to use rails, do cool art, or make cool and useful hardware guides, DM @CAN on Slack! We appreciate all help :) 
 
-> For any questions or missing content, DM @Tanishq Goyal or ask in #blueprint-support!
+> For any missing content, DM @Tanishq Goyal or ask in #blueprint-support!
 

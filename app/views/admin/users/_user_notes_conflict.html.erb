@@ -1,0 +1,38 @@
+<%= turbo_frame_tag "user_notes_#{user.id}" do %>
+  <div id="user_notes_flash_#{user.id}" class="mb-4">
+    <div class="p-3 bg-bp-danger/20 border-2 border-bp-danger rounded text-bp-danger">
+      <%= flash[:alert] %>
+    </div>
+  </div>
+
+  <div class="space-y-4 mb-4">
+    <div class="grid grid-cols-2 gap-4">
+      <div class="p-4 bg-bp-dark/10 rounded border border-bp-secondary/20">
+        <p class="font-bold mb-2">Current Version (In Database)</p>
+        <% if current.present? %>
+          <%= simple_format(current, class: "whitespace-pre-wrap text-sm") %>
+        <% else %>
+          <p class="text-bp-secondary italic text-sm">Empty</p>
+        <% end %>
+      </div>
+
+      <div class="p-4 bg-bp-dark/10 rounded border border-bp-secondary/20">
+        <p class="font-bold mb-2">Your Changes</p>
+        <% if new_notes.present? %>
+          <%= simple_format(new_notes, class: "whitespace-pre-wrap text-sm") %>
+        <% else %>
+          <p class="text-bp-secondary italic text-sm">Empty</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%= form_with model: user, url: update_internal_notes_admin_user_path(user), method: :patch, html: { class: "space-y-4" } do |f| %>
+    <%= f.hidden_field :frozen_internal_notes, value: current %>
+    <%= f.text_area :internal_notes, rows: 6, placeholder: "Merge the notes manually...", class: "input px-3 block w-full" %>
+    <div class="flex space-x-2">
+      <%= f.submit "Save Merged Notes", class: "btn btn-primary" %>
+      <%= link_to "Cancel & Reload", admin_user_path(user), class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+<% end %>

@@ -350,7 +350,7 @@ For high-spec options, also keep the default. Do not click PCB assembly as we wi
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/053061912ca84c66c46323ccef5b12cb71c7d721_image.png)
 
-Once you have successfully *Not* changed any of the settings (except the board color), on the right, change the shipping method to Global Standard Direct (or Air Registered Mail), and take a screenshot (this is very important). 
+Once you have successfully *Not* changed any of the settings (except the board color), on the right, change the shipping method to Global Standard Direct (or Air Registered Mail if it is cheaper), and take a screenshot (this is very important). 
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/6f538d5f301eae997544c43c1d6ce6daca01331d_image.png)
 
@@ -395,7 +395,7 @@ You may need to verify your Hack Club identity if you have not already.
 
 You are done!
 
-You should wait for  a reviewer to approve your project! Once it is approved, you can complete the checkout on JLCPCB (making sure to use Global Standard Direct or Air Registered Mail), and your kit/soldering iron will be sent to you! 
+You should wait for  a reviewer to approve your project! Once it is approved, you can complete the checkout on JLCPCB (making sure to use Global Standard Direct (or Air Registered Mail if it is cheaper), and your kit/soldering iron will be sent to you! 
 
 While you wait….
 

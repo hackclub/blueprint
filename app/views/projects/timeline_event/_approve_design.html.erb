@@ -11,11 +11,13 @@
       </p>
     </div>
     <div class="timeline-journal">
-      <% if project.approved_tier.present? %>
-        <p><strong>Tier approved:</strong> <%= project.approved_tier %></p>
-      <% end %>
-      <% if project.approved_funding_cents.present? %>
-        <p><strong>Grant approved:</strong> $<%= sprintf("%.2f", project.approved_funding_cents / 100.0) %></p>
+      <% if project.ysws != "hackpad" && project.ysws != "led" %>
+        <% if project.approved_tier.present? %>
+          <p><strong>Tier approved:</strong> <%= project.approved_tier %></p>
+        <% end %>
+        <% if project.approved_funding_cents.present? %>
+          <p><strong>Grant approved:</strong> $<%= sprintf("%.2f", project.approved_funding_cents / 100.0) %></p>
+        <% end %>
       <% end %>
       <% reviews.each do |review| %>
         <% if review[:feedback].present? %>

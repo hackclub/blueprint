@@ -3,11 +3,13 @@
 # Table name: users
 #
 #  id                          :bigint           not null, primary key
+#  admin                       :boolean          default(FALSE), not null
 #  avatar                      :string
 #  ban_type                    :integer
 #  birthday                    :date
 #  email                       :string           not null
 #  free_stickers_claimed       :boolean          default(FALSE), not null
+#  fulfiller                   :boolean          default(FALSE), not null
 #  github_username             :string
 #  identity_vault_access_token :string
 #  internal_notes              :text
@@ -15,7 +17,7 @@
 #  is_mcg                      :boolean          default(FALSE), not null
 #  is_pro                      :boolean          default(FALSE)
 #  last_active                 :datetime
-#  role                        :integer          default("user"), not null
+#  reviewer                    :boolean          default(FALSE), not null
 #  timezone_raw                :string
 #  username                    :string
 #  ysws_verified               :boolean

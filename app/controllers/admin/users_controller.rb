@@ -28,18 +28,66 @@ class Admin::UsersController < Admin::ApplicationController
 
   def grant_reviewer
     @user = User.find(params[:id])
-    @user.update!(role: "reviewer")
-    redirect_to admin_user_path(@user), notice: "User granted reviewer role"
+    @user.update!(reviewer: true)
+    redirect_to admin_user_path(@user), notice: "User granted reviewer permissions"
+  end
+
+  def revoke_reviewer
+    @user = User.find(params[:id])
+    @user.update!(reviewer: false)
+    redirect_to admin_user_path(@user), notice: "Reviewer permissions revoked"
+  end
+
+  def grant_fulfiller
+    @user = User.find(params[:id])
+    @user.update!(fulfiller: true)
+    redirect_to admin_user_path(@user), notice: "User granted fulfiller permissions"
+  end
+
+  def revoke_fulfiller
+    @user = User.find(params[:id])
+    @user.update!(fulfiller: false)
+    redirect_to admin_user_path(@user), notice: "Fulfiller permissions revoked"
+  end
+
+  def grant_admin
+    @user = User.find(params[:id])
+    @user.update!(admin: true)
+    redirect_to admin_user_path(@user), notice: "User granted admin permissions"
+  end
+
+  def revoke_admin
+    @user = User.find(params[:id])
+    @user.update!(admin: false)
+    redirect_to admin_user_path(@user), notice: "Admin permissions revoked"
   end
 
   def revoke_to_user
     @user = User.find(params[:id])
-    @user.update!(role: "user")
-    redirect_to admin_user_path(@user), notice: "User role revoked to user"
+    @user.update!(admin: false, reviewer: false, fulfiller: false)
+    redirect_to admin_user_path(@user), notice: "All permissions revoked"
   end
 
   def update_internal_notes
     @user = User.find(params[:id])
+
+    frozen_notes = params[:user][:frozen_internal_notes].presence
+    current_notes = @user.internal_notes.presence
+
+    if frozen_notes != current_notes
+      @conflict_frozen = frozen_notes
+      @conflict_current = current_notes
+      @conflict_new = params[:user][:internal_notes]
+
+      respond_to do |format|
+        format.html { render :show, status: :conflict }
+        format.turbo_stream do
+          flash.now[:alert] = "Conflict detected! Notes were modified by someone else."
+          render turbo_stream: turbo_stream.replace("user_notes_#{@user.id}", partial: "admin/users/user_notes_conflict", locals: { user: @user, frozen: @conflict_frozen, current: @conflict_current, new_notes: @conflict_new })
+        end
+      end
+      return
+    end
 
     if @user.update(internal_notes: params[:user][:internal_notes])
       respond_to do |format|
@@ -95,7 +143,7 @@ class Admin::UsersController < Admin::ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:internal_notes)
+    params.require(:user).permit(:internal_notes, :frozen_internal_notes)
   end
 
   def require_reviewer_perms!

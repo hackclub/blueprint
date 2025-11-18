@@ -48,6 +48,15 @@ class ReviewerConstraint
   end
 end
 
+class FulfillerConstraint
+  def self.matches?(request)
+    return false unless request.session[:user_id]
+
+    user = User.find_by(id: request.session[:user_id])
+    user&.fulfiller_perms?
+  end
+end
+
 Rails.application.routes.draw do
   resources :shop_items, only: [ :new, :create ]
   resources :shop_orders, only: [ :index, :new, :create ]
@@ -166,13 +175,18 @@ Rails.application.routes.draw do
         post :revive, on: :member
         post :mark_viral, on: :member
         post :unmark_viral, on: :member
+        post :switch_review_phase, on: :member
       end
       resources :allowed_emails, only: [ :index, :create, :destroy ]
 
       resources :users, only: [ :index, :show ] do
+        post :grant_admin, on: :member
+        post :revoke_admin, on: :member
         post :grant_reviewer, on: :member
+        post :revoke_reviewer, on: :member
+        post :grant_fulfiller, on: :member
+        post :revoke_fulfiller, on: :member
         post :revoke_to_user, on: :member
-        patch :update_internal_notes, on: :member
         post :impersonate, on: :member
       end
 
@@ -193,7 +207,19 @@ Rails.application.routes.draw do
       post "build_reviews/:id", to: "build_reviews#create", as: :build_review_create
 
       resources :projects, only: [ :index, :show ]
-      resources :users, only: [ :index, :show, :update ]
+      resources :users, only: [ :index, :show, :update ] do
+        patch :update_internal_notes, on: :member
+      end
+    end
+
+    constraints FulfillerConstraint do
+      resources :shop_orders, only: [ :index, :show ] do
+        post :approve, on: :member
+        post :reject, on: :member
+        post :hold, on: :member
+        post :fulfill, on: :member
+        patch :update_notes, on: :member
+      end
     end
   end
 end

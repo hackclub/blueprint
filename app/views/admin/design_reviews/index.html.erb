@@ -35,8 +35,9 @@
     <!-- Header row -->
     <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white">
       <div class="col-span-1">ID</div>
-      <div class="col-span-4">Title</div>
-      <div class="col-span-2">Author</div>
+      <div class="col-span-3">Title</div>
+      <div class="col-span-1">Author</div>
+      <div class="col-span-1">Type</div>
       <div class="col-span-1">Tier</div>
       <div class="col-span-1">Cost</div>
       <div class="col-span-1">Hours</div>
@@ -50,19 +51,22 @@
       <% @projects.each do |project| %>
         <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0">
           <div class="flex items-center col-span-1 py-2"><%= project.id %></div>
-          <div class="flex items-center col-span-4 font-medium">
+          <div class="flex items-center col-span-3 font-medium">
             <% if current_user.admin? %>
               <%= link_to (project.title.presence || "(untitled)"), admin_design_review_path(project), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white #{project.pre_reviewed ? 'text-bp-warning' : ''}" %>
             <% else %>
               <%= link_to (project.title.presence || "(untitled)"), admin_design_review_path(project), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
             <% end %>
           </div>
-          <div class="flex items-center col-span-2">
+          <div class="flex items-center col-span-1">
             <% if project.user %>
               <%= link_to project.user.display_name, admin_user_path(project.user), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
             <% else %>
               <p>–</p>
             <% end %>
+          </div>
+          <div class="flex items-center col-span-1">
+            <%= project.ysws || "Custom" %>
           </div>
           <div class="flex items-center col-span-1">
             <%= project.tier || "No grant" %>

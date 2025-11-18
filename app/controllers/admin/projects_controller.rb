@@ -57,6 +57,29 @@ class Admin::ProjectsController < Admin::ApplicationController
     redirect_to admin_project_path(@project), notice: "Project unmarked as viral."
   end
 
+  def switch_review_phase
+    @project = Project.find(params[:id])
+    not_found unless @project
+
+    if @project.awaiting_idv? || @project.design_rejected? || @project.build_rejected? || @project.build_approved?
+      return redirect_back fallback_location: admin_design_reviews_path, alert: "Cannot switch phase from current status."
+    end
+
+    mapping = {
+      "design_pending" => "build_pending",
+      "build_pending" => "design_pending",
+      "design_needs_revision" => "build_needs_revision",
+      "build_needs_revision" => "design_needs_revision",
+      "design_approved" => "build_pending"
+    }
+
+    target = mapping[@project.review_status]
+    return redirect_back fallback_location: admin_design_reviews_path, alert: "No valid phase transition." unless target
+
+    @project.update!(review_status: target)
+    redirect_back fallback_location: admin_design_reviews_path, notice: "Moved to #{target.humanize}."
+  end
+
   private
 
   def require_reviewer_perms!

@@ -202,20 +202,20 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    if params.dig(:project, :ysws) == "none"
-      params[:project][:ysws] = nil
-    elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
-      params[:project][:ysws] = params[:project][:ysws_other]
+    if !current_user.is_pro
+      params[:project][:ysws] = "hackpad"
+    else
+      if params.dig(:project, :ysws) == "none"
+        params[:project][:ysws] = nil
+      elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
+        params[:project][:ysws] = params[:project][:ysws_other]
+      end
     end
     params[:project].delete(:ysws_other)
 
-    if !current_user.is_pro
-      params[:project][:ysws] = "hackpad"
-
-      if current_user.projects.where(ysws: "hackpad", is_deleted: false).exists?
-        redirect_to new_project_path, alert: "You can only make one hackpad!"
-        return
-      end
+    if params.dig(:project, :ysws) == "hackpad" && current_user.projects.where(ysws: "hackpad", is_deleted: false).exists?
+      redirect_to new_project_path, alert: "You can only make one hackpad!"
+      return
     end
 
     @project = current_user.projects.build(project_params)
@@ -245,19 +245,16 @@ class ProjectsController < ApplicationController
     has_ship = params.dig(:project, :ship).present?
     params[:project].delete(:ship) if has_ship
 
-    # if params.dig(:project, :ysws) == "none"
-    #   params[:project][:ysws] = nil
-    # elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
-    #   params[:project][:ysws] = params[:project][:ysws_other]
-    # end
-    # params[:project].delete(:ysws_other)
-
-    # Compute print_legion from radio inputs
-    # if params.dig(:project, :has_3d_print).present? && params.dig(:project, :needs_3d_print_help).present?
-    #   has_3d = params[:project][:has_3d_print] == "yes"
-    #   needs_help = params[:project][:needs_3d_print_help] == "yes"
-    #   params[:project][:print_legion] = (has_3d && needs_help)
-    # end
+    if !current_user.is_pro
+      params[:project][:ysws] = "hackpad"
+    else
+      if params.dig(:project, :ysws) == "none"
+        params[:project][:ysws] = nil
+      elsif params.dig(:project, :ysws) == "other" && params.dig(:project, :ysws_other).present?
+        params[:project][:ysws] = params[:project][:ysws_other]
+      end
+    end
+    params[:project].delete(:ysws_other)
 
     form_to_render = has_ship ? (@project.is_currently_build? ? "build_ship" : "ship") : (@project.is_currently_build? ? "build_edit" : "edit")
 
@@ -265,7 +262,7 @@ class ProjectsController < ApplicationController
     @project.assign_attributes(project_params)
 
     # Validate cart screenshots for funding projects on ship
-    if has_ship && @project.needs_funding? && @project.ysws != "hackpad"
+    if has_ship && @project.needs_funding? && @project.ysws != "hackpad" && @project.funding_needed_cents.to_i > 0
       pending = @project.attachment_changes["cart_screenshots"]
       has_new_uploads = pending && pending.respond_to?(:attachables) && pending.attachables.present?
 
@@ -524,7 +521,7 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(
+    permitted = params.require(:project).permit(
       :title,
       :description,
       :repo_link,
@@ -537,12 +534,17 @@ class ProjectsController < ApplicationController
       :ship,
       :ysws,
       :ysws_other,
-      :needs_funding,
       :funding_needed_cents,
       :print_legion,
       :needs_soldering_iron,
       :skip_gh_sync,
       cart_screenshots: []
     )
+
+    if current_user.is_pro
+      permitted[:needs_funding] = params[:skip_funding] != "1"
+    end
+
+    permitted
   end
 end

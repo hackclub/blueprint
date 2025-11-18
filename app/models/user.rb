@@ -3,11 +3,13 @@
 # Table name: users
 #
 #  id                          :bigint           not null, primary key
+#  admin                       :boolean          default(FALSE), not null
 #  avatar                      :string
 #  ban_type                    :integer
 #  birthday                    :date
 #  email                       :string           not null
 #  free_stickers_claimed       :boolean          default(FALSE), not null
+#  fulfiller                   :boolean          default(FALSE), not null
 #  github_username             :string
 #  identity_vault_access_token :string
 #  internal_notes              :text
@@ -15,7 +17,7 @@
 #  is_mcg                      :boolean          default(FALSE), not null
 #  is_pro                      :boolean          default(FALSE)
 #  last_active                 :datetime
-#  role                        :integer          default("user"), not null
+#  reviewer                    :boolean          default(FALSE), not null
 #  timezone_raw                :string
 #  username                    :string
 #  ysws_verified               :boolean
@@ -58,10 +60,8 @@ class User < ApplicationRecord
   # Simple referrer: a user may have one referrer (another User)
   belongs_to :referrer, class_name: "User", optional: true
 
-  enum :role, { user: 0, admin: 1, reviewer: 2 }
   enum :ban_type, { hackatime: 0, blueprint: 1, previous: 2, slack: 3, age: 4 }
 
-  validates :role, presence: true
   validates :is_banned, inclusion: { in: [ true, false ] }
   after_commit :advance_projects_after_idv!, on: :update, if: -> { previous_changes.key?("ysws_verified") && ysws_verified? }
   after_commit :sync_to_gorse, on: :create
@@ -89,7 +89,13 @@ class User < ApplicationRecord
       "Avatar" => :avatar,
       "Is Banned" => :is_banned,
       "Is MCG" => :is_mcg,
-      "Role" => lambda { |user| user.role.capitalize },
+      "Role" => lambda { |user|
+        roles = []
+        roles << "Admin" if user.admin?
+        roles << "Reviewer" if user.reviewer?
+        roles << "Fulfiller" if user.fulfiller?
+        roles.any? ? roles.join(", ") : "User"
+      },
       "Timezone" => :timezone_raw,
       "Last Active" => :last_active,
       "YSWS Verified" => :ysws_verified,
@@ -243,7 +249,6 @@ class User < ApplicationRecord
 
       user = User.find_or_create_by!(email: email) do |user|
         user.is_banned = false
-        user.role = :user
         user.referrer_id = referrer_id
       end
       return user
@@ -910,11 +915,15 @@ class User < ApplicationRecord
   end
 
   def reviewer_perms?
-    role == "admin" || role == "reviewer"
+    admin? || reviewer?
+  end
+
+  def fulfiller_perms?
+    admin? || fulfiller?
   end
 
   def special_perms?
-    role != "user"
+    admin? || reviewer? || fulfiller?
   end
 
   def is_adult?

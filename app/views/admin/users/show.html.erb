@@ -28,8 +28,14 @@
         <%= render "admin/pill", type: :boolean, value: @user.is_banned do %>
           <p>Banned:</p>
         <% end %>
-        <%= render "admin/pill", type: @user.special_perms? ? :warning : :none, value: @user.role.capitalize do %>
-          <p>Role:</p>
+        <%= render "admin/pill", type: :boolean, value: @user.admin? do %>
+          <p>Admin:</p>
+        <% end %>
+        <%= render "admin/pill", type: :boolean, value: @user.reviewer? do %>
+          <p>Reviewer:</p>
+        <% end %>
+        <%= render "admin/pill", type: :boolean, value: @user.fulfiller? do %>
+          <p>Fulfiller:</p>
         <% end %>
         <%= render "admin/pill", type: :boolean, value: @user.is_mcg? do %>
           <p>MCG:</p>
@@ -46,23 +52,30 @@
     <% if current_user.admin? %>
       <%= render "shared/card", class: "space-y-4 col-span-2" do %>
         <p class="text-2xl font-rc-full">Actions</p>
-        <div class="flex space-x-4">
-          <% if !@user.reviewer? && !@user.admin? %>
+        <div class="flex flex-wrap gap-4">
+          <% if current_user != @user %>
             <%= render "shared/button",
                   variant: :none,
-                  text: "Make reviewer",
-                  url: grant_reviewer_admin_user_path(@user),
-                  html_options: { data: { turbo_method: :post, turbo_confirm: "Are you sure you want to change them to a reviewer?" } },
-                  class: "btn border-bp-warning bg-bp-warning cursor-pointer text-bp-dark"
+                  text: @user.admin? ? "Revoke Admin" : "Grant Admin",
+                  url: @user.admin? ? revoke_admin_admin_user_path(@user) : grant_admin_admin_user_path(@user),
+                  html_options: { data: { turbo_method: :post, turbo_confirm: @user.admin? ? "Revoke admin permissions?" : "Grant admin permissions? This gives full system access!" } },
+                  class: @user.admin? ? "btn border-bp-danger bg-bp-danger cursor-pointer text-white" : "btn border-bp-success bg-bp-success cursor-pointer text-bp-dark"
                 %>
-          <% end %>
-          <% if @user.special_perms? && @user != current_user && !@user.admin? %>
+            
             <%= render "shared/button",
                   variant: :none,
-                  text: "Revoke to user",
-                  url: revoke_to_user_admin_user_path(@user),
-                  html_options: { data: { turbo_method: :post, turbo_confirm: "Are you sure you want to change them to a user?" } },
-                  class: "btn border-bp-warning bg-bp-warning cursor-pointer text-bp-dark"
+                  text: @user.reviewer? ? "Revoke Reviewer" : "Grant Reviewer",
+                  url: @user.reviewer? ? revoke_reviewer_admin_user_path(@user) : grant_reviewer_admin_user_path(@user),
+                  html_options: { data: { turbo_method: :post, turbo_confirm: @user.reviewer? ? "Revoke reviewer permissions?" : "Grant reviewer permissions?" } },
+                  class: @user.reviewer? ? "btn border-bp-danger bg-bp-danger cursor-pointer text-white" : "btn border-bp-success bg-bp-success cursor-pointer text-bp-dark"
+                %>
+            
+            <%= render "shared/button",
+                  variant: :none,
+                  text: @user.fulfiller? ? "Revoke Fulfiller" : "Grant Fulfiller",
+                  url: @user.fulfiller? ? revoke_fulfiller_admin_user_path(@user) : grant_fulfiller_admin_user_path(@user),
+                  html_options: { data: { turbo_method: :post, turbo_confirm: @user.fulfiller? ? "Revoke fulfiller permissions?" : "Grant fulfiller permissions?" } },
+                  class: @user.fulfiller? ? "btn border-bp-danger bg-bp-danger cursor-pointer text-white" : "btn border-bp-success bg-bp-success cursor-pointer text-bp-dark"
                 %>
           <% end %>
           <% if @user != current_user && !@user.admin? && !@user.special_perms? %>
