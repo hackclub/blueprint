@@ -94,9 +94,9 @@ DM Kashsuks!
 
 Yes for code, no for Journals
 
-## I'm 18 and just started college, would I still be eligible for a grant for my project through blueprint?
+## I'm 18, would I still be eligible for a grant for my project through blueprint?
 
-As long as you join blueprint before you turn 19, you’re good!
+As long as you join Blueprint before you turn 19, you’re good! For Prototype, as long as you're still 18 by the end of the event, you're okay!
 
 ## Are hackatime-banned individuals allowed to participate?
 
