@@ -161,6 +161,7 @@ class Project < ApplicationRecord
 
   before_validation :normalize_repo_link
   before_validation :set_funding_needed_cents_to_zero_if_no_funding
+  before_validation :set_hackpad_tier
   after_update_commit :sync_github_journal!, if: -> { saved_change_to_repo_link? && repo_link.present? }
   after_update :invalidate_design_reviews_on_resubmit, if: -> { saved_change_to_review_status? && design_pending? }
   after_update :invalidate_build_reviews_on_resubmit, if: -> { saved_change_to_review_status? && build_pending? }
@@ -884,6 +885,10 @@ class Project < ApplicationRecord
 
   def set_funding_needed_cents_to_zero_if_no_funding
     self.funding_needed_cents = 0 unless needs_funding?
+  end
+
+  def set_hackpad_tier
+    self.tier = 4 if ysws == "hackpad" && tier.blank?
   end
 
   def funding_needed_within_tier_max
