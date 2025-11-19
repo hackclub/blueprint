@@ -35,7 +35,7 @@
     <!-- Header row -->
     <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white">
       <div class="col-span-1">ID</div>
-      <div class="col-span-3">Title</div>
+      <div class="col-span-2">Title</div>
       <div class="col-span-1">Author</div>
       <div class="col-span-1">Type</div>
       <div class="col-span-1">Tier</div>
@@ -43,6 +43,7 @@
       <div class="col-span-1">Hours</div>
       <div class="col-span-1">CPH</div>
       <div class="col-span-1">Entries</div>
+      <div class="col-span-1">Waiting</div>
       <div class="col-span-1">Actions</div>
     </div>
 
@@ -51,7 +52,7 @@
       <% @projects.each do |project| %>
         <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0">
           <div class="flex items-center col-span-1 py-2"><%= project.id %></div>
-          <div class="flex items-center col-span-3 font-medium">
+          <div class="flex items-center col-span-2 font-medium">
             <% if current_user.admin? %>
               <%= link_to (project.title.presence || "(untitled)"), admin_design_review_path(project), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white #{project.pre_reviewed ? 'text-bp-warning' : ''}" %>
             <% else %>
@@ -88,6 +89,32 @@
           </div>
           <div class="flex items-center col-span-1">
             <%= project.journal_entries.size %>
+          </div>
+          <div class="flex items-center col-span-1">
+            <% 
+              start_time = nil
+              
+              if project.respond_to?(:versions)
+                version = project.versions.where(event: "update")
+                                 .where("object_changes ->> 'review_status' ILIKE '%design_pending%'")
+                                 .order(created_at: :desc)
+                                 .first
+                start_time = version.created_at if version
+              end
+            %>
+            
+            <% if start_time %>
+              <% waiting_time = Time.current - start_time %>
+              <% days = (waiting_time / 1.day).floor %>
+              <% hours_remaining = ((waiting_time % 1.day) / 1.hour).floor %>
+              <% if days > 0 %>
+                <%= "#{days}d #{hours_remaining}h" %>
+              <% else %>
+                <%= "#{hours_remaining}h" %>
+              <% end %>
+            <% else %>
+              Error
+            <% end %>
           </div>
           <div class="flex items-center col-span-1">
             <div class="flex items-center gap-2">
