@@ -79,7 +79,7 @@
     </div>
   </a>
 
-  <a href="/starter-projects/devboard" class="block h-full">
+  <a href="/starter-projects/flightcontroller" class="block h-full">
     <div class="flex flex-col h-full group border-2 border-[#FFFEF0] bg-[#1F1F1F] hover:bg-[#292929] max-w-4xl justify-center text-center transition-colors duration-150 hover:rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
       <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
         <p class="text-2xl font-semibold text-white">Simple Flight Controller</p>
