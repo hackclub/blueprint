@@ -596,7 +596,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_201352) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "email", null: false
-    t.boolean "is_mcg", default: false, null: false
+    t.boolean "is_mcg", default: true, null: false
     t.string "github_username"
     t.datetime "last_active"
     t.bigint "github_installation_id"
@@ -609,9 +609,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_201352) do
     t.integer "ban_type"
     t.date "birthday"
     t.boolean "is_pro", default: false
+    t.boolean "admin", default: false, null: false
     t.boolean "reviewer", default: false, null: false
     t.boolean "fulfiller", default: false, null: false
-    t.boolean "admin", default: false, null: false
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
   end
 
