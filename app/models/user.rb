@@ -56,6 +56,11 @@ class User < ApplicationRecord
 
   has_many :ahoy_visits, class_name: "Ahoy::Visit"
   has_many :ahoy_events, class_name: "Ahoy::Event"
+  has_one :latest_locatable_visit, -> { where.not(country: [ nil, "" ]).order(started_at: :desc) }, class_name: "Ahoy::Visit"
+
+  def country
+    latest_locatable_visit&.country
+  end
 
   # Simple referrer: a user may have one referrer (another User)
   belongs_to :referrer, class_name: "User", optional: true
@@ -97,6 +102,7 @@ class User < ApplicationRecord
         roles.any? ? roles.join(", ") : "User"
       },
       "Timezone" => :timezone_raw,
+      "Country" => lambda { |user| user.country },
       "Last Active" => :last_active,
       "YSWS Verified" => :ysws_verified,
       "Created At" => :created_at,
