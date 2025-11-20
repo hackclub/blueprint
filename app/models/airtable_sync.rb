@@ -82,7 +82,7 @@ class AirtableSync < ApplicationRecord
 
       records.each do |record|
         fields = build_airtable_fields(record, mappings)
-        csv << fields.values
+        csv << fields.values.map { |v| v.is_a?(Array) ? v.join(",") : v }
       end
     end
 

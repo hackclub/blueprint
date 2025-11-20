@@ -99,7 +99,7 @@ class User < ApplicationRecord
         roles << "Admin" if user.admin?
         roles << "Reviewer" if user.reviewer?
         roles << "Fulfiller" if user.fulfiller?
-        roles.any? ? roles.join(", ") : "User"
+        roles.any? ? roles : [ "User" ]
       },
       "Timezone" => :timezone_raw,
       "Country" => lambda { |user| user.country },
