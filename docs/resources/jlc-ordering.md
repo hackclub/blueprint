@@ -4,7 +4,9 @@
 
 # How to Order from JLCPCB
 
-First time ordering from JLCPCB, or PCBs in general? Or do you just need a refresher on ordering PCBs? Either way, you’re in the right place!
+First time ordering from JLCPCB, or PCBs in general? Or do you just need a refresher on ordering PCBs? Either way, you’re in the right place! 
+
+In general, you will want to explore to find the cheapest method, which will often be the most commonly used / default options.
 
 ## 1. Getting Gerbers
 
