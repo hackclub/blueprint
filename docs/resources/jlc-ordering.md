@@ -36,28 +36,30 @@ PCB fabs have **a lot** of settings for board manufacturing, and JLCPCB is no ex
 
 ### Base Options
 
-![Base options](https://hc-cdn.hel1.your-objectstorage.com/s/v3/fc216d24e8d528d6ad0abca756f77ef570c2da01_base-options.png)
+![Base options](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a2f0257d86f0aeb3abca08284b392246b3ff49cf_image.png)
 
 Base options (These are all the default options so you likely don’t need to change anything)
 
 - **Base Material**: Use FR-4.
 - **Layers**: 2 is the most common.
 - **Dimensions**: Auto-filled from your Gerbers.
-  > Note: The PCB is a lot cheaper when below 100mmx100mm so if you are close to that number, maybe try redesigning to be under
+  > Note: The PCB is a lot cheaper when below 100mmx100mm so if you are close to that number, try redesigning to be under
 - **PCB QTY**: Choose 5 (minimum allowed).
 - **Product Type**: Keep as Industrial/Consumer Electronics.
 
 ### PCB Specifications
 
-![PCB specs](https://hc-cdn.hel1.your-objectstorage.com/s/v3/6d9b4cd159608e80a8102356a7af5b2d6973a447_pcb-specifications.png)
+![PCB specs](https://hc-cdn.hel1.your-objectstorage.com/s/v3/3c5dd479c7629b6b231ef8e899ab16d455d9db8c_image.png)
 
 PCB specs
 
 - **Different Design**: Auto-calculated.
 - **Delivery Format**: Use `Single PCB`.
 - **PCB Thickness**: Keep at 1.6mm.
-- **PCB Color**: Green is cheapest.
-- **Surface Finish**: Lead-free HASL or ENIG.
+- **PCB Color**: Green, purple, blue, and black are the cheapest. Green has the fastest fastest turnaround at 24 hours, so thats generally recommended.[ Here is more information! ](https://jlcpcb.com/blog/Choosing-the-Best-PCB-Color-Enhancing-Aesthetics-and-Functionality)
+- **Silkscreen**: There will only be one option, which is generally white.
+- **Material Type**: FR4 TG135
+- **Surface Finish**: HASL(with lead) or LeadFree HASL.
 
 ### High-spec Options
 
@@ -84,10 +86,15 @@ Choose one of two assembly options for your PCB. **Assembly by JLCPCB** is the q
 Assembly options
 
 - **PCBA Type**: Choose Economic.
-- **PCBA Qty**: 2 is enough to save cost.
-- **Confirm Parts Placement**: Optional, useful check.
+- **Assembly Side**: This depends on your project, but will generally be Top Side.
+- **PCBA Qty**: 2
+- **Tooling holes**: These are holes used to help JLCPCB manufactor your PCB. Added by JLCPCB is the easiest.
+- **Confirm Parts Placement**: Optionally yes, this is a useful check.
+- **Stencil Storage**: No
+- **Fixture Storage**: No
+- **Parts Selection**: `by Customer` gives you better control!
 
-Then upload your `bom.csv` and `positions.csv` (KiCad) or `BOM_PCB.csv` and `PickAndPlace.csv` (EasyEDA).
+Click **NEXT**, then upload your `bom.csv` and `positions.csv` (KiCad) or `BOM_PCB.csv` and `PickAndPlace.csv` (EasyEDA).
 
 ![BOM Upload](https://hc-cdn.hel1.your-objectstorage.com/s/v3/712ec605dca59fa99ae56a22f0a1125befd9a068_bom.png)
 
