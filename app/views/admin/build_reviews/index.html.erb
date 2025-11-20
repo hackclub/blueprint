@@ -7,6 +7,7 @@
       <h1 class="pb-2 text-4xl">Pending Build Review</h1>
       <% if current_user.admin? %>
         <p class="text-bp-warning">Yellow: Pre-reviewed by a reviewer</p>
+        <p class="underline">Underline: US submission</p>
       <% end %>
     </div>
     <div class="grow max-w-xl">
@@ -49,10 +50,16 @@
         <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0">
           <div class="flex items-center col-span-1 py-2"><%= project.id %></div>
           <div class="flex items-center col-span-5 font-medium">
+            <% 
+              base_classes = "underline-offset-2"
+              us_classes = "underline"
+              is_us = project.user.country == 'US'
+              link_classes = is_us ? "#{base_classes} #{us_classes}" : base_classes
+            %>
             <% if current_user.admin? %>
-              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white #{project.pre_reviewed ? 'text-bp-warning' : ''}" %>
+              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: "#{link_classes} #{project.pre_reviewed ? 'text-bp-warning' : ''}" %>
             <% else %>
-              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
+              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: link_classes %>
             <% end %>
           </div>
           <div class="flex items-center col-span-2">

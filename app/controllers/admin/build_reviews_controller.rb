@@ -10,17 +10,20 @@ class Admin::BuildReviewsController < Admin::ApplicationController
                             .where.not(build_reviews: { result: BuildReview.results[:approved] })
                             .distinct
                             .pluck(:id)
+
+    us_priority_sql = "CASE WHEN (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1) = 'US' THEN 0 ELSE 1 END"
+
     if current_user.admin?
       @projects = Project.where(is_deleted: false, review_status: :build_pending)
-                        .includes(:user, :journal_entries)
+                        .includes(:journal_entries, user: :latest_locatable_visit)
                         .select("projects.*, CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN true ELSE false END AS pre_reviewed")
-                        .order(Arel.sql("CASE WHEN id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN 0 ELSE 1 END, created_at ASC"))
+                        .order(Arel.sql("CASE WHEN id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN 0 ELSE 1 END, #{us_priority_sql}, created_at ASC"))
     elsif current_user.reviewer_perms?
       @projects = Project.where(is_deleted: false, review_status: :build_pending)
                         .where.not(id: reviewed_ids)
                         .where("ysws IS NULL OR ysws != ?", "led")
-                        .includes(:user, :journal_entries)
-                        .order(created_at: :asc)
+                        .includes(:journal_entries, user: :latest_locatable_visit)
+                        .order(Arel.sql("#{us_priority_sql}, created_at ASC"))
     end
 
     @top_reviewers = User.joins(:build_reviews)
@@ -41,10 +44,18 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     reviewed = base.with_valid_build_review
     unreviewed = base.without_valid_build_review
 
+    us_filter = ->(scope) {
+      scope.where("(SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1) = ?", "US")
+    }
+
     project_id =
       if current_user.admin?
-        random_pick_id(reviewed) || random_pick_id(unreviewed)
+        random_pick_id(us_filter.call(reviewed)) ||
+        random_pick_id(reviewed) ||
+        random_pick_id(us_filter.call(unreviewed)) ||
+        random_pick_id(unreviewed)
       else
+        random_pick_id(us_filter.call(unreviewed.not_led)) ||
         random_pick_id(unreviewed.not_led)
       end
 
