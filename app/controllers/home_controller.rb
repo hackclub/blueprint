@@ -6,16 +6,16 @@ class HomeController < ApplicationController
                              .limit(10)
                              .includes(:banner_attachment, :latest_journal_entry)
 
-    if current_user.is_pro?
+      # if current_user.is_pro?
       ip = request.remote_ip
       if Rails.env.development? && (ip == "127.0.0.1" || ip == "::1")
         @show_bp_progress = true
       else
         @show_bp_progress = us_ip?(ip)
       end
-    else
-      @show_bp_progress = false
-    end
+    # else
+    #   @show_bp_progress = false
+    # end
 
     if @show_bp_progress
       weights = { 1 => 100, 2 => 100, 3 => 100, 4 => 50, 5 => 50 }
