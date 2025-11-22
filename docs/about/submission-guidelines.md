@@ -52,17 +52,17 @@ Your repo should look like this:
 #### Root Directory
 
 - `README.md` contains:
-- A short description of what your project is
-- A couple sentences on _why_ you made the project
-- Screenshot of full 3D model
-- Screenshot of PCB (if applicable)
-- Wiring diagram (if applicable)
-- BOM in table format at the end of the README
+  - A short description of what your project is
+  - A couple sentences on _why_ you made the project
+  - Multiple angles of the full 3D model
+  - Screenshot of PCB (if applicable)
+  - Wiring diagram (if applicable)
+  - BOM in table format at the end of the README
 - `JOURNAL.md` contains:
-- Total time spent on the project at the top
-- Dates
-- Time spent per day
-- Pictures/videos of work in progress
+  - Total time spent on the project at the top
+  - Dates
+  - Time spent per day
+  - Pictures/videos of work in progress
 - `BOM.csv` [make sure to have all required parts!](/resources/bom)
 
 #### /CAD
