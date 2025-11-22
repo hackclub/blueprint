@@ -684,7 +684,7 @@ Think of the crystal like a kid on a swing. It is going back and forth at a cert
 Each crystal has a datasheet that specifies the load capacitance that it needs, and I have already looked them up for the crystals mentioned above. **REMEMBER THAT EACH CRYSTAL IS DIFFERENT EVEN IF THEY MIGHT HAVE THE SAME FREQUENCY.**
 
 The capacitors for the 25 MHz crystal should be 20 pF and for the 32 kHz should be 6.8 pF. After you're done adding them, it should look like this:
-![KiCad Crystals Wired](https://hc-cdn.hel1.your-objectstorage.com/s/v3/488106a8486103ec16373f9cf73232c74130121c_kicad_crystals_wired.png)
+![KiCad Crystals Wired](https://hc-cdn.hel1.your-objectstorage.com/s/v3/7d531353b45a287cc72cf03fa251d3f715399aaa_kicad_crystals_wired.png)
 
 ## Buttons
 
