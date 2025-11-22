@@ -429,7 +429,7 @@ The trick is to keep these grounds separate on the PCB traces but connect them t
 
 Now wire up the rest of the schematic, and you should end up with something similar to this:
 
-![Battery Charger Schematic Complete](https://hc-cdn.hel1.your-objectstorage.com/s/v3/f3339b7c990ce680447e4ab1f6781c8e76354703_battery_charger_complete.png)
+![Battery Charger Schematic Complete](https://hc-cdn.hel1.your-objectstorage.com/s/v3/58ba37abb0a047fa5eea159c5f8ca476629c82ac_battery_charger_complete.png)
 
 Note the mess, but I have different ground names for PGND and GND, although I used the same symbol. I added a battery screw terminal and also connected the battery ground to PGND, and I also shorted PGND and GND. I plan on connecting PGND and GND on the bottom of the thermal pad (this is actually the EP/Pin 25, but in the end I removed PGND and used only GND for simplicity).
 
