@@ -78,6 +78,20 @@
       <div class="bg-[#A78BFA] text-white font-semibold py-2">START NOW →</div>
     </div>
   </a>
+
+  <a href="/starter-projects/flightcontroller" class="block h-full">
+    <div class="flex flex-col h-full group border-2 border-[#FFFEF0] bg-[#1F1F1F] hover:bg-[#292929] max-w-4xl justify-center text-center transition-colors duration-150 hover:rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
+      <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
+        <p class="text-2xl font-semibold text-white">Simple Flight Controller</p>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Learn how to make a flight controller from scratch</i></p>
+        <div class="flex-grow flex items-center justify-center mt-2">
+          <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/a3ff9eeecf832a9728930c930c50646856929097_render_cropped.webp" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
+        </div>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Journaling required</i></p>
+      </div>
+      <div class="bg-[#FFFEF0] text-[#292929] font-semibold py-2">START NOW →</div>
+    </div>
+  </a>
 </div>
 
 <div class="mt-12 p-6 bg-bp-darker/50 border-l-4 border-bp-warning">
