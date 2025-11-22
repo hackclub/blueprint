@@ -74,11 +74,12 @@ Your repo should look like this:
 
 #### /PCB
 
-- `.kicad_pro` (KiCad project file)
-- `.kicad_sch` (schematic)
-- `.kicad_pcb` (PCB)
-- `gerbers.zip` or equivalent
-- `.wrl` 3D Model of your PCB
+- `.kicad_pro` (KiCad project file, if you used KiCad)
+- `.kicad_sch` (schematic, if you used KiCad)
+- `.kicad_pcb` (PCB, if you used KiCad)
+- `.epro` (EasyEDA project file, if you used EasyEDA)
+- Zipped gerbers, or equivalent PCB manufacturing files.
+- A 3D model of your PCB.
 
 #### /Firmware
 
