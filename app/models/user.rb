@@ -244,9 +244,9 @@ class User < ApplicationRecord
   end
 
   def self.find_or_create_from_email(email, referrer_id: nil)
-    begin
-      user_info = fetch_slack_user_info_from_email(email)
-    rescue Slack::Web::Api::Errors::UsersNotFound => e
+      # begin
+      #   user_info = fetch_slack_user_info_from_email(email)
+      # rescue Slack::Web::Api::Errors::UsersNotFound => e
       Rails.logger.warn("Slack user not found for email #{email}: #{e.message}")
 
       unless AllowedEmail.allowed?(email)
@@ -258,7 +258,7 @@ class User < ApplicationRecord
         user.referrer_id = referrer_id
       end
       return user
-    end
+    # end
 
     if user_info.user.is_bot
       Rails.logger.warn({
