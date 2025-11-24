@@ -247,7 +247,7 @@ class User < ApplicationRecord
       # begin
       #   user_info = fetch_slack_user_info_from_email(email)
       # rescue Slack::Web::Api::Errors::UsersNotFound => e
-      Rails.logger.warn("Slack user not found for email #{email}: #{e.message}")
+      # Rails.logger.warn("Slack user not found for email #{email}: #{e.message}")
 
       unless AllowedEmail.allowed?(email)
         raise StandardError, "You do not have access."
