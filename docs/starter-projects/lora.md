@@ -284,4 +284,4 @@ Let's add this to out KiCAD trace widths:
 **single-ended** - opposite of differential, value is interpreted absolutely as opposed to relatively.
 
 
-[Back to Guides](/guides)
+[Back to Starter Projects](/starter-projects)
