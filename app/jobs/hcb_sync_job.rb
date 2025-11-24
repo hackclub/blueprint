@@ -1,5 +1,5 @@
 class HcbSyncJob < ApplicationJob
-  queue_as :default
+  queue_as :background
 
   def perform(org_id = nil, fast: false)
     org_id ||= HcbScraperService.default_org_id

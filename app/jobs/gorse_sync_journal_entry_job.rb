@@ -1,5 +1,5 @@
 class GorseSyncJournalEntryJob < ApplicationJob
-  queue_as :default
+  queue_as :background
 
   def perform(entry_id)
     entry = JournalEntry.find(entry_id)
