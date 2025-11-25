@@ -860,6 +860,18 @@ class User < ApplicationRecord
 
     code_response = IdentityVaultService.exchange_token(callback_url, code)
 
+    unless code_response.is_a?(Hash)
+      Sentry.capture_message(
+        "IdentityVaultService.exchange_token returned unexpected response",
+        level: "error",
+        extra: {
+          response_type: code_response.class.name,
+          response_body: code_response.inspect
+        }
+      )
+      raise StandardError, "IdentityVaultService returned #{code_response.class.name} instead of Hash"
+    end
+
     access_token = code_response[:access_token]
 
     idv_data = fetch_idv(access_token)
