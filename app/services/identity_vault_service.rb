@@ -10,7 +10,7 @@ class IdentityVaultService
       @host ||= {
         staging: "https://hca.dinosaurbbq.org/",
         prod: "https://identity.hackclub.com/"
-      }[:prod]
+      }[env]
     end
 
     def authorize_url(redirect_uri, sneaky_params = nil, state: nil)
@@ -28,7 +28,7 @@ class IdentityVaultService
 
     def exchange_token(redirect_uri, code)
       can_retry do
-        conn.post("/oauth/token") do |req|
+        response = conn.post("/oauth/token") do |req|
           req.body = {
             client_id: ENV["IDENTITY_VAULT_CLIENT_ID"],
             client_secret: ENV["IDENTITY_VAULT_CLIENT_SECRET"],
@@ -36,7 +36,16 @@ class IdentityVaultService
             code:,
             grant_type: "authorization_code"
           }
-        end.body
+        end
+        Sentry.capture_message(
+          "IdentityVaultService.exchange_token response",
+          level: "info",
+          extra: {
+            status: response.status,
+            body: response.body.inspect
+          }
+        )
+        response.body
       end
     end
 
