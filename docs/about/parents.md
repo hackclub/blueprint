@@ -3,6 +3,6 @@
 | description | Parent's Guide to Blueprint to Prototype |  
 | unlisted | false |
 
-More details coming very soon!
+Please read our Parent's guide on [Google Docs](https://docs.google.com/document/d/1qp2dwCtDi7fT1s2QOp53MWEGwh2WSLDtvPSjysM7KOw/edit?usp=sharing)
 
-For now, please join the [Hack Club Slack](https://hack.club/slack) and ask questions in #blueprint-support or email blueprint@hackclub.com.
+If you have any questions, reach out to us at blueprint@hackclub.com or in #blueprint-support on the [Hack Club Slack](https://hack.club/slack).
