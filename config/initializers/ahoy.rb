@@ -1,9 +1,7 @@
 class Ahoy::Store < Ahoy::DatabaseStore
   def visit_properties
     begin
-      if request.session[:user_id] == 1
-        Sentry.capture_message("Ahoy Headers for User 1", extra: { headers: request.headers.to_h })
-      end
+      Sentry.capture_message("Ahoy Headers", extra: { headers: request.headers.to_h })
     rescue => e
       Sentry.capture_exception(e)
     end
