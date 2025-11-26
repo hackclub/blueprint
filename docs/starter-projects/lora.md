@@ -131,7 +131,7 @@ I'm going to speed up this section a bit since many of you may be using differen
 Note that it's good practice to add a small stub of wire in the schematic to make clear that there's a connection. Note the use of decoupling capacitors here again! The values used for the loading capacitors will need to be adjusted per-crystal.
 
 For the USB receptacle, I'll keep it simple for this guide for the sake of brevity, but feel free to add ESD and fuses if desired. I used the AP211K-3.3 as it gives us a lot of current to work with!
-![USB receptacle](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ce7651894964e94be87829f59d1c6f424fc74d63_image.png)
+![USB receptacle](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e406aaae1c72739b32046960329dff01b2a580de_image.png)
 
 Note the ferrite bead here. The general purpose of this device is to pass DC currents and act as an inductive resistor at higher frequencies. I used the BLM15AX102SN1D, which has low DC resistance, and high **inductance** at frequencies from 10 MHz to 1 GHz.
 
@@ -145,7 +145,7 @@ Feel free to use whatever package size you're most comfortable with. The general
 ![Footprint assigner](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ef7dc6f6ec9d2c6f660310a2d6f38f4f783efcd3_image.png)
 
 Here are my assignments:
-![My footprint assignments](https://hc-cdn.hel1.your-objectstorage.com/s/v3/c0c95ddcbb99b003052469f7d6718c466e76c042_image.png)
+![My footprint assignments](https://hc-cdn.hel1.your-objectstorage.com/s/v3/447f3abc670c13152212c49aae57e20cdd48e715_image.png)
 
 Here's the final schematic design:
 ![dm @mpk on slack if you see this :D](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a2a85a0ffd67c9a670d6c42564e895d1e218535b_image.png)
