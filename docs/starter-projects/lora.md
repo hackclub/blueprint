@@ -121,6 +121,8 @@ Now here's the fun part: there's a part that does almost all of this for us! The
 Here's the final frontend schematic. Note the pi network at the end!
 ![Final frontend schematic](https://hc-cdn.hel1.your-objectstorage.com/s/v3/06c409bbc0d555a4e94f70a9087b621e3e12b5d3_image.png)
 
+[Here's the symbol for the PE4259](https://hc-cdn.hel1.your-objectstorage.com/s/v3/48b5b2347d8813ecea3e724b2366a884b0436fe5_rf_switch_extended.zip)!
+
 ## The RP2040
 I'm going to speed up this section a bit since many of you may be using different microcontrollers, and tutorials with this microcontroller have been featured several times previously.
 
@@ -133,7 +135,7 @@ Note that it's good practice to add a small stub of wire in the schematic to mak
 For the USB receptacle, I'll keep it simple for this guide for the sake of brevity, but feel free to add ESD and fuses if desired. I used the AP211K-3.3 as it gives us a lot of current to work with!
 ![USB receptacle](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e406aaae1c72739b32046960329dff01b2a580de_image.png)
 
-Note the ferrite bead here. The general purpose of this device is to pass DC currents and act as an inductive resistor at higher frequencies. I used the BLM15AX102SN1D, which has low DC resistance, and high **inductance** at frequencies from 10 MHz to 1 GHz.
+Note the ferrite bead here. The general purpose of this device is to pass DC currents and act as an inductive resistor at higher frequencies. I used the BLM15AX102SN1D, which has low DC resistance, and high **inductance** at frequencies from 10 MHz to 1 GHz. (this is just the `FerriteBead_Small` symbol renamed).
 
 When you attach an antenna, there's never a single node. The board ground will act as the other radial. If we simply connected the USB shield to ground, the USB shield itself will resonate, bringing that RF directly into your host device!
 ![Dipole antenna, showing the ground node](https://hc-cdn.hel1.your-objectstorage.com/s/v3/754d829b4cde50e2315e8121d9931605582f9934_dipole_receiving_antenna_animation_6_300ms.gif)
