@@ -1,4 +1,9 @@
 class Ahoy::Store < Ahoy::DatabaseStore
+  def visit_properties
+    super.merge(
+      ip: request.headers["CF-Connecting-IP"] || request.remote_ip
+    )
+  end
 end
 
 # set to true for JavaScript tracking
