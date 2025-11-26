@@ -28,9 +28,9 @@
       </div>
     </div>
 
-    <% if @bp_progress > 100 %>
-      <p class="mt-1 text-xs text-white/80">
-        You exceeded the goal by <%= @bp_progress - 100 %>% — keep going!
+    <% if @bp_progress >= 100 %>
+      <p class="mt-1 text-white/80">
+        You've reached 100%! Please be on the lookout for an email to confirm your spot.
       </p>
     <% end %>
   </div>
