@@ -1,5 +1,5 @@
 class GorseSyncUserJob < ApplicationJob
-  queue_as :default
+  queue_as :background
 
   def perform(user_id)
     user = User.find(user_id)

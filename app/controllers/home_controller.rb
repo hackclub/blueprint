@@ -17,17 +17,17 @@ class HomeController < ApplicationController
     #   @show_bp_progress = false
     # end
 
-    if @show_bp_progress
-      weights = { 1 => 100, 2 => 100, 3 => 100, 4 => 50, 5 => 50 }
-      approved = current_user.projects
-                  .where(is_deleted: false, review_status: [ "design_approved", "build_approved" ])
-                  .select(:tier, :approved_tier)
-      @bp_progress = approved.sum do |p|
-        t = (p.approved_tier.presence || p.tier).to_i
-        weights[t] || 0
-      end
-      @bp_progress = @bp_progress.to_i.clamp(0, 100)
+    # if @show_bp_progress
+    weights = { 1 => 100, 2 => 100, 3 => 100, 4 => 50, 5 => 50 }
+    approved = current_user.projects
+                .where(is_deleted: false, review_status: [ "design_approved", "build_approved" ])
+                .select(:tier, :approved_tier)
+    @bp_progress = approved.sum do |p|
+      t = (p.approved_tier.presence || p.tier).to_i
+      weights[t] || 0
     end
+    @bp_progress = @bp_progress.to_i.clamp(0, 100)
+    # end
   end
 
   private

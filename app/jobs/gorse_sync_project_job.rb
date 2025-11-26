@@ -1,5 +1,5 @@
 class GorseSyncProjectJob < ApplicationJob
-  queue_as :default
+  queue_as :background
 
   def perform(project_id)
     project = Project
