@@ -128,7 +128,7 @@ I'm going to speed up this section a bit since many of you may be using differen
 
 *Protip: select all pins you want to no-connect, right-click > Pin Helpers > No Connect!*
 
-![RP2040 Schematic](https://hc-cdn.hel1.your-objectstorage.com/s/v3/772af1f0ac52d1945122044716d72f48b327502e_image.png)
+![RP2040 Schematic](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e8658b49316eaf011785b2451294a17319515122_image.png)
 
 Note that it's good practice to add a small stub of wire in the schematic to make clear that there's a connection. Note the use of decoupling capacitors here again! The values used for the loading capacitors will need to be adjusted per-crystal.
 
@@ -150,7 +150,7 @@ Here are my assignments:
 ![My footprint assignments](https://hc-cdn.hel1.your-objectstorage.com/s/v3/447f3abc670c13152212c49aae57e20cdd48e715_image.png)
 
 Here's the final schematic design:
-![dm @mpk on slack if you see this :D](https://hc-cdn.hel1.your-objectstorage.com/s/v3/d2567a3086d76541ab8e6dff8218625db263d2fa_image.png)
+![dm @mpk on slack if you see this :D](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4c5370322f5c075f604dfd91f9c0280cdbfa61ea_image.png)
 
 # PCB Design
 Woah, great job getting through the first part! Now we get to (in my opinion) the fun part: the PCB design!
