@@ -545,7 +545,7 @@ class User < ApplicationRecord
         }
       ],
       team_id: "T0266FRGM",
-      restricted: true,
+      restricted: false,
       extra_message: "Join the Hack Club Slack to chat with other Blueprint users!",
       channels: channels
     }
