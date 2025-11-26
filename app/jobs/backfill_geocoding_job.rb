@@ -39,7 +39,7 @@ class BackfillGeocodingJob < ApplicationJob
     total_visits_unfiltered = all_visits_unfiltered.count
     total_ips_unfiltered = all_visits_unfiltered.map(&:ip).uniq.count
 
-    # all_visits = all_visits_unfiltered.reject { |v| cloudflare_ip?(v.ip) }
+    all_visits = all_visits_unfiltered # .reject { |v| cloudflare_ip?(v.ip) }
 
     # Group by IP to only geocode each unique IP once
     visits_by_ip = all_visits.group_by(&:ip)
