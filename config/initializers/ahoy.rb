@@ -1,5 +1,13 @@
 class Ahoy::Store < Ahoy::DatabaseStore
   def visit_properties
+    begin
+      if request.session[:user_id] == 1
+        Sentry.capture_message("Ahoy Headers for User 1", extra: { headers: request.headers.to_h })
+      end
+    rescue => e
+      Sentry.capture_exception(e)
+    end
+
     super.merge(
       ip: request.headers["CF-Connecting-IP"] || request.remote_ip
     )
