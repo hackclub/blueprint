@@ -1,14 +1,16 @@
 class Ahoy::Store < Ahoy::DatabaseStore
-  def visit_properties
-    begin
-      Sentry.capture_message("Ahoy Headers", extra: { headers: request.headers.to_h })
-    rescue => e
-      Sentry.capture_exception(e)
+  def track_visit(data)
+    data[:ip] = request.headers["CF-Connecting-IP"] || request.remote_ip
+
+    if request.session[:user_id] == 1
+      begin
+        Sentry.capture_message("Ahoy Headers for User 1", extra: { headers: request.headers.to_h })
+      rescue => e
+        Sentry.capture_exception(e)
+      end
     end
 
-    super.merge(
-      ip: request.headers["CF-Connecting-IP"] || request.remote_ip
-    )
+    super(data)
   end
 end
 
