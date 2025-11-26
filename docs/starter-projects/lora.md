@@ -148,7 +148,7 @@ Here are my assignments:
 ![My footprint assignments](https://hc-cdn.hel1.your-objectstorage.com/s/v3/447f3abc670c13152212c49aae57e20cdd48e715_image.png)
 
 Here's the final schematic design:
-![dm @mpk on slack if you see this :D](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a2a85a0ffd67c9a670d6c42564e895d1e218535b_image.png)
+![dm @mpk on slack if you see this :D](https://hc-cdn.hel1.your-objectstorage.com/s/v3/d2567a3086d76541ab8e6dff8218625db263d2fa_image.png)
 
 # PCB Design
 Woah, great job getting through the first part! Now we get to (in my opinion) the fun part: the PCB design!
