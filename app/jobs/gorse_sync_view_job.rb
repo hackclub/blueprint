@@ -1,5 +1,5 @@
 class GorseSyncViewJob < ApplicationJob
-  queue_as :default
+  queue_as :background
 
   def perform(user_id, item_id, timestamp, item_type: "Project")
     item = case item_type

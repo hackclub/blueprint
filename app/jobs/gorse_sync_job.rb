@@ -1,5 +1,5 @@
 class GorseSyncJob < ApplicationJob
-  queue_as :default
+  queue_as :background
 
   def perform
     sync_users

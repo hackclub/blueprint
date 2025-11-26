@@ -200,13 +200,13 @@
       <% end %>
 
       <div>
-        <%= f.label :reason, "Internal Reason", class: "block text-xl font-medium" %>
-        <%= f.text_area :reason, rows: 4, placeholder: "Add notes or reasons for your decision", class: "input px-3 mt-1 block w-full" %>
+        <%= f.label :reason, "Internal Justification (MANDATORY)", class: "block text-xl font-medium" %>
+        <%= f.text_area :reason, rows: 4, placeholder: "Justify your decision (why you approved/denied)", class: "input px-3 mt-1 block w-full", required: true %>
       </div>
 
       <div>
-        <%= f.label :feedback, class: "block text-xl font-medium" %>
-        <%= f.text_area :feedback, rows: 4, placeholder: "Feedback is shown to users", class: "input px-3 mt-1 block w-full" %>
+        <%= f.label :feedback, "Feedback for author (MANDATORY)", class: "block text-xl font-medium" %>
+        <%= f.text_area :feedback, rows: 4, placeholder: "Give feedback for the author of the project!", class: "input px-3 mt-1 block w-full", required: true %>
       </div>
 
       <div class="flex gap-4">

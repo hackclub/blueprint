@@ -1,4 +1,4 @@
-<% content_for :title, "Hack Club x AMD: Prototype" %>
+<% content_for :title, "Hack Club | AMD: Prototype" %>
 
   <div class="text-white overflow-hidden">
     <!-- Banner -->
@@ -21,9 +21,9 @@
               %>
             </div>
             <div class="text-center text-sm md:text-2xl font-rc-full mx-4">
-              <h2 class="hidden md:block">December 19-21, 2025 @ SF Bay Area<br>For teens in the USA only</h2>
+              <h2 class="hidden md:block">December 19-21, 2025 @ San Jose<br>For teens in the USA only</h2>
               <h2 class="md:hidden">December 19-21, 2025</h2>
-              <h2 class="md:hidden">@ SF Bay Area</h2>
+              <h2 class="md:hidden">@ San Jose</h2>
               <h2 class="md:hidden">For teens in the USA only</h2>
             </div>
           </div>
@@ -97,7 +97,7 @@
                 <%= render "shared/button", url: "/about", text: "Learn more about Hack Club Blueprint & funding for projects", variant: :primary, class: "w-full" %>
               </div>
               <p >
-                The event is free to attend if you qualify! Food and lodging is provided for the duration of the event. All attendees will get a stipend of up to $400 to cover flight costs if needed.
+                The event is free to attend if you qualify! Food and lodging is provided for the duration of the event. All attendees will get a stipend of up to $500 to cover flight costs if needed. Additional needs-based stipends are available!
               </p>
             </div>
 
@@ -144,7 +144,7 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
               <h3 class="mb-3 font-bold text-lg md:text-xl text-bp-warning">When is Prototype?</h3>
-              <p class="text-base md:text-lg">December 19-21, 2025 in SF Bay Area</p>
+              <p class="text-base md:text-lg">December 19-21, 2025 in San Jose</p>
             </div>
             <div>
               <h3 class="mb-3 font-bold text-lg md:text-xl text-bp-warning">How do I qualify?</h3>
@@ -167,14 +167,12 @@
               <p class="text-base md:text-lg">Not at all! We welcome beginners and provide resources to help you learn.</p>
             </div>
           </div>
-          <div class="text-center md:text-xl pt-4">
-            <p>Have more questions? Check out our <a href="/faq" class="underline hover:text-bp-warning transition-colors">full FAQ!</a></p>
+          <div class="w-full flex justify-center py-4">
+            <%= render "shared/button", url: "https://docs.google.com/document/d/1qp2dwCtDi7fT1s2QOp53MWEGwh2WSLDtvPSjysM7KOw/edit?usp=sharing", text: "Parent's Guide to Prototype", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
           </div>
-          <%# <div class="w-full flex justify-center py-4">
-            <a href="/about/parents" class="text-xl md:text-2xl font-rc-full text-white hover:text-bp-warning transition-colors underline">
-              Parents info
-            </a>
-          </div> %>
+          <div class="text-center md:text-xl pt-4">
+            <p>Have more questions? Email us at <a href="mailto:blueprint@hackclub.com" class="underline hover:text-bp-warning transition-colors">blueprint@hackclub.com</a>.</p>
+          </div>
         </div>
 
         <div class="max-w-6xl mx-auto">

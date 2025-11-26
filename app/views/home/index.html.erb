@@ -41,17 +41,13 @@
           <%= render 'tasks' %>
           <%= render 'announcements' %>
         <% end %>
-          <% if @show_bp_progress %>
-            <%= render 'blueprint_progress' %>
-          <% end %>
+          <%= render 'blueprint_progress' %>
           <%= render 'viral_projects' %>
       <% else %>
         <%= render 'tasks' %>
         <%= render 'announcements' %>
         <%= render 'projects' %>
-        <% if @show_bp_progress %>
-          <%= render 'blueprint_progress' %>
-        <% end %>
+        <%= render 'blueprint_progress' %>
         <%= render 'viral_projects' %>
       <% end %>
     </div>

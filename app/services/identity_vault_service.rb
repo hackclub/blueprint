@@ -9,8 +9,8 @@ class IdentityVaultService
     def host
       @host ||= {
         staging: "https://hca.dinosaurbbq.org/",
-        prod: "https://identity.hackclub.com/"
-      }[:prod]
+        prod: "https://account.hackclub.com/"
+      }[env]
     end
 
     def authorize_url(redirect_uri, sneaky_params = nil, state: nil)
@@ -28,15 +28,21 @@ class IdentityVaultService
 
     def exchange_token(redirect_uri, code)
       can_retry do
-        conn.post("/oauth/token") do |req|
-          req.body = {
-            client_id: ENV["IDENTITY_VAULT_CLIENT_ID"],
-            client_secret: ENV["IDENTITY_VAULT_CLIENT_SECRET"],
-            redirect_uri:,
-            code:,
-            grant_type: "authorization_code"
-          }
-        end.body
+        begin
+          conn.post("/oauth/token") do |req|
+            req.headers["Content-Type"] = "application/x-www-form-urlencoded"
+            req.body = URI.encode_www_form({
+              client_id: ENV["IDENTITY_VAULT_CLIENT_ID"],
+              client_secret: ENV["IDENTITY_VAULT_CLIENT_SECRET"],
+              redirect_uri:,
+              code:,
+              grant_type: "authorization_code"
+            })
+          end.body
+        rescue Faraday::BadRequestError => e
+          Sentry.capture_exception(e, extra: { response_body: e.response })
+          raise e
+        end
       end
     end
 

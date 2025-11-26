@@ -1,5 +1,5 @@
 class GorseSyncFollowJob < ApplicationJob
-  queue_as :default
+  queue_as :background
 
   def perform(follow_id)
     follow = Follow.find(follow_id)
