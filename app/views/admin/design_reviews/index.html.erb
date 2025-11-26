@@ -95,11 +95,8 @@
               start_time = nil
               
               if project.respond_to?(:versions)
-                version = project.versions.where(event: "update")
-                                 .where("object_changes ->> 'review_status' ILIKE '%design_pending%'")
-                                 .order(created_at: :desc)
-                                 .first
-                start_time = version.created_at if version
+                events = attribute_updated_event(object: project, attribute: :review_status, after: "design_pending", all: true)
+                start_time = events.last[:timestamp] if events.present?
               end
             %>
             
