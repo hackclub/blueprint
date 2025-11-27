@@ -121,19 +121,21 @@ Now here's the fun part: there's a part that does almost all of this for us! The
 Here's the final frontend schematic. Note the pi network at the end!
 ![Final frontend schematic](https://hc-cdn.hel1.your-objectstorage.com/s/v3/06c409bbc0d555a4e94f70a9087b621e3e12b5d3_image.png)
 
+[Here's the symbol for the PE4259](https://hc-cdn.hel1.your-objectstorage.com/s/v3/48b5b2347d8813ecea3e724b2366a884b0436fe5_rf_switch_extended.zip)!
+
 ## The RP2040
 I'm going to speed up this section a bit since many of you may be using different microcontrollers, and tutorials with this microcontroller have been featured several times previously.
 
 *Protip: select all pins you want to no-connect, right-click > Pin Helpers > No Connect!*
 
-![RP2040 Schematic](https://hc-cdn.hel1.your-objectstorage.com/s/v3/772af1f0ac52d1945122044716d72f48b327502e_image.png)
+![RP2040 Schematic](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e8658b49316eaf011785b2451294a17319515122_image.png)
 
 Note that it's good practice to add a small stub of wire in the schematic to make clear that there's a connection. Note the use of decoupling capacitors here again! The values used for the loading capacitors will need to be adjusted per-crystal.
 
 For the USB receptacle, I'll keep it simple for this guide for the sake of brevity, but feel free to add ESD and fuses if desired. I used the AP211K-3.3 as it gives us a lot of current to work with!
-![USB receptacle](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ce7651894964e94be87829f59d1c6f424fc74d63_image.png)
+![USB receptacle](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e406aaae1c72739b32046960329dff01b2a580de_image.png)
 
-Note the ferrite bead here. The general purpose of this device is to pass DC currents and act as an inductive resistor at higher frequencies. I used the BLM15AX102SN1D, which has low DC resistance, and high **inductance** at frequencies from 10 MHz to 1 GHz.
+Note the ferrite bead here. The general purpose of this device is to pass DC currents and act as an inductive resistor at higher frequencies. I used the BLM15AX102SN1D, which has low DC resistance, and high **inductance** at frequencies from 10 MHz to 1 GHz. (this is just the `FerriteBead_Small` symbol renamed).
 
 When you attach an antenna, there's never a single node. The board ground will act as the other radial. If we simply connected the USB shield to ground, the USB shield itself will resonate, bringing that RF directly into your host device!
 ![Dipole antenna, showing the ground node](https://hc-cdn.hel1.your-objectstorage.com/s/v3/754d829b4cde50e2315e8121d9931605582f9934_dipole_receiving_antenna_animation_6_300ms.gif)
@@ -145,10 +147,10 @@ Feel free to use whatever package size you're most comfortable with. The general
 ![Footprint assigner](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ef7dc6f6ec9d2c6f660310a2d6f38f4f783efcd3_image.png)
 
 Here are my assignments:
-![My footprint assignments](https://hc-cdn.hel1.your-objectstorage.com/s/v3/c0c95ddcbb99b003052469f7d6718c466e76c042_image.png)
+![My footprint assignments](https://hc-cdn.hel1.your-objectstorage.com/s/v3/447f3abc670c13152212c49aae57e20cdd48e715_image.png)
 
 Here's the final schematic design:
-![dm @mpk on slack if you see this :D](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a2a85a0ffd67c9a670d6c42564e895d1e218535b_image.png)
+![dm @mpk on slack if you see this :D](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4c5370322f5c075f604dfd91f9c0280cdbfa61ea_image.png)
 
 # PCB Design
 Woah, great job getting through the first part! Now we get to (in my opinion) the fun part: the PCB design!

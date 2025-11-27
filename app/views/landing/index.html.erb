@@ -93,7 +93,7 @@
         <% if current_user.present? %>
           <%= render "shared/button", url: home_path, text: "Go home", variant: :outline, class: "bg-bp-dark border-2 px-2 py-1 md:px-4 md:py-2 text-base md:text-xl" %>
         <% else %>
-          <%= render "shared/button", url: login_path, text: "Log in!", variant: :outline, class: "bg-bp-dark border-2 px-2 py-1 md:px-4 md:py-2 text-base md:text-xl" %>
+          <%= render "shared/button", url: login_path, text: "Sign up / Log in!", variant: :outline, class: "bg-bp-dark border-2 px-2 py-1 md:px-4 md:py-2 text-base md:text-xl" %>
         <% end %>
       </div>
 
