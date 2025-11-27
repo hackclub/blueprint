@@ -30,6 +30,10 @@ Yes!
 
 Anything within budget!
 
+## Do I need the journal in my repo?
+
+No! It just needs to be in [blueprint.hackclub.com](blueprint.hackclub.com) :D 
+
 ## How long may reviews take?
 
 Reviews may vary in time! They can take a week or more. We try to review as soon as possible :) 
