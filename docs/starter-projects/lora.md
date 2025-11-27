@@ -193,7 +193,7 @@ Here are all of the subsections layed out together! Make sure to give the RF som
 Once you get your layout drafted, it's time to route! This process can often times change the layout slightly, so be flexible!
 The premise is to go from most sensitive -> least sensitive. For this reason, I'll start with the RF, then USB differential pair, then crystals and digital. Have a look at the centralized [Guidelines for Routing RF Traces](#guidelines-for-routing-rf-traces) while routing RF!
 
-Let's also set up our board outline (rectangle on Edge.Cuts) and zone fill. For zone fill, layers 1,2, and 4 should be filled with ground, and pad connections should be set to solid for better signal integrity.
+Let's also set up our board outline (rectangle on Edge.Cuts) and zone fill. For zone fill, layers 1,2, and 4 should be filled with ground, and pad connections should be set to solid for better signal integrity. **You can always hit `B` to refill all zones as you're working!**
 ![Zone fill settings](https://hc-cdn.hel1.your-objectstorage.com/s/v3/08dd0579fa032f5503d8becfdab9b26d9fec9b1a_image.png)
 
 Here's the RF section routed:
@@ -208,7 +208,12 @@ I'll skim over the rest of the routing. The final result before power routing is
 ### Delivering Power
 We'll do the RF power/ground last, as it's a bit more complex.
 
-In essence, just add vias as close as possible to the pad. Generally, avoid via-in-pad, as it can create manufacturing problems.
+First let's add our power plane! For more complex designs you would typically use all ground on inner layers, but it's good enough for us since we don't have a lot of sensitive signals on the back!
+Add a new zone on layer 3 (In.2 by default) on the 3.3v net:
+
+![Power plane fill](https://hc-cdn.hel1.your-objectstorage.com/s/v3/7c95e8c435c5ef627ebba3e0c88ec450238906ca_image.png)
+
+In essence, just add vias as close as possible to the pad. Generally, avoid via-in-pad, as it can create manufacturing problems. I also suggest continuously refilling all zones (`B` key) to make sure you don't have too many big holes or notches. We do this to ensure all of our return paths are uninterrupted!
 
 ![Completed power delivery vias](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b54941a2ef42c68b15cca099f01559d93909f742_image.png)
 
@@ -248,7 +253,8 @@ Since these signals are relatively high frequency (approaching 1GHz), we need to
 - Ensure traces are impedance-matched
 - Distances are as short as possible
 - No right-angles. Use curved or milled bends if needed
-- Every trace has a reference. Control the reference with vias
+- Every trace has a reference. Control the return path with vias. The goal is to keep the return path as short as possible
+- Any sensitive signal going through a via should have at least 2 surrounding ground vias to minimize parasitic inductance
 
 ## Calculating Transmission Lines
 KiCAD actually has a built-in calculator tool with all sorts of calculations! We'll be using the transmission line calculator to calculate the properties of our RF traces.
