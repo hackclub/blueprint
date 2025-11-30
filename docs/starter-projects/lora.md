@@ -121,7 +121,7 @@ In summary, our frontend should look something like this:
 ![Drawing of balun + LPF + matching](https://hc-cdn.hel1.your-objectstorage.com/s/v3/2ef06b246b753ec3e60eaf626143f57f254d6974_image.png)
 
 ## Applying these Concepts
-Now here's the fun part: there's a part that does almost all of this for us! The [0900FM15D0039](https://www.digikey.com/en/products/detail/johanson-technology-inc/0900FM15D0039001E/13182545) is an IPD (integrated passive device) by Johanson which contains the balun and filtering ([868-915MHz, slightly different footprint](https://www.digikey.com/en/products/detail/johanson-technology-inc/0900FM15K0039001E/16639329))! We still get to do the pi match ourselves though. To switch between TX and RX, we'll also use an RF switch, controlled by `DIO2`.
+Now here's the fun part: there's a part that does almost all of this for us! The [0900FM15D0039](https://www.digikey.com/en/products/detail/johanson-technology-inc/0900FM15D0039001E/13182545) is an IPD (integrated passive device) by Johanson which contains the balun and filtering ([868-915MHz, slightly different footprint](https://www.digikey.com/en/products/detail/johanson-technology-inc/0900FM15K0039001E/16639329) [check the datasheet for this, some components may be different!])! We still get to do the pi match ourselves though. To switch between TX and RX, we'll also use an RF switch, controlled by `DIO2`.
 
 Here's the final frontend schematic. Note the pi network at the end!
 ![Final frontend schematic](https://hc-cdn.hel1.your-objectstorage.com/s/v3/06c409bbc0d555a4e94f70a9087b621e3e12b5d3_image.png)
