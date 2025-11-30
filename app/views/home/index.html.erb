@@ -5,6 +5,18 @@
       <p class="text-lg md:text-xl">Here's what's cooking today</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+      <% if current_user.idv_linked? && !current_user.ysws_verified  %>
+        <%= render 'shared/card', class: 'col-span-1 md:col-span-2 border-bp-warning border-2 space-y-0 flex flex-row items-center' do %>
+          <div class="grow">
+            <p class="font-rc-full text-2xl md:text-3xl">Finish verifying your identity</p>
+            <p>Upload your documents to Hack Club Account and wait for manual
+              review.</p>
+          </div>
+          <div>
+            <%= render 'shared/button', text: "Verify Now", url: "https://account.hackclub.com/verifications/document" %>
+          </div>
+        <% end %>
+      <% end %>
       <% unless current_user.is_pro %>
         <%= render 'shared/card', class: 'col-span-1 md:col-span-2 flex flex-col motion-safe:transition-colors border-2 border-bp-warning border-solid' do %>
           <p class="text-2xl md:text-3xl font-rc-full mb-8">Build your first hardware project. Start with Hackpad!</p>
