@@ -7,7 +7,12 @@
 
 How does your smartphone send and receive signals? How can a car receive broadcasts? How does GPS work? Well, they answer to all these questions lies in one word: RADIO! Radio lies on the high-frequency end of the electromagnetic spectrum. The radio spectrum encompasses systems like amateur radio, satellite systems, and FM radio stations, each having their own **frequency**. In this guide, we'll learn how to leverage one section of frequencies, called the **ISM Band**, to send and receive our own signals.
 
-The final prduct will be a 4-layer board with an SX262 radio module, an RP2040 microcontroller, and pins broken out for development.
+There are two main ISM bands:
+- 915MHz - United States
+- 868MHz - Most European countries
+Be sure to check your local regulation for license-free ISM band use. This guide is primarily built for 915MHz, but much of the same hardware should work.
+
+The final product will be a 4-layer board with an SX1262 radio module, an RP2040 microcontroller, and pins broken out for development.
 
 # Table of Contents
 1. [Setting Up a Project](#setting-up-a-project)
@@ -116,7 +121,7 @@ In summary, our frontend should look something like this:
 ![Drawing of balun + LPF + matching](https://hc-cdn.hel1.your-objectstorage.com/s/v3/2ef06b246b753ec3e60eaf626143f57f254d6974_image.png)
 
 ## Applying these Concepts
-Now here's the fun part: there's a part that does almost all of this for us! The [0900FM15D0039](https://www.digikey.com/en/products/detail/johanson-technology-inc/0900FM15D0039001E/13182545) is an IPD (integrated passive device) by Johanson which contains the balun and filtering! We still get to do the pi match ourselves though. To switch between TX and RX, we'll also use an RF switch, controlled by `DIO2`.
+Now here's the fun part: there's a part that does almost all of this for us! The [0900FM15D0039](https://www.digikey.com/en/products/detail/johanson-technology-inc/0900FM15D0039001E/13182545) is an IPD (integrated passive device) by Johanson which contains the balun and filtering ([868-915MHz, slightly different footprint](https://www.digikey.com/en/products/detail/johanson-technology-inc/0900FM15K0039001E/16639329))! We still get to do the pi match ourselves though. To switch between TX and RX, we'll also use an RF switch, controlled by `DIO2`.
 
 Here's the final frontend schematic. Note the pi network at the end!
 ![Final frontend schematic](https://hc-cdn.hel1.your-objectstorage.com/s/v3/06c409bbc0d555a4e94f70a9087b621e3e12b5d3_image.png)
