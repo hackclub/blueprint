@@ -35,6 +35,9 @@
         <p>Type: <span class="font-medium"><%= @project.ysws || "Custom" %></span></p>
         <p>Hours: <span class="font-medium"><%= hours %>h</span></p>
         <p>CPH: <span class="font-medium"><%= hours > 0 ? sprintf("$%.2f", (@project.funding_needed_cents / 100.0) / hours) : "–" %></span></p>
+        <% if @project.ysws == "hackpad" && @project.approx_hour.present? %>
+          <p>Self-reported: <span class="font-medium"><%= @project.approx_hour %>h</span></p>
+        <% end %>
       </div>
     </div>
     <div class="space-y-6">
