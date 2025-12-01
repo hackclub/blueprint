@@ -63,6 +63,10 @@ class User < ApplicationRecord
     idv_country.presence || latest_locatable_visit&.country
   end
 
+  def us?
+    country.in?([ "US", "United States" ])
+  end
+
   # Simple referrer: a user may have one referrer (another User)
   belongs_to :referrer, class_name: "User", optional: true
 

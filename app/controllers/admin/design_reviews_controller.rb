@@ -8,7 +8,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                             .where(design_reviews: { invalidated: false })
                             .distinct
                             .pluck(:id)
-    us_priority_sql = "CASE WHEN COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) = 'US' THEN 0 ELSE 1 END"
+    us_priority_sql = "CASE WHEN COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) IN ('US', 'United States') THEN 0 ELSE 1 END"
 
     if current_user.admin?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
@@ -42,7 +42,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
     unreviewed = base.without_valid_design_review
 
     us_filter = ->(scope) {
-      scope.where("COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) = ?", "US")
+      scope.where("COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) IN ('US', 'United States')")
     }
 
     project_id =

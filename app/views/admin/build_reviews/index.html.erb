@@ -53,7 +53,7 @@
             <% 
               base_classes = "underline-offset-2"
               us_classes = "underline"
-              is_us = project.user.country == 'US'
+              is_us = project.user.us?
               link_classes = is_us ? "#{base_classes} #{us_classes}" : base_classes
             %>
             <% if current_user.admin? %>

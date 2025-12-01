@@ -47,6 +47,6 @@ class HomeController < ApplicationController
       nil
     end
 
-    country == "US"
+    country == "US" || country == "United States"
   end
 end
