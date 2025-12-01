@@ -75,7 +75,7 @@
     <% if @project.ysws == "hackpad" %>
       <div>
         <%= f.label :approx_hour, "Approximately how many hours did you spend?", class: "block text-xl font-medium font-rc-full" %>
-        <%= f.number_field :approx_hour, step: 0.1, min: 0, class: "input px-3 w-full", placeholder: "e.g. 12.5" %>
+        <%= f.number_field :approx_hour, step: 0.1, min: 0, required: true, class: "input px-3 w-full", placeholder: "e.g. 12.5" %>
       </div>
     <% end %>
 
