@@ -872,11 +872,15 @@ class User < ApplicationRecord
       raise StandardError, "Another user already has this identity linked."
     end
 
+    addresses = idv_data.dig(:identity, :addresses) || []
+    primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
+
     update!(
       identity_vault_access_token: access_token,
       identity_vault_id:,
       ysws_verified: idv_data.dig(:identity,
-                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible)
+                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible),
+      idv_country: primary_address.dig(:country)
     )
   end
 
@@ -903,10 +907,13 @@ class User < ApplicationRecord
     return if ysws_verified
 
     idv_data = fetch_idv
+    addresses = idv_data.dig(:identity, :addresses) || []
+    primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
 
     update!(
       ysws_verified: idv_data.dig(:identity,
-                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible)
+                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible),
+      idv_country: primary_address.dig(:country)
     )
   end
 
