@@ -60,7 +60,7 @@ class User < ApplicationRecord
   has_one :latest_locatable_visit, -> { where.not(country: [ nil, "" ]).order(started_at: :desc) }, class_name: "Ahoy::Visit"
 
   def country
-    latest_locatable_visit&.country
+    idv_country.presence || latest_locatable_visit&.country
   end
 
   # Simple referrer: a user may have one referrer (another User)
