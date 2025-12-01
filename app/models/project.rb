@@ -82,7 +82,13 @@ class Project < ApplicationRecord
       "Updated At" => :updated_at,
       "User ID" => :user_id,
       "Needs Soldering Iron" => :needs_soldering_iron,
-      "Followers" => lambda { |project| project.followers.pluck(:id).join(",") }
+      "Followers" => lambda { |project| project.followers.pluck(:id).join(",") },
+      "Country" => lambda { |project|
+        idv_data = project.user&.fetch_idv || {}
+        addresses = idv_data.dig(:identity, :addresses) || []
+        primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
+        primary_address.dig(:country)
+      }
     }
   end
 
