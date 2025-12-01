@@ -8,6 +8,11 @@
 
 <p class="text-xl mb-8">Follow and modify one of these awesome projects</p>
 
+<div class="mt-12 p-6 bg-bp-darker/50 border-l-4 border-bp-warning">
+  <h4 class="text-xl font-rc-full mb-2">Note about projects made with the community provided guides:</h4>
+  <p class="text-white/80">You <strong>can not</strong> simply just submit a copy of the tutorials above. You need to do something to make it your own. This means something different for each project. Maybe add custom keys, neopixel LED's, make a custom MIDI.</p>
+</div>
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8 mb-12">
 <a href="../hackpad/index.md" class="block h-full">
     <div class="flex flex-col h-full group border-2 border-[#FF6B6B] bg-[#4A1515] hover:bg-[#5A2020] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
@@ -107,9 +112,4 @@
   </div>
 </a>
 
-</div>
-
-<div class="mt-12 p-6 bg-bp-darker/50 border-l-4 border-bp-warning">
-  <h4 class="text-xl font-rc-full mb-2">Note about projects made with the community provided guides:</h4>
-  <p class="text-white/80">You <strong>can not</strong> simply just submit a copy of the tutorials above. You need to do something to make it your own. This means something different for each project. Maybe add custom keys, neopixel LED's, make a custom MIDI.</p>
 </div>
