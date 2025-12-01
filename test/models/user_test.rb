@@ -12,6 +12,7 @@
 #  fulfiller                   :boolean          default(FALSE), not null
 #  github_username             :string
 #  identity_vault_access_token :string
+#  idv_country                 :string
 #  internal_notes              :text
 #  is_banned                   :boolean          default(FALSE), not null
 #  is_mcg                      :boolean          default(FALSE), not null

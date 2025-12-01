@@ -72,6 +72,13 @@
       <% end %>
     </div>
 
+    <% if @project.ysws == "hackpad" %>
+      <div>
+        <%= f.label :approx_hour, "Approximately how many hours did you spend?", class: "block text-xl font-medium font-rc-full" %>
+        <%= f.number_field :approx_hour, step: 0.1, min: 0, class: "input px-3 w-full", placeholder: "e.g. 12.5" %>
+      </div>
+    <% end %>
+
     <div data-controller="funding-amount"
       data-funding-amount-tier-max-cents-value="<%= { 1 => 40000, 2 => 20000, 3 => 10000, 4 => 5000, 5 => 2500 }.to_json %>">
       <% if @project.ysws != "hackpad" %>

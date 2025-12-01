@@ -538,6 +538,7 @@ class ProjectsController < ApplicationController
       :print_legion,
       :needs_soldering_iron,
       :skip_gh_sync,
+      :approx_hour,
       cart_screenshots: []
     )
 
