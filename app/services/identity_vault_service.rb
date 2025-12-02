@@ -9,7 +9,7 @@ class IdentityVaultService
     def host
       @host ||= {
         staging: "https://hca.dinosaurbbq.org/",
-        prod: "https://account.hackclub.com/"
+        prod: "https://auth.hackclub.com/"
       }[env]
     end
 
