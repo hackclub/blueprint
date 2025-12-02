@@ -18,7 +18,7 @@ class HomeController < ApplicationController
     # end
 
     # if @show_bp_progress
-    weights = { 1 => 100, 2 => 100, 3 => 100, 4 => 50, 5 => 50 }
+    weights = { 1 => 100, 2 => 100, 3 => 100, 4 => 50, 5 => 25 }
     approved = current_user.projects
                 .where(is_deleted: false, review_status: [ "design_approved", "build_approved" ])
                 .select(:tier, :approved_tier)
