@@ -11,7 +11,7 @@
       </p>
     </div>
     <div class="timeline-journal">
-      <% if project.ysws != "hackpad" && project.ysws != "led" %>
+      <% if project.ysws != "hackpad" && project.ysws != "led" && project.ysws != "squeak" %>
         <% if project.approved_tier.present? %>
           <p><strong>Tier approved:</strong> <%= project.approved_tier %></p>
         <% end %>

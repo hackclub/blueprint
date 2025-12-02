@@ -42,6 +42,21 @@
     </div>
   </a>
 
+  <a href="/starter-projects/squeak" class="block h-full">
+    <div class="flex flex-col h-full group border-2 border-[#22C55E] bg-[#064E3B] hover:bg-[#065F46] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
+      <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
+        <p class="text-2xl font-semibold text-white">Squeak</p>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Build a custom mouse</i></p>
+        <div class="flex-grow flex items-center justify-center mt-2">
+          <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/9ee3942025c1c684f5d15593771fa512bc07247e_image.png
+          " class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
+        </div>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
+      </div>
+      <div class="bg-[#22C55E] text-white font-semibold py-2">START NOW →</div>
+    </div>
+  </a>
+
    <a href="/starter-projects/split-keyboard" class="block h-full">
     <div class="flex flex-col h-full group border-2 border-[#F59E0B] bg-[#4D3A1A] hover:bg-[#5D4A2A] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
       <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">

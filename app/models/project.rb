@@ -5,7 +5,7 @@
 #  id                     :bigint           not null, primary key
 #  approved_funding_cents :integer
 #  approved_tier          :integer
-#  approx_hour            :decimal(, )
+#  approx_hour            :decimal(3, 1)
 #  demo_link              :string
 #  description            :text
 #  funding_needed_cents   :integer          default(0), not null
@@ -524,6 +524,7 @@ class Project < ApplicationRecord
     [
       [ "I am not following a guide", "none" ],
       [ "Hackpad (Journal not required)", "hackpad" ],
+      [ "Squeak (Journal not required)", "squeak" ],
       [ "Custom Devboard", "devboard" ],
       [ "Midi Keyboard", "midi" ],
       [ "Split Keyboard", "splitkb" ],
@@ -672,7 +673,7 @@ class Project < ApplicationRecord
     elsif design_approved?
       msg += "Your Blueprint project *#{title}* has passed the design review! You should receive an email from HCB about your grant in a few business days.\n\n"
 
-      if ysws != "hackpad" && ysws != "led"
+      if ysws != "hackpad" && ysws != "led" && ysws != "squeak"
         msg += "*Grant approved:* $#{'%.2f' % (approved_funding_cents / 100.0)}\n\n" if approved_funding_cents.present?
         msg += "*Tier approved:* #{approved_tier}\n\n" if approved_tier.present?
       end
@@ -771,6 +772,16 @@ class Project < ApplicationRecord
       end
       reasoning = "The user was surveyed after they were approved, asking them to estimate how many hours they spent. I (Clay Nicholson) reviewed and approved the submission and placed the order. The median submission based on this data spent 15 hours, while the mean was 20.
        This hackpad was more or less within that range of hours - nothing sticks out, so I am automatically approving these hours without reviewing the design."
+    elsif ysws == "squeak"
+      if !has_override
+        hours_for_airtable = 5
+      else
+        total_effective_hours = 0
+        approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+        approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+        hours_for_airtable = total_effective_hours
+      end
+      reasoning = "This project followed the Squeak guide. This project at least meets the standards of a project submitted at this event."
     else
       # Calculate total hours from ALL journal entries
       total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0

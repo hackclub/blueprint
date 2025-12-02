@@ -488,7 +488,7 @@ class ProjectsController < ApplicationController
   private
 
   def prepare_ship_state
-    journal_exempt_ysws = [ "led" ]
+    journal_exempt_ysws = [ "led", "squeak" ]
     bom_exempt_ysws = [ "led" ]
 
     repo_linked = @project.repo_link.present?
