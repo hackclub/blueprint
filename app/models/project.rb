@@ -138,7 +138,7 @@ class Project < ApplicationRecord
   include PaperTrailHelper
 
   def display_banner
-    return banner.blob if banner.attached?
+    # return banner.blob if banner.attached?
 
     if latest_journal_entry&.content.present?
       image_match = latest_journal_entry.content.match(/!\[[^\]]*\]\(([^)]+)\)/)
