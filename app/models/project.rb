@@ -84,13 +84,7 @@ class Project < ApplicationRecord
       "User ID" => :user_id,
       "Needs Soldering Iron" => :needs_soldering_iron,
       "Followers" => lambda { |project| project.followers.pluck(:id).join(",") },
-      "Country" => lambda { |project|
-        return nil unless project.user&.idv_linked?
-        idv_data = project.user.fetch_idv || {}
-        addresses = idv_data.dig(:identity, :addresses) || []
-        primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
-        primary_address.dig(:country)
-      }
+      "Country" => lambda { |project| project.user&.country }
     }
   end
 
