@@ -5,15 +5,15 @@
       <p class="text-lg md:text-xl">Here's what's cooking today</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-      <% if current_user.idv_linked? && !current_user.ysws_verified  %>
+      <% if current_user.idv_linked? && !current_user.ysws_verified &&  %>
         <%= render 'shared/card', class: 'col-span-1 md:col-span-2 border-bp-warning border-2 space-y-0 flex flex-row items-center' do %>
           <div class="grow">
             <p class="font-rc-full text-2xl md:text-3xl">Finish verifying your identity</p>
-            <p>Upload your documents to Hack Club Account and wait for manual
+            <p>Upload your documents & enter your address on Hack Club Auth and wait for manual
               review.</p>
           </div>
           <div>
-            <%= render 'shared/button', text: "Verify Now", url: "https://account.hackclub.com/verifications/document" %>
+            <%= render 'shared/button', text: "Verify Now", url: "https://auth.hackclub.com" %>
           </div>
         <% end %>
       <% end %>

@@ -890,12 +890,13 @@ class User < ApplicationRecord
 
     addresses = idv_data.dig(:identity, :addresses) || []
     primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
+    has_address = addresses.any?
 
     update!(
       identity_vault_access_token: access_token,
       identity_vault_id:,
       ysws_verified: idv_data.dig(:identity,
-                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible),
+                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible) && has_address,
       idv_country: primary_address.dig(:country)
     )
   end
@@ -925,10 +926,11 @@ class User < ApplicationRecord
     idv_data = fetch_idv
     addresses = idv_data.dig(:identity, :addresses) || []
     primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
+    has_address = addresses.any?
 
     update!(
       ysws_verified: idv_data.dig(:identity,
-                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible),
+                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible) && has_address,
       idv_country: primary_address.dig(:country)
     )
   end
