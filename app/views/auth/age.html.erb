@@ -48,14 +48,18 @@
           </div>
           
           <%= form_with url: age_verification_path, method: :post, class: "w-full space-y-6" do |f| %>
-            <div class="space-y-2">
+            <div class="space-y-2" data-controller="age-warning">
               <label for="birthday" class="block text-lg font-medium text-center">When's your birthday?</label>
               <div class="relative w-full flex flex-col items-center">
                 <%= f.date_field :birthday, 
                   required: true,
                   class: "input px-12 text-white bg-bp-darker border-2 border-white placeholder-white/50 [color-scheme:dark]",
-                  placeholder: "Select your birthday" %>
+                  placeholder: "Select your birthday",
+                  data: { age_warning_target: "input", action: "change->age-warning#validate" } %>
               </div>
+              <p class="text-yellow-400 text-center text-sm hidden" data-age-warning-target="warning">
+                ⚠️ Are you sure? This age seems unusual. Please double-check your birthday.
+              </p>
             </div>
 
             <div class="flex justify-center">
