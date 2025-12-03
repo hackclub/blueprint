@@ -16,6 +16,16 @@
             <%= render 'shared/button', text: "Verify Now", url: "https://auth.hackclub.com" %>
           </div>
         <% end %>
+      <% elsif !current_user.idv_linked? && current_user.projects.any? %>
+        <%= render 'shared/card', class: 'col-span-1 md:col-span-2 border-bp-warning border-2 space-y-0 flex flex-row items-center' do %>
+          <div class="grow">
+            <p class="font-rc-full text-2xl md:text-3xl">Verify your identity</p>
+            <p>We need to confirm that you are a teenager before we can approve your projects.</p>
+          </div>
+          <div>
+            <%= render 'shared/button', text: "Verify Now", url: idv_path %>
+          </div>
+        <% end %>
       <% end %>
       <% unless current_user.is_pro %>
         <%= render 'shared/card', class: 'col-span-1 md:col-span-2 flex flex-col motion-safe:transition-colors border-2 border-bp-warning border-solid' do %>
