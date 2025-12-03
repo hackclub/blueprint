@@ -23,7 +23,7 @@ class TaskList < ApplicationRecord
   def task_requirements
     {
       join_slack: {
-        met: user.slack_user? && !user.is_mcg?,
+        met: user.slack_user?,
         msg: "Join the Hack Club Slack"
     },
       create_project: {
