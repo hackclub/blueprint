@@ -568,7 +568,18 @@ class User < ApplicationRecord
 
     result = JSON.parse(response.body) rescue { "ok" => false, "error" => "invalid_json" }
 
-    unless response.status == 200 && result["ok"] != false && result["invites"]&.first["ok"] != false
+    invite_result = result["invites"]&.first
+    already_in_team = invite_result&.dig("error") == "already_in_team"
+
+    if already_in_team
+      Rails.logger.tagged("SlackInvite") do
+        Rails.logger.info({ event: "user_already_in_team", user_id: id, email: email }.to_json)
+      end
+      SlackInviteFinalizeJob.perform_later(id)
+      return result
+    end
+
+    unless response.status == 200 && result["ok"] != false && invite_result&.dig("ok") != false
       Rails.logger.tagged("SlackInvite") do
         Rails.logger.error({ event: "invite_failed", user_id: id, email: email, status: response.status, body: response.body }.to_json)
       end
