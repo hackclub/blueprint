@@ -60,7 +60,9 @@ class Admin::BuildReviewsController < Admin::ApplicationController
       end
 
     if project_id
-      redirect_to admin_build_review_path(project_id)
+      redirect_params = {}
+      redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_to admin_build_review_path(project_id, redirect_params)
     else
       redirect_to admin_build_reviews_path, alert: "No projects pending review."
     end
@@ -74,9 +76,14 @@ class Admin::BuildReviewsController < Admin::ApplicationController
 
     if @build_review.save
       update_project_review_status(@project, @build_review)
-      redirect_to admin_random_build_review_path, notice: "Build review submitted successfully. Showing new project."
+
+      redirect_params = {}
+      redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_to admin_random_build_review_path(redirect_params), notice: "Build review submitted successfully. Showing new project."
     else
-      redirect_to admin_build_review_path(@project), alert: @build_review.errors.full_messages.to_sentence
+      redirect_params = {}
+      redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_to admin_build_review_path(@project, redirect_params), alert: @build_review.errors.full_messages.to_sentence
     end
   end
 

@@ -57,7 +57,9 @@ class Admin::DesignReviewsController < Admin::ApplicationController
       end
 
     if project_id
-      redirect_to admin_design_review_path(project_id)
+      redirect_params = {}
+      redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_to admin_design_review_path(project_id, redirect_params)
     else
       redirect_to admin_design_reviews_path, alert: "No projects pending review."
     end
@@ -75,9 +77,14 @@ class Admin::DesignReviewsController < Admin::ApplicationController
         @project.update(ysws: ysws_value)
       end
       update_project_review_status(@project, @design_review)
-      redirect_to admin_random_design_review_path, notice: "Design review submitted successfully. Showing new project."
+
+      redirect_params = {}
+      redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_to admin_random_design_review_path(redirect_params), notice: "Design review submitted successfully. Showing new project."
     else
-      redirect_to admin_design_review_path(@project), alert: @design_review.errors.full_messages.to_sentence
+      redirect_params = {}
+      redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_to admin_design_review_path(@project, redirect_params), alert: @design_review.errors.full_messages.to_sentence
     end
   end
 
