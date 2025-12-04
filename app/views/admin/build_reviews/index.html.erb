@@ -23,7 +23,11 @@
     </div>
   </div>
   <div class="flex items-center justify-between">
-    <%= render "shared/button", text: "Review Random", url: admin_random_build_review_path, class: "py-0" %>
+    <div class="flex items-center gap-2">
+      <%= render "shared/button", text: "Random", url: admin_random_build_review_path, class: "py-0" %>
+      <%= render "shared/button", text: "Hackpad", url: admin_random_build_review_path(ysws_type: "hackpad"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "LED", url: admin_random_build_review_path(ysws_type: "led"), variant: :outline, class: "py-0" %>
+    </div>
     <%= form_with url: admin_projects_path, method: :get, local: true, class: "w-full max-w-2xl" do %>
       <div class="flex items-center gap-3">
         <input type="text" name="q" value="<%= h(@q) %>" placeholder="Search by ID, title, or author" class="w-full text-white border-white rounded-none input bg-bp-darker placeholder-white/60" />

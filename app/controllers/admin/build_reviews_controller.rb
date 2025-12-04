@@ -115,4 +115,28 @@ class Admin::BuildReviewsController < Admin::ApplicationController
       redirect_to main_app.root_path, alert: "You are not authorized to access this page."
     end
   end
+
+  def normalized_ysws_filter
+    case params[:ysws_type]
+    when "hackpad", "led"
+      params[:ysws_type]
+    else
+      nil
+    end
+  end
+
+  def apply_ysws_filter(scope)
+    case normalized_ysws_filter
+    when "hackpad"
+      scope.where(ysws: "hackpad")
+    when "led"
+      scope.where(ysws: "led")
+    else
+      if current_user.admin?
+        scope
+      else
+        scope.where("ysws IS NULL OR ysws != ?", "led")
+      end
+    end
+  end
 end
