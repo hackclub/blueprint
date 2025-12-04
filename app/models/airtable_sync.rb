@@ -34,7 +34,7 @@ class AirtableSync < ApplicationRecord
     )
   end
 
-  def self.sync!(classname, limit: nil, sync_all: false)
+  def self.sync!(classname, limit: nil, sync_all: false, no_upload: false)
     batch = false
     klass = resolve_class(classname)
     validate_sync_methods!(klass)
@@ -50,13 +50,15 @@ class AirtableSync < ApplicationRecord
     airtable_ids = []
 
     if batch
-      batch_sync!(table_id, records, klass.airtable_sync_sync_id, field_mappings)
+      batch_sync!(table_id, records, klass.airtable_sync_sync_id, field_mappings, no_upload:)
     else
       records.each do |record|
         old_airtable_id = find_by(record_identifier: build_identifier(record))&.airtable_id
         airtable_ids << individual_sync!(table_id, record, field_mappings, old_airtable_id)
       end
     end
+
+    return records if no_upload
 
     sync_data = records.map do |record|
       data = {
@@ -76,7 +78,7 @@ class AirtableSync < ApplicationRecord
     records
   end
 
-  def self.batch_sync!(table_id, records, sync_id, mappings)
+  def self.batch_sync!(table_id, records, sync_id, mappings, no_upload: false)
     csv_string = CSV.generate do |csv|
       csv << mappings.keys
 
@@ -84,6 +86,14 @@ class AirtableSync < ApplicationRecord
         fields = build_airtable_fields(record, mappings)
         csv << fields.values.map { |v| v.is_a?(Array) ? v.join(",") : v }
       end
+    end
+
+    if no_upload
+      filename = "airtable_sync_#{table_id}_#{Time.current.strftime('%Y%m%d_%H%M%S')}.csv"
+      filepath = Rails.root.join("tmp", filename)
+      File.write(filepath, csv_string)
+      Rails.logger.info("Airtable batch sync saved locally: #{filepath}")
+      return filepath
     end
 
     response = Faraday.post("https://api.airtable.com/v0/#{ENV['AIRTABLE_BASE_ID']}/#{table_id}/sync/#{sync_id}") do |req|

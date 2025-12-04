@@ -96,9 +96,8 @@ class User < ApplicationRecord
       "GitHub Username" => :github_username,
       "Email" => :email,
       "Display Name" => lambda { |user| user.display_name },
-      "Avatar" => :avatar,
       "Is Banned" => :is_banned,
-      "Is MCG" => :is_mcg,
+      "Birthday" => :birthday,
       "Role" => lambda { |user|
         roles = []
         roles << "Admin" if user.admin?
