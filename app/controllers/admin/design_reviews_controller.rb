@@ -38,8 +38,8 @@ class Admin::DesignReviewsController < Admin::ApplicationController
 
   def show_random
     base = Project.active.design_pending
-    reviewed = base.with_valid_design_review
-    unreviewed = base.without_valid_design_review
+    reviewed = apply_ysws_filter(base.with_valid_design_review)
+    unreviewed = apply_ysws_filter(base.without_valid_design_review)
 
     us_filter = ->(scope) {
       scope.where("COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) IN ('US', 'United States')")
@@ -52,8 +52,8 @@ class Admin::DesignReviewsController < Admin::ApplicationController
         random_pick_id(us_filter.call(unreviewed)) ||
         random_pick_id(unreviewed)
       else
-        random_pick_id(us_filter.call(unreviewed.not_led)) ||
-        random_pick_id(unreviewed.not_led)
+        random_pick_id(us_filter.call(unreviewed)) ||
+        random_pick_id(unreviewed)
       end
 
     if project_id
@@ -111,6 +111,30 @@ class Admin::DesignReviewsController < Admin::ApplicationController
   def require_reviewer_perms!
     unless current_user&.reviewer_perms?
       redirect_to main_app.root_path, alert: "You are not authorized to access this page."
+    end
+  end
+
+  def normalized_ysws_filter
+    case params[:ysws_type]
+    when "hackpad", "led"
+      params[:ysws_type]
+    else
+      nil
+    end
+  end
+
+  def apply_ysws_filter(scope)
+    case normalized_ysws_filter
+    when "hackpad"
+      scope.where(ysws: "hackpad")
+    when "led"
+      scope.where(ysws: "led")
+    else
+      if current_user.admin?
+        scope
+      else
+        scope.where("ysws IS NULL OR ysws != ?", "led")
+      end
     end
   end
 end

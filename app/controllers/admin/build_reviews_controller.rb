@@ -41,8 +41,8 @@ class Admin::BuildReviewsController < Admin::ApplicationController
 
   def show_random
     base = Project.active.build_pending
-    reviewed = base.with_valid_build_review
-    unreviewed = base.without_valid_build_review
+    reviewed = apply_ysws_filter(base.with_valid_build_review)
+    unreviewed = apply_ysws_filter(base.without_valid_build_review)
 
     us_filter = ->(scope) {
       scope.where("COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) IN ('US', 'United States')")
@@ -55,8 +55,8 @@ class Admin::BuildReviewsController < Admin::ApplicationController
         random_pick_id(us_filter.call(unreviewed)) ||
         random_pick_id(unreviewed)
       else
-        random_pick_id(us_filter.call(unreviewed.not_led)) ||
-        random_pick_id(unreviewed.not_led)
+        random_pick_id(us_filter.call(unreviewed)) ||
+        random_pick_id(unreviewed)
       end
 
     if project_id
