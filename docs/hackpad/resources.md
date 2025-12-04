@@ -1,3 +1,8 @@
+| title       | Resources                                    |
+| ----------- | ----------------------------------------- |
+| description | Hackpad Tips n' tricks! |
+| priority    | 2                                      |
+
 # Resources & Tips
 Here lies a collection of resources & tips I've amassed over the years; use them well.
 

@@ -1,3 +1,8 @@
+| title       | Submitting                                    |
+| ----------- | ----------------------------------------- |
+| description | Hackpad Frequently Asked Questions |
+| priority    | 2                                     |
+
 # Submitting your project
 
 Finally finished your hackpad? Nice job! Follow along and we're going to make sure you have everything necessary to *ship* your project, which includes:
