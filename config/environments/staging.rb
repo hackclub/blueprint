@@ -55,7 +55,7 @@ Rails.application.configure do
   config.active_job.queue_adapter = :solid_queue
 
   # Use custom Airtable delivery method for mailer
-  config.action_mailer.delivery_method = :airtable_delivery_method
+  # config.action_mailer.delivery_method = :airtable_delivery_method
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   config.action_mailer.raise_delivery_errors = true
