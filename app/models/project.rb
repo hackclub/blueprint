@@ -764,7 +764,7 @@ class Project < ApplicationRecord
         approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
         hours_for_airtable = total_effective_hours
       end
-      reasoning = "The user was surveyed after they were approved, asking them to estimate how many hours they spent. I (Clay Nicholson) reviewed and approved the submission and placed the order. The median submission based on this data spent 15 hours, while the mean was 20.
+      reasoning = "Previous Hack Pad projects have been surveyed and the average and median time spent has already been calculated. I (Clay Nicholson) reviewed and approved the submission and placed the order. The median submission based on this data spent 15 hours, while the mean was 20.
        This hackpad was more or less within that range of hours - nothing sticks out, so I am automatically approving these hours without reviewing the design."
     elsif ysws == "squeak"
       if !has_override
