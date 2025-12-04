@@ -4,7 +4,7 @@
 
 # Welcome to Blueprint
 
-We're a program by [Hack Club](https://hackclub.com?utm_source=blueprint) open to all teenagers 13-18 where you learn and build cool hardware projects and get funding to make them real!
+We're a program by [Hack Club](https://hackclub.com?utm_source=blueprint) open to all teenagers 13 - 18 where you learn and build cool hardware projects and get funding to make them real!
 
 ## Here's the quick rundown
 
