@@ -122,26 +122,20 @@ class Admin::DesignReviewsController < Admin::ApplicationController
   end
 
   def normalized_ysws_filter
-    case params[:ysws_type]
-    when "hackpad", "led"
-      params[:ysws_type]
-    else
-      nil
-    end
+    valid_types = %w[hackpad squeak devboard midi splitkb led custom]
+    valid_types.include?(params[:ysws_type]) ? params[:ysws_type] : nil
   end
 
   def apply_ysws_filter(scope)
-    case normalized_ysws_filter
-    when "hackpad"
-      scope.where(ysws: "hackpad")
-    when "led"
-      scope.where(ysws: "led")
+    filter = normalized_ysws_filter
+    if filter == "custom"
+      scope.where(ysws: nil)
+    elsif filter.present?
+      scope.where(ysws: filter)
+    elsif current_user.admin?
+      scope
     else
-      if current_user.admin?
-        scope
-      else
-        scope.where("ysws IS NULL OR ysws != ?", "led")
-      end
+      scope.where("ysws IS NULL OR ysws != ?", "led")
     end
   end
 end
