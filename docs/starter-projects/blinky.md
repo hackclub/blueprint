@@ -173,7 +173,7 @@ Use Update PCB! It preserves your PCB layout!
 
 ## Create an outline for your PCB
 
-For this tutorial, I will be making a rectangular for simplicity sake. However, 
+For this tutorial, I will be making a rectangular outline for simplicity sake. However, 
 
 **YOU NEED TO CUSTOMIZE YOUR BOARD WITH A CUSTOM OUTLINE AND ART**
 
