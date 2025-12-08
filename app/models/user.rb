@@ -89,6 +89,10 @@ class User < ApplicationRecord
     "6mGZYU5X"
   end
 
+  def self.airtable_should_batch
+    true
+  end
+
   def self.airtable_sync_field_mappings
     {
       "User ID" => :id,
