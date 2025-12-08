@@ -17,19 +17,16 @@ This process is going to be broken into roughly 4 parts, each with its own sub-p
 - [Designing your PCB](#designing-your-pcb)
   - [Drawing the Schematic](#drawing-the-schematic)
   - [Routing the PCB](#routing-the-pcb)
-- [Creating your case](#creating-your-case)
-- [Creating your case in Fusion360](#creating-your-case-in-fusion360)
-  - [Creating the bottom](#creating-the-bottom)
-  - [Creating the top](#creating-the-top)
-  - [Finishing Touches](#finishing-touches)
-- [Firmware](#firmware)
+- [3D modeling your case](#creating-your-case)
+- [Setting up your firmware!](#firmware)
 
 If you're unsure about anything, send a message in #blueprint! We have so many eager people to help.
 
 There's also [this](/hackpad/resources) giant wall of resources to reference!
 
+## Initial Setup!
 
-## Initial Setup
+Before we start designing, we need to 
 
 Inital setup is super simple! First, install the necessary pre-requesite software:
 
