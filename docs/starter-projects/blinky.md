@@ -1,22 +1,49 @@
 # Blinky Board
 
-Made by @CAN
+Made by @Tanishq Goyal
 
-Hi there! This is a tutorial on how to make a 555 LED Chaser board otherwise known as a “Blinky Board”. You can follow this tutorial, customize your design and you will be shipped the parts to build it! 
+Hi there! This is a tutorial on how to make a 555 LED Chaser board otherwise known as a “Blinky Board”. You can follow this tutorial, customize your design and you will be shipped the parts to build it!
 
-## Here is what we will be building:
+## Blinky Board (Alternative)
 
-We will all build this LED chaser which blinks 10 LEDs in a variable speed sequence. 
+[Check out the EasyEDA version here!](blinkyeda.md)
+
+## Table of Contents
+- [Blinky Board](#blinky-board)
+  - [Blinky Board (Alternative)](#blinky-board-alternative)
+  - [Table of Contents](#table-of-contents)
+  - [What We Will Build](#what-we-will-build)
+  - [What We’ll Be Doing](#what-well-be-doing)
+  - [Set Up Accounts](#set-up-accounts)
+  - [Creating Your GitHub Repo](#creating-your-github-repo)
+  - [Creating Your Project on Blueprint](#creating-your-project-on-blueprint)
+  - [Create Your Project on KiCad](#create-your-project-on-kicad)
+  - [Create Your Schematic](#create-your-schematic)
+  - [How Do the Components Work and How Do I Connect Them?](#how-do-the-components-work-and-how-do-i-connect-them)
+- [Assigning Footprints in KiCad](#assigning-footprints-in-kicad)
+  - [Steps to Add the CD4017 Footprint](#steps-to-add-the-cd4017-footprint)
+  - [Create a Printed Circuit Board (PCB)](#create-a-printed-circuit-board-pcb)
+  - [PCB Routing](#pcb-routing)
+  - [Customization](#customization)
+  - [Run Design Rules Check](#run-design-rules-check)
+  - [Add Your Files to Your GitHub Repo](#add-your-files-to-your-github-repo)
+  - [Upload Your Files to GitHub](#upload-your-files-to-github)
+  - [Getting a JLCPCB Price](#getting-a-jlcpcb-price)
+  - [Submitting Your Blueprint Project to Get Funding](#submitting-your-blueprint-project-to-get-funding)
+
+## What We Will Build
+
+We will all build this LED chaser which blinks 10 LEDs in a variable speed sequence.
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/766c5aee15a8c57b1bd57467f3382fc68c0a627c_unnamed.gif)
 
-Here’s the schematic: 
+Here’s the schematic:
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e089878c0586cfaaef00bc5f3b7da4044525edf6__3A16B0A8-2A46-4CCC-9F58-228AC47FAB86_.png)
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/5447f846be0c0dfc8fb9e18855233e17eee82b6b_image.png)
 
-## What we’ll be doing
+## What We’ll Be Doing
 
-- Set up [EasyEDA](https://easyeda.com/)/[GitHub](https://github.com/)
+- Set up [KiCad](https://www.kicad.org/)
 - Design a Schematic
 - Create a Printed Circuit Board (PCB)
 - Submit your board for manufacturing at JLCPCB
@@ -25,17 +52,17 @@ Here’s the schematic:
 - Solder your board
 - Test your board and enjoy!
 
-## Set up accounts
+## Set Up Accounts
 
-If you haven’t already, you should create an account on [EasyEDA](https://easyeda.com/) and [GitHub](https://github.com/). EasyEDA is what you will use to design the PCB and GitHub is where you will share it.
+If you haven’t already, you should download [KiCad](https://www.kicad.org/) and [GitHub](https://github.com/). KiCad is what you will use to design the PCB and GitHub is where you will share it.
 
-## Creating your GitHub Repo
+## Creating Your GitHub Repo
 
 Create a repository on [Github.com](http://Github.com). (you may need to create an account)
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8c2a28ed6838101ae8c5def10c9115042637a201_image.png)
 
-You need to 
+You need to
 
 - **Name it** - I named it 555 Chaser but you can do whatever
 - **Write a nice description** - this can be short
@@ -46,11 +73,11 @@ You need to
 
 Now copy the URL for your repo. You will need it for your next step.
 
-## Creating your project on Blueprint
+## Creating Your Project on Blueprint
 
-Now, you just need to create your project on Blueprint. Blueprint not only allows people to share projects, but acts as a gallery of all the projects made. 
+Now, you just need to create your project on Blueprint. Blueprint not only allows people to share projects, but acts as a gallery of all the projects made.
 
-First, create your Blueprint account on [https://blueprint.hackclub.com/](https://blueprint.hackclub.com/) (⇒ Sign in). In the future, you will be able to log into your account anywhere, anytime to make your project. 
+First, create your Blueprint account on [https://blueprint.hackclub.com/](https://blueprint.hackclub.com/) (⇒ Sign in). In the future, you will be able to log into your account anywhere, anytime to make your project.
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b7cf34ff897d78ad13372226165e67814934dae3_image.png)
 
@@ -60,7 +87,7 @@ Click the “+ Start a Project” button at the bottom of your screen. You need 
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/84fa13d1537256ffdb6f5fd9939f96f4f0603bd3_image.png)
 
-IMPORTANT: 
+IMPORTANT:
 Make sure you select the LED Chaser as your guide. Doing this will bypass the need for a journal in order to ship. For your future Blueprint projects, you will need to make an updated guide with what you are making.
 
 Also, make sure you click “I need funding”
@@ -73,21 +100,20 @@ Once your project is created, click into it on the project screen.
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a73a0deeb8dbf8e604f0ebfda1f95f6f6ccd6daa_image.png)
 
-## Create your project on EasyEDA
+## Create Your Project on KiCad
 
-Go to [easyeda.com/editor](http://easyeda.com/editor) and click Design Online > STD edition. We are using the standard edition for simplicity sake but the pro edition is nice and its free!
+Create a new KiCad project by going:
+`File -> new project, and choosing your name/folder for the project`
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a83f8d3eb5790cd6666ed4bf6600e5985f8cd87a__A476BF7E-89EE-422E-B563-63182A7A19B7_.png)
+After that, double click your schematic to start working on your PCB. PCB's essentially have 2 main parts, the schematic, and the actual PCB.
 
-Now click New Project > Name your Project > Save
+The schematic is basically a wiring diagram, that shows how everything will connect, but isn't like exactly where the components are placed or how thick your traces are, it's solely to show how everything is wired, not where.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/49fcf0556cda7a369c0949d7fa8d21f5f6df16d8__188E0BAB-5E62-4FD4-9D15-9791E8A4DB0C_.png)
+## Create Your Schematic
 
-## Create your schematic
+You should see something like the image below. That is the schematic editor where you will be making your circuit diagram.
 
-You should see something like the image below. That is the schematic editor where you will be making your circuit diagram. Below are some useful tools.
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8cc3b535f214f0b6be2e74aa564047dd41c72dd7__21B71484-212D-4F6E-BE33-5CC7F8DD864B_.png)
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/425d3c50977a13ebf74772212c11d5481555b481_image.png)
 
 Here are the components we will be using: (IC stands for Integrated Circuit)
 
@@ -95,117 +121,161 @@ Here are the components we will be using: (IC stands for Integrated Circuit)
 
 In schematic, things are represented as symbols. Here are the symbols for the components above:
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ca8bd830950c4bf32c887793df420ea52141425e__83C593DD-25FA-4281-B875-CDAFA65B4C39_.png)
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/c75477351563114ae06c0dc00b2fa508cf611273_image.png)
 
-In order to place components (aka symbols), you need to click “Library” and search for a component number such as “CD4017BCN”.
+In order to place components (aka symbols), you need to press `a` and search for a component  such as “NE555P”.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4f0fc7ce84b7e363a93d6c04860ce5dfc76e45d4__A96120AA-08F2-49DF-AB22-62FBFAA633F5_.png)
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/3e3b36d04734d421554efa639702cfa84b241388_image.png)
 
-You will now need to go through and find all of your components. Luckily, we already compiled a list of everything you need to place. Go to Library>Click on the part number>Place for each of the parts below:
+You will now need to go through and find all of your components. Luckily, we already compiled a list of everything you need to place:
 
-- **C46749** (this is your 555 IC which is famous in circuitry)
-- **C32710674** (this is your main 4017 IC. It controls all of the LED’s flashing given an input from the 555)
-- **C492401** (this is your header, or little pins which you will use to power your circuit)
-- **C81276** (this is another little header which you can use for debugging your circuit)
-- **C62934** (this is an electrolytic capacitor, it is directional so be careful!)
-- **C249157** (this is another cap)
-- **C713997** (this is a 1k ohm resistor)
-- **C58592** (this is a 470 ohm resistor)
-- **C118912** (this is a potentiometer otherwise known as a variable resistor. You can use this to control the speed of the flashes)
+- **[NE555P](https://www.ti.com/lit/ds/symlink/ne555.pdf)** (this is your 555 IC which is famous in circuitry)
+- **CD4017** (this is your main 4017 IC. It controls all of the LED’s flashing given an input from the 555)
+- **MountingHole_Pad** (this is your header, or little pins which you will use to power your circuit. You will need 2 off these. Additionally, there is another little header which you can use for debugging your circuit)
+- **C_Polarized** (this is an electrolytic capacitor, it is directional so be careful!)
+- **C** (this is a normal capacitor)
+- **R** (this is a 1k ohm resistor and 470 ohm resistor)
+- **RV** (this is a potentiometer otherwise known as a variable resistor. You can use this to control the speed of the flashes)
+
+> To change values of resisitors, double click the resistor, change the value, then click OK.
 
 You will also need to place a total of 10 LED below. You will get 10 of each color in the kit so don’t worry about assigning their color right now!
 
-- **C2895480** (normal LED)
+- **LED** (normal LED)
 
-In the kit, you will be given 
-- 10x Red LED's 
+In the kit, you will be given
+- 10x Red LED's
 - 10x Orange LED' s
-- 10x Yellow LED's 
-- 10x Emerald LED's 
+- 10x Yellow LED's
+- 10x Emerald LED's
 - 10x Blue LED's
 
-Here is a good point to remind you. If you ever need help, ask in #blueprint-support on the Hack Club Slack. 
+Here is a good point to remind you. If you ever need help, ask in #blueprint-support on the Hack Club Slack.
 
-## Place your components
+## How Do the Components Work and How Do I Connect Them?
 
-Now that you have placed all of your components, you should arrange it as below. This will make it easier when you wire.
+> In general, it is good practice to not wire everything directly. This makes it hard to read. Instead, use [labels](https://www.baldengineer.com/kicad-bus-labels-and-global-labels.html)!
 
-- You can use ‘r’ to rotate them
-- Use Copy and Paste when you need more, E.g. to make 10  LED’s
-- Remember to save (Control-S or  ⌘-S) often !!!!
+First, we know that the battery pads connect to +5v ([5 volts of power](https://theengineeringmindset.com/what-is-voltage/)) and gnd (ground is connected to the negative terminal of a battery or power supply, acting as the main return path for current).
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b86449f89ce3fbcc4dfb37cfea56d0e402fbd122__0B589CAB-0E7F-403F-90D3-7350DD6C9C88_.png)
+Therefore, I click `W` (for wire) and connect the mounting holes as such:
 
-## Wire your components
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/131c8dfacde59ed5e224b156257712a6e735e49f_image.png)
 
-Don’t mess this up! Make sure your wiring matches the diagram below. The little red dots indicate that two wires are connected. Make sure that the wires which are supposed to pass over each other are not connected!
+**Now, let's take a look at the [555 timer](https://www.instructables.com/555-Timer/#step6).** There are three different modes:
 
-- Click “w” or the wire button, or click on a terminal of a component
-- Wire together GND of all the LEDs
-- Check out Shortcut keys (Settings-> Shortcut key settings)
-- Remember to save (Control-S or  ⌘-S) often !!!!
+- Monostable Mode, or One Shot, is great for creating time delays. This is almost used as a stopwatch; you press a button (trigger), and the timer turns ON for a set amount of time, then automatically turns OFF.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/778ce6cb2c018696f8354aabb15b7112f4873a99__BBC27CE3-7A26-4E46-AFA7-E725BDBB9552_.png)
+- **Astable Mode produces a continuous oscillating signal. In this configuration, the 555 timer repeatedly toggles its output between high and low states, with both the frequency and pulse width adjustable. Essentially, this mode mode makes the timer act like a blinking light. It keeps switching ON and OFF again and again, without needing you to press anything. We will be using this mode, as it lets the LED blink at a speed we can adjust.**
 
-Your schematic is complete! 
+- Bistable Mode causes the 555 timer to toggle its output between high and low states depending on the state of two inputs. Essentially, it acts like a toggle switch. Foe example, you can press button A to turn the LED ON, then press button B to turn the LED off.
 
-Reminder: ⌘+ S OR Ctrl + S to save your design often!
+This is the general schematic for Astable Mode:
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/5aaf335b6f95cb2efb09573d6b4c74a52d61f8ed__534392E2-01CF-42B4-B1E8-7F2185EB0ACD_.png)
+![F55UTLKH78T8OJF](https://github.com/user-attachments/assets/ca7259a8-c5da-4e9a-b017-76e3486fff61)
+
+At the end, this is what it should look like:
+
+![Astable Diagram](https://hc-cdn.hel1.your-objectstorage.com/s/v3/f4258af8a265de6744357ac62db79e3c35fcb055_image.png)
+
+Next, lets take a look at the 4017 IO expander. Due to the lack of GPIO on the 555 timer, we need a way to connect more LEDs. Thats where we use these IO expanders! We will connect as follows:
+- VDD to +5v
+- VSS to GND
+- CLK to Q from the NE555P 	(Clock input from 555 timer)
+- CLEN to GND (This is the clock inhibit, a control signal that pauses or freezes the operation of a digital circuit by blocking incoming clock pulses. We do not need this for this circuit. )
+- Reset to GND (This is the reset. When set HIGH, the counter immediately resets. )
+- Cout not connected (click Q, and connect it to the no-flag symbol. This would be used to connect more IO expanders, but we do not need this.)
+
+Next, connect GPIO Q0–Q9 to LEDs, and tie all of their cathodes together through a single 470 Ω resistor to ground. This resistor is needed to limit the current flowing through whichever LED is active at a given time. The minimum resistance can be estimated using the formula:
+
+R = (V_supply − V_f) / I
+
+where:
+- V_supply = supply voltage (e.g., 5 V)
+- V_f = LED forward voltage (e.g., ~2 V for red, ~3 V for blue/white)
+- I = desired current (e.g., 5–15 mA)
+
+Power‑limiting resistors prevent excessive current that could damage the LED or the driving IC. In practice, standard resistor values such as 220 Ω, 330 Ω, or 470 Ω are commonly used depending on brightness and power budget. Lower resistance allows more current and brighter LEDs, while higher resistance reduces current, conserves power, and extends component life.
+
+At the end, it should look something like this:
+
+![4017](https://hc-cdn.hel1.your-objectstorage.com/s/v3/939f70e5de76b8bb28e6daf54a036b9cbc0bb3bd_image.png)
+
+# Assigning Footprints in KiCad
+
+In general, footprints can be found by checking the component’s datasheet. A quick search online usually helps.
+
+Unfortunately, the **CD4017** footprint is not included in KiCad by default. Let’s fix that!
+
+---
+
+## Steps to Add the CD4017 Footprint
+
+1. **Go to the Texas Instruments export site**
+    [Texas Instruments CD4017BE Export Page](https://app.ultralibrarian.com/details/15b11d40-103f-11e9-ab3a-0a3560a4cccc/Texas-Instruments/CD4017BE)
+
+2. **Create an account**
+   - Sign up or log in to Ultra Librarian.
+
+3. **Download the footprint**
+   - Click **Download Now**
+   - Select **KiCad** as the CAD format
+   - Choose **KiCad v6+**
+   - Download the file
+
+4. **Import into KiCad**
+   - Open KiCad
+   - Click Preferences
+   - Click `Manage Footprint Libraries`
+   - Import! What I personally do is create a folder with all my custom imports. Find the .kicad_mod file, and put it into a .pretty folder.
+
+Your footprints should look something like this:
+
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/bf6e6b7ca1eeba39f6ddd680f6efa7a7b06cbfd4_image.png)
+
+---
 
 ## Create a Printed Circuit Board (PCB)
 
-Now, its time to convert your schematic (circuit connection guide) into a PCB (the physical layout of the connections).
+To synchronize changes between your schematic and PCB layout in KiCad:
 
-At the top of your screen, click 
+- Press **F8**
+  *or*
+- Click the **Update PCB from Schematic** button
 
-**Design > Convert Schematic to PCB**
+You can do this anytime you want to refresh the PCB with the latest schematic updates.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/111cd17b9f2a14453f1ba78ca456d652ccda152b__D27CDDB5-8BEC-4FF4-880A-04901B93BCE1_.png)
+First, create a board outline. For this tutorial, **YOU NEED TO CUSTOMIZE YOUR BOARD WITH A CUSTOM OUTLINE AND ART**
 
-<aside>
+This is done by modifying the `Edge.Cuts` layer on the right side.
 
-Note if you are trying to make changes to your PCB later:
+There are many ways to do this. You can either manually draw it with the given menue.
 
-Use Update PCB! It preserves your PCB layout!
+I found the default outline options limiting and wanted to create something more complex.
+To do this, I:
 
-</aside>
+1. Took a Batman image.
+2. Converted the image into a DXF file using an image-to-DXF converter.
+3. Imported the DXF file into KiCad.
+4. Created a 100x100 mm box as a reference.
+5. Used the measuring tool to determine the correct scale.
+6. Scaled the outline down so it fit within 100 mm.
 
-## Create an outline for your PCB
+At the end, it may look something like this:
 
-For this tutorial, I will be making a rectangular for simplicity sake. However, 
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/06ae2032f870f668a088dafecf0d36b64cacef1e_image.png)
 
-**YOU NEED TO CUSTOMIZE YOUR BOARD WITH A CUSTOM OUTLINE AND ART**
+**Make sure to always keep your board below 100x100mm!**
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/d3c10a29dc99ea3ab31c5ff7d3d893319974b98d__BA6D32FD-B511-4C8B-AAD5-D6D800E09D17_.png)
+## PCB Routing
 
-First, select the “Board Outline” on the sidebar. 
+A PCB is made out of multiple layers. Our boards are “two layer” meaning that they have two layers of copper wire.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/9f20de70d8fa423169ec12cf1fb5fd9318276b63__1841ADE8-E6F4-47D0-8E13-D9BB8295298E_.png)
+The layers include:
 
-Next, you can either make your own board outline using the “Line” and other features in the toolbar.
+Top and bottom solder mask: the white ink where you can do art
 
-…or you can find a custom DXF online to have a custom outline.
-
-File→Import→DXF
-
-(you can also convert an image to a DXF using an online converter such as convertio) 
-
-One thing about the DXF’s you may need to scale it online. Make sure to always keep your board below 100x100mm. 
-
-## PCB Layout
-
-Once you have your board outline, you need to organize and wire your components. You should get familiar with the PCB tools:
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/cac16711c0f9702ef11d943fd693658a2e30f9ed_image.png)
-
-A PCB is made out of multiple layers. Our boards are “two layer” meaning that they have two layers of copper wire. 
-
-The layers include: 
-
-Top and bottom solder mask: the white ink where you can do art 
-
-Top and bottom copper layer: the layers where you make your copper wires 
+Top and bottom copper layer: the layers where you make your copper wires
 
 Substrate: The actual plastic (usually green) which makes up your board
 
@@ -213,109 +283,100 @@ Via: the tunnels which connect the top and bottom copper layers
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/c2ec73f247fdb1f466903fc86d345fe0f4b47b6f_image.png)
 
-## Place your components
+Place all of your components inside the Board Outline. Move components to shorten ratlines, which are are the straight blue lines.
 
-Place all of your components inside the Board Outline. Move components to shorten ratlines, which are are the straight blue lines. You can use ‘r’ to rotate.
+- You can use ‘r’ to rotate them
+- Remember to save (Control-S or  ⌘-S) often !!!!
 
-Remember to save (Control-S or  ⌘-S) often !!!!
+Now it's time to route the PCB! Hit X on your keyboard and hit anything with a thin blue line poking out of it. It should dim the entire screen, show you which direction you need to go with a thin blue line and highlight the destination:
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/066ff9acb3435c5bd772890417b8702c9edde7a7_image.png)
+![example here](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e56026795ef53593ec7e75e329f0bc7c9c9d71b6_image.png)
 
-(remember that your board outline, the purple lines, should not be a rectangle but some custom shape)
+Join the highlighted points together. If there isn't enough space on the front side, or there is a trace already present that is blocking you, you can route on the back side by clicking B.Cu on the right toolbar. At the same time, if you want to change sides during routing, press V and a via shall be added, which will transfer your trace to the other side of the board. **Wires and pads of different colors (except golden) can't be connected together directly! You must via to the other side.**
 
-## Wiring your components
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/94a3f8fd9531b47e0f5322ea7bf1c76724ad1c82_image.png)
 
-The ratlines (the blue straight lines) in-between your components is not the complete wiring. They are just telling you where connections should happen. 
+Your routing is complete!
 
-On the side bar, you can choose either top layer (red) or bottom layer (blue), or a combination of both to wire your components. 
+> Tip: place everything based on what shortens the blue lines, and what makes them not cross!
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8ea222f123d51cdd5bf2cac00b055ce98718d1d0_image.png)
+> Tip 2: Use a [ground plane](https://www.kicadtips.com/how-to/make-a-ground-plane) to help with routing and to reduce noise. Thats what the red and blue layers are for! Its not necessary, but looks nice and is easy to set up!
 
-If it is impossible to make a connection in one layer, you can add a via. A via acts as a tunnel to connect between the two copper layers. As you are wiring you can click ‘v’ to place a via and switch to the other side.
-
-Your PCB is routed!
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a8846471c379ddc28fc84b366451824d841dfee6_image.png)
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a37611747f571d7a98564a52686e42722adfa6c0_image.png)
 
 ## Customization
 
-You may have already added some text and art to customize your board. if not, you can click “TopSilkLayer” and use the text tool.
+You may have already added some text and art to customize your board. if not, you can click “F.Silkscreen” and use the text tool.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/28771d826d2ce20407a101f5c342212a67b547f8_image.png)
+![sample text](https://hc-cdn.hel1.your-objectstorage.com/s/v3/40af4f6bb85a2aadc2e3791e28f2e6e84ed8eb56_image.png)
 
-To add art, just select the “Top Silkscreen Layer” or “Bottom Silkscreen Layer” in the sidebars. Then you can do: 
+To add art, just select the “Top Silkscreen Layer” or “Bottom Silkscreen Layer” in the sidebars. Then you use the kicad image converter to add custom art.
 
-File→import→image 
-
-to add custom art. 
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0eb5896b961ad09975eeb0ae08aec282107ba53c_image.png)
+![](https://kicad-info.s3.dualstack.us-west-2.amazonaws.com/original/3X/a/3/a3b5fba9b9455697b0d861d48a028c571ec44403.png)
 
 Your board is now beautiful
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e2462343267cd8a90cd643b0eea6dac4adb34b28_image.png)
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/159975437b4e769b6bcf42d8f52560b11d06c143_image.png)
 
 ## Run Design Rules Check
 
-Click Design → Run Design Rules Check 
+**DRC** stands for Design Rules Check. This runs a script which makes sure that your board has no interference errors, no components are off the board, and no wires are intersecting. It does not however confirm that your board works.
 
-This runs a script which makes sure that your board has no interference errors, no components are off the board, and no wires are intersecting. It does not however confirm that your board works.
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/27ae0765082623ea2988bbe01ce8cb8a4012b0b8_image.png)
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/45d9dc52ccf5d311e8105d5d6b5498618cd0dd0f_image.png)
+Using the output, correct any errors. This can be confusing, so remember: you can always ask for help!
 
-Using the output, correct any errors. 
+Here are some common errors:
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ac4cbd4a863e01e5f5b6609f40a1945a42a3481e_image.png)
+- Track and copper errors (clearance violations, track width, annular rings)
+- Via errors (diameter, micro vias, blind/buried vias)
+- Pad and footprint errors (pad-to-pad, hole clearances)
+- Edge and board outline errors (copper edge clearance, silkscreen issues)
+- Zone errors (copper slivers, starved thermals, unconnected items)
+- Net and connection errors (missing connections, net conflicts)
+- Courtyard errors (overlaps, missing courtyards)
 
 Once your PCB passes the DRC, it is finished!
 
-In PCB editor click View > 3D View to see your finished work!
+In PCB editor click View > 3D Viewer to see your finished work!
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/50638b1bb956cd429eab5755e7aaf142ffe088db_image.png)
 
-## Add your files to your GitHub Repo
+## Add Your Files to Your GitHub Repo
 
 Now it is time to order your board.
 
-Get the following files of your project: 
+Get the following files of your project:
 
-- A screenshot of your 3d view (see above)
-- A PDF of your schematic (In your schematic editor do File → Export → PDF)
-- Your schematic (in your schematic editor do File → Export → EasyEDA)
-- Your Gerber (in your PCB editor do File → Generate PCB Fabrication File (Gerber))
-- Your PCB (in your PCB editor do File → Export → EasyEDA)
+- A screenshot of your 3d view 
+  - In PCB Editor: View → 3D Viewer → Edit → Copy 3D Image.
+- .kicad_pro (KiCad project file)
+- .kicad_sch (schematic, if you used KiCad)
+- .kicad_pcb (PCB, if you used KiCad)
+- Your Gerber files:
+  1. In your PCB editor do File → Fabrication Outputs → Gerbers (.gbr)
+  2. Set an output folder (e.g., a new "Gerbers" folder)
+  3. Select necessary layers (Generally already selected)
+  4. Click Plot
+  5. Click Generate Drill Files
+  6. Zip the resulting files for your manufacturer
 
-A PDF of your schematic (In your schematic editor do File → Export → PDF)
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/5e6decf5d2fa92253b9a567b15b92ab3e684266d_image.png)
-
-Your schematic (in your schematic editor do File → Export → EasyEDA)
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4066809bebc778265301e03e75d70c686cb5e6ed_image.png)
-
-Your Gerber (in your PCB editor do File → Generate PCB Fabrication File (Gerber))
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/647519e77f09584480f0cefe7b8ed5b6f21d96f3_image.png)
-
-Your PCB (in your PCB editor do File → Export → EasyEDA)
-
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ab6f09e8041e0c5eb56a74e34a87aab1e8a936c6_image.png)
-
-## Upload your files to GitHub
+## Upload Your Files to GitHub
 
 Go back to the GitHub repo you created at the start.
 
-Click Add File → Upload files 
+Click Add File → Upload files
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/470145098fd2379b9385c1f49ddf795fbadfa1a3_image.png)
 
-Drag in your: 
+Drag in your:
 
-- PCB Screenshot
-- Schematic PDF
-- Gerber
-- PCB EasyEDA file
-- Schematic EasyEDA file
+
+- Screenshot of your 3d view 
+- .kicad_pro (KiCad project file)
+- .kicad_sch (schematic, if you used KiCad)
+- .kicad_pcb (PCB, if you used KiCad)
+- Gerbers 
 
 (you should have downloaded all of these before)
 
@@ -323,24 +384,18 @@ Drag in your:
 
 You can then click to commit your changes.
 
-
 Finally, edit your ReadME
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/383215c7b9b871788025c40fd95b2cab387938d2_image.png)
 
-Drag in your PCB screenshot (this should be the same screenshot).
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/11e08e488bc6c1098c1bc86ea0699b3e83aface1_image.png)
-
-Commit this change as well. 
-
-NOTE: ALL projects you make for Blueprint must have a project photo in your ReadME. 
+NOTE: ALL projects you make for Blueprint must have a project photo in your ReadME.
 
 ## Getting a JLCPCB Price
 
-Go to [https://jlcpcb.com/](https://jlcpcb.com/) and make an account. Then, add your Gerber file for the instant quote. 
+Go to [https://jlcpcb.com/](https://jlcpcb.com/) and make an account. Then, add your Gerber file for the instant quote.
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/baaa0ca887d51110c30cba9d862968acbef618f8_image.png)
 
-Settings: 
+Settings:
 
 You should keep the default settings for everything. The only thing you should/can change is the PCB Color. I did black as seen below:
 
@@ -350,13 +405,13 @@ For high-spec options, also keep the default. Do not click PCB assembly as we wi
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/053061912ca84c66c46323ccef5b12cb71c7d721_image.png)
 
-Once you have successfully *Not* changed any of the settings (except the board color), on the right, change the shipping method to Global Standard Direct (or Air Registered Mail if it is cheaper), and take a screenshot (this is very important). 
+Once you have successfully *Not* changed any of the settings (except the board color), on the right, change the shipping method to Global Standard Direct (or Air Registered Mail if it is cheaper), and take a screenshot (this is very important).
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/6f538d5f301eae997544c43c1d6ce6daca01331d_image.png)
 
-## Submitting your Blueprint project to get funding
+## Submitting Your Blueprint Project to Get Funding
 
-You are almost done! At this stage you should have: 
+You are almost done! At this stage you should have:
 
 - A completed board
 - A GitHub repo for your board
@@ -375,7 +430,7 @@ Blueprint will run some checks. If any are red, you need to fix them. (you may n
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0e646bc3c854746bfd51172fa68cdba8a9df1625_image.png)
 
-Enter the dollar amount which you previously screenshotted on JPCLCB (don’t worry, we will give you extra for any fluctuations). 
+Enter the dollar amount which you previously screenshotted on JPCLCB (don’t worry, we will give you extra for any fluctuations).
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/22dfe9ac0998e14b4f9418b118f37eeee29a5561_image.png)
 
@@ -395,7 +450,7 @@ You may need to verify your Hack Club identity if you have not already.
 
 You are done!
 
-You should wait for  a reviewer to approve your project! Once it is approved, you can complete the checkout on JLCPCB (making sure to use Global Standard Direct (or Air Registered Mail if it is cheaper), and your kit/soldering iron will be sent to you! 
+You should wait for  a reviewer to approve your project! Once it is approved, you can complete the checkout on JLCPCB (making sure to use Global Standard Direct (or Air Registered Mail if it is cheaper), and your kit/soldering iron will be sent to you!
 
 While you wait….
 
