@@ -5,7 +5,7 @@
 #  id                     :bigint           not null, primary key
 #  approved_funding_cents :integer
 #  approved_tier          :integer
-#  approx_hour            :decimal(3, 1)
+#  approx_hour            :decimal(, )
 #  demo_link              :string
 #  description            :text
 #  funding_needed_cents   :integer          default(0), not null
@@ -22,6 +22,7 @@
 #  skip_gh_sync           :boolean          default(FALSE)
 #  tier                   :integer
 #  title                  :string
+#  unlisted               :boolean          default(FALSE), not null
 #  views_count            :integer          default(0), not null
 #  viral                  :boolean          default(FALSE), not null
 #  ysws                   :string

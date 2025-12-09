@@ -57,6 +57,15 @@ class Admin::ProjectsController < Admin::ApplicationController
     redirect_to admin_project_path(@project), notice: "Project unmarked as viral."
   end
 
+  def toggle_unlisted
+    @project = Project.find(params[:id])
+    not_found unless @project
+
+    @project.update!(unlisted: !@project.unlisted)
+    status = @project.unlisted ? "unlisted" : "listed"
+    redirect_to admin_project_path(@project), notice: "Project is now #{status}."
+  end
+
   def switch_review_phase
     @project = Project.find(params[:id])
     not_found unless @project

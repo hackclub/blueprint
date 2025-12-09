@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_01_202306) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_09_030917) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -382,7 +382,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_01_202306) do
     t.boolean "skip_gh_sync", default: false
     t.boolean "needs_soldering_iron", default: false, null: false
     t.boolean "viral", default: false, null: false
-    t.decimal "approx_hour", precision: 3, scale: 1
+    t.decimal "approx_hour"
+    t.boolean "unlisted", default: false, null: false
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
@@ -597,7 +598,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_01_202306) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "email", null: false
-    t.boolean "is_mcg", default: true, null: false
+    t.boolean "is_mcg", default: false, null: false
     t.string "github_username"
     t.datetime "last_active"
     t.bigint "github_installation_id"
@@ -610,9 +611,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_01_202306) do
     t.integer "ban_type"
     t.date "birthday"
     t.boolean "is_pro", default: false
-    t.boolean "admin", default: false, null: false
     t.boolean "reviewer", default: false, null: false
     t.boolean "fulfiller", default: false, null: false
+    t.boolean "admin", default: false, null: false
     t.string "idv_country"
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
   end

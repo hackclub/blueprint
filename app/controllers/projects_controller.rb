@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
 
     if params[:type] == "journals"
       if params[:sort] == "new"
-        @pagy, @journal_entries = pagy(JournalEntry.includes(project: :user).where(projects: { is_deleted: false }).references(:projects).order(created_at: :desc), items: 20)
+        @pagy, @journal_entries = pagy(JournalEntry.includes(project: :user).where(projects: { is_deleted: false, unlisted: false }).references(:projects).order(created_at: :desc), items: 20)
       elsif params[:sort] == "you"
         if current_user && Flipper.enabled?(:gorse_recommendations, current_user)
           page = params[:page].present? ? params[:page].to_i : 1
@@ -75,7 +75,7 @@ class ProjectsController < ApplicationController
           if top_entries.present?
             entry_ids = top_entries.map { |item| item["item_id"] }
             order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], journal_entries.id::int)", entry_ids.map(&:to_i) ])
-            all_entries = JournalEntry.where(id: entry_ids).includes(project: :user).where(projects: { is_deleted: false }).references(:projects).order(Arel.sql(order_clause))
+            all_entries = JournalEntry.where(id: entry_ids).includes(project: :user).where(projects: { is_deleted: false, unlisted: false }).references(:projects).order(Arel.sql(order_clause))
             @pagy, @journal_entries = pagy_array(all_entries.to_a, items: 20)
           else
             redirect_to explore_path(sort: "new", type: "journals", page: params[:page]) and return
@@ -86,7 +86,7 @@ class ProjectsController < ApplicationController
       end
     elsif params[:type] == "projects"
       if params[:sort] == "new"
-        @pagy, @projects = pagy(Project.joins(:user).where(is_deleted: false).includes(:banner_attachment, :user).order(created_at: :desc), limit: 24)
+        @pagy, @projects = pagy(Project.joins(:user).where(is_deleted: false).listed.includes(:banner_attachment, :user).order(created_at: :desc), limit: 24)
         preload_project_metrics(@projects)
       elsif params[:sort] == "you"
         if current_user && Flipper.enabled?(:gorse_recommendations, current_user)
@@ -107,13 +107,13 @@ class ProjectsController < ApplicationController
           # Load projects maintaining Gorse order
           if project_ids.any?
             order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], projects.id::int)", project_ids.map(&:to_i) ])
-            @projects = Project.where(id: project_ids).includes(:banner_attachment, :latest_journal_entry).order(Arel.sql(order_clause))
+            @projects = Project.where(id: project_ids).listed.includes(:banner_attachment, :latest_journal_entry).order(Arel.sql(order_clause))
             preload_project_metrics(@projects)
           else
             @projects = []
           end
         else
-          all_projects = current_user.recommended_projects.where(is_deleted: false) if current_user.present?
+          all_projects = current_user.recommended_projects.where(is_deleted: false).listed if current_user.present?
           if all_projects.nil? || all_projects.count < 5
             redirect_to explore_path(type: "projects", sort: "top", page: params[:page]) and return
           end
@@ -124,11 +124,11 @@ class ProjectsController < ApplicationController
           preload_project_metrics(@projects)
         end
       elsif params[:sort] == "top"
-        all_projects = Project.joins(:user).where(is_deleted: false).includes(:banner_attachment, :user).order(views_count: :desc)
+        all_projects = Project.joins(:user).where(is_deleted: false).listed.includes(:banner_attachment, :user).order(views_count: :desc)
         @pagy, @projects = pagy(all_projects, limit: 24)
         preload_project_metrics(@projects)
       elsif params[:sort] == "shipped"
-        all_projects = Project.joins(:user).where(is_deleted: false, review_status: "build_approved").includes(:banner_attachment, :user).order(created_at: :desc)
+        all_projects = Project.joins(:user).where(is_deleted: false, review_status: "build_approved").listed.includes(:banner_attachment, :user).order(created_at: :desc)
         @pagy, @projects = pagy(all_projects, limit: 24)
         preload_project_metrics(@projects)
       else

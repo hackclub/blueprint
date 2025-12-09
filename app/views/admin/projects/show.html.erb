@@ -66,6 +66,20 @@
               html_options: { data: { turbo_method: :post } }
             %>
           <% end %>
+          <% if @project.unlisted %>
+            <%= render "shared/button",
+              text: "Make listed",
+              url: toggle_unlisted_admin_project_path(@project),
+              html_options: { data: { turbo_method: :post } },
+              class: "bg-bp-warning text-bp-dark"
+            %>
+          <% else %>
+            <%= render "shared/button",
+              text: "Make unlisted",
+              url: toggle_unlisted_admin_project_path(@project),
+              html_options: { data: { turbo_method: :post } }
+            %>
+          <% end %>
         </div>
       <% end %>
       <%= render "shared/card", class: "space-y-2 col-span-2" do %>
