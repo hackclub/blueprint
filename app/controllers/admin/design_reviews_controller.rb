@@ -8,7 +8,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                             .where(design_reviews: { invalidated: false })
                             .distinct
                             .pluck(:id)
-    us_priority_sql = "CASE WHEN (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1) = 'US' THEN 0 ELSE 1 END"
+    us_priority_sql = "CASE WHEN COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) IN ('US', 'United States') THEN 0 ELSE 1 END"
 
     if current_user.admin?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
@@ -38,11 +38,11 @@ class Admin::DesignReviewsController < Admin::ApplicationController
 
   def show_random
     base = Project.active.design_pending
-    reviewed = base.with_valid_design_review
-    unreviewed = base.without_valid_design_review
+    reviewed = apply_ysws_filter(base.with_valid_design_review)
+    unreviewed = apply_ysws_filter(base.without_valid_design_review)
 
     us_filter = ->(scope) {
-      scope.where("(SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1) = ?", "US")
+      scope.where("COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) IN ('US', 'United States')")
     }
 
     project_id =
@@ -52,12 +52,14 @@ class Admin::DesignReviewsController < Admin::ApplicationController
         random_pick_id(us_filter.call(unreviewed)) ||
         random_pick_id(unreviewed)
       else
-        random_pick_id(us_filter.call(unreviewed.not_led)) ||
-        random_pick_id(unreviewed.not_led)
+        random_pick_id(us_filter.call(unreviewed)) ||
+        random_pick_id(unreviewed)
       end
 
     if project_id
-      redirect_to admin_design_review_path(project_id)
+      redirect_params = {}
+      redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_to admin_design_review_path(project_id, redirect_params)
     else
       redirect_to admin_design_reviews_path, alert: "No projects pending review."
     end
@@ -75,9 +77,14 @@ class Admin::DesignReviewsController < Admin::ApplicationController
         @project.update(ysws: ysws_value)
       end
       update_project_review_status(@project, @design_review)
-      redirect_to admin_random_design_review_path, notice: "Design review submitted successfully. Showing new project."
+
+      redirect_params = {}
+      redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_to admin_random_design_review_path(redirect_params), notice: "Design review submitted successfully. Showing new project."
     else
-      redirect_to admin_design_review_path(@project), alert: @design_review.errors.full_messages.to_sentence
+      redirect_params = {}
+      redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_to admin_design_review_path(@project, redirect_params), alert: @design_review.errors.full_messages.to_sentence
     end
   end
 
@@ -111,6 +118,24 @@ class Admin::DesignReviewsController < Admin::ApplicationController
   def require_reviewer_perms!
     unless current_user&.reviewer_perms?
       redirect_to main_app.root_path, alert: "You are not authorized to access this page."
+    end
+  end
+
+  def normalized_ysws_filter
+    valid_types = %w[hackpad squeak devboard midi splitkb led custom]
+    valid_types.include?(params[:ysws_type]) ? params[:ysws_type] : nil
+  end
+
+  def apply_ysws_filter(scope)
+    filter = normalized_ysws_filter
+    if filter == "custom"
+      scope.where(ysws: nil)
+    elsif filter.present?
+      scope.where(ysws: filter)
+    elsif current_user.admin?
+      scope
+    else
+      scope.where("ysws IS NULL OR ysws != ?", "led")
     end
   end
 end

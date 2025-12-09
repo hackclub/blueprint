@@ -45,9 +45,9 @@ Rails.application.configure do
   config.active_storage.service_urls_expire_in = 7.days
 
   # Use custom Airtable delivery method for mailer
-  config.action_mailer.delivery_method = :airtable_delivery_method
+  # config.action_mailer.delivery_method = :airtable_delivery_method
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false

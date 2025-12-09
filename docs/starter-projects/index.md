@@ -8,6 +8,11 @@
 
 <p class="text-xl mb-8">Follow and modify one of these awesome projects</p>
 
+<div class="mt-12 p-6 bg-bp-darker/50 border-l-4 border-bp-warning">
+  <h4 class="text-xl font-rc-full mb-2">Note about projects made with the community provided guides:</h4>
+  <p class="text-white/80">You <strong>can not</strong> simply just submit a copy of the tutorials above. You need to do something to make it your own. This means something different for each project. Maybe add custom keys, neopixel LED's, make a custom MIDI.</p>
+</div>
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8 mb-12">
 <a href="../hackpad/index.md" class="block h-full">
     <div class="flex flex-col h-full group border-2 border-[#FF6B6B] bg-[#4A1515] hover:bg-[#5A2020] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
@@ -34,6 +39,21 @@
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
       </div>
       <div class="bg-[#F59E0B] text-white font-semibold py-2">START NOW →</div>
+    </div>
+  </a>
+
+  <a href="/starter-projects/squeak" class="block h-full">
+    <div class="flex flex-col h-full group border-2 border-[#22C55E] bg-[#064E3B] hover:bg-[#065F46] max-w-4xl justify-center text-center transition-colors duration-150 hover:-rotate-1" style="background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px;">
+      <div class="p-4 pb-0 space-y-2 flex-grow flex flex-col">
+        <p class="text-2xl font-semibold text-white">Squeak</p>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Build a custom mouse</i></p>
+        <div class="flex-grow flex items-center justify-center mt-2">
+          <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/9ee3942025c1c684f5d15593771fa512bc07247e_image.png
+          " class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
+        </div>
+        <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
+      </div>
+      <div class="bg-[#22C55E] text-white font-semibold py-2">START NOW →</div>
     </div>
   </a>
 
@@ -107,9 +127,4 @@
   </div>
 </a>
 
-</div>
-
-<div class="mt-12 p-6 bg-bp-darker/50 border-l-4 border-bp-warning">
-  <h4 class="text-xl font-rc-full mb-2">Note about projects made with the community provided guides:</h4>
-  <p class="text-white/80">You <strong>can not</strong> simply just submit a copy of the tutorials above. You need to do something to make it your own. This means something different for each project. Maybe add custom keys, neopixel LED's, make a custom MIDI.</p>
 </div>

@@ -17,6 +17,8 @@
 require "csv"
 
 class AirtableSync < ApplicationRecord
+  MAX_AIRTABLE_BATCH_SIZE = 10_000
+
   def self.needs_sync?(record)
     identifier = build_identifier(record)
     sync_record = find_by(record_identifier: identifier)
@@ -34,7 +36,7 @@ class AirtableSync < ApplicationRecord
     )
   end
 
-  def self.sync!(classname, limit: nil, sync_all: false)
+  def self.sync!(classname, limit: nil, sync_all: false, no_upload: false)
     batch = false
     klass = resolve_class(classname)
     validate_sync_methods!(klass)
@@ -45,18 +47,43 @@ class AirtableSync < ApplicationRecord
 
     batch = true if has_sync_id
 
+    should_multi_batch = klass.respond_to?(:airtable_should_batch) && klass.airtable_should_batch
+
     records = batch || sync_all ? all_records(klass, limit) : outdated_records(klass, limit)
 
     airtable_ids = []
 
     if batch
-      batch_sync!(table_id, records, klass.airtable_sync_sync_id, field_mappings)
+      if records.size > MAX_AIRTABLE_BATCH_SIZE && !should_multi_batch
+        Sentry.capture_message(
+          "Airtable sync exceeds #{MAX_AIRTABLE_BATCH_SIZE} records without multi-batch enabled",
+          level: :warning,
+          extra: { class_name: klass.name, record_count: records.size }
+        )
+      end
+
+      if should_multi_batch && records.size > MAX_AIRTABLE_BATCH_SIZE
+        batches = build_equal_batches(records, MAX_AIRTABLE_BATCH_SIZE)
+
+        batches.each_with_index do |batch_records, index|
+          Rails.logger.info(
+            "Airtable multi-batch sync: #{klass.name} " \
+            "batch #{index + 1}/#{batches.size} " \
+            "(#{batch_records.size} records)"
+          )
+          batch_sync!(table_id, batch_records, klass.airtable_sync_sync_id, field_mappings, no_upload:, batch_index: index + 1)
+        end
+      else
+        batch_sync!(table_id, records, klass.airtable_sync_sync_id, field_mappings, no_upload:)
+      end
     else
       records.each do |record|
         old_airtable_id = find_by(record_identifier: build_identifier(record))&.airtable_id
         airtable_ids << individual_sync!(table_id, record, field_mappings, old_airtable_id)
       end
     end
+
+    return records if no_upload
 
     sync_data = records.map do |record|
       data = {
@@ -76,7 +103,7 @@ class AirtableSync < ApplicationRecord
     records
   end
 
-  def self.batch_sync!(table_id, records, sync_id, mappings)
+  def self.batch_sync!(table_id, records, sync_id, mappings, no_upload: false, batch_index: nil)
     csv_string = CSV.generate do |csv|
       csv << mappings.keys
 
@@ -84,6 +111,15 @@ class AirtableSync < ApplicationRecord
         fields = build_airtable_fields(record, mappings)
         csv << fields.values.map { |v| v.is_a?(Array) ? v.join(",") : v }
       end
+    end
+
+    if no_upload
+      batch_suffix = batch_index ? "_batch#{batch_index}" : ""
+      filename = "airtable_sync_#{table_id}_#{Time.current.strftime('%Y%m%d_%H%M%S')}#{batch_suffix}.csv"
+      filepath = Rails.root.join("tmp", filename)
+      File.write(filepath, csv_string)
+      Rails.logger.info("Airtable batch sync saved locally: #{filepath}")
+      return filepath
     end
 
     response = Faraday.post("https://api.airtable.com/v0/#{ENV['AIRTABLE_BASE_ID']}/#{table_id}/sync/#{sync_id}") do |req|
@@ -181,5 +217,16 @@ class AirtableSync < ApplicationRecord
 
   def self.build_identifier(record)
     "#{record.class.name}##{record.id}"
+  end
+
+  def self.build_equal_batches(records, max_batch_size)
+    total = records.size
+    return [ records ] if total <= max_batch_size
+
+    shuffled = records.shuffle
+    num_batches = (total.to_f / max_batch_size).ceil
+    batch_size = [ (total.to_f / num_batches).ceil, max_batch_size ].min
+
+    shuffled.each_slice(batch_size).to_a
   end
 end

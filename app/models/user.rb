@@ -12,9 +12,10 @@
 #  fulfiller                   :boolean          default(FALSE), not null
 #  github_username             :string
 #  identity_vault_access_token :string
+#  idv_country                 :string
 #  internal_notes              :text
 #  is_banned                   :boolean          default(FALSE), not null
-#  is_mcg                      :boolean          default(FALSE), not null
+#  is_mcg                      :boolean          default(TRUE), not null
 #  is_pro                      :boolean          default(FALSE)
 #  last_active                 :datetime
 #  reviewer                    :boolean          default(FALSE), not null
@@ -59,7 +60,11 @@ class User < ApplicationRecord
   has_one :latest_locatable_visit, -> { where.not(country: [ nil, "" ]).order(started_at: :desc) }, class_name: "Ahoy::Visit"
 
   def country
-    latest_locatable_visit&.country
+    idv_country.presence || latest_locatable_visit&.country
+  end
+
+  def us?
+    country.in?([ "US", "United States" ])
   end
 
   # Simple referrer: a user may have one referrer (another User)
@@ -84,6 +89,10 @@ class User < ApplicationRecord
     "6mGZYU5X"
   end
 
+  def self.airtable_should_batch
+    true
+  end
+
   def self.airtable_sync_field_mappings
     {
       "User ID" => :id,
@@ -91,9 +100,8 @@ class User < ApplicationRecord
       "GitHub Username" => :github_username,
       "Email" => :email,
       "Display Name" => lambda { |user| user.display_name },
-      "Avatar" => :avatar,
       "Is Banned" => :is_banned,
-      "Is MCG" => :is_mcg,
+      "Birthday" => :birthday,
       "Role" => lambda { |user|
         roles = []
         roles << "Admin" if user.admin?
@@ -109,7 +117,8 @@ class User < ApplicationRecord
       "Updated At" => :updated_at,
       "Github Linked" => lambda { |user| user.github_user? },
       "Referrer ID" => :referrer_id,
-      "Referrer Email" => lambda { |user| user.referrer&.email }
+      "Referrer Email" => lambda { |user| user.referrer&.email },
+      "Loops - blueprintCreatedProjectAt" => lambda { |user| user.projects.order(:created_at).first&.created_at }
     }
   end
 
@@ -563,7 +572,18 @@ class User < ApplicationRecord
 
     result = JSON.parse(response.body) rescue { "ok" => false, "error" => "invalid_json" }
 
-    unless response.status == 200 && result["ok"] != false && result["invites"]&.first["ok"] != false
+    invite_result = result["invites"]&.first
+    already_in_team = invite_result&.dig("error") == "already_in_team"
+
+    if already_in_team
+      Rails.logger.tagged("SlackInvite") do
+        Rails.logger.info({ event: "user_already_in_team", user_id: id, email: email }.to_json)
+      end
+      SlackInviteFinalizeJob.perform_later(id)
+      return result
+    end
+
+    unless response.status == 200 && result["ok"] != false && invite_result&.dig("ok") != false
       Rails.logger.tagged("SlackInvite") do
         Rails.logger.error({ event: "invite_failed", user_id: id, email: email, status: response.status, body: response.body }.to_json)
       end
@@ -872,11 +892,16 @@ class User < ApplicationRecord
       raise StandardError, "Another user already has this identity linked."
     end
 
+    addresses = idv_data.dig(:identity, :addresses) || []
+    primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
+    has_address = addresses.any?
+
     update!(
       identity_vault_access_token: access_token,
       identity_vault_id:,
       ysws_verified: idv_data.dig(:identity,
-                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible)
+                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible) && has_address,
+      idv_country: primary_address.dig(:country)
     )
   end
 
@@ -903,10 +928,14 @@ class User < ApplicationRecord
     return if ysws_verified
 
     idv_data = fetch_idv
+    addresses = idv_data.dig(:identity, :addresses) || []
+    primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
+    has_address = addresses.any?
 
     update!(
       ysws_verified: idv_data.dig(:identity,
-                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible)
+                                  :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible) && has_address,
+      idv_country: primary_address.dig(:country)
     )
   end
 

@@ -5,6 +5,7 @@
 #  id                     :bigint           not null, primary key
 #  approved_funding_cents :integer
 #  approved_tier          :integer
+#  approx_hour            :decimal(3, 1)
 #  demo_link              :string
 #  description            :text
 #  funding_needed_cents   :integer          default(0), not null

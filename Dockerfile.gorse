@@ -1,3 +1,6 @@
+# syntax=docker/dockerfile:1
+# check=skip=SecretsUsedInArgOrEnv
+
 FROM alpine:latest AS envsubst
 RUN apk add --no-cache gettext
 COPY config/gorse.toml /tmp/gorse.toml.template

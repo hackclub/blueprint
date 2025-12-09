@@ -28,7 +28,7 @@
         <p>There are two ways to participate in Hack Club Blueprint:</p>
         <ol class="list-decimal list-inside space-y-3">
           <li>Build projects like custom mini-keyboards, 3D printers, and more (ages 13-18 only)</li>
-          <li>Get teenagers to sign up for Hack Club Blueprint (any age)</li>
+          <li>Get teenagers aged 13-18 to sign up for Hack Club Blueprint (any age)</li>
         </ol>
       </div>
 
@@ -67,6 +67,12 @@
       <% else %>
         <h2 class="text-xl text-center">Log in or create an account to get access to more resources</h2>
       <% end %>
+
+      <div class="space-y-4 flex flex-col items-center">
+          <h2 class="text-3xl text-center">What is Hack Club Blueprint and Prototype?</h2>
+          <p>Read our Prototype guide for parents.</p>
+          <%= render "shared/button", text: "Prototype Parent's Guide", url: "https://docs.google.com/document/d/1qp2dwCtDi7fT1s2QOp53MWEGwh2WSLDtvPSjysM7KOw/edit?usp=sharing", html_options: { target: "_blank" } %>
+        </div>
           
     <% end %>
   </div>

@@ -35,6 +35,9 @@
         <p>Type: <span class="font-medium"><%= @project.ysws || "Custom" %></span></p>
         <p>Hours: <span class="font-medium"><%= hours %>h</span></p>
         <p>CPH: <span class="font-medium"><%= hours > 0 ? sprintf("$%.2f", (@project.funding_needed_cents / 100.0) / hours) : "–" %></span></p>
+        <% if @project.ysws == "hackpad" && @project.approx_hour.present? %>
+          <p>Self-reported: <span class="font-medium"><%= @project.approx_hour %>h</span></p>
+        <% end %>
       </div>
     </div>
     <div class="space-y-6">
@@ -177,6 +180,7 @@
   <%= render "shared/card" do %>
     <p class="text-3xl pb-4 font-rc-full">Submit Design Review</p>
     <%= form_with model: @design_review, url: admin_design_review_create_path(@project), method: :post, html: { class: "space-y-6" } do |f| %>
+      <%= hidden_field_tag :ysws_type, params[:ysws_type] if params[:ysws_type].present? %>
       <div>
         <%= f.label :hours_override, "Hours Override", class: "block text-xl font-medium" %>
         <%= f.number_field :hours_override, step: 0.01, placeholder: "Leave blank to use calculated hours (#{@project.journal_entries.sum(:duration_seconds) / 3600.0})", class: "input px-3 mt-1 block w-full" %>

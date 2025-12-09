@@ -441,4 +441,10 @@ The board should automatically restart and be recognised as a new external drive
 # Next steps
 We just made a pretty cool macropad, but obviously there's a lot of cooler stuff out there - that's up to you to figure out! Again, don't copy this guide 1:1, add your own design into it.
 
+
+---
+
+Want some resources and tips? [Check this out!](/hackpad/resources)
+
 Or maybe do you think you are done? Check out how to submit [here](/hackpad/submitting)
+

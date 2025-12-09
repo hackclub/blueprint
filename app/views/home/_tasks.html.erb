@@ -40,6 +40,12 @@
             <% else %>
               <%= link_to task[:msg], new_project_path, class: "underline underline-offset-2" %>
             <% end %>
+          <% elsif name == :verify_identity %>
+            <% if done %>
+              <p class="line-through"><%= task[:msg] %></p>
+            <% else %>
+              <%= link_to task[:msg], idv_path, class: "underline underline-offset-2" %>
+            <% end %>
           <% else %>
             <% if done %>
               <p class="line-through"><%= task[:msg] %></p>

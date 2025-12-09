@@ -93,7 +93,8 @@ class ShopOrder < ApplicationRecord
       "City" => lambda { |shop_order| shop_order.parsed_address&.dig("city") },
       "State" => lambda { |shop_order| shop_order.parsed_address&.dig("state") },
       "Postal Code" => lambda { |shop_order| shop_order.parsed_address&.dig("postal_code") },
-      "Country" => lambda { |shop_order| shop_order.parsed_address&.dig("country") }
+      "Country" => lambda { |shop_order| shop_order.parsed_address&.dig("country") },
+      "Phone Number" => :phone_number
     }
   end
 

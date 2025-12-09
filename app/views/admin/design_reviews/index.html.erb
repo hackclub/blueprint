@@ -7,8 +7,8 @@
       <h1 class="pb-2 text-4xl">Pending Design Review</h1>
       <% if current_user.admin? %>
         <p class="text-bp-warning">Yellow: Pre-reviewed by a reviewer</p>
-        <p class="underline">Underline: US submission</p>
       <% end %>
+      <p class="underline">Underline: US submission</p>
     </div>
     <div class="grow max-w-xl">
       <% if @top_reviewers.present? && @top_reviewers.any? %>
@@ -23,7 +23,16 @@
     </div>
   </div>
   <div class="flex items-center justify-between">
-    <%= render "shared/button", text: "Review Random", url: admin_random_design_review_path, class: "py-0" %>
+    <div class="flex flex-wrap items-center gap-2">
+      <%= render "shared/button", text: "Random", url: admin_random_design_review_path, class: "py-0" %>
+      <%= render "shared/button", text: "Hackpad", url: admin_random_design_review_path(ysws_type: "hackpad"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Squeak", url: admin_random_design_review_path(ysws_type: "squeak"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Devboard", url: admin_random_design_review_path(ysws_type: "devboard"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Midi", url: admin_random_design_review_path(ysws_type: "midi"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Splitkb", url: admin_random_design_review_path(ysws_type: "splitkb"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "LED", url: admin_random_design_review_path(ysws_type: "led"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Custom", url: admin_random_design_review_path(ysws_type: "custom"), variant: :outline, class: "py-0" %>
+    </div>
     <%= form_with url: admin_projects_path, method: :get, local: true, class: "w-full max-w-2xl" do %>
       <div class="flex items-center gap-3">
         <input type="text" name="q" value="<%= h(@q) %>" placeholder="Search by ID, title, or author" class="w-full text-white border-white rounded-none input bg-bp-darker placeholder-white/60" />
@@ -57,7 +66,7 @@
             <% 
               base_classes = "underline-offset-2"
               us_classes = "underline"
-              is_us = project.user.country == 'US'
+              is_us = project.user.us?
               link_classes = is_us ? "#{base_classes} #{us_classes}" : base_classes
             %>
             <% if current_user.admin? %>
