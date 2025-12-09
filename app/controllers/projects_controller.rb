@@ -539,6 +539,7 @@ class ProjectsController < ApplicationController
       :needs_soldering_iron,
       :skip_gh_sync,
       :approx_hour,
+      :reviewer_note,
       cart_screenshots: []
     )
 

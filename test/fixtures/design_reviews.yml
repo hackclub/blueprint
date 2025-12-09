@@ -10,6 +10,7 @@
 #  frozen_duration_seconds     :integer
 #  frozen_entry_count          :integer
 #  frozen_funding_needed_cents :integer
+#  frozen_reviewer_note        :text
 #  frozen_tier                 :integer
 #  grant_override_cents        :integer
 #  hours_override              :float

@@ -33,6 +33,7 @@
     </div>
     <div class="space-y-6">
       <p class="text-xl wrap-break-word"><%= @project.description %></p>
+
       <div>
         <% if @project.repo_link.present? %>
           <%= render "shared/button", text: "Repository", url: @project.repo_link, class: "py-0", html_options: { target: "_blank" } %>
@@ -80,6 +81,7 @@
               <p>Tier: <%= review.frozen_tier.present? ? review.frozen_tier : "Unknown" %></p>
               <p>Hours: <%= review.frozen_duration_seconds.present? ? (review.frozen_duration_seconds / 3600.0).round(2) : "Unknown" %></p>
               <p>Journal entries: <%= review.frozen_entry_count.present? ? review.frozen_entry_count : "Unknown" %></p>
+              <p>Note to reviewer: <%= review.frozen_reviewer_note.present? ? review.frozen_reviewer_note : "None" %></p>
             </div>
           </div>
         <% end %>
@@ -124,10 +126,18 @@
             <p>Tier at time: <%= review.frozen_tier.present? ? review.frozen_tier : "Unknown" %></p>
             <p>Hours since last: <%= review.frozen_duration_seconds.present? ? (review.frozen_duration_seconds / 3600.0).round(2) : "Unknown" %></p>
             <p>Entries since last: <%= review.frozen_entry_count.present? ? review.frozen_entry_count : "Unknown" %></p>
+            <p>Note to reviewer: <%= review.frozen_reviewer_note.present? ? review.frozen_reviewer_note : "None" %></p>
           </div>
         </div>
       <% end %>
     </div>
+  <% end %>
+
+  <% if @project.reviewer_note.present? %>
+    <%= render "shared/card" do %>
+      <p class="text-3xl pb-4 font-rc-full">Note from Author</p>
+      <p class="text-xl"><%= @project.reviewer_note %></p>
+    <% end %>
   <% end %>
 
   <%= render "shared/card" do %>

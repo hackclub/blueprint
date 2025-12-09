@@ -8,6 +8,7 @@
 #  frozen_duration_seconds     :integer
 #  frozen_entry_count          :integer
 #  frozen_funding_needed_cents :integer
+#  frozen_reviewer_note        :text
 #  frozen_tier                 :integer
 #  grant_override_cents        :integer
 #  hours_override              :float
@@ -99,6 +100,7 @@ class DesignReview < ApplicationRecord
     self.frozen_duration_seconds = project.journal_entries.sum(:duration_seconds)
     self.frozen_tier = project.tier
     self.frozen_entry_count = project.journal_entries.count
+    self.frozen_reviewer_note = project.reviewer_note
   end
 
   def finalize_on_approve

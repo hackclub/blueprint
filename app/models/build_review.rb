@@ -7,6 +7,7 @@
 #  feedback                :text
 #  frozen_duration_seconds :integer
 #  frozen_entry_count      :integer
+#  frozen_reviewer_note    :text
 #  frozen_tier             :integer
 #  hours_override          :float
 #  invalidated             :boolean          default(FALSE)
@@ -50,6 +51,7 @@ class BuildReview < ApplicationRecord
   validates :hours_override, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   before_validation :set_default_tier_override, on: :create
+  before_create :freeze_project_state
   after_save :finalize_on_approve, if: -> { saved_change_to_result? && approved? && !invalidated? }
 
   def self.default_multiplier_for_tier(tier)
@@ -122,6 +124,10 @@ class BuildReview < ApplicationRecord
 
   def set_default_tier_override
     self.tier_override ||= project.tier
+  end
+
+  def freeze_project_state
+    self.frozen_reviewer_note = project.reviewer_note
   end
 
   def finalize_on_approve

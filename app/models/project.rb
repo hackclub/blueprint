@@ -19,6 +19,7 @@
 #  readme_link            :string
 #  repo_link              :string
 #  review_status          :string
+#  reviewer_note          :text
 #  skip_gh_sync           :boolean          default(FALSE)
 #  tier                   :integer
 #  title                  :string

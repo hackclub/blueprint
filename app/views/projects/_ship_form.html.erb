@@ -79,6 +79,15 @@
       </div>
     <% end %>
 
+    <div>
+      <%= f.label :reviewer_note, "Note to reviewer (optional)", class: "block text-xl font-medium font-rc-full" %>
+      <p>Anything you'd like the reviewer to know about your project?</p>
+      <%= f.text_area :reviewer_note,
+            rows: 3,
+            class: "input px-3 mt-1 block w-full",
+            placeholder: "e.g. I had to substitute a component because..." %>
+    </div>
+
     <div data-controller="funding-amount"
       data-funding-amount-tier-max-cents-value="<%= { 1 => 40000, 2 => 20000, 3 => 10000, 4 => 5000, 5 => 2500 }.to_json %>">
       <% if @project.ysws != "hackpad" %>

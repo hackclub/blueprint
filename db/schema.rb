@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_09_030917) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_09_174625) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -177,6 +177,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_09_030917) do
     t.datetime "updated_at", null: false
     t.integer "tier_override"
     t.float "hours_override"
+    t.text "frozen_reviewer_note"
     t.index ["project_id"], name: "index_build_reviews_on_project_id"
     t.index ["reviewer_id", "project_id"], name: "index_build_reviews_on_reviewer_id_and_project_id", unique: true, where: "(invalidated = false)"
     t.index ["reviewer_id"], name: "index_build_reviews_on_reviewer_id"
@@ -199,6 +200,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_09_030917) do
     t.integer "frozen_duration_seconds"
     t.integer "frozen_tier"
     t.integer "frozen_entry_count"
+    t.text "frozen_reviewer_note"
     t.index ["project_id"], name: "index_design_reviews_on_project_id"
     t.index ["reviewer_id", "project_id"], name: "index_design_reviews_on_reviewer_id_and_project_id", unique: true, where: "(invalidated = false)"
     t.index ["reviewer_id"], name: "index_design_reviews_on_reviewer_id"
@@ -384,6 +386,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_09_030917) do
     t.boolean "viral", default: false, null: false
     t.decimal "approx_hour"
     t.boolean "unlisted", default: false, null: false
+    t.text "reviewer_note"
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
