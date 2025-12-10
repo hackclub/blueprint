@@ -891,7 +891,7 @@ class User < ApplicationRecord
 
     # Ensure no other user has this identity_vault_id linked already
     if User.where.not(id:).exists?(identity_vault_id:)
-      raise StandardError, "Another user already has this identity linked."
+      raise StandardError, "Another user already has this identity linked (share this with support: #{identity_vault_id})."
     end
 
     addresses = idv_data.dig(:identity, :addresses) || []

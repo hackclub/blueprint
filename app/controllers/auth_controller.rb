@@ -286,7 +286,7 @@ class AuthController < ApplicationController
       current_user.link_identity_vault_callback(idv_callback_url, params[:code])
     rescue StandardError => e
       event_id = Sentry.capture_exception(e)
-      return redirect_to home_path, alert: "Couldn't link identity: #{e.message} (ask in #blueprint-support with a link to your Blueprint profile. click on your profile picture)"
+      return redirect_to home_path, alert: "Couldn't link identity: #{e.message} (ask in #blueprint-support)"
     end
 
     redirect_to home_path, notice: "Successfully linked your identity."
