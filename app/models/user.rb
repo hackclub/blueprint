@@ -72,7 +72,11 @@ class User < ApplicationRecord
 
   enum :ban_type, { hackatime: 0, blueprint: 1, previous: 2, slack: 3, age: 4 }
 
+  scope :with_email, ->(email) { where("LOWER(email) = ?", email.to_s.strip.downcase) }
+
   validates :is_banned, inclusion: { in: [ true, false ] }
+
+  before_validation :normalize_email
   after_commit :advance_projects_after_idv!, on: :update, if: -> { previous_changes.key?("ysws_verified") && ysws_verified? }
   after_commit :sync_to_gorse, on: :create
   after_commit :delete_from_gorse, on: :destroy
@@ -144,7 +148,7 @@ class User < ApplicationRecord
     user_info = fetch_slack_user_info(slack_id)
     slack_email = user_info.user.profile.email
 
-    user = User.find_by(slack_id: slack_id) || User.find_by(email: slack_email)
+    user = User.find_by(slack_id: slack_id) || User.with_email(slack_email).first
     if user.present?
       Rails.logger.tagged("UserCreation") do
         Rails.logger.info({
@@ -211,7 +215,7 @@ class User < ApplicationRecord
     end
 
     # Check if user with same email already exists (from OTP login, case-insensitive)
-    existing_user = User.where("LOWER(email) = LOWER(?)", email).first
+    existing_user = User.with_email(email).first
     if existing_user.present?
       Rails.logger.tagged("UserCreation") do
         Rails.logger.info({
@@ -262,10 +266,8 @@ class User < ApplicationRecord
         raise StandardError, "You do not have access."
       end
 
-      user = User.find_or_create_by!(email: email) do |user|
-        user.is_banned = false
-        user.referrer_id = referrer_id
-      end
+      user = User.with_email(email).first
+      user ||= User.create!(email: email, is_banned: false, referrer_id: referrer_id)
       return user
     # end
 
@@ -315,7 +317,7 @@ class User < ApplicationRecord
     end
 
     # Check if user with same slack ID already exists
-    existing_user = User.find_by(slack_id: slack_id) || User.find_by(email: slack_email)
+    existing_user = User.find_by(slack_id: slack_id) || User.with_email(slack_email).first
     if existing_user.present?
       Rails.logger.tagged("UserCreation") do
         Rails.logger.info({
@@ -978,5 +980,9 @@ class User < ApplicationRecord
   rescue => e
     Rails.logger.error("Failed to delete user #{id} from Gorse: #{e.message}")
     Sentry.capture_exception(e)
+  end
+
+  def normalize_email
+    self.email = email.to_s.strip.downcase if email.present?
   end
 end

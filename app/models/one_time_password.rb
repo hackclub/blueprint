@@ -15,9 +15,12 @@
 #
 class OneTimePassword < ApplicationRecord
   before_validation :generate, on: :create
+  before_validation :normalize_email
 
   validates :secret, :expires_at, presence: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+
+  scope :with_email, ->(email) { where("LOWER(email) = ?", email.to_s.strip.downcase) }
 
   def expired?
     Time.current > expires_at
@@ -29,8 +32,8 @@ class OneTimePassword < ApplicationRecord
   end
 
   def self.valid?(secret, email)
-    otps = OneTimePassword.where(email: email, secret: secret)
-    valid =  otps.any? { |otp| !otp.expired? }
+    otps = with_email(email).where(secret: secret)
+    valid = otps.any? { |otp| !otp.expired? }
     otps.each(&:destroy)
     valid
   end
@@ -40,5 +43,9 @@ class OneTimePassword < ApplicationRecord
   def generate
     self.secret ||= SecureRandom.random_number(1000000).to_s.rjust(6, "0")
     self.expires_at ||= 15.minutes.from_now
+  end
+
+  def normalize_email
+    self.email = email.to_s.strip.downcase if email.present?
   end
 end
