@@ -53,6 +53,21 @@
       </div>
     </div>
   <% end %>
+  <% if @project.ysws == "hackpad" %>
+    <% other_hackpads_in_review = @project.user.projects.active.where(ysws: "hackpad", review_status: nil).where.not(id: @project.id) %>
+    <% if other_hackpads_in_review.any? %>
+      <%= render "shared/card" do %>
+        <div class="bg-bp-warning/20 border border-bp-warning text-bp-warning p-4 rounded">
+          <p class="font-bold">⚠️ Warning: This user has <%= pluralize(other_hackpads_in_review.count, "other hackpad") %> in review</p>
+          <ul class="mt-2 list-disc list-inside">
+            <% other_hackpads_in_review.each do |project| %>
+              <li><%= link_to project.title, admin_project_path(project), class: "underline" %> (created <%= project.created_at.strftime("%B %d, %Y") %>)</li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
   <%= render "shared/card" do %>
     <p class="text-3xl pb-4 font-rc-full">Previous Reviews</p>
     <div class="flex flex-col divide-y-2">
