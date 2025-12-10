@@ -28,6 +28,12 @@ module Authentication
     return unless current_user
     return if current_user.admin?
 
+    if current_user.email.match?(/\+old\d*@/)
+      terminate_session
+      redirect_to main_app.login_path, alert: "There was an issue with your account. Please log in again."
+      return
+    end
+
     unless AllowedEmail.allowed?(current_user.email)
       terminate_session
       redirect_to main_app.login_path, alert: "You do not have access."
