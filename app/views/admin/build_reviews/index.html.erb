@@ -82,10 +82,10 @@
             <%= project.tier || "–" %>
           </div>
           <div class="flex items-center col-span-1">
-            <%= project.hours_since_last_build_review.round(1) %>
+            <%= project.hours_since_last_review.round(1) %>
           </div>
           <div class="flex items-center col-span-1">
-            <%= project.entries_since_last_build_review_count %>
+            <%= project.entries_since_last_review_count %>
           </div>
           <div class="flex items-center col-span-1">
             <div class="flex items-center gap-2">

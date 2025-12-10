@@ -17,27 +17,7 @@ namespace :reviews do
       puts "  BuildReview ##{review.id} (Project ##{review.project_id})"
 
       if dry_run
-        # Show what would be associated
-        cutoff = review.created_at
-
-        last_approval = review.project.build_reviews
-                               .where(result: :approved, invalidated: false)
-                               .where.not(id: review.id)
-                               .where("created_at <= ?", cutoff)
-                               .order(created_at: :desc, id: :desc)
-                               .first
-
-        last_design_approval = review.project.design_reviews
-                                      .where(result: :approved, invalidated: false, admin_review: true)
-                                      .where("created_at <= ?", cutoff)
-                                      .order(created_at: :desc, id: :desc)
-                                      .first
-
-        last_valid_approval_time = [ last_approval&.created_at, last_design_approval&.created_at ].compact.max
-
-        entries = review.project.journal_entries.where("created_at <= ?", cutoff)
-        entries = entries.where("created_at > ?", last_valid_approval_time) if last_valid_approval_time
-
+        entries = review.journal_entries_to_associate(up_to: review.created_at)
         puts "    Would associate #{entries.count} journal entries"
         puts "    Current: #{review.journal_entries.count} entries, #{review.frozen_duration_seconds} seconds"
         puts "    After: #{entries.sum(:duration_seconds)} seconds, multiplier: #{review.ticket_multiplier || BuildReview.default_multiplier_for_tier(review.effective_tier)}"
@@ -85,27 +65,7 @@ namespace :reviews do
       puts "  DesignReview ##{review.id} (Project ##{review.project_id})"
 
       if dry_run
-        # Show what would be associated
-        cutoff = review.created_at
-
-        last_approval = review.project.build_reviews
-                               .where(result: :approved, invalidated: false)
-                               .where("created_at <= ?", cutoff)
-                               .order(created_at: :desc, id: :desc)
-                               .first
-
-        last_design_approval = review.project.design_reviews
-                                      .where(result: :approved, invalidated: false, admin_review: true)
-                                      .where.not(id: review.id)
-                                      .where("created_at <= ?", cutoff)
-                                      .order(created_at: :desc, id: :desc)
-                                      .first
-
-        last_valid_approval_time = [ last_approval&.created_at, last_design_approval&.created_at ].compact.max
-
-        entries = review.project.journal_entries.where("created_at <= ?", cutoff)
-        entries = entries.where("created_at > ?", last_valid_approval_time) if last_valid_approval_time
-
+        entries = review.journal_entries_to_associate(up_to: review.created_at)
         puts "    Would associate #{entries.count} journal entries"
         puts "    Current: #{review.journal_entries.count} entries, #{review.frozen_duration_seconds} seconds"
         puts "    After: #{entries.sum(:duration_seconds)} seconds"

@@ -56,28 +56,26 @@ class DesignReview < ApplicationRecord
   end
 
   def self.backfill_journal_associations!
-    # Utility method to backfill journal entry associations for existing approved reviews
+    # Deprecated: Use the reviews:backfill rake task instead, which correctly associates
+    # journal entries up to the review's created_at, not Time.current
     DesignReview.where(result: "approved", invalidated: false, admin_review: true).find_each do |review|
       review.associate_journal_entries!
     end
   end
 
-  def associate_journal_entries!(up_to: nil)
-    # Associate all journal entries created after the last approval and at or before this review
+  def journal_entries_to_associate(up_to: nil)
     cutoff = up_to || created_at
 
-    # Find IDs of all prior approved reviews
     prev_approved_build_ids = project.build_reviews
-                                     .where(result: :approved, invalidated: false)
+                                     .where(result: :approved, invalidated: false, admin_review: true)
+                                     .where("created_at < ?", cutoff)
                                      .pluck(:id)
 
     prev_admin_design_ids = project.design_reviews
                                    .where(result: :approved, invalidated: false, admin_review: true)
-                                   .where.not(id: id)
+                                   .where("created_at < ?", cutoff)
                                    .pluck(:id)
 
-    # Use the timestamp of the last associated journal entry from any prior approved review as cutoff
-    # This prevents double-counting and ensures correct partitioning across review rounds
     last_build_entry_at = prev_approved_build_ids.any? ?
                             JournalEntry.where(review_type: "BuildReview", review_id: prev_approved_build_ids).maximum(:created_at) : nil
     last_design_entry_at = prev_admin_design_ids.any? ?
@@ -85,12 +83,13 @@ class DesignReview < ApplicationRecord
 
     last_valid_approval_time = [ last_build_entry_at, last_design_entry_at ].compact.max
 
-    # Associate entries created after the last approval and at or before the cutoff
-    # Only associate unreviewed entries to never reassign already-associated ones
     entries = project.journal_entries.where("created_at <= ?", cutoff).where(review_id: nil)
     entries = entries.where("created_at > ?", last_valid_approval_time) if last_valid_approval_time
+    entries
+  end
 
-    entries.update_all(review_id: id, review_type: "DesignReview")
+  def associate_journal_entries!(up_to: nil)
+    journal_entries_to_associate(up_to: up_to).update_all(review_id: id, review_type: "DesignReview")
   end
 
   private

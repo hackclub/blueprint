@@ -865,30 +865,37 @@ class Project < ApplicationRecord
     end
   end
 
-  def last_admin_build_review_entry_at
-    build_reviews
+  def last_review_entry_at
+    last_build_entry_at = build_reviews
       .where(result: :approved, invalidated: false, admin_review: true)
       .joins(:journal_entries)
       .maximum("journal_entries.created_at")
+
+    last_design_entry_at = design_reviews
+      .where(result: :approved, invalidated: false, admin_review: true)
+      .joins(:journal_entries)
+      .maximum("journal_entries.created_at")
+
+    [ last_build_entry_at, last_design_entry_at ].compact.max
   end
 
   def unreviewed_journal_entries
-    if last_admin_build_review_entry_at
-      journal_entries.where("created_at > ?", last_admin_build_review_entry_at)
+    if last_review_entry_at
+      journal_entries.where("created_at > ?", last_review_entry_at)
     else
       journal_entries
     end
   end
 
-  def journal_entries_since_last_build_review
+  def journal_entries_since_last_review
     unreviewed_journal_entries
   end
 
-  def hours_since_last_build_review
+  def hours_since_last_review
     unreviewed_journal_entries.sum(:duration_seconds) / 3600.0
   end
 
-  def entries_since_last_build_review_count
+  def entries_since_last_review_count
     unreviewed_journal_entries.count
   end
 

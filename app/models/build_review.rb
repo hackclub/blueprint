@@ -82,21 +82,19 @@ class BuildReview < ApplicationRecord
     ((effective_hours * 10 * (ticket_multiplier || 0.8)) + (ticket_offset || 0)).round
   end
 
-  def associate_journal_entries!(up_to: nil)
+  def journal_entries_to_associate(up_to: nil)
     cutoff = up_to || created_at
 
-    # Find IDs of all prior approved reviews
     prev_approved_build_ids = project.build_reviews
-                                     .where(result: :approved, invalidated: false)
-                                     .where.not(id: id)
+                                     .where(result: :approved, invalidated: false, admin_review: true)
+                                     .where("created_at < ?", cutoff)
                                      .pluck(:id)
 
     prev_admin_design_ids = project.design_reviews
                                    .where(result: :approved, invalidated: false, admin_review: true)
+                                   .where("created_at < ?", cutoff)
                                    .pluck(:id)
 
-    # Use the timestamp of the last associated journal entry from any prior approved review as cutoff
-    # This prevents double-counting and ensures correct partitioning across review rounds
     last_build_entry_at = prev_approved_build_ids.any? ?
                             JournalEntry.where(review_type: "BuildReview", review_id: prev_approved_build_ids).maximum(:created_at) : nil
     last_design_entry_at = prev_admin_design_ids.any? ?
@@ -104,12 +102,13 @@ class BuildReview < ApplicationRecord
 
     last_valid_approval_time = [ last_build_entry_at, last_design_entry_at ].compact.max
 
-    # Associate entries created after the last approval and at or before the cutoff
-    # Only associate unreviewed entries to never reassign already-associated ones
     entries = project.journal_entries.where("created_at <= ?", cutoff).where(review_id: nil)
     entries = entries.where("created_at > ?", last_valid_approval_time) if last_valid_approval_time
+    entries
+  end
 
-    entries.update_all(review_id: id, review_type: "BuildReview")
+  def associate_journal_entries!(up_to: nil)
+    journal_entries_to_associate(up_to: up_to).update_all(review_id: id, review_type: "BuildReview")
   end
 
   def self.backfill_journal_associations!
