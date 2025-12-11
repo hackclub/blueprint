@@ -35,10 +35,10 @@ production:
     queue: background
     schedule: every 5 minutes
 
-  sync_hcb_data:
-    class: HcbSyncJob
-    queue: background
-    schedule: every hour at minute 24
+  # sync_hcb_data:
+  #   class: HcbSyncJob
+  #   queue: background
+  #   schedule: every hour at minute 24
 
   user_ban_check:
     class: UserBanCheckJob
