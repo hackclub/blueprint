@@ -15,7 +15,7 @@
 #  idv_country                 :string
 #  internal_notes              :text
 #  is_banned                   :boolean          default(FALSE), not null
-#  is_mcg                      :boolean          default(FALSE), not null
+#  is_mcg                      :boolean          default(TRUE), not null
 #  is_pro                      :boolean          default(FALSE)
 #  last_active                 :datetime
 #  reviewer                    :boolean          default(FALSE), not null
