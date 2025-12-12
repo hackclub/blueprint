@@ -34,14 +34,16 @@
         </div>
       </div>
     </div>
-    <%= form_with url: explore_path, method: :get, local: true,
-                  class: "w-full pb-6",
-                  data: { turbo_frame: "_top" } do %>
-      <%= hidden_field_tag :type, params[:type].presence || "journals" %>
-      <%= hidden_field_tag :sort, params[:sort].presence || "top" %>
-      <%= text_field_tag :q, params[:q],
-            placeholder: "Search #{params[:type] == 'projects' ? 'projects' : 'journals'}...",
-            class: "w-full bg-bp-darker text-white border border-white/25 px-4 py-2 placeholder-white/60 outline-none" %>
+    <% if params[:type] == "projects" %>
+      <%= form_with url: explore_path, method: :get, local: true,
+                    class: "w-full pb-6",
+                    data: { turbo_frame: "_top" } do %>
+        <%= hidden_field_tag :type, params[:type] %>
+        <%= hidden_field_tag :sort, params[:sort].presence || "top" %>
+        <%= text_field_tag :q, params[:q],
+              placeholder: "Search projects...",
+              class: "w-full bg-bp-darker text-white border border-white/25 px-4 py-2 placeholder-white/60 outline-none" %>
+      <% end %>
     <% end %>
     <% if params[:type] == "journals" || params[:type].nil? %>
       <%= render "explore_entries" %>
