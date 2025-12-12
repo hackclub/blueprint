@@ -188,12 +188,12 @@ model_search_epoch = 100
 model_search_trials = 10
 
 # Enable searching models of different sizes, which consume more memory. The default value is false.
-enable_model_size_search = false
+enable_model_size_search = true
 
 [recommend.replacement]
 
 # Replace historical items back to recommendations. The default value is false.
-enable_replacement = false
+enable_replacement = true
 
 # Decay the weights of replaced items from positive feedbacks. The default value is 0.8.
 positive_replacement_decay = 0.8
