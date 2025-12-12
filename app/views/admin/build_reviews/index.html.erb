@@ -10,23 +10,27 @@
       <% end %>
       <p class="underline">Underline: US submission</p>
     </div>
-     <div class="grow max-w-xl">
+    <div class="grow flex gap-8">
       <% if @top_reviewers_week.present? && @top_reviewers_week.any? %>
-        <h2 class="text-2xl">Top Reviewers (Last 7 Days)</h2>
-        <div class="grid grid-cols-6">
-          <% @top_reviewers_week.each do |reviewer| %>
-            <p class="col-span-5"><%= reviewer.display_name %></p>
-            <p><%= pluralize(reviewer.reviews_count, "review") %></p>
-          <% end %>
+        <div>
+          <h2 class="text-2xl">Top Reviewers (Last 7 Days)</h2>
+          <div class="grid grid-cols-6">
+            <% @top_reviewers_week.each do |reviewer| %>
+              <p class="col-span-5"><%= reviewer.display_name %></p>
+              <p><%= pluralize(reviewer.reviews_count, "review") %></p>
+            <% end %>
+          </div>
         </div>
       <% end %>
       <% if @top_reviewers_all_time.present? && @top_reviewers_all_time.any? %>
-        <h2 class="text-2xl mt-4">Top Reviewers (All Time)</h2>
-        <div class="grid grid-cols-6">
-          <% @top_reviewers_all_time.each do |reviewer| %>
-            <p class="col-span-5"><%= reviewer.display_name %></p>
-            <p><%= pluralize(reviewer.reviews_count, "review") %></p>
-          <% end %>
+        <div>
+          <h2 class="text-2xl">Top Reviewers (All Time)</h2>
+          <div class="grid grid-cols-6">
+            <% @top_reviewers_all_time.each do |reviewer| %>
+              <p class="col-span-5"><%= reviewer.display_name %></p>
+              <p><%= pluralize(reviewer.reviews_count, "review") %></p>
+            <% end %>
+          </div>
         </div>
       <% end %>
     </div>
