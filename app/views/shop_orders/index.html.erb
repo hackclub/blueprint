@@ -13,9 +13,9 @@
     <% else %>
       <div class="space-y-4">
         <% @shop_orders.each do |order| %>
-          <div class="bg-bp-darker rounded p-6 flex flex-col md:flex-row gap-6">
+          <div class="bg-bp-darker p-6 flex flex-col md:flex-row gap-6">
             <% if order.shop_item.image.attached? %>
-              <div class="w-32 h-32 flex-shrink-0 bg-bp-dark rounded overflow-hidden flex items-center justify-center">
+              <div class="w-32 h-32 flex-shrink-0 bg-bp-dark overflow-hidden flex items-center justify-center">
                 <%= image_tag order.shop_item.image, class: "max-h-full max-w-full object-contain" %>
               </div>
             <% end %>
@@ -59,17 +59,17 @@
             <div class="flex-shrink-0 flex items-start">
               <% case order.state %>
               <% when "pending" %>
-                <span class="px-4 py-2 rounded-full bg-bp-warning/20 text-bp-warning border border-bp-warning">Pending</span>
+                <span class="px-4 py-2 bg-bp-warning/20 text-bp-warning border border-bp-warning">Pending</span>
               <% when "awaiting_verification" %>
-                <span class="px-4 py-2 rounded-full bg-bp-warning/20 text-bp-warning border border-bp-warning">Awaiting Verification</span>
+                <span class="px-4 py-2 bg-bp-warning/20 text-bp-warning border border-bp-warning">Awaiting Verification</span>
               <% when "approved" %>
-                <span class="px-4 py-2 rounded-full bg-bp-success/20 text-bp-success border border-bp-success">Approved</span>
+                <span class="px-4 py-2 bg-bp-success/20 text-bp-success border border-bp-success">Approved</span>
               <% when "fufilled" %>
-                <span class="px-4 py-2 rounded-full bg-bp-success/20 text-bp-success border border-bp-success">Fulfilled</span>
+                <span class="px-4 py-2 bg-bp-success/20 text-bp-success border border-bp-success">Fulfilled</span>
               <% when "rejected" %>
-                <span class="px-4 py-2 rounded-full bg-bp-danger/20 text-bp-danger border border-bp-danger">Rejected</span>
+                <span class="px-4 py-2 bg-bp-danger/20 text-bp-danger border border-bp-danger">Rejected</span>
               <% when "on_hold" %>
-                <span class="px-4 py-2 rounded-full bg-bp-muted/20 text-bp-muted border border-bp-muted">On Hold</span>
+                <span class="px-4 py-2 bg-bp-muted/20 text-bp-muted border border-bp-muted">On Hold</span>
               <% end %>
             </div>
           </div>
