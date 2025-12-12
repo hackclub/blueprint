@@ -33,6 +33,17 @@
           </div>
         </div>
       <% end %>
+      <% if @top_reviewers_payouts.present? && @top_reviewers_payouts.any? %>
+        <div>
+          <h2 class="text-2xl">Payouts</h2>
+          <div class="grid grid-cols-6">
+            <% @top_reviewers_payouts.each do |reviewer| %>
+              <p class="col-span-5"><%= reviewer.display_name %></p>
+              <p><%= pluralize(reviewer.reviews_count, "ticket") %></p>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
   <div class="flex items-center justify-between">
