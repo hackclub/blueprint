@@ -35,7 +35,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                               .order("reviews_count DESC")
 
     @top_reviewers_payouts = User.joins(:design_reviews)
-                                 .where("design_reviews.created_at >= ?", Date.new(2025, 12, 4))
+                                 .where("design_reviews.created_at >= ?", Date.new(2025, 12, 12))
                                  .group("users.id")
                                  .select("users.*, COUNT(design_reviews.id) AS reviews_count")
                                  .order("reviews_count DESC")
