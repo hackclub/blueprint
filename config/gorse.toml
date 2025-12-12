@@ -105,7 +105,7 @@ cache_expire = "10s"
 cache_size = 100
 
 # Recommended cache expire time. The default value is 72h.
-cache_expire = "72h"
+cache_expire = "6h"
 
 [recommend.data_source]
 
@@ -124,7 +124,7 @@ item_ttl = 0
 [recommend.popular]
 
 # The time window of popular items. The default values is 4320h.
-popular_window = "720h"
+popular_window = "48h"
 
 [recommend.user_neighbors]
 
