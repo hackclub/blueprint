@@ -23,11 +23,16 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                         .order(Arel.sql("#{us_priority_sql}, created_at ASC"))
     end
 
-    @top_reviewers = User.joins(:design_reviews)
-                         .where("design_reviews.created_at >= ?", 7.days.ago)
-                         .group("users.id")
-                         .select("users.*, COUNT(design_reviews.id) AS reviews_count")
-                         .order("reviews_count DESC")
+    @top_reviewers_all_time = User.joins(:design_reviews)
+                                  .group("users.id")
+                                  .select("users.*, COUNT(design_reviews.id) AS reviews_count")
+                                  .order("reviews_count DESC")
+
+    @top_reviewers_week = User.joins(:design_reviews)
+                              .where("design_reviews.created_at >= ?", 7.days.ago)
+                              .group("users.id")
+                              .select("users.*, COUNT(design_reviews.id) AS reviews_count")
+                              .order("reviews_count DESC")
   end
 
   def show
