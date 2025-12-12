@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
     if params[:type] == "journals"
       if params[:sort] == "new"
         scope = JournalEntry.includes(project: :user).where(projects: { is_deleted: false, unlisted: false }).references(:projects).order(created_at: :desc)
-        scope = scope.where("journal_entries.title ILIKE :q OR journal_entries.body ILIKE :q", q: "%#{search_query}%") if search_query.present?
+        scope = scope.where("journal_entries.content ILIKE :q", q: "%#{search_query}%") if search_query.present?
         @pagy, @journal_entries = pagy(scope, items: 20)
       elsif params[:sort] == "you"
         if current_user && Flipper.enabled?(:gorse_recommendations, current_user)
@@ -42,7 +42,7 @@ class ProjectsController < ApplicationController
           if entry_ids.any?
             order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], journal_entries.id::int)", entry_ids.map(&:to_i) ])
             scope = JournalEntry.where(id: entry_ids).includes(project: :user)
-            scope = scope.where("journal_entries.title ILIKE :q OR journal_entries.body ILIKE :q", q: "%#{search_query}%") if search_query.present?
+            scope = scope.where("journal_entries.content ILIKE :q", q: "%#{search_query}%") if search_query.present?
             @journal_entries = scope.order(Arel.sql(order_clause))
           else
             @journal_entries = []
@@ -56,7 +56,7 @@ class ProjectsController < ApplicationController
           @pagy, paginated_ids = pagy_array(entry_ids, items: 20)
           order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], journal_entries.id::int)", paginated_ids.map(&:to_i) ])
           scope = JournalEntry.where(id: paginated_ids).includes(project: :user)
-          scope = scope.where("journal_entries.title ILIKE :q OR journal_entries.body ILIKE :q", q: "%#{search_query}%") if search_query.present?
+          scope = scope.where("journal_entries.content ILIKE :q", q: "%#{search_query}%") if search_query.present?
           @journal_entries = scope.order(Arel.sql(order_clause))
         end
       elsif params[:sort] == "top"
@@ -74,7 +74,7 @@ class ProjectsController < ApplicationController
           if entry_ids.any?
             order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], journal_entries.id::int)", entry_ids.map(&:to_i) ])
             scope = JournalEntry.where(id: entry_ids).includes(project: :user)
-            scope = scope.where("journal_entries.title ILIKE :q OR journal_entries.body ILIKE :q", q: "%#{search_query}%") if search_query.present?
+            scope = scope.where("journal_entries.content ILIKE :q", q: "%#{search_query}%") if search_query.present?
             @journal_entries = scope.order(Arel.sql(order_clause))
           else
             @journal_entries = []
@@ -85,7 +85,7 @@ class ProjectsController < ApplicationController
             entry_ids = top_entries.map { |item| item["item_id"] }
             order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], journal_entries.id::int)", entry_ids.map(&:to_i) ])
             all_entries = JournalEntry.where(id: entry_ids).includes(project: :user).where(projects: { is_deleted: false, unlisted: false }).references(:projects).order(Arel.sql(order_clause))
-            all_entries = all_entries.where("journal_entries.title ILIKE :q OR journal_entries.body ILIKE :q", q: "%#{search_query}%") if search_query.present?
+            all_entries = all_entries.where("journal_entries.content ILIKE :q", q: "%#{search_query}%") if search_query.present?
             @pagy, @journal_entries = pagy_array(all_entries.to_a, items: 20)
           else
             redirect_to explore_path(sort: "new", type: "journals", page: params[:page]) and return
