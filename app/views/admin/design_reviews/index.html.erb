@@ -17,7 +17,7 @@
           <div class="grid grid-cols-6">
             <% @top_reviewers_week.each do |reviewer| %>
               <p class="col-span-5"><%= reviewer.display_name %></p>
-              <p><%= pluralize(reviewer.reviews_count, "review") %></p>
+              <p><%= reviewer.reviews_countm %></p>
             <% end %>
           </div>
         </div>
@@ -28,7 +28,7 @@
           <div class="grid grid-cols-6">
             <% @top_reviewers_all_time.each do |reviewer| %>
               <p class="col-span-5"><%= reviewer.display_name %></p>
-              <p><%= pluralize(reviewer.reviews_count, "review") %></p>
+              <p><%= reviewer.reviews_count %></p>
             <% end %>
           </div>
         </div>
@@ -39,7 +39,7 @@
           <div class="grid grid-cols-6">
             <% @top_reviewers_payouts.each do |reviewer| %>
               <p class="col-span-5"><%= reviewer.display_name %></p>
-              <p><%= pluralize(reviewer.reviews_count, "ticket") %></p>
+              <p><%= reviewer.reviews_count %></p>
             <% end %>
           </div>
         </div>
