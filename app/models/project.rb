@@ -840,7 +840,8 @@ class Project < ApplicationRecord
       } : nil),
       "BP Project ID" => id,
       "Review Type" => build_approved? ? "Build" : (design_approved? ? "Design" : nil),
-      "Tickets Awarded" => valid_build_reviews.where(admin_review: true).sum { |review| review.tickets_awarded }
+      "Tickets Awarded" => valid_build_reviews.where(admin_review: true).sum { |review| review.tickets_awarded },
+      "Phone Number" => idv_data.dig(:identity, :phone_number)
     }
 
     AirtableSync.upload_or_create!(
