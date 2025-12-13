@@ -258,7 +258,7 @@ Next, create a sketch by by pressing the green + button on the top left, then cl
 
 <img src="https://hackpad.hackclub.com/docs/v2/1sketch1.png" class="max-w-96" />
 
-Create a rectangle that is 1mm bigger than your hackpad's PCB. For example, my PCB is 41mm x 62.7mm, I added 1mm to each size on the sketch. To set the size of a rectangle, click on the Sketch dimension button (You might need to expand the "Create" menu to see it, or press the D key), then click on the edge you wan't to define the length.
+Create a rectangle that is 1mm bigger than your hackpad's PCB. For example, my PCB is 41mm x 62.7mm, I added 1mm to each size on the sketch. To set the size of a rectangle, click on the Sketch dimension button (You might need to expand the "Create" menu to see it, or press the D key), then click on the edge you want to define the length.
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/80bf23120968456e67f2a8fc478b4f4cadca7e49_fusionrect.png" class="max-w-96" />
 <img src="https://hackpad.hackclub.com/docs/v2/fusiondim.png" class="max-w-96" />
@@ -268,7 +268,7 @@ Create another rectangle with 20mm extra on each dimension! (I will have 61mm x 
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/3c5a322be956e5f732e0d509895a6cdd8b89992f_fusionrect2.png" class="max-w-96" />
 
-Center this rectangle by pressing the dimension button, press one edge of the small rectangle then the corresponding edge of the big rectangle and setting the values to 9.5mm. (You only need to constrain one of the horizontal edges, and one of the vertical edges)
+Center this rectangle by pressing the Sketch Dimension button, press one edge of the small rectangle then the corresponding edge of the big rectangle and setting the values to 9.5mm. (You only need to constrain one of the horizontal edges, and one of the vertical edges)
 
 <img src="https://hackpad.hackclub.com/docs/v2/fusionrect3.png" class="max-w-96" />
 
@@ -316,17 +316,18 @@ Click finish sketch, select the rectangle we just drew and press extrude. This t
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/29df5be214c13403164543b583d88b3cacceac95_fusioncase.png" class="max-w-96" />
 
+Right now our case looks a little ugly, it's so blocky! Lets round the vertical edges, press the Fillet button found in the top, click on each edge and make it 5mm. Should look as such:
+
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/37804a2891e02800f2d4b3f953a398ee5353fc98_fillet.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/edgeround.png" class="max-w-96" />
+<img src="https://hackpad.hackclub.com/docs/v2/fusiongfinaltop.png" class="max-w-96" />
+
 Now we finished the bottom case! Congratulations!
 
 You can now export the model by clicking File > Export... at the top left, and selecting STEP Files as the Type.
 
 To download the resulting STEP file on the web, go to [https://myhub.autodesk360.com/](https://myhub.autodesk360.com/), go to your project and click the download icon.
 
-Right now our case looks a little ugly, its so blocky! Lets round the vertical edges, press the Fillet button found in the top, and click on each edge and make it 5mm. Should look as such:
-
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/37804a2891e02800f2d4b3f953a398ee5353fc98_fillet.png" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/edgeround.png" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/fusiongfinaltop.png" class="max-w-96" />
 
 ### Creating the top
 
