@@ -1,4 +1,4 @@
-| title       | Tutorial                                    |
+2e| title       | Tutorial                                    |
 | ----------- | ----------------------------------------- |
 | description | Kick off with these guides for Blueprint. |
 | unlisted    | false                                      |
@@ -75,12 +75,7 @@ To start, we're going to have to install a KiCAD library. We are going to use th
 
 There are many tutorials on how to install libraries! Google is your best friend here :)
 
-@Cyao in the slack did make an awesome tutorial though! Here it is:
-<video width="100%" controls>
-  <source src="https://cloud-547suu6q6-hack-club-bot.vercel.app/0r.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
-
+[Here is one that is well-made!](https://www.youtube.com/watch?v=vG9X1_Q5nAc)
 
 ### Drawing the Schematic
 
