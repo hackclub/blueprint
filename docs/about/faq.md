@@ -22,6 +22,34 @@ As many as you like! We just ask that you only do one of each starter project.
 
 You can get one as a part of Hackpad!
 
+## Does the $20 HackPad grant include a soldering iron?
+
+No. The HackPad grant covers two things only:
+
+- Your PCB
+- Your 3D printed case (printed by (preferably) you or #printing-legion!)
+
+A soldering iron is not included in the $20 grant.
+
+## Will I get a soldering iron mailed to me, or will I get a grant for it?
+
+Most people will have a soldering iron mailed directly to them (mainly India, the United States, and Canada). Some people will receive a grant instead. This depends on whether a soldering iron can be sourced in your country.
+
+## How long does it take to receive a soldering iron?
+
+Fulfillment usually happens within a week of your request, but currently will take longer (due to Prototype). Delivery typically takes 1–3 weeks once shipped.
+
+## Can I track my soldering iron shipment?
+
+No, tracking is not available.
+If it’s been more than two weeks since your project was accepted and you still haven’t received your soldering iron, you may ping @Jay , @Tanuki, or @nimit to check on it. **Please do not DM before two weeks have passed.**
+
+## Complete this form if the amount on your HCB card is not enough for you to complete your Blueprint project. If you need more funding from us, or are looking to add your own funds
+
+[https://forms.hackclub.com/blueprint-topup
+](https://forms.hackclub.com/blueprint-topup
+)
+
 ## Can I make a Hackpad and a keyboard?
 
 Yes! 
