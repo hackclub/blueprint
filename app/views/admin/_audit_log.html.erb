@@ -13,7 +13,7 @@
     <% object.versions.reverse_each do |version| %>
       <% user = users[version.whodunnit] %>
       <% action = version.event == "create" ? "created" : "updated" %>
-      <li><%= render "shared/user_inline", user: user, avatar_classes: "size-4", admin_view: true %> <%= action %> this <span title="<%= version.created_at %>"><%= time_ago_in_words(version.created_at) %> ago</span></li>
+      <li><% if user %><%= render "shared/user_inline", user: user, avatar_classes: "size-4", admin_view: true %><% else %> <span class="">System</span><% end %> <%= action %> this <span title="<%= version.created_at %>"><%= time_ago_in_words(version.created_at) %> ago</span></li>
       <% if version.event == "update" %>
         <ul class="list-disc list-inside indent-4">
           <% version.object_changes.present? && version.object_changes.each do |name, value| %>
