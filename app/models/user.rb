@@ -257,10 +257,15 @@ class User < ApplicationRecord
   end
 
   def self.find_or_create_from_email(email, referrer_id: nil)
-      # begin
-      #   user_info = fetch_slack_user_info_from_email(email)
-      # rescue Slack::Web::Api::Errors::UsersNotFound => e
-      # Rails.logger.warn("Slack user not found for email #{email}: #{e.message}")
+    begin
+      user_info = fetch_slack_user_info_from_email(email)
+    rescue Slack::Web::Api::Errors::UsersNotFound,
+           Slack::Web::Api::Errors::TooManyRequestsError,
+           Faraday::ConnectionFailed,
+           Faraday::TimeoutError,
+           SocketError => e
+      Rails.logger.warn("Slack user lookup failed for email #{email}: #{e.class} - #{e.message}")
+      Sentry.capture_exception(e, extra: { email: email, context: "find_or_create_from_email" }) unless e.is_a?(Slack::Web::Api::Errors::UsersNotFound)
 
       unless AllowedEmail.allowed?(email)
         raise StandardError, "You do not have access."
@@ -269,12 +274,12 @@ class User < ApplicationRecord
       user = User.with_email(email).first
       user ||= User.create!(email: email, is_banned: false, referrer_id: referrer_id)
       return user
-    # end
+    end
 
     if user_info.user.is_bot
       Rails.logger.warn({
         event: "slack_user_is_bot",
-        slack_id: slack_id,
+        slack_id: user_info.user.id,
         user_info: user_info.to_h
       }.to_json)
       return nil
@@ -308,15 +313,9 @@ class User < ApplicationRecord
         email: slack_email,
         user_info: user_info.to_h
       }.to_json)
-      # Honeybadger.notify("Slack email missing??", context: {
-      #   slack_id: slack_id,
-      #   email: email,
-      #   user_info: user_info.to_h
-      # })
       raise StandardError, "Slack ID #{slack_id} has an invalid email: #{slack_email.inspect}"
     end
 
-    # Check if user with same slack ID already exists
     existing_user = User.find_by(slack_id: slack_id) || User.with_email(slack_email).first
     if existing_user.present?
       Rails.logger.tagged("UserCreation") do
@@ -893,7 +892,8 @@ class User < ApplicationRecord
 
   def identity_vault_oauth_link(callback_url, state: nil)
     if ENV["BYPASS_IDV"] == "true"
-      return idv_callback_url
+      raise "BYPASS_IDV must not be enabled in production" if Rails.env.production?
+      return callback_url
     end
     IdentityVaultService.authorize_url(callback_url, {
                                          prefill: {
@@ -903,7 +903,10 @@ class User < ApplicationRecord
   end
 
   def link_identity_vault_callback(callback_url, code)
-    return if ENV["BYPASS_IDV"] == "true"
+    if ENV["BYPASS_IDV"] == "true"
+      raise "BYPASS_IDV must not be enabled in production" if Rails.env.production?
+      return
+    end
 
     code_response = IdentityVaultService.exchange_token(callback_url, code)
 
@@ -932,6 +935,7 @@ class User < ApplicationRecord
 
   def fetch_idv(access_token = nil)
     if ENV["BYPASS_IDV"] == "true"
+      raise "BYPASS_IDV must not be enabled in production" if Rails.env.production?
       return {}
     end
     IdentityVaultService.me(access_token || identity_vault_access_token)
@@ -939,6 +943,7 @@ class User < ApplicationRecord
 
   def idv_linked?
     if ENV["BYPASS_IDV"] == "true"
+      raise "BYPASS_IDV must not be enabled in production" if Rails.env.production?
       return true
     end
     identity_vault_access_token.present?
@@ -946,6 +951,7 @@ class User < ApplicationRecord
 
   def refresh_idv_data!
     if ENV["BYPASS_IDV"] == "true"
+      raise "BYPASS_IDV must not be enabled in production" if Rails.env.production?
       update!(ysws_verified: true)
     end
 

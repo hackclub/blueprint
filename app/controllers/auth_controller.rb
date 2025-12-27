@@ -1,6 +1,6 @@
 class AuthController < ApplicationController
   allow_unauthenticated_access only: %i[ index new create create_email track submit_age new_hca create_hca ]
-  rate_limit to: 10, within: 3.minutes, only: %i[create create_hca], with: -> { redirect_to login_path, alert: "Try again later." }
+  rate_limit to: 10, within: 3.minutes, only: %i[create create_hca create_email], with: -> { redirect_to login_path, alert: "Try again later." }
   skip_forgery_protection only: %i[ track ]
   skip_before_action :redirect_to_age, only: %i[ age submit_age destroy ]
   skip_before_action :redirect_adults, only: %i[ destroy ]
@@ -166,11 +166,18 @@ class AuthController < ApplicationController
       return
     end
 
+    session[:state] = nil
+
     begin
       referrer_id = cookies[:referrer_id]&.to_i
       user = User.exchange_slack_token(params[:code], slack_callback_url, referrer_id: referrer_id)
-      user.refresh_profile! if user
-      ahoy.track("slack_login", user_id: user&.id)
+
+      if user.nil?
+        raise StandardError, "Could not sign you in with Slack."
+      end
+
+      user.refresh_profile!
+      ahoy.track("slack_login", user_id: user.id)
       reset_session
       session[:user_id] = user.id
 

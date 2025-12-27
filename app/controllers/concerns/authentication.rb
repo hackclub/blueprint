@@ -28,6 +28,12 @@ module Authentication
     return unless current_user
     return if current_user.admin?
 
+    if current_user.is_banned?
+      terminate_session
+      redirect_to main_app.login_path, alert: "Your account has been suspended. Please contact support."
+      return
+    end
+
     if current_user.email.match?(/\+old\d*@/)
       terminate_session
       redirect_to main_app.login_path, alert: "There was an issue with your account. Please log in again."

@@ -50,10 +50,15 @@
             <% end %>
           </div>
           <div class="flex flex-col items-center space-y-4 w-full">
-          <div class="w-full">
-            <%= turbo_frame_tag "login_form" do %>
-              <%= render partial: "email_form" %>
+            <% unless params[:email].present? %>
+              <%= render "shared/button", url: hca_login_path(redirect_to: params[:redirect_to]), text: "Log in with Hack Club Auth", class: "text-lg md:text-xl w-full", html_options: { data: { turbo: false } } %>
+              <div class="w-full flex items-center before:p-[1px] before:mr-2 before:bg-white before:grow after:p-[1px] after:ml-2 after:bg-white after:grow uppercase">or</div>
             <% end %>
+            <div class="w-full">
+              <%= turbo_frame_tag "login_form" do %>
+                <%= render partial: "email_form" %>
+              <% end %>
+            </div>
           </div>
         <% end %>
       </div>
