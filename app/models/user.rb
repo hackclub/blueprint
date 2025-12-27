@@ -416,13 +416,36 @@ class User < ApplicationRecord
     refresh_github_profile!
 
     unless slack_user?
-      Rails.logger.tagged("ProfileRefresh") do
-        Rails.logger.info({
-          event: "profile_refresh_no_slack",
-          user_id: id
-        }.to_json)
+      if email.present?
+        begin
+          slack_user_info = User.fetch_slack_user_info_from_email(email)
+          update!(slack_id: slack_user_info.user.id)
+          Rails.logger.tagged("ProfileRefresh") do
+            Rails.logger.info({
+              event: "profile_refresh_slack_id_fetched_from_email",
+              user_id: id,
+              slack_id: slack_user_info.user.id
+            }.to_json)
+          end
+        rescue Slack::Web::Api::Errors::UsersNotFound
+          Rails.logger.tagged("ProfileRefresh") do
+            Rails.logger.info({
+              event: "profile_refresh_no_slack_user_for_email",
+              user_id: id,
+              email: email
+            }.to_json)
+          end
+          return
+        end
+      else
+        Rails.logger.tagged("ProfileRefresh") do
+          Rails.logger.info({
+            event: "profile_refresh_no_slack",
+            user_id: id
+          }.to_json)
+        end
+        return
       end
-      return
     end
 
     user_info = User.fetch_slack_user_info(slack_id)
