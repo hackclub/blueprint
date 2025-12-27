@@ -30,6 +30,9 @@
             <%= link_to "New", explore_path(sort: "new", type: params[:type], q: params[:q]),
               class: "px-4 py-2 font-bold transition-all #{params[:sort] == "new" ? "bg-white text-bp-dark" : "text-white hover:bg-white/10"}",
               data: { turbo_frame: "_top" } %>
+            <%= link_to "Following", explore_path(sort: "following", type: params[:type], q: params[:q]),
+              class: "px-4 py-2 font-bold transition-all #{params[:sort] == "following" ? "bg-white text-bp-dark" : "text-white hover:bg-white/10"}",
+              data: { turbo_frame: "_top" } %>
           </div>
         </div>
       </div>

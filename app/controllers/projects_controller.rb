@@ -22,6 +22,16 @@ class ProjectsController < ApplicationController
         scope = JournalEntry.includes(project: :user).where(projects: { is_deleted: false, unlisted: false }).references(:projects).order(created_at: :desc)
         scope = scope.where("journal_entries.content ILIKE :q", q: "%#{search_query}%") if search_query.present?
         @pagy, @journal_entries = pagy(scope, items: 20)
+      elsif params[:sort] == "following"
+        redirect_to explore_path(sort: "new", type: params[:type], q: params[:q], page: params[:page]) and return unless current_user
+        followed_project_ids = current_user.followed_projects.pluck(:id)
+        if followed_project_ids.empty?
+          @pagy, @journal_entries = pagy_array([], items: 20)
+        else
+          scope = JournalEntry.includes(project: :user).where(project_id: followed_project_ids).where(projects: { is_deleted: false, unlisted: false }).references(:projects).order(created_at: :desc)
+          scope = scope.where("journal_entries.content ILIKE :q", q: "%#{search_query}%") if search_query.present?
+          @pagy, @journal_entries = pagy(scope, items: 20)
+        end
       elsif params[:sort] == "you"
         if current_user && Flipper.enabled?(:gorse_recommendations, current_user)
           page = params[:page].present? ? params[:page].to_i : 1
@@ -100,6 +110,17 @@ class ProjectsController < ApplicationController
         scope = scope.where("projects.title ILIKE :q OR projects.description ILIKE :q", q: "%#{search_query}%") if search_query.present?
         @pagy, @projects = pagy(scope, limit: 24)
         preload_project_metrics(@projects)
+      elsif params[:sort] == "following"
+        redirect_to explore_path(sort: "new", type: params[:type], q: params[:q], page: params[:page]) and return unless current_user
+        followed_project_ids = current_user.followed_projects.pluck(:id)
+        if followed_project_ids.empty?
+          @pagy, @projects = pagy_array([], items: 24)
+        else
+          scope = Project.joins(:user).where(id: followed_project_ids, is_deleted: false).listed.includes(:banner_attachment, :user).order(created_at: :desc)
+          scope = scope.where("projects.title ILIKE :q OR projects.description ILIKE :q", q: "%#{search_query}%") if search_query.present?
+          @pagy, @projects = pagy(scope, limit: 24)
+          preload_project_metrics(@projects)
+        end
       elsif params[:sort] == "you"
         if current_user && Flipper.enabled?(:gorse_recommendations, current_user)
           page = params[:page].present? ? params[:page].to_i : 1
