@@ -69,6 +69,10 @@ class Project < ApplicationRecord
     true
   end
 
+  def self.airtable_batch_size
+    4000
+  end
+
   def self.airtable_sync_field_mappings
     {
       "Project ID" => :id,

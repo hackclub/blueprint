@@ -36,7 +36,7 @@ class AirtableSync < ApplicationRecord
     )
   end
 
-  def self.sync!(classname, limit: nil, sync_all: false, no_upload: false)
+  def self.sync!(classname, limit: nil, sync_all: true, no_upload: false)
     batch = false
     klass = resolve_class(classname)
     validate_sync_methods!(klass)
@@ -54,16 +54,19 @@ class AirtableSync < ApplicationRecord
     airtable_ids = []
 
     if batch
-      if records.size > MAX_AIRTABLE_BATCH_SIZE && !should_multi_batch
+      total = records.size
+      batch_size = effective_batch_size(klass, total)
+
+      if total > MAX_AIRTABLE_BATCH_SIZE && !should_multi_batch
         Sentry.capture_message(
           "Airtable sync exceeds #{MAX_AIRTABLE_BATCH_SIZE} records without multi-batch enabled",
           level: :warning,
-          extra: { class_name: klass.name, record_count: records.size }
+          extra: { class_name: klass.name, record_count: total }
         )
       end
 
-      if should_multi_batch && records.size > MAX_AIRTABLE_BATCH_SIZE
-        batches = build_equal_batches(records, MAX_AIRTABLE_BATCH_SIZE)
+      if should_multi_batch && total > batch_size
+        batches = build_equal_batches(records, batch_size)
 
         batches.each_with_index do |batch_records, index|
           Rails.logger.info(
@@ -228,5 +231,21 @@ class AirtableSync < ApplicationRecord
     batch_size = [ (total.to_f / num_batches).ceil, max_batch_size ].min
 
     shuffled.each_slice(batch_size).to_a
+  end
+
+  def self.effective_batch_size(klass, total_records)
+    configured = klass.respond_to?(:airtable_batch_size) ? klass.airtable_batch_size : nil
+    configured = configured.to_i if configured.respond_to?(:to_i)
+    configured = nil if configured.nil? || configured <= 0
+
+    base = if configured
+      configured
+    elsif total_records > MAX_AIRTABLE_BATCH_SIZE
+      MAX_AIRTABLE_BATCH_SIZE
+    else
+      total_records
+    end
+
+    [ base, MAX_AIRTABLE_BATCH_SIZE ].min
   end
 end
