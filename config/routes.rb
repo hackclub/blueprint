@@ -85,8 +85,10 @@ Rails.application.routes.draw do
   get "auth/login" => "auth#index", as: :login
   get "auth/slack" => "auth#new", as: :slack_login
   get "auth/github" => "auth#github", as: :github_login
+  get "auth/hca" => "auth#new_hca", as: :hca_login
   get "auth/slack/callback" => "auth#create", as: :slack_callback
   get "auth/github/callback" => "auth#create_github", as: :github_callback
+  get "auth/hca/callback" => "auth#create_hca", as: :hca_callback
   post "auth/email" => "auth#create_email", as: :login_email
   delete "auth/logout" => "auth#destroy", as: :logout
   post "auth/track" => "auth#track", as: :auth_tracks
