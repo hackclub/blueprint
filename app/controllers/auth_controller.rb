@@ -238,7 +238,7 @@ class AuthController < ApplicationController
       idv_data = IdentityVaultService.me(access_token)
       identity = idv_data[:identity] || {}
 
-      email = identity[:email].to_s.strip.downcase
+      email = identity[:primary_email].to_s.strip.downcase
 
       if email.blank? || !(email =~ URI::MailTo::EMAIL_REGEXP)
         raise StandardError, "Your HCA account does not have a valid email address."
