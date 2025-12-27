@@ -77,6 +77,14 @@
                   html_options: { data: { turbo_method: :post, turbo_confirm: @user.fulfiller? ? "Revoke fulfiller permissions?" : "Grant fulfiller permissions?" } },
                   class: @user.fulfiller? ? "btn border-bp-danger bg-bp-danger cursor-pointer text-white" : "btn border-bp-success bg-bp-success cursor-pointer text-bp-dark"
                 %>
+            
+            <%= render "shared/button",
+                  variant: :none,
+                  text: @user.is_banned? ? "Unban" : "Ban",
+                  url: @user.is_banned? ? unban_admin_user_path(@user) : ban_admin_user_path(@user),
+                  html_options: { data: { turbo_method: :post, turbo_confirm: @user.is_banned? ? "Unban this user?" : "Ban this user?" } },
+                  class: @user.is_banned? ? "btn border-bp-success bg-bp-success cursor-pointer text-bp-dark" : "btn border-bp-danger bg-bp-danger cursor-pointer text-white"
+                %>
           <% end %>
           <% if @user != current_user && !@user.admin? && !@user.special_perms? %>
             <%= render "shared/button",

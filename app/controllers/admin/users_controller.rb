@@ -62,6 +62,18 @@ class Admin::UsersController < Admin::ApplicationController
     redirect_to admin_user_path(@user), notice: "Admin permissions revoked"
   end
 
+  def ban
+    @user = User.find(params[:id])
+    @user.update!(is_banned: true, ban_type: :blueprint)
+    redirect_to admin_user_path(@user), notice: "User banned"
+  end
+
+  def unban
+    @user = User.find(params[:id])
+    @user.update!(is_banned: false, ban_type: nil)
+    redirect_to admin_user_path(@user), notice: "User unbanned"
+  end
+
   def revoke_to_user
     @user = User.find(params[:id])
     @user.update!(admin: false, reviewer: false, fulfiller: false)

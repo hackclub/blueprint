@@ -193,6 +193,8 @@ Rails.application.routes.draw do
         post :revoke_fulfiller, on: :member
         post :revoke_to_user, on: :member
         post :impersonate, on: :member
+        post :ban, on: :member
+        post :unban, on: :member
       end
 
       resources :hcb_transactions, only: [ :index ]
