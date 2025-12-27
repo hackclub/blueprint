@@ -4,6 +4,9 @@ class UserBanCheckJob < ApplicationJob
   # Ban priority: higher priority bans take precedence
   BAN_PRIORITY = [ :blueprint, :hardware, :slack, :age, :hackatime ].freeze
 
+  # Ban types that are set/managed manually by humans and should not be modified by this job
+  MANUAL_BAN_TYPES = %w[blueprint hardware slack].freeze
+
   def perform
     Rails.logger.info "UserBanCheckJob started at #{Time.current}"
 
@@ -35,6 +38,11 @@ class UserBanCheckJob < ApplicationJob
   private
 
   def check_user_bans(user, mutex, counters)
+    # Preserve manually-set bans: job should not override or clear them
+    if user.is_banned && user.ban_type.in?(MANUAL_BAN_TYPES)
+      return
+    end
+
     # Check bans in priority order
     BAN_PRIORITY.each do |ban_type|
       should_ban = case ban_type
