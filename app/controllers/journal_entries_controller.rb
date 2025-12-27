@@ -1,7 +1,7 @@
 class JournalEntriesController < ApplicationController
   before_action :set_project
   before_action :set_journal_entry, only: [ :show, :destroy, :edit, :update ]
-  before_action :require_project_owner!, only: [ :create ]
+  before_action :require_project_owner!, only: [ :create, :export ]
   before_action :require_owner_or_author!, only: [ :edit, :update, :destroy ]
 
   def show
@@ -44,6 +44,13 @@ class JournalEntriesController < ApplicationController
   rescue ActiveRecord::RecordNotDestroyed => e
     Rails.logger.warn("Failed to destroy JournalEntry #{@journal_entry.id}: #{@journal_entry.errors.full_messages.to_sentence}")
     redirect_to project_path(@project), alert: "Could not delete journal entry."
+  end
+
+  def export
+    markdown = @project.generate_journal(true)
+    filename = "#{@project.title.parameterize}-journal.md"
+
+    send_data markdown, filename: filename, type: "text/markdown", disposition: "attachment"
   end
 
   private
