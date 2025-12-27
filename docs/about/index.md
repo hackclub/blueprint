@@ -15,7 +15,7 @@ We're a program by [Hack Club](https://hackclub.com?utm_source=blueprint) open t
 5. Earn tickets based on your build time
 6. Redeem tickets for tools and prizes in the [tool bag](/toolbag)!
 
-_Not all projects need a grant. You can earn extra tickets for the time spent if you do not request a grant._
+<!-- _Not all projects need a grant. You can earn extra tickets for the time spent if you do not request a grant._ -->
 
 Here's a more detailed look at how it all works:
 
@@ -51,7 +51,7 @@ To help you gauge how much funding you can get, we've created a tier system:
 
 Tickets reward you for the effort spent on building the project.
 
-<span class="text-bp-warning">If you requested a grant, you get 8 to 10 tickets per hour of hands-on work after you get your grant, depending on the tier. This could be assembling, fixing CAD, etc.<br>If you didn't request a grant, you get 8 to 10 tickets per hour of all the hands-on time you spent on your project, depending on the tier!</span>
+<span class="text-bp-warning">If you requested a grant, you get 8 to 10 tickets per hour of hands-on work after you get your grant, depending on the tier. This could be assembling, fixing CAD, etc.<br>If you didn't request a grant, you get 8 to 10 tickets per hour of all the hands-on time you spent on your project, depending on the tier! *You must actually build the project for this to count*</span>
 
 Your building time must be accurately logged in your journal. And we may adjust your ticket amount based on the quality of your final build.
 
