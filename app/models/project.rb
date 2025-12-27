@@ -65,6 +65,10 @@ class Project < ApplicationRecord
     "clZF1lJC"
   end
 
+  def self.airtable_should_batch
+    true
+  end
+
   def self.airtable_sync_field_mappings
     {
       "Project ID" => :id,
