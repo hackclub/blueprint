@@ -67,26 +67,27 @@
 
   <div class="border-2 border-white rounded-none">
     <!-- Header row -->
-    <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white">
+    <div class="grid grid-cols-24 p-3 text-lg border-b-2 border-white">
       <div class="col-span-1">ID</div>
-      <div class="col-span-2">Title</div>
-      <div class="col-span-1">Author</div>
+      <div class="col-span-6">Project</div>
+      <div class="col-span-4">Description</div>
+      <div class="col-span-3">Author</div>
       <div class="col-span-1">Type</div>
       <div class="col-span-1">Tier</div>
       <div class="col-span-1">Cost</div>
       <div class="col-span-1">Hours</div>
       <div class="col-span-1">CPH</div>
       <div class="col-span-1">Entries</div>
-      <div class="col-span-1">Waiting</div>
+      <div class="col-span-2">Waiting</div>
       <div class="col-span-1">Actions</div>
     </div>
 
     <!-- Rows -->
     <% if @projects.present? %>
       <% @projects.each do |project| %>
-        <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0">
-          <div class="flex items-center col-span-1 py-2"><%= project.id %></div>
-          <div class="flex items-center col-span-2 font-medium">
+        <div class="grid grid-cols-24 px-3 py-3 text-lg border-b border-white/30 last:border-0">
+          <div class="flex items-center col-span-1"><%= project.id %></div>
+          <div class="flex flex-col col-span-6 font-medium gap-3 pr-4">
             <% 
               base_classes = "underline-offset-2"
               us_classes = "underline"
@@ -94,14 +95,21 @@
               link_classes = is_us ? "#{base_classes} #{us_classes}" : base_classes
             %>
             <% if current_user.admin? %>
-              <%= link_to (project.title.presence || "(untitled)"), admin_design_review_path(project), class: "#{link_classes} #{project.pre_reviewed ? 'text-bp-warning' : ''}" %>
+              <%= link_to (project.title.presence || "(untitled)"), admin_design_review_path(project), class: "#{link_classes} #{project.pre_reviewed ? 'text-bp-warning' : ''} truncate" %>
             <% else %>
-              <%= link_to (project.title.presence || "(untitled)"), admin_design_review_path(project), class: link_classes %>
+              <%= link_to (project.title.presence || "(untitled)"), admin_design_review_path(project), class: "#{link_classes} truncate" %>
+            <% end %>
+            <% if project.display_banner %>
+              <%= image_tag url_for(project.display_banner), class: "h-40 rounded-sm object-cover shrink-0" %>
             <% end %>
           </div>
-          <div class="flex items-center col-span-1">
+          <div class="flex items-center col-span-4 pr-4">
+            <p class="text-sm text-white/80 line-clamp-4"><%= project.description %></p>
+          </div>
+          <div class="flex items-center col-span-3 gap-2">
             <% if project.user %>
-              <%= link_to project.user.display_name, admin_user_path(project.user), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
+              <img src="<%= project.user.avatar_url %>" alt="<%= project.user.display_name %>" class="size-12 rounded-sm shrink-0" />
+              <%= link_to project.user.display_name, admin_user_path(project.user), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white truncate" %>
             <% else %>
               <p>–</p>
             <% end %>
@@ -130,7 +138,7 @@
           <div class="flex items-center col-span-1">
             <%= project.journal_entries.size %>
           </div>
-          <div class="flex items-center col-span-1">
+          <div class="flex items-center col-span-2">
             <% 
               start_time = nil
               

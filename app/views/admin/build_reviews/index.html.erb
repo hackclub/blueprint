@@ -56,22 +56,25 @@
 
   <div class="border-2 border-white rounded-none">
     <!-- Header row -->
-    <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white">
+    <div class="grid grid-cols-24 p-3 text-lg border-b-2 border-white">
       <div class="col-span-1">ID</div>
-      <div class="col-span-5">Title</div>
+      <div class="col-span-3">Title</div>
+      <div class="col-span-4">Description</div>
       <div class="col-span-2">Author</div>
+      <div class="col-span-2">Type</div>
       <div class="col-span-1">Tier</div>
-      <div class="col-span-1">Hours</div>
-      <div class="col-span-1">Entries</div>
+      <div class="col-span-2">Hours</div>
+      <div class="col-span-2">Entries</div>
+      <div class="col-span-2">Waiting</div>
       <div class="col-span-1">Actions</div>
     </div>
 
     <!-- Rows -->
     <% if @projects.present? %>
       <% @projects.each do |project| %>
-        <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0">
-          <div class="flex items-center col-span-1 py-2"><%= project.id %></div>
-          <div class="flex items-center col-span-5 font-medium">
+        <div class="grid grid-cols-24 px-3 py-3 text-lg border-b border-white/30 last:border-0">
+          <div class="flex items-center col-span-1"><%= project.id %></div>
+          <div class="flex flex-col col-span-3 font-medium gap-3 pr-4">
             <% 
               base_classes = "underline-offset-2"
               us_classes = "underline"
@@ -79,26 +82,59 @@
               link_classes = is_us ? "#{base_classes} #{us_classes}" : base_classes
             %>
             <% if current_user.admin? %>
-              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: "#{link_classes} #{project.pre_reviewed ? 'text-bp-warning' : ''}" %>
+              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: "#{link_classes} #{project.pre_reviewed ? 'text-bp-warning' : ''} truncate" %>
             <% else %>
-              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: link_classes %>
+              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: "#{link_classes} truncate" %>
+            <% end %>
+            <% if project.display_banner %>
+              <%= image_tag url_for(project.display_banner), class: "h-32 rounded-sm object-cover shrink-0" %>
             <% end %>
           </div>
-          <div class="flex items-center col-span-2">
+          <div class="flex items-center col-span-4 pr-4">
+            <p class="text-sm text-white/80 line-clamp-4"><%= project.description %></p>
+          </div>
+          <div class="flex items-center col-span-2 gap-2">
             <% if project.user %>
-              <%= link_to project.user.display_name, admin_user_path(project.user), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
+              <img src="<%= project.user.avatar_url %>" alt="<%= project.user.display_name %>" class="size-12 rounded-sm shrink-0" />
+              <%= link_to project.user.display_name, admin_user_path(project.user), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white truncate" %>
             <% else %>
               <p>–</p>
             <% end %>
           </div>
+          <div class="flex items-center col-span-2">
+            <%= project.ysws || "Custom" %>
+          </div>
           <div class="flex items-center col-span-1">
             <%= project.tier || "–" %>
           </div>
-          <div class="flex items-center col-span-1">
+          <div class="flex items-center col-span-2">
             <%= project.hours_since_last_review.round(1) %>
           </div>
-          <div class="flex items-center col-span-1">
+          <div class="flex items-center col-span-2">
             <%= project.entries_since_last_review_count %>
+          </div>
+          <div class="flex items-center col-span-2">
+            <% 
+              start_time = nil
+              
+              if project.respond_to?(:versions)
+                events = attribute_updated_event(object: project, attribute: :review_status, after: "build_pending", all: true)
+                start_time = events.last[:timestamp] if events.present?
+              end
+            %>
+            
+            <% if start_time %>
+              <% waiting_time = Time.current - start_time %>
+              <% days = (waiting_time / 1.day).floor %>
+              <% hours_remaining = ((waiting_time % 1.day) / 1.hour).floor %>
+              <% if days > 0 %>
+                <%= "#{days}d #{hours_remaining}h" %>
+              <% else %>
+                <%= "#{hours_remaining}h" %>
+              <% end %>
+            <% else %>
+              –
+            <% end %>
           </div>
           <div class="flex items-center col-span-1">
             <div class="flex items-center gap-2">

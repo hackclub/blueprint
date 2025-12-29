@@ -18,11 +18,17 @@
     <% end %>
   </div>
   <%= render "shared/card" do %>
-    <div class="flex flex-col justify-between space-y-1" >
-      <h1 class="pb-2 text-4xl">Project #<%= @project.id %>, <%= link_to @project.title, admin_project_path(@project), class: "underline" %></h1>
-      <div>
-        <p>By <%= render "shared/user_inline", user: @project.user, admin_view: true %> on <%= @project.created_at.strftime("%B %d, %Y") %></p>
-      </div>
+        <% if @project.display_banner %>
+        <div class="shrink-0">
+          <%= image_tag url_for(@project.display_banner), class: "w-full h-72 object-cover rounded-lg" %>
+        </div>
+      <% end %>
+    <div class="flex gap-6">
+      <div class="flex flex-col justify-between space-y-1 flex-1">
+        <h1 class="pb-2 text-4xl">Project #<%= @project.id %>, <%= link_to @project.title, admin_project_path(@project), class: "underline" %></h1>
+        <div>
+          <p>By <%= render "shared/user_inline", user: @project.user, admin_view: true %> on <%= @project.created_at.strftime("%B %d, %Y") %></p>
+        </div>
       <div class="flex justify-start text-xl mt-4">
         <% if @project.tier.present? %>
           <% tier_style = @project.tier == "1" ? "bg-bp-danger text-bp-darker" : (@project.tier == "2" ? "bg-bp-warning text-bp-darker" : (@project.tier == "3" ? "bg-bp-success text-bp-darker" : "bg-bp-dark text-white")) %>
@@ -38,6 +44,7 @@
         <% if @project.ysws == "hackpad" && @project.approx_hour.present? %>
           <p>Self-reported: <span class="font-medium"><%= @project.approx_hour %>h</span></p>
         <% end %>
+        </div>
       </div>
     </div>
     <div class="space-y-6">
