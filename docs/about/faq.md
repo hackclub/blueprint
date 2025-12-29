@@ -6,7 +6,7 @@
 
 ## When does this program end?
 
-Currently, the end-date of Blueprint is January 1st. You’ll still have time after that to build & earn tickets.
+Currently, the end-date of Blueprint is January 31st, 2026. You'll have time afterwards to spend your tickets.
 
 ## How can I earn tickets?
 
@@ -141,10 +141,6 @@ You're free to use it to experiment with layouts and make design decisions, but 
 ## Can I journal research?
 
 Yes!
-
-## Can people get tickets after January first?
-
-Yes! The submission is due January 1st, but there's going to be time after to build & spend tickets.
 
 ## Can I use auto-routing software?
 
