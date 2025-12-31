@@ -1017,4 +1017,49 @@ class Project < ApplicationRecord
 
     content
   end
+
+  def fix_review_status
+    Rails.logger.info "[fix_review_status] Starting for project ##{id} (#{title})"
+    Rails.logger.info "[fix_review_status] Current review_status: #{review_status}"
+
+    if review_status == "design_pending"
+      latest_design_review = design_reviews.order(created_at: :desc).first
+
+      if latest_design_review.nil?
+        Rails.logger.info "[fix_review_status] No design reviews found, skipping"
+        return
+      end
+
+      Rails.logger.info "[fix_review_status] Most recent design review ##{latest_design_review.id}: admin_review=#{latest_design_review.admin_review}, invalidated=#{latest_design_review.invalidated}, result=#{latest_design_review.result}"
+
+      if latest_design_review.admin_review? && !latest_design_review.invalidated? && latest_design_review.approved?
+        Rails.logger.info "[fix_review_status] Design review meets all conditions, updating status to design_approved"
+        update!(review_status: :design_approved)
+        Rails.logger.info "[fix_review_status] Successfully updated to design_approved"
+      else
+        Rails.logger.info "[fix_review_status] Design review does not meet conditions, skipping"
+      end
+
+    elsif review_status == "build_pending"
+      latest_build_review = build_reviews.order(created_at: :desc).first
+
+      if latest_build_review.nil?
+        Rails.logger.info "[fix_review_status] No build reviews found, skipping"
+        return
+      end
+
+      Rails.logger.info "[fix_review_status] Most recent build review ##{latest_build_review.id}: admin_review=#{latest_build_review.admin_review}, invalidated=#{latest_build_review.invalidated}, result=#{latest_build_review.result}"
+
+      if latest_build_review.admin_review? && !latest_build_review.invalidated? && latest_build_review.approved?
+        Rails.logger.info "[fix_review_status] Build review meets all conditions, updating status to build_approved"
+        update!(review_status: :build_approved)
+        Rails.logger.info "[fix_review_status] Successfully updated to build_approved"
+      else
+        Rails.logger.info "[fix_review_status] Build review does not meet conditions, skipping"
+      end
+
+    else
+      Rails.logger.info "[fix_review_status] Review status is neither design_pending nor build_pending, skipping"
+    end
+  end
 end
