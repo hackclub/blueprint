@@ -141,14 +141,26 @@ module Marksmith
       end
 
       def local_active_storage_blob?(src)
-        src.to_s.include?("/rails/active_storage/blobs/")
+        src.to_s.include?("/rails/active_storage/blobs/") ||
+          src.to_s.include?("/user-attachments/blobs/")
       end
 
       def find_blob_from_url(src)
+        # Standard ActiveStorage URLs
         if (match = src.match(%r{/rails/active_storage/blobs/(?:redirect/|proxy/)?([^/]+)/}))
-          ActiveStorage::Blob.find_signed(match[1])
+          return ActiveStorage::Blob.find_signed(match[1])
         end
-      rescue ActiveSupport::MessageVerifier::InvalidSignature
+
+        # Marksmith/user-attachments URLs (Base64-encoded JSON with blob_id)
+        if (match = src.match(%r{/user-attachments/blobs/(?:redirect/|proxy/)?([^/]+)/}))
+          token = match[1].split("--").first
+          decoded = JSON.parse(Base64.decode64(token))
+          blob_id = decoded.dig("_rails", "data") || decoded["data"]
+          return ActiveStorage::Blob.find_by(id: blob_id)
+        end
+
+        nil
+      rescue ActiveSupport::MessageVerifier::InvalidSignature, JSON::ParserError, ArgumentError
         nil
       end
 
