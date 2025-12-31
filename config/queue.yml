@@ -10,6 +10,9 @@ default: &default
     - queues: [background, ahoy, uptime]
       threads: 6
       processes: <%= ENV.fetch("JOB_CONCURRENCY", 2) %>
+    - queues: [active_storage]
+      threads: 2
+      processes: <%= ENV.fetch("JOB_CONCURRENCY", 2) %>
 
 development:
   <<: *default

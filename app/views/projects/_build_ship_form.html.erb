@@ -47,7 +47,7 @@
             <div data-controller="image-preview">
               <div class="my-4">
                 <% if @project.demo_picture.attached? %>
-                  <img src="<%= url_for(@project.demo_picture) %>" class="rounded border border-bp-muted/40 max-h-64 object-contain" data-image-preview-target="preview">
+                  <%= image_tag @project.demo_picture.variant(:web), class: "rounded border border-bp-muted/40 max-h-64 object-contain", data: { image_preview_target: "preview" } %>
                 <% else %>
                   <img src="" class="hidden rounded border border-bp-muted/40 max-h-64 object-contain" data-image-preview-target="preview">
                   <span class="text-sm text-gray-400" data-image-preview-target="placeholder">No image selected</span>

@@ -128,7 +128,13 @@ class Project < ApplicationRecord
   validates :funding_needed_cents, numericality: { greater_than_or_equal_to: 0 }
   validate :funding_needed_within_tier_max
   has_one_attached :banner
-  has_one_attached :demo_picture
+  has_one_attached :demo_picture do |attachable|
+    attachable.variant :web,
+      resize_to_limit: [ 2000, 2000 ],
+      convert: :webp,
+      saver: { quality: 80, strip: true },
+      preprocessed: true
+  end
   has_many_attached :cart_screenshots
 
   validates :banner, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],
@@ -141,18 +147,30 @@ class Project < ApplicationRecord
   has_paper_trail
   include PaperTrailHelper
 
+  WEB_IMAGE_VARIANT_OPTIONS = {
+    resize_to_limit: [ 2000, 2000 ],
+    convert: :webp,
+    saver: { quality: 80, strip: true }
+  }.freeze
+
   def display_banner
-    # return banner.blob if banner.attached?
+    blob = display_banner_blob
+    return unless blob&.image?
 
-    if latest_journal_entry&.content.present?
-      image_match = latest_journal_entry.content.match(/!\[[^\]]*\]\(([^)]+)\)/)
-      if image_match
-        image_url = image_match[1]
-        blob_match = image_url.match(/blobs\/[^\/]+\/([^\/\?]+)/)
-        return ActiveStorage::Blob.find_signed(blob_match[1]) if blob_match
-      end
+    blob.variant(WEB_IMAGE_VARIANT_OPTIONS)
+  end
+
+  def display_banner_blob
+    return unless latest_journal_entry&.content.present?
+
+    image_match = latest_journal_entry.content.match(/!\[[^\]]*\]\(([^)]+)\)/)
+    return unless image_match
+
+    image_url = image_match[1]
+    if (match = image_url.match(%r{/rails/active_storage/blobs/(?:redirect/|proxy/)?([^/]+)/}))
+      ActiveStorage::Blob.find_signed(match[1])
     end
-
+  rescue ActiveSupport::MessageVerifier::InvalidSignature
     nil
   end
 

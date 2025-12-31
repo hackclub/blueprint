@@ -3,7 +3,14 @@ module Marksmith
   # - Redcarpet configured without underline
   # - External links open in new tab (rel="nofollow noopener" target="_blank"), internal links stay same tab
   # - Optional callouts preprocessing for <aside> blocks
+  # - Optimized image variants for Active Storage blobs (2000px max, WebP @ 80%)
   class Renderer
+    WEB_IMAGE_VARIANT_OPTIONS = {
+      resize_to_limit: [ 2000, 2000 ],
+      convert: :webp,
+      saver: { quality: 80, strip: true }
+    }.freeze
+
     def initialize(body:, base_url: nil)
       @body = body.to_s.dup.force_encoding("utf-8")
       @base_url = base_url
@@ -43,9 +50,23 @@ module Marksmith
     end
 
     class LinkRenderer < Redcarpet::Render::HTML
+      include Rails.application.routes.url_helpers
+
       def initialize(options = {})
         @base_url = options.delete(:base_url)
         super(options)
+      end
+
+      def image(src, title, alt_text)
+        optimized_src = optimize_image_src(src)
+
+        attrs = []
+        attrs << %(src="#{ERB::Util.html_escape(optimized_src)}")
+        attrs << %(alt="#{ERB::Util.html_escape(alt_text)}") if alt_text.present?
+        attrs << %(title="#{ERB::Util.html_escape(title)}") if title.present?
+        attrs << %(loading="lazy")
+
+        "<img #{attrs.join(' ')} />"
       end
 
       def link(href, title, content)
@@ -104,6 +125,35 @@ module Marksmith
 
       def default_port(scheme)
         scheme.to_s.downcase == "https" ? 443 : 80
+      end
+
+      def optimize_image_src(src)
+        return src unless local_active_storage_blob?(src)
+
+        blob = find_blob_from_url(src)
+        return src unless blob&.image?
+
+        variant = blob.variant(Renderer::WEB_IMAGE_VARIANT_OPTIONS)
+        rails_representation_url(variant, host: host_for_urls)
+      rescue => e
+        Rails.logger.error("Failed to generate optimized image variant for #{src}: #{e.message}")
+        src
+      end
+
+      def local_active_storage_blob?(src)
+        src.to_s.include?("/rails/active_storage/blobs/")
+      end
+
+      def find_blob_from_url(src)
+        if (match = src.match(%r{/rails/active_storage/blobs/(?:redirect/|proxy/)?([^/]+)/}))
+          ActiveStorage::Blob.find_signed(match[1])
+        end
+      rescue ActiveSupport::MessageVerifier::InvalidSignature
+        nil
+      end
+
+      def host_for_urls
+        ENV.fetch("APPLICATION_HOST", Rails.application.routes.default_url_options[:host] || "localhost:3000")
       end
     end
   end
