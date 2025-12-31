@@ -32,7 +32,7 @@ class JournalEntry < ApplicationRecord
   belongs_to :project
   belongs_to :review, polymorphic: true, optional: true
 
-  has_one_attached :attachment
+  has_one_attached :attachment # DEPRECATED in favor of Active Storage direct uploads via marksmith
 
   validates :attachment, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif", "application/pdf" ],
                          size: { less_than: 10.megabytes }

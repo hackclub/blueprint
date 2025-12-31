@@ -167,10 +167,22 @@ class Project < ApplicationRecord
     return unless image_match
 
     image_url = image_match[1]
+
+    # Match standard ActiveStorage URLs
     if (match = image_url.match(%r{/rails/active_storage/blobs/(?:redirect/|proxy/)?([^/]+)/}))
-      ActiveStorage::Blob.find_signed(match[1])
+      return ActiveStorage::Blob.find_signed(match[1])
     end
-  rescue ActiveSupport::MessageVerifier::InvalidSignature
+
+    # Match Marksmith/user-attachments URLs (Base64-encoded JSON with blob_id)
+    if (match = image_url.match(%r{/user-attachments/blobs/(?:redirect/|proxy/)?([^/]+)/}))
+      token = match[1].split("--").first
+      decoded = JSON.parse(Base64.decode64(token))
+      blob_id = decoded.dig("_rails", "data") || decoded["data"]
+      return ActiveStorage::Blob.find_by(id: blob_id)
+    end
+
+    nil
+  rescue ActiveSupport::MessageVerifier::InvalidSignature, JSON::ParserError, ArgumentError
     nil
   end
 
