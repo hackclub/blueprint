@@ -624,7 +624,7 @@ Now go to the `Timers` section. Here is where we can edit the PWM pins for the s
 
 ![STM32CubeMX PWM Configuration](https://hc-cdn.hel1.your-objectstorage.com/s/v3/07ea5869e3b6401972ea540180a778eb1b73d048_stm32cubemx_pwm_config.png)
 
-**MAKE SURE TO SAVE USING CTRL+S AND CREATE A NEW FOLDER IN THE ROOT OF YOUR GITHUB REPOSITORY CALLED `software` OR `firmware`.**
+**MAKE SURE TO SAVE USING CTRL+S AND CREATE A NEW FOLDER IN THE ROOT OF YOUR GITHUB REPOSITORY CALLED `firmware` OR `firmware`.**
 
 ![STM32CubeMX Save Location](https://hc-cdn.hel1.your-objectstorage.com/s/v3/be24ef3122d8cea1d6630ebd394fa894baaf686f_stm32cubemx_save_location.png)
 
