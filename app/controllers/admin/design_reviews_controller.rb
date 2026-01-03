@@ -8,19 +8,20 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                             .where(design_reviews: { invalidated: false })
                             .distinct
                             .pluck(:id)
-    us_priority_sql = "CASE WHEN COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) IN ('US', 'United States') THEN 0 ELSE 1 END"
+
+    waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND versions.object_changes ? 'review_status' AND versions.object_changes->'review_status'->>1 = 'design_pending')"
 
     if current_user.admin?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
                         .includes(:journal_entries, user: :latest_locatable_visit)
                         .select("projects.*, CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN true ELSE false END AS pre_reviewed")
-                        .order(Arel.sql("CASE WHEN id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN 0 ELSE 1 END, #{us_priority_sql}, created_at ASC"))
+                        .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
     elsif current_user.reviewer_perms?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
                         .where.not(id: reviewed_ids)
                         .where("ysws IS NULL OR ysws != ?", "led")
                         .includes(:journal_entries, user: :latest_locatable_visit)
-                        .order(Arel.sql("#{us_priority_sql}, created_at ASC"))
+                        .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
     end
 
     @top_reviewers_all_time = User.joins(:design_reviews)
