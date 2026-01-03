@@ -33,6 +33,7 @@ The tl;dr of what this means is:
 - [x] the source files for your PCB, if you have one (.kicad\_pro, .kicad\_sch, gerbers.zip, etc)
 - [x] **A .STEP file of your project's 3D CAD model (and ideally the source design file format as well - .f3d, .FCStd, etc)**
 - [x] ANY other files that are part of your project (firmware, libraries, references, etc)
+- [x] You have everything easily readable and organized into folders.
 
 *if you're missing a .STEP file with all of your electronics and CAD, your project will not be approved*
 
