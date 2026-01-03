@@ -44,8 +44,11 @@
           </div>
         </div>
       <% end %>
+      <div>
+        <h2 class="text-2xl">Total Pending Hours</h2>
+        <p class="text-3xl font-bold"><%= number_with_delimiter(@total_pending_hours.round(1)) %></p>
+      </div>
     </div>
-  </div>
   <div class="flex items-center justify-between">
     <div class="flex flex-wrap items-center gap-2">
       <%= render "shared/button", text: "Random", url: admin_random_design_review_path, class: "py-0" %>

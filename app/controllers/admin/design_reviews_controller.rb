@@ -39,6 +39,10 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                                  .group("users.id")
                                  .select("users.*, COUNT(design_reviews.id) AS reviews_count")
                                  .order("reviews_count DESC")
+
+    @total_pending_hours = JournalEntry.joins(:project)
+                                       .where(projects: { is_deleted: false, review_status: :design_pending })
+                                       .sum(:duration_seconds) / 3600.0
   end
 
   def show
