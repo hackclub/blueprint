@@ -156,6 +156,7 @@ class Project < ApplicationRecord
   def display_banner
     blob = display_banner_blob
     return unless blob&.image?
+    return blob if blob.content_type == "image/svg+xml"
 
     blob.variant(WEB_IMAGE_VARIANT_OPTIONS)
   end

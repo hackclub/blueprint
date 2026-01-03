@@ -27,6 +27,7 @@ namespace :images do
     image_blob_ids = ActiveStorage::Blob
       .joins(:attachments)
       .where("content_type LIKE 'image/%'")
+      .where.not(content_type: "image/svg+xml")
       .where.not(active_storage_attachments: { record_type: "ActiveStorage::VariantRecord" })
       .left_joins(:variant_records)
       .where(active_storage_variant_records: { id: nil })

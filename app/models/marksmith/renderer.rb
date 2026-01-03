@@ -132,6 +132,7 @@ module Marksmith
 
         blob = find_blob_from_url(src)
         return src unless blob&.image?
+        return src if blob.content_type == "image/svg+xml"
 
         variant = blob.variant(Renderer::WEB_IMAGE_VARIANT_OPTIONS)
         rails_representation_url(variant, host: host_for_urls)

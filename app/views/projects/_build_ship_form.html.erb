@@ -47,7 +47,11 @@
             <div data-controller="image-preview">
               <div class="my-4">
                 <% if @project.demo_picture.attached? %>
-                  <%= image_tag @project.demo_picture.variant(:web), class: "rounded border border-bp-muted/40 max-h-64 object-contain", data: { image_preview_target: "preview" } %>
+                  <% if @project.demo_picture.content_type == "image/svg+xml" %>
+                    <%= image_tag @project.demo_picture, class: "rounded border border-bp-muted/40 max-h-64 object-contain", data: { image_preview_target: "preview" } %>
+                  <% else %>
+                    <%= image_tag @project.demo_picture.variant(:web), class: "rounded border border-bp-muted/40 max-h-64 object-contain", data: { image_preview_target: "preview" } %>
+                  <% end %>
                 <% else %>
                   <img src="" class="hidden rounded border border-bp-muted/40 max-h-64 object-contain" data-image-preview-target="preview">
                   <span class="text-sm text-gray-400" data-image-preview-target="placeholder">No image selected</span>
