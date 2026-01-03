@@ -66,6 +66,14 @@ class Admin::ProjectsController < Admin::ApplicationController
     redirect_to admin_project_path(@project), notice: "Project is now #{status}."
   end
 
+  def force_fix_review_status
+    @project = Project.find(params[:id])
+    not_found unless @project
+
+    result = @project.fix_review_status
+    redirect_to admin_project_path(@project), notice: result
+  end
+
   def switch_review_phase
     @project = Project.find(params[:id])
     not_found unless @project

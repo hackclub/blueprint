@@ -80,6 +80,13 @@
               html_options: { data: { turbo_method: :post } }
             %>
           <% end %>
+          <%= render "shared/button",
+            variant: :danger,
+            text: "Force fix review status",
+            url: force_fix_review_status_admin_project_path(@project),
+            html_options: { data: { turbo_method: :post, turbo_confirm: "Do not run this if nothing is broken. Make sure you know what you're doing." } },
+            class: "bg-bp-danger"
+          %>
         </div>
       <% end %>
       <%= render "shared/card", class: "space-y-2 col-span-2" do %>

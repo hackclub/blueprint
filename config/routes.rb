@@ -181,6 +181,7 @@ Rails.application.routes.draw do
         post :unmark_viral, on: :member
         post :toggle_unlisted, on: :member
         post :switch_review_phase, on: :member
+        post :force_fix_review_status, on: :member
       end
       resources :allowed_emails, only: [ :index, :create, :destroy ]
 
