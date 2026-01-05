@@ -131,6 +131,8 @@ Click anywhere on your screen to place your components down, it should look some
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/d1796f34df89ab20e6b6357175b3757a9ff6bef5_pcbstart.png" class="max-w-96" />
 
+**Now, keep in mind that the PCB should be below 100 mm × 100 mm!** This is a hard limit :) This is because this tends to be much cheaper with PCB manufacturers. For example, JLCPCB offers significantly lower pricing for boards that stay within this size tier.
+
 First, to be able to better place the components, we would need to change the grid. 
 
 Grids are used to allow efficient placement, movement and connection between symbols and wires. It defines what is the spacing of the grid, which components will snap to.
@@ -162,7 +164,7 @@ If you want to put the footprint on the back side, press F. Here is what the foo
 
 <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e6e0a19a9a9bfe61edc63ff76a0c996582391120_compfrontback.png" class="max-w-96" />
 
-Move, rotate and flip your footprints into a design that you like! It should look something like this:
+Move, rotate and flip your footprints into a design that you like! Keep in mind that it must be under 100mm x 100mm. It should look something like this:
 
 <img src="https://hackpad.hackclub.com/docs/v2/placedfootprints.png" class="max-w-96" />
 
