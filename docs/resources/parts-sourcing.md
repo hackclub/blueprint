@@ -86,7 +86,6 @@ Arduinos are fairly outdated by todays standards
     - [RoboSap](https://robosap.in/)
     - [RoboticsDNA](https://roboticsdna.in/)
     - [EBhoot](https://ebhoot.in/)
-    - [Electronicscomp](https://www.electronicscomp.com/)
     - [Sharvi Electronics](https://sharvielectronics.com/)
     - [Novo3D](https://novo3d.in/)
   - 3D printed parts (3D printing as a Service, JLC3DP-alike)
