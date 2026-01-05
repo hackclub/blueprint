@@ -79,7 +79,8 @@ Arduinos are fairly outdated by todays standards
 
 ### India:
 
-- Most vendors do not take international cards [cards issued outside India], which unfortunately, HCB falls into the category of. Contact your local vendors to try to get that changed!
+- Check out[https://hackclub.enterprise.slack.com/docs/T0266FRGM/F090K0MJTSB](https://hackclub.enterprise.slack.com/docs/T0266FRGM/F090K0MJTSB)! Its very well put together :D 
+-  Most vendors do not take international cards [cards issued outside India], which unfortunately, HCB falls into the category of. Contact your local vendors to try to get that changed!
 - Here are some vendors that are documented to work with HCB cards currently, segregated into categories
   - Electronic parts (RPIs, modules, power supplies and the like)
     - [Silverline Electronics](https://www.silverlineelectronics.in/)
