@@ -42,6 +42,19 @@
               <%= render "shared/button", variant: :outline, text: "HCB", url: "https://hcb.hackclub.com/blueprint-ysws/transactions" %>
             <% end %>
           </div>
+        <% if current_user.admin? %>
+          <p class="text-4xl font-rc-full">Danger zone</p>
+          <div class="grid grid-cols-3 gap-6">
+            <%= render "shared/button",
+              variant: :danger,
+              text: "Log all privileged users out",
+              url: admin_invalidate_privileged_sessions_path,
+              html_options: {
+                method: :post,
+                data: { turbo_confirm: "Are you sure? ALL privileged users including you will be logged out." }
+              } %>
+          </div>
+        <% end %>
       </div>
       
     </div>

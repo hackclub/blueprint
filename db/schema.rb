@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_162844) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_06_174533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -339,7 +339,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_162844) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "email", null: false
+    t.string "request_ip"
     t.index ["email"], name: "index_one_time_passwords_on_email"
+  end
+
+  create_table "privileged_session_expiries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.datetime "expires_at", null: false
+    t.index ["user_id"], name: "index_privileged_session_expiries_on_user_id", unique: true
   end
 
   create_table "project_grants", force: :cascade do |t|
@@ -619,6 +628,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_162844) do
     t.boolean "fulfiller", default: false, null: false
     t.string "idv_country"
     t.boolean "shopkeeper", default: false, null: false
+    t.datetime "privileged_session_expires_at"
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
   end
 
@@ -648,6 +658,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_162844) do
   add_foreign_key "kudos", "projects"
   add_foreign_key "kudos", "users"
   add_foreign_key "manual_ticket_adjustments", "users"
+  add_foreign_key "privileged_session_expiries", "users"
   add_foreign_key "project_grants", "projects"
   add_foreign_key "project_user_views", "projects"
   add_foreign_key "project_user_views", "users"

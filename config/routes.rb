@@ -192,6 +192,8 @@ Rails.application.routes.draw do
       mount Flipper::UI.app(Flipper), at: "flipper"
       mount Blazer::Engine, at: "blazer"
 
+      post "invalidate_privileged_sessions", to: "static_pages#invalidate_privileged_sessions"
+
       resources :projects, only: [ :index, :show ] do
         post :delete, on: :member
         post :revive, on: :member

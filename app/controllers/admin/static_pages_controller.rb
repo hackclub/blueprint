@@ -5,6 +5,11 @@ class Admin::StaticPagesController < Admin::ApplicationController
   def index
   end
 
+  def invalidate_privileged_sessions
+    PrivilegedSessionExpiry.invalidate_all!
+    redirect_to admin_root_path, notice: "All privileged sessions have been invalidated."
+  end
+
   private
 
   def require_reviewer_perms!

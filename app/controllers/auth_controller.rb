@@ -97,6 +97,7 @@ class AuthController < ApplicationController
         ahoy.track("email_login", user_id: user&.id)
         reset_session
         session[:user_id] = user.id
+        PrivilegedSessionExpiry.set_expiry_for(user) if user.special_perms?
 
         # Clear the referrer cookie after successful signup
         cookies.delete(:referrer_id) if referrer_id
@@ -199,6 +200,7 @@ class AuthController < ApplicationController
       ahoy.track("slack_login", user_id: user.id)
       reset_session
       session[:user_id] = user.id
+      PrivilegedSessionExpiry.set_expiry_for(user) if user.special_perms?
 
       # Clear the referrer cookie after successful signup
       cookies.delete(:referrer_id) if referrer_id
@@ -300,6 +302,7 @@ class AuthController < ApplicationController
 
       reset_session
       session[:user_id] = user.id
+      PrivilegedSessionExpiry.set_expiry_for(user) if user.special_perms?
 
       cookies.delete(:referrer_id) if referrer_id
 
@@ -488,11 +491,11 @@ class AuthController < ApplicationController
   end
 
   def send_otp(email)
-    otp = OneTimePassword.create!(email: email)
+    otp = OneTimePassword.create!(email: email, request_ip: request.remote_ip)
     otp.send!
   end
 
   def validate_otp(email, otp)
-    OneTimePassword.valid?(otp, email)
+    OneTimePassword.valid?(otp, email, request_ip: request.remote_ip)
   end
 end

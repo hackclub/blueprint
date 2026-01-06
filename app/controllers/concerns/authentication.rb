@@ -26,6 +26,13 @@ module Authentication
 
   def ensure_allowed_user!
     return unless current_user
+
+    if current_user.special_perms? && current_user.privileged_session_expired?
+      terminate_session
+      redirect_to main_app.login_path, alert: "Your session has expired. Please log in again."
+      return
+    end
+
     return if current_user.admin?
 
     if current_user.is_banned?

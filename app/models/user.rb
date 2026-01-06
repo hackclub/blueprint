@@ -2,33 +2,34 @@
 #
 # Table name: users
 #
-#  id                          :bigint           not null, primary key
-#  admin                       :boolean          default(FALSE), not null
-#  avatar                      :string
-#  ban_type                    :integer
-#  birthday                    :date
-#  email                       :string           not null
-#  free_stickers_claimed       :boolean          default(FALSE), not null
-#  fulfiller                   :boolean          default(FALSE), not null
-#  github_username             :string
-#  identity_vault_access_token :string
-#  idv_country                 :string
-#  internal_notes              :text
-#  is_banned                   :boolean          default(FALSE), not null
-#  is_mcg                      :boolean          default(FALSE), not null
-#  is_pro                      :boolean          default(FALSE)
-#  last_active                 :datetime
-#  reviewer                    :boolean          default(FALSE), not null
-#  shopkeeper                  :boolean          default(FALSE), not null
-#  timezone_raw                :string
-#  username                    :string
-#  ysws_verified               :boolean
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
-#  github_installation_id      :bigint
-#  identity_vault_id           :string
-#  referrer_id                 :bigint
-#  slack_id                    :string
+#  id                            :bigint           not null, primary key
+#  admin                         :boolean          default(FALSE), not null
+#  avatar                        :string
+#  ban_type                      :integer
+#  birthday                      :date
+#  email                         :string           not null
+#  free_stickers_claimed         :boolean          default(FALSE), not null
+#  fulfiller                     :boolean          default(FALSE), not null
+#  github_username               :string
+#  identity_vault_access_token   :string
+#  idv_country                   :string
+#  internal_notes                :text
+#  is_banned                     :boolean          default(FALSE), not null
+#  is_mcg                        :boolean          default(FALSE), not null
+#  is_pro                        :boolean          default(FALSE)
+#  last_active                   :datetime
+#  privileged_session_expires_at :datetime
+#  reviewer                      :boolean          default(FALSE), not null
+#  shopkeeper                    :boolean          default(FALSE), not null
+#  timezone_raw                  :string
+#  username                      :string
+#  ysws_verified                 :boolean
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#  github_installation_id        :bigint
+#  identity_vault_id             :string
+#  referrer_id                   :bigint
+#  slack_id                      :string
 #
 # Indexes
 #
@@ -55,6 +56,7 @@ class User < ApplicationRecord
   has_one :task_list, dependent: :destroy
   has_many :kudos, dependent: :destroy
   has_many :shop_orders, dependent: :destroy
+  has_one :privileged_session_expiry, dependent: :destroy
 
   has_many :ahoy_visits, class_name: "Ahoy::Visit"
   has_many :ahoy_events, class_name: "Ahoy::Event"
@@ -998,6 +1000,12 @@ class User < ApplicationRecord
 
   def special_perms?
     admin? || reviewer? || fulfiller? || shopkeeper?
+  end
+
+  def privileged_session_expired?
+    return false unless special_perms?
+
+    privileged_session_expiry.nil? || privileged_session_expiry.expired?
   end
 
   def is_adult?

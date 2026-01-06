@@ -5,6 +5,7 @@
 #  id         :bigint           not null, primary key
 #  email      :string           not null
 #  expires_at :datetime
+#  request_ip :string
 #  secret     :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -18,7 +19,7 @@ class OneTimePassword < ApplicationRecord
   before_validation :generate, on: :create
   before_create :invalidate_existing_for_email
 
-  validates :secret, :expires_at, presence: true
+  validates :secret, :expires_at, :request_ip, presence: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   scope :with_email, ->(email) { where("LOWER(email) = ?", email.to_s.strip.downcase) }
@@ -32,9 +33,9 @@ class OneTimePassword < ApplicationRecord
     true
   end
 
-  def self.valid?(secret, email)
+  def self.valid?(secret, email, request_ip:)
     otps = with_email(email).where(secret: secret)
-    valid = otps.any? { |otp| !otp.expired? }
+    valid = otps.any? { |otp| !otp.expired? && otp.request_ip == request_ip }
     otps.each(&:destroy)
     valid
   end
