@@ -319,7 +319,7 @@ class User < ApplicationRecord
       raise StandardError, "Slack ID #{slack_id} has an invalid email: #{slack_email.inspect}"
     end
 
-    existing_user = User.find_by(slack_id: slack_id) || User.with_email(slack_email).first
+    existing_user = User.with_email(email).first
     if existing_user.present?
       Rails.logger.tagged("UserCreation") do
         Rails.logger.info({

@@ -76,7 +76,7 @@ class AuthController < ApplicationController
         referrer_id = cookies[:referrer_id]&.to_i
         user = User.find_or_create_from_email(email, referrer_id: referrer_id)
 
-        if user.special_perms?
+        if user.special_perms? && !Rails.env.development?
           flash.now[:alert] = "Email login is disabled for this account for security reasons. Please use HCA to login."
           respond_to do |format|
             format.turbo_stream do
