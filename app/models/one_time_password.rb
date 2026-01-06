@@ -14,8 +14,9 @@
 #  index_one_time_passwords_on_email  (email)
 #
 class OneTimePassword < ApplicationRecord
-  before_validation :generate, on: :create
   before_validation :normalize_email
+  before_validation :generate, on: :create
+  before_create :invalidate_existing_for_email
 
   validates :secret, :expires_at, presence: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -47,5 +48,11 @@ class OneTimePassword < ApplicationRecord
 
   def normalize_email
     self.email = email.to_s.strip.downcase if email.present?
+  end
+
+  def invalidate_existing_for_email
+    return if email.blank?
+
+    self.class.with_email(email).delete_all
   end
 end

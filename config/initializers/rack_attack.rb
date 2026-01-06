@@ -1,13 +1,13 @@
 class Rack::Attack
   # Throttle POST /auth/email by IP (5 requests per minute)
   throttle("auth/email/ip", limit: 5, period: 1.minute) do |req|
-    req.ip if req.path == "/auth/email" && req.post?
+    req.ip if req.path.start_with?("/auth/email") && req.post?
   end
 
   # Throttle POST /auth/email by email parameter (3 requests per minute)
   throttle("auth/email/email", limit: 3, period: 1.minute) do |req|
-    if req.path == "/auth/email" && req.post?
-      req.params["email"]&.downcase
+    if req.path.start_with?("/auth/email") && req.post?
+      req.params["email"].to_s.strip.downcase.presence
     end
   end
 

@@ -75,6 +75,25 @@ class AuthController < ApplicationController
       if validate_otp(email, otp)
         referrer_id = cookies[:referrer_id]&.to_i
         user = User.find_or_create_from_email(email, referrer_id: referrer_id)
+
+        if user.special_perms?
+          flash.now[:alert] = "Email login is disabled for this account for security reasons. Please use HCA to login."
+          respond_to do |format|
+            format.turbo_stream do
+              render turbo_stream: [
+                turbo_stream.replace(
+                  "flash",
+                  partial: "shared/notice"
+                ),
+                turbo_stream.replace(
+                  "login_form",
+                  partial: "auth/email_form"
+                )
+              ]
+            end
+          end
+          return
+        end
         ahoy.track("email_login", user_id: user&.id)
         reset_session
         session[:user_id] = user.id
