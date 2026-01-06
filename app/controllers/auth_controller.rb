@@ -284,7 +284,7 @@ class AuthController < ApplicationController
       end
 
       if user.identity_vault_id.present? && identity_vault_id.present? && user.identity_vault_id != identity_vault_id
-        raise StandardError, "This HCA account does not match the identity already linked to your Blueprint account. Contact #blueprint-support."
+        raise StandardError, "This HCA account does not match the identity already linked to your Blueprint account. (share this with support: #{identity_vault_id})."
       end
 
       addresses = identity[:addresses] || []
