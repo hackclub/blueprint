@@ -15,10 +15,11 @@
 #  idv_country                 :string
 #  internal_notes              :text
 #  is_banned                   :boolean          default(FALSE), not null
-#  is_mcg                      :boolean          default(TRUE), not null
+#  is_mcg                      :boolean          default(FALSE), not null
 #  is_pro                      :boolean          default(FALSE)
 #  last_active                 :datetime
 #  reviewer                    :boolean          default(FALSE), not null
+#  shopkeeper                  :boolean          default(FALSE), not null
 #  timezone_raw                :string
 #  username                    :string
 #  ysws_verified               :boolean
@@ -111,6 +112,7 @@ class User < ApplicationRecord
         roles << "Admin" if user.admin?
         roles << "Reviewer" if user.reviewer?
         roles << "Fulfiller" if user.fulfiller?
+        roles << "Shopkeeper" if user.shopkeeper?
         roles.any? ? roles : [ "User" ]
       },
       "Timezone" => :timezone_raw,
@@ -990,8 +992,12 @@ class User < ApplicationRecord
     admin? || fulfiller?
   end
 
+  def shopkeeper_perms?
+    admin? || shopkeeper?
+  end
+
   def special_perms?
-    admin? || reviewer? || fulfiller?
+    admin? || reviewer? || fulfiller? || shopkeeper?
   end
 
   def is_adult?

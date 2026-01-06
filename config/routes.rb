@@ -57,6 +57,24 @@ class FulfillerConstraint
   end
 end
 
+class ShopkeeperConstraint
+  def self.matches?(request)
+    return false unless request.session[:user_id]
+
+    user = User.find_by(id: request.session[:user_id])
+    user&.shopkeeper_perms?
+  end
+end
+
+class ShopItemViewConstraint
+  def self.matches?(request)
+    return false unless request.session[:user_id]
+
+    user = User.find_by(id: request.session[:user_id])
+    user&.shopkeeper_perms? || user&.fulfiller_perms?
+  end
+end
+
 Rails.application.routes.draw do
   resources :shop_items, only: [ :new, :create ]
   resources :shop_orders, only: [ :index, :new, :create ]
@@ -192,6 +210,8 @@ Rails.application.routes.draw do
         post :revoke_reviewer, on: :member
         post :grant_fulfiller, on: :member
         post :revoke_fulfiller, on: :member
+        post :grant_shopkeeper, on: :member
+        post :revoke_shopkeeper, on: :member
         post :revoke_to_user, on: :member
         post :impersonate, on: :member
         post :ban, on: :member
@@ -199,6 +219,8 @@ Rails.application.routes.draw do
       end
 
       resources :hcb_transactions, only: [ :index ]
+
+      resources :shop_items, only: [ :destroy ]
     end
 
     constraints ReviewerConstraint do
@@ -228,6 +250,14 @@ Rails.application.routes.draw do
         post :fulfill, on: :member
         patch :update_notes, on: :member
       end
+    end
+
+    constraints ShopkeeperConstraint do
+      resources :shop_items, only: [ :new, :create, :edit, :update ]
+    end
+
+    constraints ShopItemViewConstraint do
+      resources :shop_items, only: [ :index, :show ]
     end
   end
 end

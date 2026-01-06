@@ -50,6 +50,18 @@ class Admin::UsersController < Admin::ApplicationController
     redirect_to admin_user_path(@user), notice: "Fulfiller permissions revoked"
   end
 
+  def grant_shopkeeper
+    @user = User.find(params[:id])
+    @user.update!(shopkeeper: true)
+    redirect_to admin_user_path(@user), notice: "User granted shopkeeper permissions"
+  end
+
+  def revoke_shopkeeper
+    @user = User.find(params[:id])
+    @user.update!(shopkeeper: false)
+    redirect_to admin_user_path(@user), notice: "Shopkeeper permissions revoked"
+  end
+
   def grant_admin
     @user = User.find(params[:id])
     @user.update!(admin: true)
@@ -76,7 +88,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def revoke_to_user
     @user = User.find(params[:id])
-    @user.update!(admin: false, reviewer: false, fulfiller: false)
+    @user.update!(admin: false, reviewer: false, fulfiller: false, shopkeeper: false)
     redirect_to admin_user_path(@user), notice: "All permissions revoked"
   end
 

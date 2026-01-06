@@ -23,11 +23,13 @@
             <%= render "shared/button", variant: :outline, text: "Projects (#{Project.where(is_deleted: false).count.to_i})", url: admin_projects_path %>
             <%= render "shared/button", variant: :outline, text: "Users (#{User.count.to_i})", url: admin_users_path %>
           <% end %>
+          <% if current_user.shopkeeper_perms? || current_user.fulfiller_perms? %>
+            <%= render "shared/button", variant: :outline, text: "Shop Items (#{ShopItem.count.to_i})", url: admin_shop_items_path %>
+          <% end %>
           <% if current_user.admin? %>
             <%= render "shared/button", variant: :outline, text: "Flipper", url: "/admin/flipper" %>
             <%= render "shared/button", variant: :outline, text: "Jobs", url: "/admin/jobs" %>
             <%= render "shared/button", variant: :outline, text: "Blazer", url: "/admin/blazer" %>
-            <%= render "shared/button", variant: :outline, text: "HCB Transactions", url: admin_hcb_transactions_path %>
           <% end %>
         </div>
         <p class="text-4xl font-rc-full">3rd party</p>

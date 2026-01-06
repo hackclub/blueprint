@@ -1,0 +1,108 @@
+<div class="mb-10">
+  <%= render "shared/button", text: "Back", url: admin_root_path, class: "py-0" %>
+</div>
+
+<section class="space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="pb-2 text-4xl">Shop Items</h1>
+    <% if current_user&.shopkeeper_perms? %>
+      <%= render "shared/button", text: "New Item", url: new_admin_shop_item_path, class: "py-0" %>
+    <% end %>
+  </div>
+
+  <div class="border-2 border-white rounded-none overflow-x-auto">
+    <!-- Header row -->
+    <div class="grid grid-cols-[60px_80px_1fr_2fr_80px_80px_80px_80px_80px_160px] gap-2 p-3 text-lg border-b-2 border-white min-w-[900px]">
+      <div>ID</div>
+      <div>Image</div>
+      <div>Name</div>
+      <div>Description</div>
+      <div>Tickets</div>
+      <div>USD</div>
+      <div>Enabled</div>
+      <div>1/Person</div>
+      <div>Stock</div>
+      <div>Actions</div>
+    </div>
+
+    <!-- Rows -->
+    <% if @shop_items.present? %>
+      <% @shop_items.each do |item| %>
+        <div class="grid grid-cols-[60px_80px_1fr_2fr_80px_80px_80px_80px_80px_160px] gap-2 px-3 text-lg border-b border-white/30 last:border-0 min-w-[900px]">
+          <div class="flex items-center py-2">
+            <%= item.id %>
+          </div>
+
+          <div class="flex items-center py-2">
+            <% if item.image.attached? %>
+              <%= image_tag item.image.variant(resize_to_limit: [48, 48]),
+                  class: "w-12 h-12 object-cover border border-white/40",
+                  loading: "lazy" %>
+            <% else %>
+              <span class="text-xs text-white/60">No image</span>
+            <% end %>
+          </div>
+
+          <div class="flex items-center">
+            <%= link_to item.name, admin_shop_item_path(item), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
+          </div>
+
+          <div class="flex items-center">
+            <%= truncate(item.desc.to_s, length: 60) %>
+          </div>
+
+          <div class="flex items-center">
+            <%= item.ticket_cost || 0 %>
+          </div>
+
+          <div class="flex items-center">
+            <% if item.usd_cost.present? %>
+              $<%= sprintf("%.2f", item.usd_cost / 100.0) %>
+            <% else %>
+              –
+            <% end %>
+          </div>
+
+          <div class="flex items-center">
+            <span class="<%= item.enabled ? 'text-bp-success' : 'text-bp-danger' %>">
+              <%= item.enabled ? "Yes" : "No" %>
+            </span>
+          </div>
+
+          <div class="flex items-center">
+            <%= item.one_per_person ? "Yes" : "No" %>
+          </div>
+
+          <div class="flex items-center">
+            <%= item.total_stock || "∞" %>
+          </div>
+
+          <div class="flex items-center">
+            <div class="flex items-center gap-2">
+              <%= render "shared/button",
+                    text: "View",
+                    url: admin_shop_item_path(item),
+                    class: "text-sm py-0 px-2" %>
+              <% if current_user&.shopkeeper_perms? %>
+                <%= render "shared/button",
+                      text: "Edit",
+                      url: edit_admin_shop_item_path(item),
+                      class: "text-sm py-0 px-2" %>
+              <% end %>
+              <% if current_user&.admin? %>
+                <%= button_to "Delete", admin_shop_item_path(item),
+                      method: :delete,
+                      class: "text-sm py-0 px-2 border border-bp-danger text-bp-danger hover:bg-bp-danger hover:text-white",
+                      data: { turbo_confirm: "Are you sure you want to delete '#{item.name}'? This cannot be undone." } %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="px-4 py-6 text-center text-white/70">
+        No shop items found.
+      </div>
+    <% end %>
+  </div>
+</section>

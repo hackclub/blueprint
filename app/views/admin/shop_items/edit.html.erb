@@ -1,0 +1,10 @@
+<section class="space-y-6">
+  <div class="flex items-center justify-between">
+    <%= render "shared/button", text: "Back", url: admin_shop_items_path, class: "py-0" %>
+  </div>
+
+  <%= render "shared/card" do %>
+    <h1 class="pb-4 text-4xl">Edit Shop Item: <%= @shop_item.name %></h1>
+    <%= render "form" %>
+  <% end %>
+</section>

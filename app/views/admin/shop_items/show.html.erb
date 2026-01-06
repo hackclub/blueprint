@@ -1,0 +1,52 @@
+<section class="space-y-6">
+  <div class="flex items-center justify-between">
+    <%= render "shared/button", text: "Back", url: admin_shop_items_path, class: "py-0" %>
+    <div class="flex items-center gap-2">
+      <% if current_user&.shopkeeper_perms? %>
+        <%= render "shared/button", text: "Edit", url: edit_admin_shop_item_path(@shop_item), class: "py-0" %>
+      <% end %>
+      <% if current_user&.admin? %>
+        <%= button_to "Delete", admin_shop_item_path(@shop_item),
+              method: :delete,
+              class: "btn border-bp-danger text-bp-danger hover:bg-bp-danger hover:text-white py-0",
+              data: { turbo_confirm: "Are you sure you want to delete '#{@shop_item.name}'? This cannot be undone." } %>
+      <% end %>
+    </div>
+  </div>
+
+  <%= render "shared/card" do %>
+    <h1 class="pb-4 text-4xl">Shop Item #<%= @shop_item.id %></h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xl">
+      <div class="space-y-2">
+        <p><strong>Name:</strong> <%= @shop_item.name %></p>
+        <p><strong>Description:</strong> <%= @shop_item.desc %></p>
+        <p><strong>Ticket Cost:</strong> <%= @shop_item.ticket_cost || 0 %></p>
+        <p><strong>USD Cost:</strong>
+          <% if @shop_item.usd_cost.present? %>
+            $<%= sprintf("%.2f", @shop_item.usd_cost / 100.0) %>
+          <% else %>
+            –
+          <% end %>
+        </p>
+        <p><strong>Total Stock:</strong> <%= @shop_item.total_stock || "∞" %></p>
+        <p><strong>Type:</strong> <%= @shop_item.type.presence || "–" %></p>
+      </div>
+      <div class="space-y-2">
+        <p><strong>Enabled:</strong> <%= @shop_item.enabled ? "Yes" : "No" %></p>
+        <p><strong>One Per Person:</strong> <%= @shop_item.one_per_person ? "Yes" : "No" %></p>
+        <% if @shop_item.image.attached? %>
+          <div class="mt-4">
+            <p class="mb-2"><strong>Image:</strong></p>
+            <%= image_tag @shop_item.image.variant(resize_to_limit: [300, 300]),
+                class: "border border-white/40" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%= render "shared/card" do %>
+    <p class="text-3xl pb-4 font-rc-full">Audit Log</p>
+    <%= render "admin/audit_log", object: @shop_item %>
+  <% end %>
+</section>

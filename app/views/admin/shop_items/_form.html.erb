@@ -1,0 +1,98 @@
+<%= form_with model: [:admin, @shop_item], local: true, html: { class: "space-y-6" } do |f| %>
+  <% if @shop_item.errors.any? %>
+    <div class="text-bp-danger text-sm">
+      <p><strong><%= pluralize(@shop_item.errors.count, "error") %> prohibited this item from being saved:</strong></p>
+      <ul class="list-disc list-inside">
+        <% @shop_item.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="space-y-4">
+      <div>
+        <%= f.label :name, class: "block text-xl font-medium" %>
+        <%= f.text_field :name, class: "input px-3 mt-1 block w-full" %>
+      </div>
+
+      <div>
+        <%= f.label :desc, "Description", class: "block text-xl font-medium" %>
+        <%= f.text_area :desc, rows: 3, class: "input px-3 mt-1 block w-full" %>
+      </div>
+
+      <div>
+        <%= f.label :ticket_cost, "Ticket Cost", class: "block text-xl font-medium" %>
+        <%= f.number_field :ticket_cost, min: 0, class: "input px-3 mt-1 block w-full" %>
+      </div>
+
+      <div>
+        <%= f.label :usd_cost_dollars, "USD Cost", class: "block text-xl font-medium" %>
+        <%= f.number_field :usd_cost_dollars,
+              value: (@shop_item.usd_cost.present? ? (@shop_item.usd_cost / 100.0) : nil),
+              step: 0.01,
+              min: 0,
+              class: "input px-3 mt-1 block w-full" %>
+        <p class="text-sm text-white/60 mt-1">
+          Enter price in dollars (will be stored as cents).
+        </p>
+      </div>
+
+      <div>
+        <%= f.label :total_stock, "Total Stock", class: "block text-xl font-medium" %>
+        <%= f.number_field :total_stock, min: 0, class: "input px-3 mt-1 block w-full" %>
+        <p class="text-sm text-white/60 mt-1">
+          Leave blank for unlimited stock.
+        </p>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <%= f.label :enabled, class: "block text-xl font-medium" %>
+        <div class="mt-1">
+          <%= f.check_box :enabled, class: "mr-2" %>
+          <span>Item is visible/available for purchase</span>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :one_per_person, "One Per Person", class: "block text-xl font-medium" %>
+        <div class="mt-1">
+          <%= f.check_box :one_per_person, class: "mr-2" %>
+          <span>Limit users to a single purchase of this item</span>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :type, "Type", class: "block text-xl font-medium" %>
+        <%= f.text_field :type, class: "input px-3 mt-1 block w-full" %>
+        <p class="text-sm text-white/60 mt-1">
+          Internal type / STI class (edit with care).
+        </p>
+      </div>
+
+      <div>
+        <%= f.label :image, class: "block text-xl font-medium" %>
+        <% if @shop_item.image.attached? %>
+          <div class="mb-2">
+            <p class="text-sm text-white/60 mb-1">Current image:</p>
+            <%= image_tag @shop_item.image.variant(resize_to_limit: [200, 200]),
+                class: "border border-white/40" %>
+          </div>
+        <% end %>
+        <%= f.file_field :image,
+              accept: "image/png,image/jpeg,image/webp,image/gif",
+              class: "mt-1 block w-full text-sm" %>
+        <p class="text-sm text-white/60 mt-1">
+          Max 5MB. PNG, JPEG, WEBP, or GIF.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <%= f.button "Save Item", type: "submit", class: "btn btn-primary" %>
+  </div>
+<% end %>

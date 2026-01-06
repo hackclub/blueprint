@@ -15,6 +15,8 @@
 #  updated_at     :datetime         not null
 #
 class ShopItem < ApplicationRecord
+  has_paper_trail
+
   has_one_attached :image
 
   validates :image, content_type: [ "image/png", "image/jpeg", "image/webp", "image/gif" ],

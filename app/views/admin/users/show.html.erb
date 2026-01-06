@@ -77,7 +77,15 @@
                   html_options: { data: { turbo_method: :post, turbo_confirm: @user.fulfiller? ? "Revoke fulfiller permissions?" : "Grant fulfiller permissions?" } },
                   class: @user.fulfiller? ? "btn border-bp-danger bg-bp-danger cursor-pointer text-white" : "btn border-bp-success bg-bp-success cursor-pointer text-bp-dark"
                 %>
-            
+
+            <%= render "shared/button",
+                  variant: :none,
+                  text: @user.shopkeeper? ? "Revoke Shopkeeper" : "Grant Shopkeeper",
+                  url: @user.shopkeeper? ? revoke_shopkeeper_admin_user_path(@user) : grant_shopkeeper_admin_user_path(@user),
+                  html_options: { data: { turbo_method: :post, turbo_confirm: @user.shopkeeper? ? "Revoke shopkeeper permissions?" : "Grant shopkeeper permissions?" } },
+                  class: @user.shopkeeper? ? "btn border-bp-danger bg-bp-danger cursor-pointer text-white" : "btn border-bp-success bg-bp-success cursor-pointer text-bp-dark"
+                %>
+
             <%= render "shared/button",
                   variant: :none,
                   text: @user.is_banned? ? "Unban" : "Ban",
