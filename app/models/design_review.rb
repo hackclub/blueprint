@@ -38,6 +38,43 @@ class DesignReview < ApplicationRecord
 
   enum :result, { approved: 0, returned: 1, rejected: 2 }
 
+  def self.airtable_sync_table_id
+    "tbl9CROZ4eX3kgmk7"
+  end
+
+  def self.airtable_sync_sync_id
+    "oPoat2UV"
+  end
+
+  def self.airtable_should_batch
+    true
+  end
+
+  def self.airtable_batch_size
+    2000
+  end
+
+  def self.airtable_sync_field_mappings
+    {
+      "Review ID" => ->(r) { "d#{r.id}" },
+      "Second Pass" => :admin_review,
+      "Project" => :project_id,
+      "Reviewer" => :reviewer_id,
+      "Result" => ->(r) { r.result },
+      "Resulting Hours" => :effective_hours,
+      "Original Hours" => ->(r) { r.frozen_duration_seconds.to_f / 3600.0 },
+      "Requested Tier" => ->(r) { r.project&.tier },
+      "Reviewed At" => :created_at,
+      "Journal Entry Count" => ->(r) { r.journal_entries.count },
+      "Feedback" => :feedback,
+      "Internal Reason" => :reason,
+      "Outdated" => :invalidated,
+      "Original Funding" => ->(r) { r.frozen_funding_needed_cents.to_f / 100.0 },
+      "Resulting Funding" => ->(r) { (r.grant_override_cents || r.frozen_funding_needed_cents).to_f / 100.0 },
+      "Note to Reviewer" => :frozen_reviewer_note
+    }
+  end
+
   validates :reviewer_id, uniqueness: {
     scope: :project_id,
     conditions: -> { where(invalidated: false) },

@@ -49,7 +49,9 @@ class AirtableSync < ApplicationRecord
 
     should_multi_batch = klass.respond_to?(:airtable_should_batch) && klass.airtable_should_batch
 
+    Rails.logger.info("Airtable sync: Loading #{klass.name} records...")
     records = batch || sync_all ? all_records(klass, limit) : outdated_records(klass, limit)
+    Rails.logger.info("Airtable sync: Found #{records.size} #{klass.name} records to sync")
 
     airtable_ids = []
 
@@ -80,7 +82,11 @@ class AirtableSync < ApplicationRecord
         batch_sync!(table_id, records, klass.airtable_sync_sync_id, field_mappings, no_upload:)
       end
     else
-      records.each do |record|
+      total = records.size
+      records.each_with_index do |record, index|
+        if (index + 1) % 100 == 0 || index + 1 == total
+          Rails.logger.info("Airtable sync: Processing #{klass.name} (#{index + 1}/#{total})")
+        end
         old_airtable_id = find_by(record_identifier: build_identifier(record))&.airtable_id
         airtable_ids << individual_sync!(table_id, record, field_mappings, old_airtable_id)
       end
@@ -107,10 +113,16 @@ class AirtableSync < ApplicationRecord
   end
 
   def self.batch_sync!(table_id, records, sync_id, mappings, no_upload: false, batch_index: nil)
+    total = records.size
+    Rails.logger.info("Airtable batch sync: Building CSV for #{total} records...")
+
     csv_string = CSV.generate do |csv|
       csv << mappings.keys
 
-      records.each do |record|
+      records.each_with_index do |record, index|
+        if (index + 1) % 500 == 0 || index + 1 == total
+          Rails.logger.info("Airtable batch sync: Processing row (#{index + 1}/#{total})")
+        end
         fields = build_airtable_fields(record, mappings)
         csv << fields.values.map { |v| v.is_a?(Array) ? v.join(",") : v }
       end

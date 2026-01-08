@@ -33,7 +33,7 @@ production:
   sync_airtable_data:
     class: AirtableSyncJob
     queue: background
-    schedule: every 5 minutes
+    schedule: every 15 minutes
 
   # sync_hcb_data:
   #   class: HcbSyncJob
