@@ -91,7 +91,7 @@ Start by opening up KiCad, a window will pop up, create a new project then click
 This should open up a new window with your schematic editor! Once you're in, press the A key on your keyboard. This should open up a menu where you can add **symbols** for your different components! Search for the following to add them:
 - XIAO-RP2040-DIP (your microcontroller)
 - SW_Push (This will be our keyboard switch! Copy and paste this 4 times)
-- SK6812 MINI LED (it's an RGB LED, also known as neopixels - I will be using 2 of these! We will be using the symbol named "SDK6812" for these, as the SK6812MINI's symbol has the wrong pinout)
+- SK6812 MINI LED (it's an RGB LED, also known as neopixels - I will be using 2 of these! We will be using the symbol named "SK6812" for these, as the SK6812MINI's symbol has the wrong pinout)
 
 Start by placing these symbols down. They don't have to be in any particular order, but place them somewhat close together.
 
