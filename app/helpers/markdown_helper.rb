@@ -82,8 +82,13 @@ module MarkdownHelper
       @__markdown_renderer_base_url = base_url
     end
 
-    processed = preprocess_callouts(text, @__markdown_renderer)
+    processed = preprocess_checkboxes(text)
+    processed = preprocess_callouts(processed, @__markdown_renderer)
     @__markdown_renderer.render(processed).html_safe
+  end
+
+  def preprocess_checkboxes(text)
+    text.gsub(/^- \[ \] /, '<input type="checkbox" disabled> ').gsub(/^- \[x\] /i, '<input type="checkbox" checked disabled> ')
   end
 
   def preprocess_callouts(text, renderer)
