@@ -91,19 +91,19 @@ Start by opening up KiCad, a window will pop up, create a new project then click
 This should open up a new window with your schematic editor! Once you're in, press the A key on your keyboard. This should open up a menu where you can add **symbols** for your different components! Search for the following to add them:
 - XIAO-RP2040-DIP (your microcontroller)
 - SW_Push (This will be our keyboard switch! Copy and paste this 4 times)
-- SK6812 MINI LED (it's an RGB LED, also known as neopixels - I will be using 2 of these!)
+- SK6812 MINI LED (it's an RGB LED, also known as neopixels - I will be using 2 of these! We will be using the symbol named "SDK6812" for these, as the SK6812MINI's symbol has the wrong pinout)
 
 Start by placing these symbols down. They don't have to be in any particular order, but place them somewhat close together.
 
 To rotate the symbols, click R. And to mirror them, click X.
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/a9799b37f799c031eaea7cc270ab54e7a4945bd8_placedcomponents.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/a86d89dc2f566ca6_image.png" class="max-w-96" />
 
 Afterwards, it should look something like this ^^
 
 Now it's time to start wiring. Hit the W key on your keyboard to start wiring! This should make a green wire appear. Connect your components like so:
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/9fbe3988e8ac09c42483ad2d9dff7e7fc7f40ff5_wiredcomponents.png" class="max-w-96" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6bdb47c21da725e4_image.png" class="max-w-96" />
 
 Don't forget to add the GND and +5V symbols! Press P and search for it.
 
@@ -113,9 +113,9 @@ Once all the components are connected, we can start assigning **footprints** to 
 
 This should open up a window where you can assign different footprints to your components! Assign them based on the image below:
 
-<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/596082103b4e031d3848b221f73384f03f4b611a_assignedfootprints.png" class="max-w-200" />
+<img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/5794ff769b4c38ac_image2.png" class="max-w-200" />
 
-Once you're done, you can hit apply & save schematic. We're now officially done with the schematic! Onto making the pcb itself:
+Be sure to change the SK6812's footprints to one including "SK6812MINI" in their name! Once you're done, you can hit apply & save schematic. We're now officially done with the schematic! Onto making the pcb itself:
 
 ### Routing the PCB
 
