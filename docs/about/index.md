@@ -23,7 +23,7 @@ Here's a more detailed look at how it all works:
 
 ## What can I build?
 
-<span class="text-bp-warning">Anything hardware-related!</span>
+<span class="text-bp-warning">You can make anything where you make custom hardware. This includes things like keyboards, 3D printers, or your very own custom PCBs!</span>
 
 If this is your first time, you should check out the [starter projects](/starter-projects) we've created to help you learn the skills.
 
