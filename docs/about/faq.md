@@ -87,6 +87,10 @@ Not at all. Unless you’re going advanced, most projects don't need pcbs, and w
 
 Yes! However, only one person can submit the project and access the journal.
 
+## Can I buy parts myself and get reimbursed later?
+
+This depends on a case-by-case basis. Please ask in #blueprint-support before you make any purchases as some things you buy may not get approved or your whole project may not be eligible for blueprint.
+
 ## Can I get reimbursed for 3D Printed parts!
 
 Yep! We will partially reimburse you to the nearest 250g of filament.
