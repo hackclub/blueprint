@@ -14,6 +14,10 @@ Project grants are awarded on quality rather than hours spent. However, if you t
 
 Tickets are rewarded based on the effort you spent BUILDING your project, not the time spent DESIGNING it!
 
+## What type of projects can I make?
+
+You can make anything related to hardware where you put majority of the work in making the hardware side of the project. This includes things like keyboards, 3D printers and custom pcbs. Projects like home servers where you are mainly working on the software aspect are not allowed for Blueprint. If you are ever unsure of what your project may be considered as, ask in #blueprint on the Hack Club slack
+
 ## How many projects can I make?
 
 As many as you like! We just ask that you only do one of each starter project.
