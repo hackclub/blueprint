@@ -482,7 +482,7 @@ One for a switching frequency of 500 kHz and another one for 1.1 MHz (1100 kHz).
 
 After routing it, you should get something like this (for a 500 kHz switching frequency at 3.3V):
 
-![LMR51430 Schematic Complete](https://hc-cdn.hel1.your-objectstorage.com/s/v3/12c48e22668d221830bbf5506b9f4c494962c277_lmr51430_schematic.png)
+![LMR51430 Schematic Complete](https://hc-cdn.hel1.your-objectstorage.com/s/v3/65dcea2001e0add1_image.png)
 
 Like the 5V regulator, VIN = VSYS, but VOUT = +3.3V as this chip is giving us 3.3V output.
 
