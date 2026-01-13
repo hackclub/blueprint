@@ -72,7 +72,7 @@ class User < ApplicationRecord
   # Simple referrer: a user may have one referrer (another User)
   belongs_to :referrer, class_name: "User", optional: true
 
-  enum :ban_type, { hackatime: 0, blueprint: 1, previous: 2, slack: 3, age: 4 }
+  enum :ban_type, { hackatime: 0, blueprint: 1, previous: 2, slack: 3, age: 4, hcb: 5 }
 
   scope :with_email, ->(email) { where("LOWER(email) = ?", email.to_s.strip.downcase) }
 

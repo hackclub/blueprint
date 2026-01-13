@@ -53,6 +53,8 @@
                   <p>Your account has been suspended due to violations of the Code of Conduct on the Hack Club Slack.</p>
                 <% elsif current_user.ban_type == "age" %>
                   <p>Your account has been suspended because Hack Club programs are for teenagers 13-18 (inclusive) only.</p>
+                <% elsif current_user.ban_type == "hcb" %>
+                   <p>Your account has been suspended due to improper usage of given funds.</p>
                 <% end %>
               </div>
             <% end %>
