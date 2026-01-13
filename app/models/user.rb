@@ -107,6 +107,7 @@ class User < ApplicationRecord
       "Email" => :email,
       "Display Name" => lambda { |user| user.display_name },
       "Is Banned" => :is_banned,
+      "Ban Type" => lambda { |user| user.is_banned? && user.ban_type.present? ? user.ban_type.humanize : nil },
       "Birthday" => :birthday,
       "Role" => lambda { |user|
         roles = []
