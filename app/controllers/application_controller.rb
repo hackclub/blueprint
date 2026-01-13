@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
 
   def redirect_banned_users
     return unless user_logged_in?
-    return unless current_user.is_banned
+    return unless current_user.is_banned?
 
     redirect_to sorry_path
   end
