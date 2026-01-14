@@ -9,18 +9,19 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                             .distinct
                             .pluck(:id)
 
-    waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND versions.object_changes ? 'review_status' AND versions.object_changes->'review_status'->>1 = 'design_pending')"
+    waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'design_pending')"
 
     if current_user.admin?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
                         .includes(:journal_entries, user: :latest_locatable_visit)
-                        .select("projects.*, CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN true ELSE false END AS pre_reviewed")
+                        .select("projects.*, CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN true ELSE false END AS pre_reviewed, #{waiting_since_sql} AS waiting_since")
                         .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
     elsif current_user.reviewer_perms?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
                         .where.not(id: reviewed_ids)
                         .where("ysws IS NULL OR ysws != ?", "led")
                         .includes(:journal_entries, user: :latest_locatable_visit)
+                        .select("projects.*, #{waiting_since_sql} AS waiting_since")
                         .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
     end
 
