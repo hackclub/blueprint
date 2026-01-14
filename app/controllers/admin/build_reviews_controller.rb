@@ -47,7 +47,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   end
 
   def show_random
-    base = Project.active.build_pending
+    base = Project.active.build_pending.where.not(user_id: current_user.id)
     reviewed = apply_ysws_filter(base.with_valid_build_review)
     unreviewed = apply_ysws_filter(base.without_valid_build_review)
 
