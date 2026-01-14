@@ -21,9 +21,7 @@
       <% end %>
       <% reviews.each do |review| %>
         <% if review[:feedback].present? %>
-          <div class="mt-2">
-            <p><%= review[:feedback] %></p>
-          </div>
+          <div class="mt-2 markdown"><%= render_markdown(review[:feedback]) %></div>
         <% end %>
       <% end %>
     </div>

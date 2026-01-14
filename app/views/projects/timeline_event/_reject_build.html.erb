@@ -7,9 +7,9 @@
       <% end %>
     </div>
     <div class="timeline-journal">
-      <% if event[:feedback].present? %>
-        <p><%= event[:feedback] %></p>
-      <% end %>
+       <% if event[:feedback].present? %>
+         <div class="markdown"><%= render_markdown(event[:feedback]) %></div>
+       <% end %>
       <% if event[:tier_override].present? %>
         <p><strong>Tier:</strong> <%= event[:tier_override] %></p>
       <% end %>
