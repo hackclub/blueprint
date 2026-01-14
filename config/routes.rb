@@ -57,6 +57,24 @@ class FulfillerConstraint
   end
 end
 
+class ShopkeeperConstraint
+  def self.matches?(request)
+    return false unless request.session[:user_id]
+
+    user = User.find_by(id: request.session[:user_id])
+    user&.shopkeeper_perms?
+  end
+end
+
+class ShopItemViewConstraint
+  def self.matches?(request)
+    return false unless request.session[:user_id]
+
+    user = User.find_by(id: request.session[:user_id])
+    user&.shopkeeper_perms? || user&.fulfiller_perms?
+  end
+end
+
 Rails.application.routes.draw do
   resources :shop_items, only: [ :new, :create ]
   resources :shop_orders, only: [ :index, :new, :create ]
