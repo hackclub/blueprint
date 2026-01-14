@@ -30,7 +30,7 @@
     "id": "4",
     "name": "Jay Joshi",
     "title": "Reviewer and Prize Giver",
-    "description": "Hi! i'm Jay! but you can call me  I am currently a senior at Walton High School and work at HackClub as a regional manager for US east. I have been working to help with blueprint ops and global fulfillments! in my free time I fence, im very avid with model UN and my startup (healthsathi)! HackClub is genuinely amazing and im so happy that I can say that i had a small contribution is making blueprint happen!",
+    "description": "Hi! i'm Jay! I am currently a senior at Walton High School and work at HackClub as a regional manager for US east. I have been working to help with blueprint ops and global fulfillments! in my free time I fence, im very avid with model UN and my startup (healthsathi)! HackClub is genuinely amazing and im so happy that I can say that i had a small contribution is making blueprint happen!",
     "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/25b1c7b57e6eca6b_image.png",
     "website": "https://www.joshi1.com/",
     "github": "https://github.com/jaytirthjoshi"
@@ -61,5 +61,15 @@
     "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/2a073248a4981452_image.png",
     "website": "",
     "github": "https://github.com/bshaurya"
+  },
+    {
+    "id": "8",
+    "name": "Shaurya Bisht",
+    "title": "Reviewer and Author",
+    "description": "",
+    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9b3dc1b7bbce8835_image.pngg",
+    "website": "",
+    "github": "https://github.com/KaiPereira"
   }
 ]
+
