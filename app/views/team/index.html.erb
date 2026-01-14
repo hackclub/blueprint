@@ -1,0 +1,20 @@
+<section class="flex justify-center grow">
+  <div class="w-full max-w-6xl space-y-4 min-h-full flex flex-col">
+    <div class="py-2 md:py-4 space-y-1">
+      <h1 class="text-3xl md:text-5xl">Meet the team</h1>
+      <p class="text-lg md:text-xl">The people behind Blueprint.</p>
+    </div>
+
+    <% if @team_members.empty? %>
+      <div class="m-4 mt-0 grow flex flex-col space-y-4 items-center justify-center max-h-96">
+        <p class="text-lg md:text-2xl font-rc-full">No team members found.</p>
+      </div>
+    <% else %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-start">
+        <% @team_members.each do |member| %>
+          <%= render "member", member: member %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</section>

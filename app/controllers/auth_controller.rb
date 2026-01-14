@@ -388,7 +388,11 @@ class AuthController < ApplicationController
 
     if email.present?
       EmailTrack.create(email: email)
-      head :ok
+
+      state = SecureRandom.hex(24)
+      session[:hca_state] = state
+
+      render json: { state: state }, status: :ok
     else
       head :bad_request
     end

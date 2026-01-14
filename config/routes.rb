@@ -57,24 +57,6 @@ class FulfillerConstraint
   end
 end
 
-class ShopkeeperConstraint
-  def self.matches?(request)
-    return false unless request.session[:user_id]
-
-    user = User.find_by(id: request.session[:user_id])
-    user&.shopkeeper_perms?
-  end
-end
-
-class ShopItemViewConstraint
-  def self.matches?(request)
-    return false unless request.session[:user_id]
-
-    user = User.find_by(id: request.session[:user_id])
-    user&.shopkeeper_perms? || user&.fulfiller_perms?
-  end
-end
-
 Rails.application.routes.draw do
   resources :shop_items, only: [ :new, :create ]
   resources :shop_orders, only: [ :index, :new, :create ]
@@ -133,9 +115,7 @@ Rails.application.routes.draw do
       post :follow
       post :unfollow
     end
-    resources :journal_entries, only: [ :create, :destroy, :show, :edit, :update ] do
-      get :export, on: :collection
-    end
+    resources :journal_entries, only: [ :create, :destroy, :show, :edit, :update ]
     resources :kudos, only: [ :create, :destroy ]
 
     post :check_github_repo, on: :collection
@@ -150,11 +130,14 @@ Rails.application.routes.draw do
 
   get "users/me", to: "users#me", as: :me
   resources :users, only: [ :show ] do
-    post :invite_to_slack, on: :collection
+    post :invite_to_slack, on: :collection 
     post :mcg_check, on: :collection
     post :update_timezone, on: :collection
     post :toggle_pro, on: :collection
   end
+
+  # Team
+  get "team", to: "team#index", as: :team
 
   # About
   get "about", to: "markdown#about", as: :about
@@ -192,8 +175,6 @@ Rails.application.routes.draw do
       mount Flipper::UI.app(Flipper), at: "flipper"
       mount Blazer::Engine, at: "blazer"
 
-      post "invalidate_privileged_sessions", to: "static_pages#invalidate_privileged_sessions"
-
       resources :projects, only: [ :index, :show ] do
         post :delete, on: :member
         post :revive, on: :member
@@ -201,7 +182,6 @@ Rails.application.routes.draw do
         post :unmark_viral, on: :member
         post :toggle_unlisted, on: :member
         post :switch_review_phase, on: :member
-        post :force_fix_review_status, on: :member
       end
       resources :allowed_emails, only: [ :index, :create, :destroy ]
 
@@ -212,17 +192,11 @@ Rails.application.routes.draw do
         post :revoke_reviewer, on: :member
         post :grant_fulfiller, on: :member
         post :revoke_fulfiller, on: :member
-        post :grant_shopkeeper, on: :member
-        post :revoke_shopkeeper, on: :member
         post :revoke_to_user, on: :member
         post :impersonate, on: :member
-        post :ban, on: :member
-        post :unban, on: :member
       end
 
       resources :hcb_transactions, only: [ :index ]
-
-      resources :shop_items, only: [ :destroy ]
     end
 
     constraints ReviewerConstraint do
@@ -252,14 +226,6 @@ Rails.application.routes.draw do
         post :fulfill, on: :member
         patch :update_notes, on: :member
       end
-    end
-
-    constraints ShopkeeperConstraint do
-      resources :shop_items, only: [ :new, :create, :edit, :update ]
-    end
-
-    constraints ShopItemViewConstraint do
-      resources :shop_items, only: [ :index, :show ]
     end
   end
 end

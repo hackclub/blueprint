@@ -133,7 +133,7 @@
 
                 <div class="flex flex-col items-center md:items-start px-3 py-3 space-y-2 md:space-y-4 text-sm border-2 md:px-12 md:py-6 md:pb-8 md:text-2xl bg-bp-dark mt-4 md:mt-6">
                   <p class="text-base md:text-2xl font-rc-full">Learn how & get free stickers!</p>
-                  <div class="flex w-full" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
+                  <div class="flex w-full" data-controller="email-redirect" data-email-redirect-hca-signup-url-value="<%= hca_signup_url %>" data-email-redirect-client-id-value="<%= ENV['IDENTITY_VAULT_CLIENT_ID'] %>" data-email-redirect-callback-url-value="<%= hca_callback_url %>" data-email-redirect-scope-value="basic_info address">
                     <input type="email" data-email-redirect-target="input" class="w-full text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
                     <button type="button" data-action="click->email-redirect#go" class="px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Get started</button>
                   </div>
@@ -308,7 +308,7 @@
         </div>
       </div>
           <p class="text-lg uppercase md:text-3xl font-rc-full mt-10">Get started</p>
-          <div class="flex" data-controller="email-redirect" data-email-redirect-login-url-value="<%= login_path %>">
+          <div class="flex" data-controller="email-redirect" data-email-redirect-hca-signup-url-value="<%= hca_signup_url %>" data-email-redirect-client-id-value="<%= ENV['IDENTITY_VAULT_CLIENT_ID'] %>" data-email-redirect-callback-url-value="<%= hca_callback_url %>" data-email-redirect-scope-value="basic_info address">
             <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
             <button type="button" data-action="click->email-redirect#go" class="w-full px-6 bg-white border-2 border-l-0 border-white text-bp-dark hover:bg-gray-200 hover:border-gray-200 font-rc-full">Join</button>
           </div>
@@ -364,7 +364,7 @@
 
           <!-- Footer Content (Bottom Half) -->
           <div class="max-w-6xl mx-auto p-8 md:p-12 mt-12">
-            <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a></p>
+            <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a> built by the <%= link_to "Blueprint Team", team_path, class: "underline hover:text-white transition-colors text-bp-warning" %></p>
             <p class="max-w-3xl text-white/75 text-sm md:text-base mb-8">
               Hack Club is a 501(c)(3) nonprofit and network of 60k+ technical high schoolers. We believe you learn best by building so we're creating community and providing grants so you can make awesome projects. In the past few years, we've
               <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://summer.hackclub.com/">partnered with GitHub to run Summer of Making</a>,
@@ -379,6 +379,15 @@
                   <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/team/" target="_blank">Our Team &amp; Board</a>
                   <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/brand/" target="_blank">Branding</a>
                   <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philanthropy/" target="_blank">Donate</a>
+                </div>
+              </div>
+              <div class="flex flex-col">
+                <p class="mb-3 text-base md:text-lg font-rc-full">Blueprint</p>
+                <div class="text-sm md:text-base space-y-1">
+                  <%= link_to "Meet the Team", team_path, class: "block hover:text-bp-warning transition-colors" %>
+                  <%= link_to "About", about_path, class: "block hover:text-bp-warning transition-colors" %>
+                  <%= link_to "Resources", resources_path, class: "block hover:text-bp-warning transition-colors" %>
+                  <%= link_to "FAQ", faq_path, class: "block hover:text-bp-warning transition-colors" %>
                 </div>
               </div>
               <div class="flex flex-col">

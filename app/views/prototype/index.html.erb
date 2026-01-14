@@ -177,7 +177,7 @@
         </div>
 
         <div class="max-w-6xl mx-auto">
-          <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a></p>
+          <p class="mb-4 text-lg md:text-xl font-rc-full">A project by <a target="_blank" rel="noopener noreferrer" class="underline hover:text-white transition-colors text-bp-warning" href="https://hackclub.com?utm_source=blueprint">Hack Club</a> built by the <%= link_to "Blueprint Team", team_path, class: "underline hover:text-white transition-colors text-bp-warning" %></p>
           <p class="max-w-3xl text-white/75 text-sm md:text-base mb-8">
             Hack Club is a 501(c)(3) nonprofit and network of 60k+ technical high schoolers. We believe you learn best by building so we're creating community and providing grants so you can make awesome projects. In the past few years, we've 
             <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://summer.hackclub.com/">partnered with GitHub to run Summer of Making</a>, 
@@ -192,6 +192,15 @@
                 <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/team/" target="_blank">Our Team &amp; Board</a>
                 <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/brand/" target="_blank">Branding</a>
                 <a class="block hover:text-bp-warning transition-colors" href="https://hackclub.com/philanthropy/" target="_blank">Donate</a>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <p class="mb-3 text-base md:text-lg font-rc-full">Blueprint</p>
+              <div class="text-sm md:text-base space-y-1">
+                <%= link_to "Meet the Team", team_path, class: "block hover:text-bp-warning transition-colors" %>
+                <%= link_to "About", about_path, class: "block hover:text-bp-warning transition-colors" %>
+                <%= link_to "Resources", resources_path, class: "block hover:text-bp-warning transition-colors" %>
+                <%= link_to "FAQ", faq_path, class: "block hover:text-bp-warning transition-colors" %>
               </div>
             </div>
             <div class="flex flex-col">
