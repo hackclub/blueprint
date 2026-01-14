@@ -62,14 +62,31 @@
     "website": "",
     "github": "https://github.com/bshaurya"
   },
-    {
+  {
     "id": "8",
-    "name": "Shaurya Bisht",
+    "name": "Kai Pereira",
     "title": "Reviewer and Author",
     "description": "",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9b3dc1b7bbce8835_image.pngg",
+    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9b3dc1b7bbce8835_image.png",
     "website": "",
     "github": "https://github.com/KaiPereira"
+  },
+  {
+    "id": "9",
+    "name": "Marcell",
+    "title": "Hi, I'm Marcell! I'm an avid hardware enjoyer, who really likes PCBs! I have made the split keyboard guide, contributed to the bluey support bot, did a small amount of imo quality reviews, and beta tester",
+    "description": "",
+    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/d0d6b13c25de340f_1000009747.jpg",
+    "website": "",
+    "github": "https://github.com/KOEGlike"
+  },
+  {
+    "id": "10",
+    "name": "Nathan Alspaugh",
+    "title": "Hi I'm Nathan! I'm currently taking a gap year I'm and into full-stack development, embedded programming, and hardware design. I am an avid musician/composer where I play piano, cello and drums. In my free time I usually read, listen to music, or create obscenities with code/hardware. I joined Hack Club for The Trail and now I'm a reviewer for Blueprint!",
+    "description": "",
+    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/650b0f822a819caa_2a2ece39-fc77-4e70-a5fa-420085b94667.jpg",
+    "website": "",
+    "github": "https://github.com/KOEGlike"
   }
 ]
-
