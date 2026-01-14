@@ -1,19 +1,42 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Redirects to the login page with the entered email as a URL param
+// Redirects to HCA signup with the entered email as a URL param
 export default class extends Controller {
   static targets = ["input"]
-  static values = { loginUrl: String }
+  static values = { 
+    hcaSignupUrl: String,
+    clientId: String,
+    callbackUrl: String,
+    scope: String
+  }
 
-  go() {
+  async go() {
     const email = (this.inputTarget?.value || "").trim()
-    const url = new URL(this.loginUrlValue, window.location.origin)
-    if (email.length > 0) {
-      url.searchParams.set("email", email)
+    
+    const state = await this.track(email)
+    if (!state) {
+      console.error("Failed to get state from track endpoint")
+      return
     }
-    this.track(email).then(() => {
-      window.location.assign(url.toString())
+
+    const returnTo = this.buildReturnTo(state)
+    const hcaUrl = new URL(this.hcaSignupUrlValue)
+    if (email.length > 0) {
+      hcaUrl.searchParams.set("email", email)
+    }
+    hcaUrl.searchParams.set("return_to", returnTo)
+    window.location.assign(hcaUrl.toString())
+  }
+
+  buildReturnTo(state) {
+    const params = new URLSearchParams({
+      client_id: this.clientIdValue,
+      redirect_uri: this.callbackUrlValue,
+      response_type: "code",
+      scope: this.scopeValue,
+      state: state
     })
+    return `/oauth/authorize?${params.toString()}`
   }
   
   checkEnter(event) {
@@ -23,17 +46,21 @@ export default class extends Controller {
   }
 
   async track(email) {
-    // post to auth track with email in body
     try {
-      await fetch("/auth/track", {
+      const response = await fetch("/auth/track", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       })
+      if (response.ok) {
+        const data = await response.json()
+        return data.state
+      }
     } catch (e) {
       console.error(e)
     }
+    return null
   }
 }
