@@ -26,4 +26,8 @@ module ApplicationHelper
 
     content_tag :time, time.strftime("%-m/%-d/%Y at %-I:%M %p"), datetime: time.iso8601, data: data_attrs
   end
+
+  def hca_signup_url
+    "#{IdentityVaultService.host}signup"
+  end
 end
