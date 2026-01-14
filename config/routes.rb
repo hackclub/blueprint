@@ -133,7 +133,9 @@ Rails.application.routes.draw do
       post :follow
       post :unfollow
     end
-    resources :journal_entries, only: [ :create, :destroy, :show, :edit, :update ]
+    resources :journal_entries, only: [ :create, :destroy, :show, :edit, :update ] do
+      get :export, on: :collection
+    end
     resources :kudos, only: [ :create, :destroy ]
 
     post :check_github_repo, on: :collection
@@ -148,7 +150,7 @@ Rails.application.routes.draw do
 
   get "users/me", to: "users#me", as: :me
   resources :users, only: [ :show ] do
-    post :invite_to_slack, on: :collection 
+    post :invite_to_slack, on: :collection
     post :mcg_check, on: :collection
     post :update_timezone, on: :collection
     post :toggle_pro, on: :collection
