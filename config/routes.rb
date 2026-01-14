@@ -175,6 +175,8 @@ Rails.application.routes.draw do
       mount Flipper::UI.app(Flipper), at: "flipper"
       mount Blazer::Engine, at: "blazer"
 
+      post "invalidate_privileged_sessions", to: "static_pages#invalidate_privileged_sessions"
+
       resources :projects, only: [ :index, :show ] do
         post :delete, on: :member
         post :revive, on: :member
@@ -182,6 +184,7 @@ Rails.application.routes.draw do
         post :unmark_viral, on: :member
         post :toggle_unlisted, on: :member
         post :switch_review_phase, on: :member
+        post :force_fix_review_status, on: :member
       end
       resources :allowed_emails, only: [ :index, :create, :destroy ]
 
@@ -192,11 +195,17 @@ Rails.application.routes.draw do
         post :revoke_reviewer, on: :member
         post :grant_fulfiller, on: :member
         post :revoke_fulfiller, on: :member
+        post :grant_shopkeeper, on: :member
+        post :revoke_shopkeeper, on: :member
         post :revoke_to_user, on: :member
         post :impersonate, on: :member
+        post :ban, on: :member
+        post :unban, on: :member
       end
 
       resources :hcb_transactions, only: [ :index ]
+
+      resources :shop_items, only: [ :destroy ]
     end
 
     constraints ReviewerConstraint do
@@ -226,6 +235,14 @@ Rails.application.routes.draw do
         post :fulfill, on: :member
         patch :update_notes, on: :member
       end
+    end
+
+    constraints ShopkeeperConstraint do
+      resources :shop_items, only: [ :new, :create, :edit, :update ]
+    end
+
+    constraints ShopItemViewConstraint do
+      resources :shop_items, only: [ :index, :show ]
     end
   end
 end
