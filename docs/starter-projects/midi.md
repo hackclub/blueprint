@@ -13,7 +13,6 @@ Welcome to mini midi magic! This is a kickstart guide to help you get started wi
 ## Table of contents
 
 - Basic rules
-- What’s in the kit
 - Getting started
 - Designing Schematic
 - Designing PCB
@@ -32,18 +31,6 @@ There will be another guide for assembly later.
 5. You are only allowed to make one submission.
 6. You must include a readme, with images and renders of your project.
 
-## What’s in the kit
-7. Orpheus Pico
-8. TFT LCD
-9. Rotary Encoders
-10. Switches and buttons
-11. Slide potentiometer
-12. PCM5100 I2S DAC Breakout
-13. Some M3 Mounting material
-    - Screws
-    - Threaded inserts
-14. Diodes (for your switch matrix)
-15. Resistors and capacitors (specify in the submission form!)
 
 ## Getting started
 This guide covers the essential steps needed to make a simple mini device, and teaches you to implement the folowing things in both circuit design and code.
@@ -452,9 +439,5 @@ Before submitting, make sure you have completed the following steps:
 2. A code folder with any firmware files copied from/to your circuitpython device.
 3. A case design, with a step model including the PCB and any other components.
 4. A bill of materials (BOM) listing all components used in the project.
-- You need to mention all the components regardless of whether or not they will be included in the kit.
-- If you use any components that you wish to purchase with your grant, those must be marked as such in the BOM.
-- You must also add the total cost of these extra components while filling the submission form.
 5. A complete journal describing your process that includes the hour count of each session on each section of the project.
 6. A readme file with images and renders of your project, including a description of the project and its features.
-Once all of these requirements are fulfilled, fill out the submission form [here](example.com).
