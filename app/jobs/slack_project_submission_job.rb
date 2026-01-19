@@ -27,29 +27,37 @@ class SlackProjectSubmissionJob < ApplicationJob
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "*#{sanitized_title}*"
+          text: "*#{sanitized_title.presence || 'Untitled Project'}*"
         }
-      },
-      {
+      }
+    ]
+
+    if sanitized_description.present?
+      blocks << {
         type: "section",
         text: {
           type: "mrkdwn",
           text: sanitized_description
         }
-      },
-            {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: "*<#{project_url}|Blueprint> | <#{project.repo_link}|GitHub>*"
-        }
       }
-    ]
+    end
 
-    if project.display_banner.present?
+    links = [ "<#{project_url}|Blueprint>" ]
+    links << "<#{project.repo_link}|GitHub>" if project.repo_link.present?
+
+    blocks << {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: "*#{links.join(' | ')} | @#{author_mention}*"
+      }
+    }
+
+    host = ENV.fetch("APPLICATION_HOST")
+    if project.display_banner.present? && !host.include?("localhost")
       image_url = Rails.application.routes.url_helpers.rails_blob_url(
         project.display_banner,
-        host: ENV.fetch("APPLICATION_HOST")
+        host: host
       )
       blocks << {
         type: "image",
@@ -60,7 +68,9 @@ class SlackProjectSubmissionJob < ApplicationJob
 
     message_options = {
       channel: CHANNEL_ID,
-      blocks: blocks
+      blocks: blocks,
+      unfurl_links: false,
+      unfurl_media: false
     }
 
     if project.user.present?
@@ -68,6 +78,7 @@ class SlackProjectSubmissionJob < ApplicationJob
       message_options[:icon_url] = project.user.avatar if project.user.avatar.present?
     end
 
+    Rails.logger.info({ event: "slack_project_submission_debug", blocks: blocks.to_json }.to_json)
     response = client.chat_postMessage(message_options)
 
     if response.ok && response.ts.present?

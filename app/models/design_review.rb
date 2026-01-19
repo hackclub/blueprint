@@ -87,6 +87,7 @@ class DesignReview < ApplicationRecord
 
   before_create :freeze_project_state
   after_save :finalize_on_approve, if: -> { saved_change_to_result? && approved? && !invalidated? }
+  after_create_commit :notify_slack
 
   def effective_hours
     hours_override || (frozen_duration_seconds && approved? ? frozen_duration_seconds / 3600.0 : journal_entries.sum(:duration_seconds) / 3600.0)
@@ -130,6 +131,10 @@ class DesignReview < ApplicationRecord
   end
 
   private
+
+  def notify_slack
+    SlackReviewNotificationJob.perform_later("DesignReview", id)
+  end
 
   def freeze_project_state
     self.frozen_funding_needed_cents = project.funding_needed_cents
