@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_174900) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_19_011707) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -396,6 +396,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_174900) do
     t.decimal "approx_hour", precision: 3, scale: 1
     t.boolean "unlisted", default: false, null: false
     t.text "reviewer_note"
+    t.string "slack_message"
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 

@@ -23,6 +23,7 @@
 #  review_status          :string
 #  reviewer_note          :text
 #  skip_gh_sync           :boolean          default(FALSE)
+#  slack_message          :string
 #  tier                   :integer
 #  title                  :string
 #  unlisted               :boolean          default(FALSE), not null
