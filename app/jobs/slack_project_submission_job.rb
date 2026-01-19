@@ -49,7 +49,7 @@ class SlackProjectSubmissionJob < ApplicationJob
       type: "section",
       text: {
         type: "mrkdwn",
-        text: "*#{links.join(' | ')} | @#{author_mention}*"
+        text: "*#{links.join(' | ')} | #{author_mention}*"
       }
     }
 
