@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_19_011707) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_19_191605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -397,6 +397,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_011707) do
     t.boolean "unlisted", default: false, null: false
     t.text "reviewer_note"
     t.string "slack_message"
+    t.bigint "design_review_claimed_by_id"
+    t.bigint "build_review_claimed_by_id"
+    t.datetime "design_review_claimed_at"
+    t.datetime "build_review_claimed_at"
+    t.index ["build_review_claimed_by_id"], name: "index_projects_on_build_review_claimed_by_id"
+    t.index ["design_review_claimed_by_id"], name: "index_projects_on_design_review_claimed_by_id"
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
@@ -663,6 +669,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_011707) do
   add_foreign_key "project_user_views", "projects"
   add_foreign_key "project_user_views", "users"
   add_foreign_key "projects", "users"
+  add_foreign_key "projects", "users", column: "build_review_claimed_by_id"
+  add_foreign_key "projects", "users", column: "design_review_claimed_by_id"
   add_foreign_key "shop_orders", "shop_items"
   add_foreign_key "shop_orders", "users"
   add_foreign_key "shop_orders", "users", column: "approved_by_id"

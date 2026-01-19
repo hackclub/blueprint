@@ -232,12 +232,12 @@ Rails.application.routes.draw do
       get "/" => "static_pages#index", as: :root
 
       get "design_reviews", to: "design_reviews#index", as: :design_reviews
-      get "design_reviews/random(/:ysws_type)", to: "design_reviews#show_random", as: :random_design_review
+      get "design_reviews/next(/:ysws_type)", to: "design_reviews#show_next", as: :next_design_review
       get "design_reviews/:id", to: "design_reviews#show", as: :design_review
       post "design_reviews/:id", to: "design_reviews#create", as: :design_review_create
 
       get "build_reviews", to: "build_reviews#index", as: :build_reviews
-      get "build_reviews/random(/:ysws_type)", to: "build_reviews#show_random", as: :random_build_review
+      get "build_reviews/next(/:ysws_type)", to: "build_reviews#show_next", as: :next_build_review
       get "build_reviews/:id", to: "build_reviews#show", as: :build_review
       post "build_reviews/:id", to: "build_reviews#create", as: :build_review_create
 

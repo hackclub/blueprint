@@ -9,6 +9,7 @@
         <p class="text-bp-warning">Yellow: Pre-reviewed by a reviewer</p>
       <% end %>
       <p class="underline">Underline: US submission</p>
+      <p class="text-white/50">Grayed out: Claimed by another reviewer</p>
     </div>
     <div class="grow flex gap-8">
       <% if @top_reviewers_week.present? && @top_reviewers_week.any? %>
@@ -51,14 +52,14 @@
     </div>
   <div class="flex items-center justify-between">
     <div class="flex flex-wrap items-center gap-2">
-      <%= render "shared/button", text: "Random", url: admin_random_design_review_path, class: "py-0" %>
-      <%= render "shared/button", text: "Hackpad", url: admin_random_design_review_path(ysws_type: "hackpad"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Squeak", url: admin_random_design_review_path(ysws_type: "squeak"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Devboard", url: admin_random_design_review_path(ysws_type: "devboard"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Midi", url: admin_random_design_review_path(ysws_type: "midi"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Splitkb", url: admin_random_design_review_path(ysws_type: "splitkb"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "LED", url: admin_random_design_review_path(ysws_type: "led"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Custom", url: admin_random_design_review_path(ysws_type: "custom"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Start Session", url: admin_next_design_review_path, class: "py-0" %>
+      <%= render "shared/button", text: "Hackpad", url: admin_next_design_review_path(ysws_type: "hackpad"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Squeak", url: admin_next_design_review_path(ysws_type: "squeak"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Devboard", url: admin_next_design_review_path(ysws_type: "devboard"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Midi", url: admin_next_design_review_path(ysws_type: "midi"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Splitkb", url: admin_next_design_review_path(ysws_type: "splitkb"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "LED", url: admin_next_design_review_path(ysws_type: "led"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Custom", url: admin_next_design_review_path(ysws_type: "custom"), variant: :outline, class: "py-0" %>
     </div>
     <%= form_with url: admin_projects_path, method: :get, local: true, class: "w-full max-w-2xl" do %>
       <div class="flex items-center gap-3">
@@ -88,7 +89,14 @@
     <!-- Rows -->
     <% if @projects.present? %>
       <% @projects.each do |project| %>
-        <div class="grid grid-cols-24 px-3 py-3 text-lg border-b border-white/30 last:border-0">
+        <%
+          claimed_by_other = project.design_review_claimed_by.present? &&
+                             project.design_review_claimed_by_id != current_user.id &&
+                             project.design_review_claimed_at.present? &&
+                             project.design_review_claimed_at >= @claim_cutoff
+          row_classes = claimed_by_other ? "opacity-50" : ""
+        %>
+        <div class="grid grid-cols-24 px-3 py-3 text-lg border-b border-white/30 last:border-0 <%= row_classes %>">
           <div class="flex items-center col-span-1"><%= project.id %></div>
           <div class="flex flex-col col-span-6 font-medium gap-3 pr-4">
             <% 
@@ -164,10 +172,13 @@
               Error
             <% end %>
           </div>
-          <div class="flex items-center col-span-1">
+          <div class="flex flex-col items-start col-span-1 gap-1">
             <div class="flex items-center gap-2">
               <%= render "shared/button", text: "Review", url: admin_design_review_path(project), class: "text-sm py-0 px-2" %>
             </div>
+            <% if claimed_by_other %>
+              <span class="text-xs text-white/60">Claimed by <%= project.design_review_claimed_by.display_name %></span>
+            <% end %>
           </div>
         </div>
       <% end %>

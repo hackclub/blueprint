@@ -12,6 +12,9 @@ class SlackProjectSubmissionJob < ApplicationJob
   ].freeze
 
   def perform(project_id)
+    # disable in dev
+    return if Rails.env.development?
+
     project = Project.find_by(id: project_id)
     return unless project
 
