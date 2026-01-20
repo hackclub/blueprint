@@ -76,11 +76,6 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   def create
     @project = Project.find(params[:id])
 
-    unless Reviews::ClaimProject.claimed_by?(project: @project, reviewer: current_user, type: :build)
-      redirect_to admin_build_review_path(@project), alert: "Your claim expired or was released. Please reclaim the project."
-      return
-    end
-
     @build_review = @project.build_reviews.build(build_review_params)
     @build_review.reviewer = current_user
     @build_review.admin_review = current_user.admin?
