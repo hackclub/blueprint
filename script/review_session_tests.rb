@@ -418,15 +418,19 @@ end
 # =============================================================================
 puts "\n--- CATEGORY 3: SESSION LIFECYCLE ---\n"
 
-# S3.1 Create blocked if claim expired
-assert("S3.1 Create blocked if claim expired") do
+# S3.1 Expired claim still allows submission (claimed_by? returns false but submission is allowed)
+assert("S3.1 Expired claim - claimed_by? returns false but submission still allowed") do
   r1 = make_user!
   p = make_project_with_waiting_since!(waiting_since: 1.day.ago)
   p.update_columns(design_review_claimed_by_id: r1.id, design_review_claimed_at: 21.minutes.ago)
   p.reload
 
+  # claimed_by? returns false for expired claims
   result = Reviews::ClaimProject.claimed_by?(project: p, reviewer: r1, type: :design)
-  raise "Should be false (expired)" unless result == false
+  raise "claimed_by? should be false (expired)" unless result == false
+
+  # But the reviewer is still the original claimer (submission is allowed)
+  raise "design_review_claimed_by_id should still be r1" unless p.design_review_claimed_by_id == r1.id
 end
 
 # S3.2 Session continues: after submit, next project is correct

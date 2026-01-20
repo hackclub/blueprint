@@ -17,11 +17,13 @@ class Admin::DesignReviewsController < Admin::ApplicationController
 
     claim_cutoff = Reviews::ClaimProject::TTL.ago
 
+    pre_reviewed_sql = "CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN 0 ELSE 1 END"
+
     if current_user.admin?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
                         .includes(:journal_entries, :design_review_claimed_by, user: :latest_locatable_visit)
                         .select("projects.*, CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN true ELSE false END AS pre_reviewed, #{waiting_since_sql} AS waiting_since")
-                        .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
+                        .order(Arel.sql("#{pre_reviewed_sql}, #{waiting_since_sql} ASC NULLS LAST"))
     elsif current_user.reviewer_perms?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
                         .where.not(id: reviewed_ids)
