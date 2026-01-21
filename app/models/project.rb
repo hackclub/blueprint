@@ -690,6 +690,7 @@ class Project < ApplicationRecord
   end
 
   def dm_status!
+    return if Rails.env.development? || Rails.env.test?
     unless user&.slack_id.present?
       Rails.logger.tagged("Project##{id}DM") do
         Rails.logger.warn "User #{user&.id} has no slack_id"
@@ -1055,6 +1056,8 @@ class Project < ApplicationRecord
       approved_tier: admin_review&.tier_override || tier,
       approved_funding_cents: admin_review&.grant_override_cents || funding_needed_cents
     )
+
+    return if Rails.env.development? || Rails.env.test?
 
     upload_to_airtable!
   end
