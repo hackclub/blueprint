@@ -1,92 +1,92 @@
 [
-  {
-    "id": "1",
-    "name": "Clay Nicholson",
-    "title": "Founder",
-    "description": "Originally from Vermont, Clay joined Hack Club in 2022. In his free time, he enjoys mountain biking, playing ultimate frisbee, and skiing. In high school, Clay served as captain and programming/mechanical lead for two robotics teams. Today, he focuses primarily on creating hardware YSWS programs.",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/d3376d6eb0061891_image__30_.png",
-    "website": "https://claynicholson.com/",
-    "github": "https://github.com/claynicholson"
-  },
-  {
-    "id": "2",
-    "name": "Sam Liu",
-    "title": "Founder",
-    "description": "Sam is an 18-year-old Hack Clubber from Canada who loves building random stuff. Since joining Hack Club, he has supported hackers around the world through hackathons. Sam is currently gap-yearing at Hack Club to work on You Ship, We Ship programs.",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/991fde566a99ddc5_image.png",
-    "website": "https://github.com/samdev-7",
-    "github": ""
-  },
-  {
-    "id": "3",
-    "name": "Alex Ren",
-    "title": "Founder",
-    "description": "Builds tools, reviews projects, and helps with infrastructure.",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/e670667b47ad3377_image.png",
-    "website": "",
-    "github": ""
-  },
-  {
-    "id": "4",
-    "name": "Jaytirth Joshi",
-    "title": "Reviewer and Prize Giver",
-    "description": "Hi! i'm Jay! I am currently a senior at Walton High School and work at HackClub as a regional manager for US east. I have been working to help with blueprint ops and global fulfillments! in my free time I fence, im very avid with model UN and my startup (healthsathi)! HackClub is genuinely amazing and im so happy that I can say that i had a small contribution is making blueprint happen!",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/25b1c7b57e6eca6b_image.png",
-    "website": "https://www.joshi1.com/",
-    "github": "https://github.com/jaytirthjoshi"
-  },
-  {
-    "id": "5",
-    "name": "Tanishq Goyal",
-    "title": "Reviewer",
-    "description": "Tanishq joined Hack Club during Highway, when he fell in love with engineering. He has organized a few AMAs, and was a part of the Highway and Blueprint team. He loves to fence, hike, snowboard, and bike. He also loves chess, and would love to take you up in a game when we meet!",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/626f714e4b6998e6_image.png",
-    "website": "",
-    "github": "https://github.com/TaniWanKenobi/"
-  },
-  {
-    "id": "6",
-    "name": "Max Goldberg-Spar",
-    "title": "Reviewer",
-    "description": "Hey, I'm Max! I love designing 3d printers, battlebots, FTC robots, and all sorts of silly fun contraptions. My mindset while designing is basically 'why make something practical when I can make something silly?', and so far it has taken me pretty far! I helped out with #highway and #alleyway review over the summer, and now I'm working on #blueprint reviews! Im currently running #rework and working on a secret in person event. If you see me at an event, say hi! I love meeting other hack clubbers. Ill be at open sauce and likely RMRRF, as well as some NHRL events in the future.",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/1b83f3df81a9dfea_image.png",
-    "website": "",
-    "github": "https://github.com/2mon"
-  },
-  {
-    "id": "7",
-    "name": "Shaurya Bisht",
-    "title": "Reviewer",
-    "description": "Shaurya is a high schooler from Northern Virginia exploring computation while trying to make a positive impact. He loves all things hacking (except the malicious kind) and enjoys experimenting with new technology. In his free time, he competes at hackathons, does competitive math and programming, plays cricket with friends, spends time with family, and goes to the gym.",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/2a073248a4981452_image.png",
-    "website": "",
-    "github": "https://github.com/bshaurya"
-  },
-  {
-    "id": "8",
-    "name": "Kai Pereira",
-    "title": "Reviewer and Author",
-    "description": "",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9b3dc1b7bbce8835_image.png",
-    "website": "",
-    "github": "https://github.com/KaiPereira"
-  },
-  {
-    "id": "9",
-    "name": "Marcell",
-    "title": "Hi, I'm Marcell! I'm an avid hardware enjoyer, who really likes PCBs! I have made the split keyboard guide, contributed to the bluey support bot, did a small amount of imo quality reviews, and beta tester",
-    "description": "",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/d0d6b13c25de340f_1000009747.jpg",
-    "website": "",
-    "github": "https://github.com/KOEGlike"
-  },
-  {
-    "id": "10",
-    "name": "Nathan Alspaugh",
-    "title": "Blueprint Reviewer and Author",
-    "description": "Hi I'm Nathan! I'm currently taking a gap year I'm and into full-stack development, embedded programming, and hardware design. I am an avid musician/composer where I play piano, cello and drums. In my free time I usually read, listen to music, or create obscenities with code/hardware. I joined Hack Club for The Trail and now I'm a reviewer for Blueprint!",
-    "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/650b0f822a819caa_2a2ece39-fc77-4e70-a5fa-420085b94667.jpg",
-    "website": "",
-    "github": "https://github.com/KOEGlike"
-  }
+    {
+        "id": "1",
+        "name": "Clay Nicholson",
+        "title": "Founder",
+        "description": "Originally from Vermont, Clay joined Hack Club in 2022. In his free time, he enjoys mountain biking, playing ultimate frisbee, and skiing. In high school, Clay served as captain and programming/mechanical lead for two robotics teams. Today, he focuses primarily on creating hardware YSWS programs.",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/d3376d6eb0061891_image__30_.png",
+        "website": "https://claynicholson.com/",
+        "github": "https://github.com/claynicholson"
+    },
+    {
+        "id": "2",
+        "name": "Sam Liu",
+        "title": "Founder",
+        "description": "Sam is an 18-year-old Hack Clubber from Canada who loves building random stuff. Since joining Hack Club, he has supported hackers around the world through hackathons. Sam is currently gap-yearing at Hack Club to work on You Ship, We Ship programs.",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/991fde566a99ddc5_image.png",
+        "website": "https://github.com/samdev-7",
+        "github": ""
+    },
+    {
+        "id": "3",
+        "name": "Alex Ren",
+        "title": "Founder",
+        "description": "Alex is a longtime maker from Toronto who's been leading hardware programs at Hack Club for the past 2 years. In the past, they've made a 3D printer that fits inside a filament box, competed in esports, and ran their own keyboard store!",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/e670667b47ad3377_image.png",
+        "website": "https://dari.zone",
+        "github": "https://github.com/qcoral"
+    },
+    {
+        "id": "4",
+        "name": "Jaytirth Joshi",
+        "title": "Reviewer and Prize Giver",
+        "description": "Hi! i'm Jay! I am currently a senior at Walton High School and work at HackClub as a regional manager for US east. I have been working to help with blueprint ops and global fulfillments! in my free time I fence, im very avid with model UN and my startup (healthsathi)! HackClub is genuinely amazing and im so happy that I can say that i had a small contribution is making blueprint happen!",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/25b1c7b57e6eca6b_image.png",
+        "website": "https://www.joshi1.com/",
+        "github": "https://github.com/jaytirthjoshi"
+    },
+    {
+        "id": "5",
+        "name": "Tanishq Goyal",
+        "title": "Reviewer",
+        "description": "Tanishq joined Hack Club during Highway, when he fell in love with engineering. He has organized a few AMAs, and was a part of the Highway and Blueprint team. He loves to fence, hike, snowboard, and bike. He also loves chess, and would love to take you up in a game when we meet!",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/626f714e4b6998e6_image.png",
+        "website": "",
+        "github": "https://github.com/TaniWanKenobi/"
+    },
+    {
+        "id": "6",
+        "name": "Max Goldberg-Spar",
+        "title": "Reviewer",
+        "description": "Hey, I'm Max! I love designing 3d printers, battlebots, FTC robots, and all sorts of silly fun contraptions. My mindset while designing is basically 'why make something practical when I can make something silly?', and so far it has taken me pretty far! I helped out with #highway and #alleyway review over the summer, and now I'm working on #blueprint reviews! Im currently running #rework and working on a secret in person event. If you see me at an event, say hi! I love meeting other hack clubbers. Ill be at open sauce and likely RMRRF, as well as some NHRL events in the future.",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/1b83f3df81a9dfea_image.png",
+        "website": "",
+        "github": "https://github.com/2mon"
+    },
+    {
+        "id": "7",
+        "name": "Shaurya Bisht",
+        "title": "Reviewer",
+        "description": "Shaurya is a high schooler from Northern Virginia exploring computation while trying to make a positive impact. He loves all things hacking (except the malicious kind) and enjoys experimenting with new technology. In his free time, he competes at hackathons, does competitive math and programming, plays cricket with friends, spends time with family, and goes to the gym.",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/2a073248a4981452_image.png",
+        "website": "",
+        "github": "https://github.com/bshaurya"
+    },
+    {
+        "id": "8",
+        "name": "Kai Pereira",
+        "title": "Reviewer and Author",
+        "description": "",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9b3dc1b7bbce8835_image.png",
+        "website": "",
+        "github": "https://github.com/KaiPereira"
+    },
+    {
+        "id": "9",
+        "name": "Marcell",
+        "title": "Hi, I'm Marcell! I'm an avid hardware enjoyer, who really likes PCBs! I have made the split keyboard guide, contributed to the bluey support bot, did a small amount of imo quality reviews, and beta tester",
+        "description": "",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/d0d6b13c25de340f_1000009747.jpg",
+        "website": "",
+        "github": "https://github.com/KOEGlike"
+    },
+    {
+        "id": "10",
+        "name": "Nathan Alspaugh",
+        "title": "Blueprint Reviewer and Author",
+        "description": "Hi I'm Nathan! I'm currently taking a gap year I'm and into full-stack development, embedded programming, and hardware design. I am an avid musician/composer where I play piano, cello and drums. In my free time I usually read, listen to music, or create obscenities with code/hardware. I joined Hack Club for The Trail and now I'm a reviewer for Blueprint!",
+        "image": "https://hc-cdn.hel1.your-objectstorage.com/s/v3/650b0f822a819caa_2a2ece39-fc77-4e70-a5fa-420085b94667.jpg",
+        "website": "",
+        "github": "https://github.com/KOEGlike"
+    }
 ]
