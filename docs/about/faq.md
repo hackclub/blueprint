@@ -6,7 +6,7 @@
 
 ## When does this program end?
 
-Currently, the end-date of Blueprint is January 31st, 2026. You'll have time afterwards to spend your tickets.
+Currently, the end-date of Blueprint is March 31st, 2026. You'll have time afterwards to spend your tickets.
 
 ## How can I earn tickets?
 
