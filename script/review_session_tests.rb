@@ -366,17 +366,17 @@ assert("C1.11 Race: exactly one winner when claiming same project") do
   t1 = Thread.new do
     barrier.pop
     res = Reviews::ClaimProject.call!(project: p.reload, reviewer: r1, type: :design)
-    mutex.synchronize { results << [:r1, res] }
+    mutex.synchronize { results << [ :r1, res ] }
   end
 
   t2 = Thread.new do
     barrier.pop
     res = Reviews::ClaimProject.call!(project: p.reload, reviewer: r2, type: :design)
-    mutex.synchronize { results << [:r2, res] }
+    mutex.synchronize { results << [ :r2, res ] }
   end
 
   2.times { barrier << true }
-  [t1, t2].each(&:join)
+  [ t1, t2 ].each(&:join)
 
   winners = results.select { |_, ok| ok }
   raise "Expected exactly 1 winner, got #{winners.size}: #{results.inspect}" unless winners.size == 1
@@ -393,7 +393,7 @@ assert("Q2.1 Picks longest-waiting project first") do
   p_oldest = make_project_with_waiting_since!(waiting_since: 3.days.ago)
   p_mid = make_project_with_waiting_since!(waiting_since: 2.days.ago)
   p_new = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_oldest.id, p_mid.id, p_new.id]
+  test_ids = [ p_oldest.id, p_mid.id, p_new.id ]
 
   result = next_project_id(r1, test_project_ids: test_ids)
   raise "Expected #{p_oldest.id}, got #{result}" unless result == p_oldest.id
@@ -405,7 +405,7 @@ assert("Q2.2 after parameter skips to next in queue") do
   p_oldest = make_project_with_waiting_since!(waiting_since: 3.days.ago)
   p_mid = make_project_with_waiting_since!(waiting_since: 2.days.ago)
   p_new = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_oldest.id, p_mid.id, p_new.id]
+  test_ids = [ p_oldest.id, p_mid.id, p_new.id ]
 
   result = next_project_id(r1, after_project_id: p_mid.id, test_project_ids: test_ids)
   raise "Expected #{p_new.id}, got #{result}" unless result == p_new.id
@@ -509,7 +509,7 @@ assert("S3.2 After submit, next project skips current") do
   p1 = make_project_with_waiting_since!(waiting_since: 3.days.ago)
   p2 = make_project_with_waiting_since!(waiting_since: 2.days.ago)
   p3 = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p1.id, p2.id, p3.id]
+  test_ids = [ p1.id, p2.id, p3.id ]
 
   # Simulate: reviewed p1, now get next
   result = next_project_id(r1, after_project_id: p1.id, test_project_ids: test_ids)
@@ -545,7 +545,7 @@ assert("M4.2 Claimed project filtered for other reviewer") do
   r1 = make_user!
   r2 = make_user!
   p = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p.id]
+  test_ids = [ p.id ]
 
   Reviews::ClaimProject.call!(project: p, reviewer: r1, type: :design)
 
@@ -558,7 +558,7 @@ assert("M4.3 Expired claim makes project available") do
   r1 = make_user!
   r2 = make_user!
   p = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p.id]
+  test_ids = [ p.id ]
 
   p.update_columns(design_review_claimed_by_id: r1.id, design_review_claimed_at: 21.minutes.ago)
 
@@ -575,7 +575,7 @@ puts "\n--- CATEGORY 5: EDGE CASES ---\n"
 assert("E5.1 No projects available returns nil") do
   r1 = make_user!
   # Use a non-existent project ID to simulate no projects
-  result = next_project_id(r1, test_project_ids: [-1])
+  result = next_project_id(r1, test_project_ids: [ -1 ])
   raise "Expected nil" unless result.nil?
 end
 
@@ -584,7 +584,7 @@ assert("E5.2 Exclude reviewer's own projects") do
   r1 = make_user!
   p_own = make_project_with_waiting_since!(waiting_since: 2.days.ago, owner: r1)
   p_other = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_own.id, p_other.id]
+  test_ids = [ p_own.id, p_other.id ]
 
   result = next_project_id(r1, test_project_ids: test_ids)
   raise "Expected #{p_other.id}, got #{result}" unless result == p_other.id
@@ -595,7 +595,7 @@ assert("E5.3 LED projects excluded for non-admin") do
   r1 = make_user!
   p_led = make_project_with_waiting_since!(waiting_since: 2.days.ago, ysws: "led")
   p_normal = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_led.id, p_normal.id]
+  test_ids = [ p_led.id, p_normal.id ]
 
   result = next_project_id(r1, admin: false, test_project_ids: test_ids)
   raise "Expected #{p_normal.id}, got #{result}" unless result == p_normal.id
@@ -606,7 +606,7 @@ assert("E5.4 Admin can see LED projects") do
   r1 = make_user!(admin: true)
   p_led = make_project_with_waiting_since!(waiting_since: 2.days.ago, ysws: "led")
   p_normal = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_led.id, p_normal.id]
+  test_ids = [ p_led.id, p_normal.id ]
 
   result = next_project_id(r1, admin: true, test_project_ids: test_ids)
   raise "Expected #{p_led.id} (oldest), got #{result}" unless result == p_led.id
@@ -623,7 +623,7 @@ assert("K6.1 Skip advances correctly using after") do
   p_oldest = make_project_with_waiting_since!(waiting_since: 3.days.ago)
   p_mid = make_project_with_waiting_since!(waiting_since: 2.days.ago)
   p_new = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_oldest.id, p_mid.id, p_new.id]
+  test_ids = [ p_oldest.id, p_mid.id, p_new.id ]
 
   # Start at p_oldest, skip to p_mid
   result = next_project_id(r1, after_project_id: p_oldest.id, test_project_ids: test_ids)
