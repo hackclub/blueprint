@@ -7,11 +7,9 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     released = Reviews::ClaimProject.release_all_for_reviewer!(reviewer: current_user, type: :build)
     flash.now[:notice] = "Review session ended." if released > 0
 
-    # Only consider non-approved reviews to allow resubmitted projects to be visible
     reviewed_ids = Project.joins(:build_reviews)
                             .where(is_deleted: false, review_status: :build_pending)
                             .where(build_reviews: { invalidated: false })
-                            .where.not(build_reviews: { result: BuildReview.results[:approved] })
                             .distinct
                             .pluck(:id)
 
@@ -102,11 +100,10 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     claim_cutoff = Reviews::ClaimProject::TTL.ago
     waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'build_pending')"
 
-    # Get reviewed project IDs (for non-admin filtering) - only non-approved reviews
+    # Get reviewed project IDs (for non-admin filtering)
     reviewed_ids = Project.joins(:build_reviews)
                           .where(is_deleted: false, review_status: :build_pending)
                           .where(build_reviews: { invalidated: false })
-                          .where.not(build_reviews: { result: BuildReview.results[:approved] })
                           .distinct
                           .pluck(:id)
 
