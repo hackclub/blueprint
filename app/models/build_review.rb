@@ -148,6 +148,27 @@ class BuildReview < ApplicationRecord
     journal_entries_to_associate(up_to: up_to).update_all(review_id: id, review_type: "BuildReview")
   end
 
+  def self.estimated_wait_time
+    Rails.cache.fetch("build_review_estimated_wait_time", expires_in: 1.day) do
+      wait_times = Project.where(review_status: :build_pending).filter_map do |project|
+        pending_version = PaperTrail::Version
+                            .where(item_type: "Project", item_id: project.id, event: "update")
+                            .where("object_changes ? 'review_status'")
+                            .where("object_changes->'review_status'->>1 = 'build_pending'")
+                            .order(created_at: :desc, id: :desc)
+                            .first
+
+        (Time.current - pending_version.created_at).to_i if pending_version
+      end
+
+      wait_times.sort!
+      next 3.days if wait_times.empty?
+
+      idx = ((wait_times.length - 1) * 0.9).floor
+      (wait_times[idx] + 3.days.to_i).seconds
+    end
+  end
+
   def self.backfill_journal_associations!
     # Deprecated: Use the reviews:backfill rake task instead, which correctly associates
     # journal entries up to the review's created_at, not Time.current
