@@ -85,7 +85,13 @@
             <%= f.label :cart_screenshots, "Cart screenshots*", class: "block text-xl font-rc-full" %>
             <p>Upload screenshots of checkout pages showing the items you will buy and their prices.<p>
           </div>
-          <%= f.file_field :cart_screenshots, multiple: true, direct_upload: true, accept: "image/*", class: "input w-full space-x-2", data: { action: "change->cart-screenshots#filesChanged", cart_screenshots_target: "input" } %>
+          <div class="flex items-center">
+            <%= f.file_field :cart_screenshots, multiple: true, direct_upload: true, accept: "image/*", class: "hidden", data: { action: "change->cart-screenshots#filesChanged", cart_screenshots_target: "input" } %>
+            <button type="button" class="btn btn-outline" data-action="click->cart-screenshots#trigger">
+              <%= @project.cart_screenshots.attached? ? "Replace screenshots" : "Choose files" %>
+            </button>
+            <span class="ml-3" data-cart-screenshots-target="filename">No files selected</span>
+          </div>
           <p class="hidden text-sm text-bp-danger" data-cart-screenshots-target="error">
             <% if @project.errors[:cart_screenshots].present? %><%= @project.errors[:cart_screenshots].first %><% end %>
           </p>

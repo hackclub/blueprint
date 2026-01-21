@@ -2,12 +2,16 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   static values = { needsFunding: Boolean, hasExisting: Boolean };
-  static targets = ["input", "error", "previews", "nextButton"];
+  static targets = ["input", "error", "previews", "nextButton", "filename"];
 
   connect() {
     this.filesList = [];
     this.updatePreviews();
     this.updateButtonState();
+  }
+
+  trigger() {
+    this.inputTarget.click();
   }
 
   filesChanged() {
@@ -28,6 +32,13 @@ export default class extends Controller {
 
     this.updatePreviews();
     this.updateButtonState();
+    this.updateFilename();
+  }
+
+  updateFilename() {
+    if (!this.hasFilenameTarget) return;
+    const count = this.filesList.length;
+    this.filenameTarget.textContent = count > 0 ? `${count} file${count > 1 ? "s" : ""} selected` : "No files selected";
   }
 
   updatePreviews() {
@@ -65,6 +76,7 @@ export default class extends Controller {
 
     this.updatePreviews();
     this.updateButtonState();
+    this.updateFilename();
   }
 
   updateFormInput() {
