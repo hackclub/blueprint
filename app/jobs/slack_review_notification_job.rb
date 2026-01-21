@@ -48,6 +48,7 @@ class SlackReviewNotificationJob < ApplicationJob
     message_options = {
       channel: channel_id,
       thread_ts: thread_ts,
+      reply_broadcast: true,
       blocks: blocks
     }
 
