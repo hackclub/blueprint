@@ -173,6 +173,9 @@ class Project < ApplicationRecord
   end
 
   def display_banner_blob
+    return demo_picture.blob if demo_picture.attached?
+
+    # Fall back to latest journal entry image if no demo_picture
     return unless latest_journal_entry&.content.present?
 
     image_match = latest_journal_entry.content.match(/!\[[^\]]*\]\(([^)]+)\)/)
