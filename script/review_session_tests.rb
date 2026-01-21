@@ -114,10 +114,19 @@ def next_project_id(reviewer, type: :design, after_project_id: nil, admin: false
       end
     end
 
-    base.select("projects.id, #{waiting_since_sql} AS waiting_since")
-        .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
-        .limit(1)
-        .pick(:id)
+    # For admins, prioritize pre-reviewed projects first, then by waiting time
+    if admin
+      pre_reviewed_sql = "CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN 0 ELSE 1 END"
+      base.select("projects.id, #{waiting_since_sql} AS waiting_since")
+          .order(Arel.sql("#{pre_reviewed_sql}, #{waiting_since_sql} ASC NULLS LAST"))
+          .limit(1)
+          .pick(:id)
+    else
+      base.select("projects.id, #{waiting_since_sql} AS waiting_since")
+          .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
+          .limit(1)
+          .pick(:id)
+    end
   end
 end
 
@@ -357,17 +366,17 @@ assert("C1.11 Race: exactly one winner when claiming same project") do
   t1 = Thread.new do
     barrier.pop
     res = Reviews::ClaimProject.call!(project: p.reload, reviewer: r1, type: :design)
-    mutex.synchronize { results << [:r1, res] }
+    mutex.synchronize { results << [ :r1, res ] }
   end
 
   t2 = Thread.new do
     barrier.pop
     res = Reviews::ClaimProject.call!(project: p.reload, reviewer: r2, type: :design)
-    mutex.synchronize { results << [:r2, res] }
+    mutex.synchronize { results << [ :r2, res ] }
   end
 
   2.times { barrier << true }
-  [t1, t2].each(&:join)
+  [ t1, t2 ].each(&:join)
 
   winners = results.select { |_, ok| ok }
   raise "Expected exactly 1 winner, got #{winners.size}: #{results.inspect}" unless winners.size == 1
@@ -384,7 +393,7 @@ assert("Q2.1 Picks longest-waiting project first") do
   p_oldest = make_project_with_waiting_since!(waiting_since: 3.days.ago)
   p_mid = make_project_with_waiting_since!(waiting_since: 2.days.ago)
   p_new = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_oldest.id, p_mid.id, p_new.id]
+  test_ids = [ p_oldest.id, p_mid.id, p_new.id ]
 
   result = next_project_id(r1, test_project_ids: test_ids)
   raise "Expected #{p_oldest.id}, got #{result}" unless result == p_oldest.id
@@ -396,7 +405,7 @@ assert("Q2.2 after parameter skips to next in queue") do
   p_oldest = make_project_with_waiting_since!(waiting_since: 3.days.ago)
   p_mid = make_project_with_waiting_since!(waiting_since: 2.days.ago)
   p_new = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_oldest.id, p_mid.id, p_new.id]
+  test_ids = [ p_oldest.id, p_mid.id, p_new.id ]
 
   result = next_project_id(r1, after_project_id: p_mid.id, test_project_ids: test_ids)
   raise "Expected #{p_new.id}, got #{result}" unless result == p_new.id
@@ -407,10 +416,71 @@ assert("Q2.3 after with invalid ID returns oldest") do
   r1 = make_user!
   p_oldest = make_project_with_waiting_since!(waiting_since: 3.days.ago)
   p_new = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_oldest.id, p_new.id]
+  test_ids = [ p_oldest.id, p_new.id ]
 
   result = next_project_id(r1, after_project_id: 999999999, test_project_ids: test_ids)
   raise "Expected #{p_oldest.id}, got #{result}" unless result == p_oldest.id
+end
+
+# Q2.4 Admin sees pre-reviewed projects first (even if they waited less)
+assert("Q2.4 Admin: pre-reviewed projects shown before non-reviewed (by wait time within each group)") do
+  admin = make_user!(admin: true)
+  reviewer = make_user!
+
+  # Create projects: p_old is oldest but NOT pre-reviewed, p_new is newer but IS pre-reviewed
+  p_old_no_review = make_project_with_waiting_since!(waiting_since: 3.days.ago)
+  p_new_reviewed = make_project_with_waiting_since!(waiting_since: 1.day.ago)
+
+  # Add a design review to p_new_reviewed to make it "pre-reviewed"
+  DesignReview.create!(
+    project: p_new_reviewed,
+    reviewer: reviewer,
+    result: :returned,
+    feedback: "Please fix"
+  )
+
+  test_ids = [ p_old_no_review.id, p_new_reviewed.id ]
+
+  # Admin should see pre-reviewed first
+  result = next_project_id(admin, admin: true, test_project_ids: test_ids)
+  raise "Admin expected #{p_new_reviewed.id} (pre-reviewed), got #{result}" unless result == p_new_reviewed.id
+end
+
+# Q2.5 Admin: within pre-reviewed, longest wait first
+assert("Q2.5 Admin: within pre-reviewed group, longest wait first") do
+  admin = make_user!(admin: true)
+  reviewer = make_user!
+
+  p_reviewed_old = make_project_with_waiting_since!(waiting_since: 3.days.ago)
+  p_reviewed_new = make_project_with_waiting_since!(waiting_since: 1.day.ago)
+
+  # Both are pre-reviewed
+  DesignReview.create!(project: p_reviewed_old, reviewer: reviewer, result: :returned, feedback: "Fix")
+  DesignReview.create!(project: p_reviewed_new, reviewer: reviewer, result: :returned, feedback: "Fix")
+
+  test_ids = [ p_reviewed_old.id, p_reviewed_new.id ]
+
+  result = next_project_id(admin, admin: true, test_project_ids: test_ids)
+  raise "Expected #{p_reviewed_old.id} (oldest pre-reviewed), got #{result}" unless result == p_reviewed_old.id
+end
+
+# Q2.6 Admin: non-reviewed come after all pre-reviewed
+assert("Q2.6 Admin: all pre-reviewed before any non-reviewed") do
+  admin = make_user!(admin: true)
+  reviewer = make_user!
+
+  # Old non-reviewed, new pre-reviewed, medium non-reviewed
+  p_oldest_no_review = make_project_with_waiting_since!(waiting_since: 5.days.ago)
+  p_mid_reviewed = make_project_with_waiting_since!(waiting_since: 2.days.ago)
+  p_new_no_review = make_project_with_waiting_since!(waiting_since: 1.day.ago)
+
+  DesignReview.create!(project: p_mid_reviewed, reviewer: reviewer, result: :returned, feedback: "Fix")
+
+  test_ids = [ p_oldest_no_review.id, p_mid_reviewed.id, p_new_no_review.id ]
+
+  # First should be the pre-reviewed one
+  result = next_project_id(admin, admin: true, test_project_ids: test_ids)
+  raise "Expected #{p_mid_reviewed.id} (pre-reviewed), got #{result}" unless result == p_mid_reviewed.id
 end
 
 # =============================================================================
@@ -439,7 +509,7 @@ assert("S3.2 After submit, next project skips current") do
   p1 = make_project_with_waiting_since!(waiting_since: 3.days.ago)
   p2 = make_project_with_waiting_since!(waiting_since: 2.days.ago)
   p3 = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p1.id, p2.id, p3.id]
+  test_ids = [ p1.id, p2.id, p3.id ]
 
   # Simulate: reviewed p1, now get next
   result = next_project_id(r1, after_project_id: p1.id, test_project_ids: test_ids)
@@ -475,7 +545,7 @@ assert("M4.2 Claimed project filtered for other reviewer") do
   r1 = make_user!
   r2 = make_user!
   p = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p.id]
+  test_ids = [ p.id ]
 
   Reviews::ClaimProject.call!(project: p, reviewer: r1, type: :design)
 
@@ -488,7 +558,7 @@ assert("M4.3 Expired claim makes project available") do
   r1 = make_user!
   r2 = make_user!
   p = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p.id]
+  test_ids = [ p.id ]
 
   p.update_columns(design_review_claimed_by_id: r1.id, design_review_claimed_at: 21.minutes.ago)
 
@@ -505,7 +575,7 @@ puts "\n--- CATEGORY 5: EDGE CASES ---\n"
 assert("E5.1 No projects available returns nil") do
   r1 = make_user!
   # Use a non-existent project ID to simulate no projects
-  result = next_project_id(r1, test_project_ids: [-1])
+  result = next_project_id(r1, test_project_ids: [ -1 ])
   raise "Expected nil" unless result.nil?
 end
 
@@ -514,7 +584,7 @@ assert("E5.2 Exclude reviewer's own projects") do
   r1 = make_user!
   p_own = make_project_with_waiting_since!(waiting_since: 2.days.ago, owner: r1)
   p_other = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_own.id, p_other.id]
+  test_ids = [ p_own.id, p_other.id ]
 
   result = next_project_id(r1, test_project_ids: test_ids)
   raise "Expected #{p_other.id}, got #{result}" unless result == p_other.id
@@ -525,7 +595,7 @@ assert("E5.3 LED projects excluded for non-admin") do
   r1 = make_user!
   p_led = make_project_with_waiting_since!(waiting_since: 2.days.ago, ysws: "led")
   p_normal = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_led.id, p_normal.id]
+  test_ids = [ p_led.id, p_normal.id ]
 
   result = next_project_id(r1, admin: false, test_project_ids: test_ids)
   raise "Expected #{p_normal.id}, got #{result}" unless result == p_normal.id
@@ -536,7 +606,7 @@ assert("E5.4 Admin can see LED projects") do
   r1 = make_user!(admin: true)
   p_led = make_project_with_waiting_since!(waiting_since: 2.days.ago, ysws: "led")
   p_normal = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_led.id, p_normal.id]
+  test_ids = [ p_led.id, p_normal.id ]
 
   result = next_project_id(r1, admin: true, test_project_ids: test_ids)
   raise "Expected #{p_led.id} (oldest), got #{result}" unless result == p_led.id
@@ -553,7 +623,7 @@ assert("K6.1 Skip advances correctly using after") do
   p_oldest = make_project_with_waiting_since!(waiting_since: 3.days.ago)
   p_mid = make_project_with_waiting_since!(waiting_since: 2.days.ago)
   p_new = make_project_with_waiting_since!(waiting_since: 1.day.ago)
-  test_ids = [p_oldest.id, p_mid.id, p_new.id]
+  test_ids = [ p_oldest.id, p_mid.id, p_new.id ]
 
   # Start at p_oldest, skip to p_mid
   result = next_project_id(r1, after_project_id: p_oldest.id, test_project_ids: test_ids)
@@ -585,6 +655,88 @@ assert("K6.2 Skip releases previous claim when claiming next") do
 
   raise "p1 should be released" unless p1.design_review_claimed_by_id.nil?
   raise "p2 should be claimed" unless p2.design_review_claimed_by_id == r1.id
+end
+
+# =============================================================================
+# CATEGORY 7: SLACK NOTIFICATION RESULT MESSAGES
+# =============================================================================
+puts "\n--- CATEGORY 7: SLACK NOTIFICATION RESULT MESSAGES ---\n"
+
+# Helper to get the result message that would be sent to Slack
+def slack_result_message(review)
+  if review.result == "approved"
+    review.admin_review? ? "APPROVED!! :D" : "preliminarily approved"
+  else
+    "needs update"
+  end
+end
+
+# N7.1 Admin approval shows "APPROVED!! :D"
+assert("N7.1 Admin approval shows 'APPROVED!! :D'") do
+  admin = make_user!(admin: true)
+  p = make_project_with_waiting_since!(waiting_since: 1.day.ago)
+
+  review = DesignReview.create!(
+    project: p,
+    reviewer: admin,
+    result: :approved,
+    admin_review: true,
+    feedback: "Great work!"
+  )
+
+  result = slack_result_message(review)
+  raise "Expected 'APPROVED!! :D', got '#{result}'" unless result == "APPROVED!! :D"
+end
+
+# N7.2 Non-admin approval shows "preliminarily approved"
+assert("N7.2 Non-admin approval shows 'preliminarily approved'") do
+  reviewer = make_user!
+  p = make_project_with_waiting_since!(waiting_since: 1.day.ago)
+
+  review = DesignReview.create!(
+    project: p,
+    reviewer: reviewer,
+    result: :approved,
+    admin_review: false,
+    feedback: "Looks good!"
+  )
+
+  result = slack_result_message(review)
+  raise "Expected 'preliminarily approved', got '#{result}'" unless result == "preliminarily approved"
+end
+
+# N7.3 Returned review shows "needs update"
+assert("N7.3 Returned review shows 'needs update'") do
+  reviewer = make_user!
+  p = make_project_with_waiting_since!(waiting_since: 1.day.ago)
+
+  review = DesignReview.create!(
+    project: p,
+    reviewer: reviewer,
+    result: :returned,
+    admin_review: false,
+    feedback: "Please fix X"
+  )
+
+  result = slack_result_message(review)
+  raise "Expected 'needs update', got '#{result}'" unless result == "needs update"
+end
+
+# N7.4 Rejected review shows "needs update"
+assert("N7.4 Rejected review shows 'needs update'") do
+  admin = make_user!(admin: true)
+  p = make_project_with_waiting_since!(waiting_since: 1.day.ago)
+
+  review = DesignReview.create!(
+    project: p,
+    reviewer: admin,
+    result: :rejected,
+    admin_review: true,
+    feedback: "Does not meet requirements"
+  )
+
+  result = slack_result_message(review)
+  raise "Expected 'needs update', got '#{result}'" unless result == "needs update"
 end
 
 # =============================================================================

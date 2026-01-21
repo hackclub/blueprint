@@ -1,11 +1,20 @@
 <% announcements = [
-  {
-    title: "Deadline Extended",
-    date: "Program Announcement",
-    content: "The last day to submit your project is now January 31st, 2026.",
-    level: :warning
-  }
-]%>
+    {
+      title: "Extended Again!",
+      date: "Program Announcement",
+      content: "The last day to submit your project is now March 31st, 2026.",
+      level: :warning
+    },
+    {
+      title: "Campfire Flagship",
+      date: "Hack Club Event",
+      content: "Curious about game development? Meet your favorite YouTubers including William Osman and Michael Reeves at Hack Club's Campfire Flagship! (Not directly part of Blueprint)",
+      level: :success,
+      cta: { text: "RSVP Now", url: "https://flagship.hackclub.com/?utm_source=c-blueprint" }
+    },
+    
+  ]
+%>
 
 <%= render "shared/card", class: tw("flex flex-col", local_assigns[:class]) do %>
   <div class="flex-shrink-0">

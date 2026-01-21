@@ -136,11 +136,20 @@ class Admin::BuildReviewsController < Admin::ApplicationController
       end
     end
 
-    # Order by waiting time (longest first) and pick the first one
-    base.select("projects.id, #{waiting_since_sql} AS waiting_since")
-        .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
-        .limit(1)
-        .pick(:id)
+    # For admins, prioritize pre-reviewed projects first, then by waiting time
+    if current_user.admin?
+      pre_reviewed_sql = "CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN 0 ELSE 1 END"
+      base.select("projects.id, #{waiting_since_sql} AS waiting_since")
+          .order(Arel.sql("#{pre_reviewed_sql}, #{waiting_since_sql} ASC NULLS LAST"))
+          .limit(1)
+          .pick(:id)
+    else
+      # Non-admins: order by waiting time only (pre-reviewed already excluded)
+      base.select("projects.id, #{waiting_since_sql} AS waiting_since")
+          .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
+          .limit(1)
+          .pick(:id)
+    end
   end
 
   def build_review_params

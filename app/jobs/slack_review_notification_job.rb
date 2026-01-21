@@ -26,7 +26,7 @@ class SlackReviewNotificationJob < ApplicationJob
 
     sanitized_feedback = sanitize_slack_text(review.feedback)
     review_type_label = review_type == "DesignReview" ? "design" : "build"
-    result_message = review.result == "approved" ? "APPROVED!! :D" : "needs update"
+    result_message = review.result == "approved" ? (review.admin_review? ? "APPROVED!! :D" : "preliminarily approved") : "needs update"
 
     blocks = [
       {
