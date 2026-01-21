@@ -7,7 +7,7 @@
   <% nav_links = {
       "Dashboard" => user_logged_in? ? home_path : login_path,
       "Hackpad" => user_logged_in? ? (current_user.is_pro ? nil : hackpad_path) : nil,
-      "Custom Projects" => about_path,
+      "About" => about_path,
       # "My Projects" => user_logged_in? ? projects_path : login_path,
       "Guided Projects" => starter_projects_path,
       "Design Resources" => resources_path,
@@ -17,13 +17,13 @@
       "Admin" => current_user&.special_perms? ? admin_root_path : nil
   } %>
 <% end %>
-<% pro_only_links = ["Custom Projects", "Guided Projects", "Design Resources", "Leaderboard", "Shop"] %>
+<% pro_only_links = ["About", "Guided Projects", "Design Resources", "Leaderboard", "Shop"] %>
 
 <% active_projects_count = user_logged_in? ? Rails.cache.fetch([current_user.id, "active_projects_count", current_user.projects.maximum(:updated_at)]) { current_user.projects.where(is_deleted: false).count } : 0 %>
 <% if active_projects_count > 5 %>
   <% nav_links = nav_links.to_a.insert(2, ["My Projects", projects_path]).to_h %>
 <% end %>
-<% submenu = ["Custom Projects", "Guided Projects", "Design Resources", "Hackpad"] %>
+<% submenu = ["About", "Guided Projects", "Design Resources", "Hackpad"] %>
 <% always_show_submenu = ["Hackpad"] %>
 
 <% normalize_path = ->(p) { p.to_s.sub(%r{/$}, "") } %>
