@@ -32,6 +32,44 @@
           class: "input px-3 mt-1 block w-full" %>
   </div>
 
+  <div>
+    <%= f.label :demo_picture, "Banner image", class: "block text-xl font-medium font-rc-full" %>
+    <p>This will be your project's banner.</p>
+    <div data-controller="image-preview">
+      <div class="my-4">
+        <% if @project.demo_picture.attached? %>
+          <% if @project.demo_picture.content_type == "image/svg+xml" %>
+            <%= image_tag @project.demo_picture, class: "rounded border border-bp-muted/40 max-h-64 object-contain", data: { image_preview_target: "preview" } %>
+          <% else %>
+            <%= image_tag @project.demo_picture.variant(:web), class: "rounded border border-bp-muted/40 max-h-64 object-contain", data: { image_preview_target: "preview" } %>
+          <% end %>
+        <% else %>
+          <img src="" class="hidden rounded border border-bp-muted/40 max-h-64 object-contain" data-image-preview-target="preview">
+          <span class="text-sm text-gray-400" data-image-preview-target="placeholder">No image selected</span>
+        <% end %>
+      </div>
+      <div class="flex items-center mt-1">
+        <%= f.file_field :demo_picture, 
+              direct_upload: true, 
+              accept: "image/*",
+              class: "hidden",
+              data: { 
+                image_preview_target: "input",
+                action: "change->image-preview#preview"
+              } %>
+        <button type="button" 
+                class="btn btn-outline" 
+                data-image-preview-target="button"
+                data-action="click->image-preview#trigger">
+          <%= @project.demo_picture.attached? ? "Replace image" : "Choose file" %>
+        </button>
+        <span class="ml-3" 
+              data-image-preview-target="filename" 
+              data-placeholder="No file selected">No file selected</span>
+      </div>
+    </div>
+  </div>
+
   <% if current_user.is_pro %>
     <div data-controller="ysws">
       <%= f.label :ysws, "Are you following a guide?", class: "block text-xl font-medium font-rc-full" %>
@@ -87,14 +125,4 @@
       <%= f.submit (@project.new_record? ? "Create project" : "Update project"), class: "btn btn-primary block w-full", data: { funding_amount_target: "submit" } %>
     </div>
   </div>
-
-  <% if current_user.is_pro %>
-    <div class="flex items-center gap-3" data-controller="checkbox-visual">
-      <%= check_box_tag :skip_funding, "1", !@project.needs_funding, class: "sr-only", data: { checkbox_visual_target: "checkbox", action: "change->checkbox-visual#toggle" } %>
-      <%= label_tag :skip_funding, class: "flex items-center gap-3 cursor-pointer" do %>
-        <div class="checkbox check-darker" data-checkbox-visual-target="visual"></div>
-        <span class="text-lg">I don't need funding as I have all the parts to build it. I want to exchange my funding for tickets instead.</span>
-      <% end %>
-    </div>
-  <% end %>
 <% end %>
