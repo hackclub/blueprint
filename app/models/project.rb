@@ -703,13 +703,13 @@ class Project < ApplicationRecord
     if awaiting_idv?
       msg += "Your Blueprint project *#{title}* is almost ready to be reviewed! But before we can review your project, you need to verify your identity.\n\nHack Club has given out over $1M in grants to teens like you, and with that comes a lot of adults trying to slip in.\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/auth/idv|Click here to verify your identity>\n\n"
     elsif design_pending?
-      msg += "Your Blueprint project *#{title}* is currently waiting for a design review. An inspector will take a look at it soon!\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
+      msg += "Your Blueprint project *#{title}* is now in the queue for design review. A reviewer will get to it soon!\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
     elsif build_pending?
-      msg += "Your Blueprint project *#{title}* is currently waiting for a build review. An inspector will take a look at it soon!\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
+      msg += "Your Blueprint project *#{title}* is now in the queue for build review. A reviewer will get to it soon!\n\n<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
     elsif design_needs_revision?
       review = design_reviews.where(result: "returned", invalidated: false).last
       if review && review.feedback.present? && review.reviewer&.slack_id.present?
-        msg += "Your Blueprint project *#{title}* needs some changes before it can be approved. Here's some feedback from your inspector, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
+        msg += "Your Blueprint project *#{title}* needs some changes before it can be approved. Here's some feedback from your reviewer, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
         msg += "*Recommended tier:* #{review.tier_override}\n\n" if review.tier_override.present?
         msg += "*Recommended funding:* $#{'%.2f' % (review.grant_override_cents / 100.0)}\n\n" if review.grant_override_cents.present?
         msg += "<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
@@ -719,7 +719,7 @@ class Project < ApplicationRecord
     elsif design_rejected?
       review = design_reviews.where(result: "rejected", invalidated: false).last
       if review && review.feedback.present? && review.reviewer&.slack_id.present?
-        msg += "Your Blueprint project *#{title}* has been rejected. You won't be able to submit again. Here's some feedback from your inspector, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
+        msg += "Your Blueprint project *#{title}* has been rejected. You won't be able to submit again. Here's some feedback from your reviewer, <@#{review.reviewer.slack_id}>:\n\n#{review.feedback}\n\n"
         msg += "*Recommended tier:* #{review.tier_override}\n\n" if review.tier_override.present?
         msg += "*Grant to expect:* $#{'%.2f' % (review.grant_override_cents / 100.0)}\n\n" if review.grant_override_cents.present?
         msg += "<https://#{ENV.fetch("APPLICATION_HOST")}/projects/#{id}|View your project>\n\n"
