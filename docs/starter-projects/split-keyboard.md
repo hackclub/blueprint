@@ -45,11 +45,11 @@ Because we are creating a split, we essentially want to have the same circuitry 
 
 To create a hierarchical sheet, click on this icon on the right sidebar or press <kbd>S</kbd>
 
-![image of sheets icon](/old-cdn/efaa0a56ce293a919388c76a0a62ff41d1e1388d_screenshot_from_2025-09-18_17-05-12.png)
+![image of sheets icon](/old-cdn/efaa0a56ce293a919388c76a0a62ff41d1e1388d_screenshot_from_2025-09-18_17-05-12.webp)
 
 Now draw a rectangle and left-click; a popup should appear:
 
-![image of popup](/old-cdn/3f98026538ad029f426aab7c6060405b8318c13b_image.png)
+![image of popup](/old-cdn/3f98026538ad029f426aab7c6060405b8318c13b_image.webp)
 
 Change the `Sheetname` to `left`, and the `Sheetfile` to `side.kicad_sch`, and click ok
 
@@ -57,19 +57,19 @@ Now create another sheet, set `Sheetfile` to `side.kicad_sch`, but the `Sheetnam
 
 Your root sheet should look something like this:
 
-![image of root sheet](/old-cdn/232d7595f84c8177ca4b1d17ed85b5323bd76470_image.png)
+![image of root sheet](/old-cdn/232d7595f84c8177ca4b1d17ed85b5323bd76470_image.webp)
 
 And your left sidebar something like this:
 
-![image of left side bar](/old-cdn/9f867ffd0ee5d93b4bf2c06b2958c7e39a89a9f4_image.png)
+![image of left side bar](/old-cdn/9f867ffd0ee5d93b4bf2c06b2958c7e39a89a9f4_image.webp)
 
 
-![image of left side bar](/old-cdn/9f867ffd0ee5d93b4bf2c06b2958c7e39a89a9f4_image.png)
+![image of left side bar](/old-cdn/9f867ffd0ee5d93b4bf2c06b2958c7e39a89a9f4_image.webp)
 
 You can now double-click on one of the sheet rectangles in the root sheet or in the left sidebar. You can now place down a switch, for example, and navigate to the other sub/child sheet. You will notice that the switch that you placed down in the other sub-sheet is also in this sub-sheet.
 
-![left sheet](/old-cdn/af42ed0710e41f69f9a204e6d65187a265a18988_image.png)
-![right sheet](/old-cdn/063c21ddabb9d0133596868089eef84a38a7c34a_image.png)
+![left sheet](/old-cdn/af42ed0710e41f69f9a204e6d65187a265a18988_image.webp)
+![right sheet](/old-cdn/063c21ddabb9d0133596868089eef84a38a7c34a_image.webp)
 
 ## Circuitry
 
@@ -77,13 +77,13 @@ Now finally we can start to design our keyboard!!!
 
 Add the `XIAO-nRF52840-SMD` symbol:
 
-![symbol add xiao](/old-cdn/9f32be16de764ec09f8353341732586cadcf3e31_image.png)
+![symbol add xiao](/old-cdn/9f32be16de764ec09f8353341732586cadcf3e31_image.webp)
 
 a switch `SW_Push`:
-![symbol add switch](/old-cdn/508824b27185819cc122c0095860bb55e2b5bc6a_image.png)
+![symbol add switch](/old-cdn/508824b27185819cc122c0095860bb55e2b5bc6a_image.webp)
 
 and a diode `D` (you will see later why we need this):
-![symbol add diode](/old-cdn/bfb718542115ac52a37f3bf214ca7d14b19877ea_image.png)
+![symbol add diode](/old-cdn/bfb718542115ac52a37f3bf214ca7d14b19877ea_image.webp)
 
 ### Keyboard Matrix
 
@@ -93,23 +93,23 @@ The matrix works by giving power to each column one at a time and checking which
 
 For now all you need to know is that every key has its own diode; this is like one unit:
 
-![image of diode and button](/old-cdn/33681c7410a242de5ab273f34b54981f62390f1e_image.png)
+![image of diode and button](/old-cdn/33681c7410a242de5ab273f34b54981f62390f1e_image.webp)
 
 You can now make a matrix out of these *units*; you have to connect the switches to the columns and the diodes to the rows. In this example, in one row I only have one button, which is for my thumb:
 
-![image of complete keyboard matrix](/old-cdn/8c6b3592f3e6753ceb8ae607c27ebd0e00642e0b_image.png)
+![image of complete keyboard matrix](/old-cdn/8c6b3592f3e6753ceb8ae607c27ebd0e00642e0b_image.webp)
 
 You may notice that there are *labels*, like `COL0`, `COL1`, etc., and `ROW0` and `ROW1`. These are labels. You can place these using the <kbd>L</kbd> shortcut or from the right sidebar. We can use labels to clean up our schematic. Instead of routing from our Xiao to the column, we just place a label with the same name at the column and one at the Xiao's pin:
 
-![image of label underlined](/old-cdn/a90b3c58bd5df7542c97ac9a3628a8a4d1532f31_screenshot_from_2025-09-19_19-02-35.png)
+![image of label underlined](/old-cdn/a90b3c58bd5df7542c97ac9a3628a8a4d1532f31_screenshot_from_2025-09-19_19-02-35.webp)
 
 ### Battery
 
 Adding a battery is really easy because the Xiao already has battery management built in. We need to add two pads where the battery can be connected to the PCB. In this case I used two test points, one for the negative side of the battery (aka ground) and one for the live side (aka vbat):
-![battery test points](/old-cdn/8e1525612dd7caaf1f778b6a265cf52f8bf205cf_image.png) 
+![battery test points](/old-cdn/8e1525612dd7caaf1f778b6a265cf52f8bf205cf_image.webp) 
 
 And then connect the pin `VBAT` to the `BAT` pin of the xiao
-![xiao with VBAT connected](/old-cdn/036a2fd978cb7d53da835fcdc22340f0d6523826_image.png)
+![xiao with VBAT connected](/old-cdn/036a2fd978cb7d53da835fcdc22340f0d6523826_image.webp)
 
 #### Sensing the battery voltage
 
@@ -117,11 +117,11 @@ This is an optional feature that lets you see from your computer how much juice 
 
 We can achieve this by using a voltage divider, basically two resistors that divide the battery voltage by an amount, so we can measure it with our Xiao. It looks like this. Make sure to use these values for the resistors:
 
-![voltage divider](/old-cdn/87baf956562da1c00fbacef4ac0aca21ecf18782_image.png)
+![voltage divider](/old-cdn/87baf956562da1c00fbacef4ac0aca21ecf18782_image.webp)
 
 And then add the corresponding label (`BT_PIN` in our case) to the Xiao; make sure that it is an analog pin (has A* at the end):
 
-![xiao with battery sense](/old-cdn/68369d14d01bcd017b65245544f49e787819f39e_image.png)
+![xiao with battery sense](/old-cdn/68369d14d01bcd017b65245544f49e787819f39e_image.webp)
 
 ### Mounting points
 
@@ -131,14 +131,14 @@ In one of the hierarchical sheets, add 4-6 mounting points. I recommend you use 
 
 You should add three mounting points to the root sheet; we will assign mousebite footprints to these later on
 
-![mounting symbols](/old-cdn/5b231b23c9059899a5ae47f747ec0d6b5d030035_image.png)
+![mounting symbols](/old-cdn/5b231b23c9059899a5ae47f747ec0d6b5d030035_image.webp)
 
 ## Footprints
 
 You're done with your schematic!!! 
 
 Here is how mine looks:
-![image of author's schematic](/old-cdn/ee8f02e3d22dab1d87f76df884054d016a0411cf_image.png)
+![image of author's schematic](/old-cdn/ee8f02e3d22dab1d87f76df884054d016a0411cf_image.webp)
 
 Now it's time to assign some footprints! First, open the footprint assigner tool.
 
@@ -158,7 +158,7 @@ For the testpoints/battery pads, I used `TestPoint:TestPoint_Pad_D2.0mm`, but yo
 This part is basically the same as hackpad, so layout, then routing, except for the mousebites. So in this section I will give some tips for laying out a split keyboard
 
 Here is my final pcb:
-![pcb](/old-cdn/ac8bc9cfffae5f68557d8226a8db07c000685a9e_image.png)
+![pcb](/old-cdn/ac8bc9cfffae5f68557d8226a8db07c000685a9e_image.webp)
 
 ### If the two halves are symmetrical
 
@@ -168,7 +168,7 @@ then you should make the edge.cuts for one half, select all the edge.cuts, right
 
 You should find two flat sides of your two PCBs, place the mousebites there, and edit the edge cuts so it matches the mousebites footprint template:
 
-![flat side with mousebites](/old-cdn/23e81cdffe61fe6fedf424bdde600486798ad084_image.png)
+![flat side with mousebites](/old-cdn/23e81cdffe61fe6fedf424bdde600486798ad084_image.webp)
 
 ## Firmware
 

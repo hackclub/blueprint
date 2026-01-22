@@ -791,7 +791,7 @@ class User < ApplicationRecord
   end
 
   def avatar_url
-    avatar || "/old-cdn/c283ae01214b9052480f1e216e43dbe09a424048_image.png"
+    avatar || "/old-cdn/c283ae01214b9052480f1e216e43dbe09a424048_image.webp"
   end
 
   def update_timezone(new_timezone)

@@ -20,7 +20,7 @@
         <p class="text-2xl font-semibold text-white">Hackpad</p>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Build a custom mechanical keypad</i></p>
         <div class="flex-grow flex items-center justify-center mt-2">
-          <img src="/old-cdn/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.png" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
+          <img src="/old-cdn/6b9c8661f5ae68437e90d14a214f899759eb30b5_image.webp" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
         </div>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
       </div>
@@ -34,7 +34,7 @@
         <p class="text-2xl font-semibold text-white">Super Easy LED Chaser</p>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Makes an LED blink</i></p>
         <div class="flex-grow flex items-center justify-center mt-2">
-          <img src="/old-cdn/ee58578602bd9e8b538751e26df216372164efef_image.png" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
+          <img src="/old-cdn/ee58578602bd9e8b538751e26df216372164efef_image.webp" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
         </div>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
       </div>
@@ -48,7 +48,7 @@
         <p class="text-2xl font-semibold text-white">Squeak</p>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Build a custom mouse</i></p>
         <div class="flex-grow flex items-center justify-center mt-2">
-          <img src="/old-cdn/9ee3942025c1c684f5d15593771fa512bc07247e_image.png
+          <img src="/old-cdn/9ee3942025c1c684f5d15593771fa512bc07247e_image.webp
           " class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
         </div>
         <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>No journal required</i></p>
@@ -119,7 +119,7 @@
       <p class="text-2xl font-semibold text-white">LoRa Puck</p>
       <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Learn how basic RF boards work, and make your own</i></p>
       <div class="flex-grow flex items-center justify-center mt-2">
-        <img src="/old-cdn/5bbe3ad8a080ce02bf53844bf9b73a0a3ca43ce7_image.png" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
+        <img src="/old-cdn/5bbe3ad8a080ce02bf53844bf9b73a0a3ca43ce7_image.webp" class="w-full h-full object-contain md:opacity-90 group-hover:opacity-100 max-h-96" />
       </div>
       <p class="font-semibold text-white/70 group-hover:text-white/90 text-sm"><i>Journaling required</i></p>
     </div>

@@ -7,7 +7,7 @@
 
 Made by @nimit 
 
-![](/old-cdn/710054274784eca36dca4ca7a384e5b2f1fd4c9c_image.png)
+![](/old-cdn/710054274784eca36dca4ca7a384e5b2f1fd4c9c_image.webp)
 Welcome to mini midi magic! This is a kickstart guide to help you get started with designing and building your own midi device and point you towards practical resources to help you make something cool for the world to see (and hear)!
 
 ## Table of contents
@@ -46,7 +46,7 @@ The schematic will teach you how to interface all of these features into your si
 The schematic for this project must include the orpheus pico. Since the orpheus pico is pin compatible with the normal pico, we can just use the same symbol as the regular raspberry pi pico which comes preinstalled with modern kicad.
 Make sure to connect your GND and AGND to the ground symbol and connect your 3v3 to a +3v3 symbol. This will make it easier when you power certain devices later.
 
-![](/old-cdn/f6f9fd975c12e38e5a10e7163318166331dd950c_image.png)
+![](/old-cdn/f6f9fd975c12e38e5a10e7163318166331dd950c_image.webp)
 
 ### Switch matrix
 The switch matrix is used to reduce the number of GPIO pins necessary for each key. It is generally preferred over using each key individually, as you can use a larger number of keys in the same number of pins. A 6x6=36 matrix can be used instead of 36 individual keys to reduce the number of pins needed from 36 down to 6+6=12.
@@ -57,18 +57,18 @@ In a matrix, the keys are arranged in rows and columns and each key press is det
 . The diode we use is the 1N4148, which is a cheap and convenient diode and popular for this application.
 When connecting, make sure all the diode directions are the same. Either use column -> row (COL2ROW) or use row -> column (ROW2COL) throughout all the switches.
 
-![](/old-cdn/5b10701c337263e14721e054dae53020c52492f0_image.png)
+![](/old-cdn/5b10701c337263e14721e054dae53020c52492f0_image.webp)
 
-![](/old-cdn/6f83985c2575f4a577500ff0f32e0aa73a4041cd_image.png)
+![](/old-cdn/6f83985c2575f4a577500ff0f32e0aa73a4041cd_image.webp)
 
 ### Rotary Encoders
 We will be using EC11 rotary encoders. Add the symbol `RotaryEncoder_Switch_MP`. The switch means that it is clickable, and the MP stands for mounting points, which are the pads connected to the base of the mounting pins of the encoder. These pins are used to physically hold the encoder in place. Connect the central C pin and the MP to your ground. SW1 and SW2 connect to your regular switch matrix, following the same COL2ROW or ROW2COL convention as the other switches, with the same diode. The A and B pins connect to your microcontroller’s GPIO pins, and are used to measure the signals. We will not go too deep into this because most firmware tools have libraries ready for encoders.
 
-![](/old-cdn/e1f5f1cdbce5eb4c6842fa99ac3228a79bde4cbd_image.png)
+![](/old-cdn/e1f5f1cdbce5eb4c6842fa99ac3228a79bde4cbd_image.webp)
 
-![](/old-cdn/263fabdb59cfd66bf10bf5a26d03feff6ebd8c08_image.png)
+![](/old-cdn/263fabdb59cfd66bf10bf5a26d03feff6ebd8c08_image.webp)
 
-![](/old-cdn/e0f1cca93e7e7400723f331a64f8a5288d51f200_image.png)
+![](/old-cdn/e0f1cca93e7e7400723f331a64f8a5288d51f200_image.webp)
 
 ### TFT LCD
 For this project, we will be using the ST7735R LCD, which is a great LCD with a nice resolution, and it’s broken out via SPI. The SPI interface makes it really easy for us to add this display while keeping complexity low. The one we will be using has the following pinout (from top to bottom) -
@@ -129,11 +129,11 @@ VCC
 - The GND pin and the VCC pin connect to your board’s ground and +3v3 power symbols respectively.
 In the given example, the SPI bus is also shared with the SD Card on the LCD, so the CS pins must be different so that the bus can be the same.
 
-![](/old-cdn/a58dbf6bbd19bbffb5baf606b6f1f699671f7158_image.png)
+![](/old-cdn/a58dbf6bbd19bbffb5baf606b6f1f699671f7158_image.webp)
 
-![](/old-cdn/9e450af84222f3b8b125997dd038bd170c54df00_image.png)
+![](/old-cdn/9e450af84222f3b8b125997dd038bd170c54df00_image.webp)
 
-![](/old-cdn/5bd24aea8c477850972c23b0b4636d8f035a37a1_image.png)
+![](/old-cdn/5bd24aea8c477850972c23b0b4636d8f035a37a1_image.webp)
 
 ### PCM5100 IIS DAC
 For audio output, we will be using the PCM5100 IIS DAC. This DAC provides high-quality audio output and is controlled via I2S (Inter-integrated Circuit Sound), an easy digital protocol to control audio devices via microcontrollers. In this example, I’ll be using the raw pins rather than a breakout board, as this varies between applications. The 3 main pins we need to deal with are
@@ -202,26 +202,26 @@ VCC
 
 to +3v3.
 
-![](/old-cdn/70a275b14cb0e7ad59cbc73339949f00fa2801a0_image.png)
+![](/old-cdn/70a275b14cb0e7ad59cbc73339949f00fa2801a0_image.webp)
 
 ### A little bit more on the schematic
 
 Your schematic is mostly ready to go around this point, but you should take a few steps to make it look cleaner and easier to read!
 1. Use bounding boxes around certain sections of the schematic to group certain areas. Visually seperate if a set of buttons is used differently from another in the schematic too!
 
-![](/old-cdn/445922a3881f428687ce54be215270e3356eb6cd_image.png)
+![](/old-cdn/445922a3881f428687ce54be215270e3356eb6cd_image.webp)
 
 2. Use labels instead of connecting far components! Sometimes, labels might become easier to read when your schematic has a lot of components, and they are all placed distant from the main microcontroller.
 
-![](/old-cdn/b93debd16850b21121e7fbf5cd32742584e24c3a_image.png)
+![](/old-cdn/b93debd16850b21121e7fbf5cd32742584e24c3a_image.webp)
 
 3. Add text to explain certain confusing sections. Maybe you have a few different matrixes with different purposes? Label them with the text tool to let people know what those sections mean.
 
-![](/old-cdn/8430ff6c382e64128957dfdd551dc9c9c77290de_image.png)
+![](/old-cdn/8430ff6c382e64128957dfdd551dc9c9c77290de_image.webp)
 
 4. Make sure to label your jumpers. The LCD and the DAC breakout jumpers might still have the `CONN` label on them, double click it to rewrite it as your screen or breakout. You can also leave it as it is and add some text to clarify headers next to it.
 
-![](/old-cdn/17e9a5b758801845f702d6615ea9bb02fb7cce96_image.png)
+![](/old-cdn/17e9a5b758801845f702d6615ea9bb02fb7cce96_image.webp)
 
 5. Also add some unconnected mounting hole footprints! These will be used later to make holes in your PCB that will screw into the case!
 
@@ -235,36 +235,36 @@ The next step is to assign footprints. With the footprint assignment tool open, 
 - `MountingHole_x.xmm_Mx` for mounting holes. Since I am using M3 screws, this will be `MountingHole_3.2mm_M3`.
 Some of these names might be different based on your kicad installation and the libraries you have installed with it. Don’t be afraid to ask if you can’t find your desired footprints!
 
-![](/old-cdn/ab17d6bf63ef7c4466424420b53ea8ce87e26302_image.png)
+![](/old-cdn/ab17d6bf63ef7c4466424420b53ea8ce87e26302_image.webp)
 
-![](/old-cdn/0d45fac851fc33acdaea7e2a54b555fd4c1a4e7b_image.png)
+![](/old-cdn/0d45fac851fc33acdaea7e2a54b555fd4c1a4e7b_image.webp)
 
-![](/old-cdn/c1bb42cc9828adca5b1c49029974a651d1303e24_image.png)
+![](/old-cdn/c1bb42cc9828adca5b1c49029974a651d1303e24_image.webp)
 
-![](/old-cdn/3be00747c94290948af49543ac51561ce967c3d2_image.png)
+![](/old-cdn/3be00747c94290948af49543ac51561ce967c3d2_image.webp)
 
-![](/old-cdn/0698d3567d1c6ac12a755a3e524f036b40fcd361_image.png)
+![](/old-cdn/0698d3567d1c6ac12a755a3e524f036b40fcd361_image.webp)
 
 ## Designing a PCB
 Now that we are done with the schematic, we can apply all changes to the footprint assignment and move on with the PCB. Start by pressing the Convert schematic to PCB button (shown below). This should take your footprints and add them to your PCB. If there are any errors, cross check the footprints associated with them and make sure they even exist!
 
-![](/old-cdn/1f649f40b41f888c38933dcbd3c67f9067d99a56_image.png)
+![](/old-cdn/1f649f40b41f888c38933dcbd3c67f9067d99a56_image.webp)
 
 ### Component Placement
 To get started, place your components around the PCB layout as your need. You might want to use the grid tool to change the grid sizes to make it easier to place certain footprints. Eg. You should change the grid size to a submultiple of `19.05mm x 19.05mm` when placing MX switches, because that is their clearance in an actual keyboard/keypad! You can also use the Grid origin tool to set a different origin than your actual board. Once all your components are placed, you should create an edge cut. Select the `Edge.Cuts` layer and using the rectangle/polygon tool, sketch out the PCB cutout. If you want curves, you can use the arc or the curve tool.
 Here is my design! 
 
-![](/old-cdn/d5a7a0ae5775bcc57891d1ec3bccbebfc998dde0_image.png)
+![](/old-cdn/d5a7a0ae5775bcc57891d1ec3bccbebfc998dde0_image.webp)
 
 ### Routing your traces
 While a lot of people might start with an autorouter, it isn’t always perfect. Instead, it is best to manually check every trace and every route. Keep traces as short as possible and straight to the point. Don’t be afraid to use vias to switch your trace between layers, because you won’t be paying extra for them! If your traces are too jumbled, you might want to consider erasing that certain area to reroute them better. A personal tip is to have long horizontal traces be on the opposite layer as long vertical traces, as you will not need to use vias as often and your board will be overall cleaner and easier to debug.  
 
-![](/old-cdn/718f1f7de9a7e00ed6bbcace511dbf162466dec8_image.png)
+![](/old-cdn/718f1f7de9a7e00ed6bbcace511dbf162466dec8_image.webp)
 
 ### Silkscreen
 The silkscreen layer is used to add cosmetic effects to your PCB’s top layers. You can use the text tool while either F.Silkscreen or B.Silkscreen are selected to write text. The polygon tool is also adapted to create filled shapes, and you can even insert logos using kicad’s built-in image conversion tool! This includes anything from decals to cool graphics. Logos, labels and text is very common, so make sure to use the silkscreen to it’s fullest potential and create something cool!
 
-![](/old-cdn/44b5a8b30c0c374226ac47b0ce073aac380b6c02_image.png)
+![](/old-cdn/44b5a8b30c0c374226ac47b0ce073aac380b6c02_image.webp)
 
 ## Making a case
 `[gonna let someone else take this one]`
