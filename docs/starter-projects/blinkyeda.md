@@ -12,7 +12,7 @@ Hi there! This is a tutorial on how to make a 555 LED Chaser board otherwise kno
 
 We will all build this LED chaser which blinks 10 LEDs in a variable speed sequence. 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/766c5aee15a8c57b1bd57467f3382fc68c0a627c_unnamed.gif)
+![](/old-cdn/766c5aee15a8c57b1bd57467f3382fc68c0a627c_unnamed.gif)
 
 Here’s the schematic: 
 
@@ -37,7 +37,7 @@ If you haven’t already, you should create an account on [EasyEDA](https://easy
 
 Create a repository on [Github.com](http://Github.com). (you may need to create an account)
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8c2a28ed6838101ae8c5def10c9115042637a201_image.png)
+![](/old-cdn/8c2a28ed6838101ae8c5def10c9115042637a201_image.png)
 
 You need to 
 
@@ -46,7 +46,7 @@ You need to
 - **Make it public**
 - **Enable  a README** so others can see what you made
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/86cd75d246e16ce3a172caa472c49f2648ee92eb_image.png)
+![](/old-cdn/86cd75d246e16ce3a172caa472c49f2648ee92eb_image.png)
 
 Now copy the URL for your repo. You will need it for your next step.
 
@@ -56,13 +56,13 @@ Now, you just need to create your project on Blueprint. Blueprint not only allow
 
 First, create your Blueprint account on [https://blueprint.hackclub.com/](https://blueprint.hackclub.com/) (⇒ Sign in). In the future, you will be able to log into your account anywhere, anytime to make your project. 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b7cf34ff897d78ad13372226165e67814934dae3_image.png)
+![](/old-cdn/b7cf34ff897d78ad13372226165e67814934dae3_image.png)
 
 Your screen should look something like this.
 
 Click the “+ Start a Project” button at the bottom of your screen. You need to fill out the form (you can just copy the name and description from your GitHub repo). Don’t worry about the banner for now. You can put that in later.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/84fa13d1537256ffdb6f5fd9939f96f4f0603bd3_image.png)
+![](/old-cdn/84fa13d1537256ffdb6f5fd9939f96f4f0603bd3_image.png)
 
 IMPORTANT: 
 Make sure you select the LED Chaser as your guide. Doing this will bypass the need for a journal in order to ship. For your future Blueprint projects, you will need to make an updated guide with what you are making.
@@ -71,11 +71,11 @@ Also, make sure you click “I need funding”
 
 Now click “Create Project”
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/283a56a17d26ee6e3d42a9d20975cbaa25b04964_image.png)
+![](/old-cdn/283a56a17d26ee6e3d42a9d20975cbaa25b04964_image.png)
 
 Once your project is created, click into it on the project screen.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a73a0deeb8dbf8e604f0ebfda1f95f6f6ccd6daa_image.png)
+![](/old-cdn/a73a0deeb8dbf8e604f0ebfda1f95f6f6ccd6daa_image.png)
 
 ## Create your project on EasyEDA
 
@@ -95,7 +95,7 @@ You should see something like the image below. That is the schematic editor wher
 
 Here are the components we will be using: (IC stands for Integrated Circuit)
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/d91b426a709588e2ab5803427c3624a753450f45__771DD54A-39E4-4922-9E2C-BAE6DBCC179B_.png)
+![](/old-cdn/d91b426a709588e2ab5803427c3624a753450f45__771DD54A-39E4-4922-9E2C-BAE6DBCC179B_.png)
 
 In schematic, things are represented as symbols. Here are the symbols for the components above:
 
@@ -215,7 +215,7 @@ Substrate: The actual plastic (usually green) which makes up your board
 
 Via: the tunnels which connect the top and bottom copper layers
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/c2ec73f247fdb1f466903fc86d345fe0f4b47b6f_image.png)
+![](/old-cdn/c2ec73f247fdb1f466903fc86d345fe0f4b47b6f_image.png)
 
 ## Place your components
 
@@ -275,7 +275,7 @@ Once your PCB passes the DRC, it is finished!
 
 In PCB editor click View > 3D View to see your finished work!
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/50638b1bb956cd429eab5755e7aaf142ffe088db_image.png)
+![](/old-cdn/50638b1bb956cd429eab5755e7aaf142ffe088db_image.png)
 
 ## Add your files to your GitHub Repo
 
@@ -311,7 +311,7 @@ Go back to the GitHub repo you created at the start.
 
 Click Add File → Upload files 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/470145098fd2379b9385c1f49ddf795fbadfa1a3_image.png)
+![](/old-cdn/470145098fd2379b9385c1f49ddf795fbadfa1a3_image.png)
 
 Drag in your: 
 
@@ -323,13 +323,13 @@ Drag in your:
 
 (you should have downloaded all of these before)
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8116375daf649aa342be5d409e010a5769f5ed81_image.png)
+![](/old-cdn/8116375daf649aa342be5d409e010a5769f5ed81_image.png)
 
 You can then click to commit your changes.
 
 
 Finally, edit your ReadME
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/383215c7b9b871788025c40fd95b2cab387938d2_image.png)
+![](/old-cdn/383215c7b9b871788025c40fd95b2cab387938d2_image.png)
 
 Drag in your PCB screenshot (this should be the same screenshot).
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/11e08e488bc6c1098c1bc86ea0699b3e83aface1_image.png)
@@ -342,21 +342,21 @@ NOTE: ALL projects you make for Blueprint must have a project photo in your Read
 
 Go to [https://jlcpcb.com/](https://jlcpcb.com/) and make an account. Then, add your Gerber file for the instant quote. 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/baaa0ca887d51110c30cba9d862968acbef618f8_image.png)
+![](/old-cdn/baaa0ca887d51110c30cba9d862968acbef618f8_image.png)
 
 Settings: 
 
 You should keep the default settings for everything. The only thing you should/can change is the PCB Color. I did black as seen below:
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/2b2ea8e606d05ddff382fdcc7934da4bff70615c_image.png)
+![](/old-cdn/2b2ea8e606d05ddff382fdcc7934da4bff70615c_image.png)
 
 For high-spec options, also keep the default. Do not click PCB assembly as we will give you a kit to hand-solder your board.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/053061912ca84c66c46323ccef5b12cb71c7d721_image.png)
+![](/old-cdn/053061912ca84c66c46323ccef5b12cb71c7d721_image.png)
 
 Once you have successfully *Not* changed any of the settings (except the board color), on the right, change the shipping method to Global Standard Direct (or Air Registered Mail if it is cheaper), and take a screenshot (this is very important). 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/6f538d5f301eae997544c43c1d6ce6daca01331d_image.png)
+![](/old-cdn/6f538d5f301eae997544c43c1d6ce6daca01331d_image.png)
 
 ## Submitting your Blueprint project to get funding
 
@@ -369,31 +369,31 @@ You are almost done! At this stage you should have:
 
 Go back to your Blueprint project screen from before. You should edit the project so the banner is your 3D render.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a73a0deeb8dbf8e604f0ebfda1f95f6f6ccd6daa_image.png)
+![](/old-cdn/a73a0deeb8dbf8e604f0ebfda1f95f6f6ccd6daa_image.png)
 
 Now, click “Ship It”
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/6d1688e2383ca416db27b57942698e7f24a88da9_image.png)
+![](/old-cdn/6d1688e2383ca416db27b57942698e7f24a88da9_image.png)
 
 Blueprint will run some checks. If any are red, you need to fix them. (you may need to upload your project banner)
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0e646bc3c854746bfd51172fa68cdba8a9df1625_image.png)
+![](/old-cdn/0e646bc3c854746bfd51172fa68cdba8a9df1625_image.png)
 
 Enter the dollar amount which you previously screenshotted on JPCLCB (don’t worry, we will give you extra for any fluctuations). 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/22dfe9ac0998e14b4f9418b118f37eeee29a5561_image.png)
+![](/old-cdn/22dfe9ac0998e14b4f9418b118f37eeee29a5561_image.png)
 
 Click “No” for 3d print
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/cd0755158d34ae939d044a3d350e0ca6c4cb6ea7_image.png)
+![](/old-cdn/cd0755158d34ae939d044a3d350e0ca6c4cb6ea7_image.png)
 
 Upload your JLCPCB screenshot from earlier
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0aaa8f8f94dab1567dfdaff06ca5ac755b07f131_image.png)
+![](/old-cdn/0aaa8f8f94dab1567dfdaff06ca5ac755b07f131_image.png)
 
 Check your project…. and ship!
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/9306e1f8bb9e33f20e757051d90f47fe1f8035e0_image.png)
+![](/old-cdn/9306e1f8bb9e33f20e757051d90f47fe1f8035e0_image.png)
 
 You may need to verify your Hack Club identity if you have not already.
 

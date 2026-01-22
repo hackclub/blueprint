@@ -20,7 +20,7 @@ For EasyEDA, simply go to your PCB view (not the schematic view) and click
 
 It will prompt you to check DRC which you should ALWAYS do
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0c7636de3e8bfdc9d81aa68422c288ad41d1bf29_image.png)
+![](/old-cdn/0c7636de3e8bfdc9d81aa68422c288ad41d1bf29_image.png)
 
 If you are doing PCBA (A PCB board with the parts assembled at the factory), you will also need the Bill of Materials(BOM), and a Pick and Place File. You can get them by doing:
 
@@ -38,7 +38,7 @@ PCB fabs have **a lot** of settings for board manufacturing, and JLCPCB is no ex
 
 ### Base Options
 
-![Base options](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a2f0257d86f0aeb3abca08284b392246b3ff49cf_image.png)
+![Base options](/old-cdn/a2f0257d86f0aeb3abca08284b392246b3ff49cf_image.png)
 
 Base options (These are all the default options so you likely don’t need to change anything)
 
@@ -51,7 +51,7 @@ Base options (These are all the default options so you likely don’t need to ch
 
 ### PCB Specifications
 
-![PCB specs](https://hc-cdn.hel1.your-objectstorage.com/s/v3/3c5dd479c7629b6b231ef8e899ab16d455d9db8c_image.png)
+![PCB specs](/old-cdn/3c5dd479c7629b6b231ef8e899ab16d455d9db8c_image.png)
 
 PCB specs
 
@@ -69,7 +69,7 @@ High-spec options
 
 Try and always keep the high-spec options on the default. Changing them is quite expensive.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/5206e96557b4b3956db3fd0cfb81edbc627e9483_image.png)
+![](/old-cdn/5206e96557b4b3956db3fd0cfb81edbc627e9483_image.png)
 
 ## 3. PCB Assembly
 
@@ -83,7 +83,7 @@ Choose one of two assembly options for your PCB. **Assembly by JLCPCB** is the q
 
 ### Assembly by JLCPCB
 
-![Assembly options](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a6fe8bd721b5c5fb98e09f8cdc78c75afb591e4b_assembly.png)
+![Assembly options](/old-cdn/a6fe8bd721b5c5fb98e09f8cdc78c75afb591e4b_assembly.png)
 
 Assembly options
 
@@ -98,13 +98,13 @@ Assembly options
 
 Click **NEXT**, then upload your `bom.csv` and `positions.csv` (KiCad) or `BOM_PCB.csv` and `PickAndPlace.csv` (EasyEDA).
 
-![BOM Upload](https://hc-cdn.hel1.your-objectstorage.com/s/v3/712ec605dca59fa99ae56a22f0a1125befd9a068_bom.png)
+![BOM Upload](/old-cdn/712ec605dca59fa99ae56a22f0a1125befd9a068_bom.png)
 
 BOM Upload
 
 If parts like the NFC antenna are unselected, click _“Do Not Place”_.
 
-![Orientation](https://hc-cdn.hel1.your-objectstorage.com/s/v3/9cdf44ed3edd19917da5a82fa9920a7c4790a1d0_orientation.png)
+![Orientation](/old-cdn/9cdf44ed3edd19917da5a82fa9920a7c4790a1d0_orientation.png)
 
 Orientation
 
@@ -116,7 +116,7 @@ Don’t want to pay extra for assembly? DIY is a great, hands-on learning option
 
 You’ll need a soldering iron, solder paste, and a heat gun or reflow tool.
 
-![Stencil](https://hc-cdn.hel1.your-objectstorage.com/s/v3/38e294ff4d70aef27b91a2680c90539b8bc8345f_stencil.png)
+![Stencil](/old-cdn/38e294ff4d70aef27b91a2680c90539b8bc8345f_stencil.png)
 
 Stencil
 
@@ -131,7 +131,7 @@ Click **checkout** and fill out your information.
 
 Then choose “Pay after Review” or “Pay Directly”, and click **Submit Order**.
 
-![Submit order](https://hc-cdn.hel1.your-objectstorage.com/s/v3/7faa4f457bb8e28b9a1e4bb43b1b94da9987df7b_submit-order.png)
+![Submit order](/old-cdn/7faa4f457bb8e28b9a1e4bb43b1b94da9987df7b_submit-order.png)
 
 Submit order
 
@@ -141,7 +141,7 @@ Once asked for payment info, you can just close the tab.
 
 Go to [My Orders](https://jlcpcb.com/user-center/orders/) and take a screenshot like below:
 
-![Cart screenshot](https://hc-cdn.hel1.your-objectstorage.com/s/v3/51761af33c599ad46040b56176a516b543293c64_cart.png)
+![Cart screenshot](/old-cdn/51761af33c599ad46040b56176a516b543293c64_cart.png)
 
 <aside>
 
