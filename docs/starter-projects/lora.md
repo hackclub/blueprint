@@ -126,7 +126,7 @@ Now here's the fun part: there's a part that does almost all of this for us! The
 Here's the final frontend schematic. Note the pi network at the end!
 ![Final frontend schematic](/old-cdn/06c409bbc0d555a4e94f70a9087b621e3e12b5d3_image.png)
 
-[Here's the symbol for the PE4259](https://hc-cdn.hel1.your-objectstorage.com/s/v3/48b5b2347d8813ecea3e724b2366a884b0436fe5_rf_switch_extended.zip)!
+[Here's the symbol for the PE4259](/old-cdn/48b5b2347d8813ecea3e724b2366a884b0436fe5_rf_switch_extended.zip)!
 
 ## The RP2040
 I'm going to speed up this section a bit since many of you may be using different microcontrollers, and tutorials with this microcontroller have been featured several times previously.

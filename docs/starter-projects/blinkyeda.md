@@ -16,7 +16,7 @@ We will all build this LED chaser which blinks 10 LEDs in a variable speed seque
 
 Here’s the schematic: 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e089878c0586cfaaef00bc5f3b7da4044525edf6__3A16B0A8-2A46-4CCC-9F58-228AC47FAB86_.png)
+![](/old-cdn/e089878c0586cfaaef00bc5f3b7da4044525edf6__3A16B0A8-2A46-4CCC-9F58-228AC47FAB86_.png)
 
 ## What we’ll be doing
 
@@ -81,17 +81,17 @@ Once your project is created, click into it on the project screen.
 
 Go to [easyeda.com/editor](http://easyeda.com/editor) and click Design Online > STD edition. We are using the standard edition for simplicity sake but the pro edition is nice and its free!
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a83f8d3eb5790cd6666ed4bf6600e5985f8cd87a__A476BF7E-89EE-422E-B563-63182A7A19B7_.png)
+![](/old-cdn/a83f8d3eb5790cd6666ed4bf6600e5985f8cd87a__A476BF7E-89EE-422E-B563-63182A7A19B7_.png)
 
 Now click New Project > Name your Project > Save
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/49fcf0556cda7a369c0949d7fa8d21f5f6df16d8__188E0BAB-5E62-4FD4-9D15-9791E8A4DB0C_.png)
+![](/old-cdn/49fcf0556cda7a369c0949d7fa8d21f5f6df16d8__188E0BAB-5E62-4FD4-9D15-9791E8A4DB0C_.png)
 
 ## Create your schematic
 
 You should see something like the image below. That is the schematic editor where you will be making your circuit diagram. Below are some useful tools.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8cc3b535f214f0b6be2e74aa564047dd41c72dd7__21B71484-212D-4F6E-BE33-5CC7F8DD864B_.png)
+![](/old-cdn/8cc3b535f214f0b6be2e74aa564047dd41c72dd7__21B71484-212D-4F6E-BE33-5CC7F8DD864B_.png)
 
 Here are the components we will be using: (IC stands for Integrated Circuit)
 
@@ -99,11 +99,11 @@ Here are the components we will be using: (IC stands for Integrated Circuit)
 
 In schematic, things are represented as symbols. Here are the symbols for the components above:
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ca8bd830950c4bf32c887793df420ea52141425e__83C593DD-25FA-4281-B875-CDAFA65B4C39_.png)
+![](/old-cdn/ca8bd830950c4bf32c887793df420ea52141425e__83C593DD-25FA-4281-B875-CDAFA65B4C39_.png)
 
 In order to place components (aka symbols), you need to click “Library” and search for a component number such as “CD4017BCN”.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4f0fc7ce84b7e363a93d6c04860ce5dfc76e45d4__A96120AA-08F2-49DF-AB22-62FBFAA633F5_.png)
+![](/old-cdn/4f0fc7ce84b7e363a93d6c04860ce5dfc76e45d4__A96120AA-08F2-49DF-AB22-62FBFAA633F5_.png)
 
 You will now need to go through and find all of your components. Luckily, we already compiled a list of everything you need to place. Go to Library>Click on the part number>Place for each of the parts below:
 
@@ -138,7 +138,7 @@ Now that you have placed all of your components, you should arrange it as below.
 - Use Copy and Paste when you need more, E.g. to make 10  LED’s
 - Remember to save (Control-S or  ⌘-S) often !!!!
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/b86449f89ce3fbcc4dfb37cfea56d0e402fbd122__0B589CAB-0E7F-403F-90D3-7350DD6C9C88_.png)
+![](/old-cdn/b86449f89ce3fbcc4dfb37cfea56d0e402fbd122__0B589CAB-0E7F-403F-90D3-7350DD6C9C88_.png)
 
 ## Wire your components
 
@@ -149,13 +149,13 @@ Don’t mess this up! Make sure your wiring matches the diagram below. The littl
 - Check out Shortcut keys (Settings-> Shortcut key settings)
 - Remember to save (Control-S or  ⌘-S) often !!!!
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/778ce6cb2c018696f8354aabb15b7112f4873a99__BBC27CE3-7A26-4E46-AFA7-E725BDBB9552_.png)
+![](/old-cdn/778ce6cb2c018696f8354aabb15b7112f4873a99__BBC27CE3-7A26-4E46-AFA7-E725BDBB9552_.png)
 
 Your schematic is complete! 
 
 Reminder: ⌘+ S OR Ctrl + S to save your design often!
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/5aaf335b6f95cb2efb09573d6b4c74a52d61f8ed__534392E2-01CF-42B4-B1E8-7F2185EB0ACD_.png)
+![](/old-cdn/5aaf335b6f95cb2efb09573d6b4c74a52d61f8ed__534392E2-01CF-42B4-B1E8-7F2185EB0ACD_.png)
 
 ## Create a Printed Circuit Board (PCB)
 
@@ -165,7 +165,7 @@ At the top of your screen, click
 
 **Design > Convert Schematic to PCB**
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/111cd17b9f2a14453f1ba78ca456d652ccda152b__D27CDDB5-8BEC-4FF4-880A-04901B93BCE1_.png)
+![](/old-cdn/111cd17b9f2a14453f1ba78ca456d652ccda152b__D27CDDB5-8BEC-4FF4-880A-04901B93BCE1_.png)
 
 <aside>
 
@@ -181,11 +181,11 @@ For this tutorial, I will be making a rectangular for simplicity sake. However,
 
 **YOU NEED TO CUSTOMIZE YOUR BOARD WITH A CUSTOM OUTLINE AND ART**
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/d3c10a29dc99ea3ab31c5ff7d3d893319974b98d__BA6D32FD-B511-4C8B-AAD5-D6D800E09D17_.png)
+![](/old-cdn/d3c10a29dc99ea3ab31c5ff7d3d893319974b98d__BA6D32FD-B511-4C8B-AAD5-D6D800E09D17_.png)
 
 First, select the “Board Outline” on the sidebar. 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/9f20de70d8fa423169ec12cf1fb5fd9318276b63__1841ADE8-E6F4-47D0-8E13-D9BB8295298E_.png)
+![](/old-cdn/9f20de70d8fa423169ec12cf1fb5fd9318276b63__1841ADE8-E6F4-47D0-8E13-D9BB8295298E_.png)
 
 Next, you can either make your own board outline using the “Line” and other features in the toolbar.
 
@@ -201,7 +201,7 @@ One thing about the DXF’s you may need to scale it online. Make sure to always
 
 Once you have your board outline, you need to organize and wire your components. You should get familiar with the PCB tools:
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/cac16711c0f9702ef11d943fd693658a2e30f9ed_image.png)
+![](/old-cdn/cac16711c0f9702ef11d943fd693658a2e30f9ed_image.png)
 
 A PCB is made out of multiple layers. Our boards are “two layer” meaning that they have two layers of copper wire. 
 
@@ -223,7 +223,7 @@ Place all of your components inside the Board Outline. Move components to shorte
 
 Remember to save (Control-S or  ⌘-S) often !!!!
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/066ff9acb3435c5bd772890417b8702c9edde7a7_image.png)
+![](/old-cdn/066ff9acb3435c5bd772890417b8702c9edde7a7_image.png)
 
 (remember that your board outline, the purple lines, should not be a rectangle but some custom shape)
 
@@ -233,19 +233,19 @@ The ratlines (the blue straight lines) in-between your components is not the com
 
 On the side bar, you can choose either top layer (red) or bottom layer (blue), or a combination of both to wire your components. 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8ea222f123d51cdd5bf2cac00b055ce98718d1d0_image.png)
+![](/old-cdn/8ea222f123d51cdd5bf2cac00b055ce98718d1d0_image.png)
 
 If it is impossible to make a connection in one layer, you can add a via. A via acts as a tunnel to connect between the two copper layers. As you are wiring you can click ‘v’ to place a via and switch to the other side.
 
 Your PCB is routed!
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a8846471c379ddc28fc84b366451824d841dfee6_image.png)
+![](/old-cdn/a8846471c379ddc28fc84b366451824d841dfee6_image.png)
 
 ## Customization
 
 You may have already added some text and art to customize your board. if not, you can click “TopSilkLayer” and use the text tool.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/28771d826d2ce20407a101f5c342212a67b547f8_image.png)
+![](/old-cdn/28771d826d2ce20407a101f5c342212a67b547f8_image.png)
 
 To add art, just select the “Top Silkscreen Layer” or “Bottom Silkscreen Layer” in the sidebars. Then you can do: 
 
@@ -253,11 +253,11 @@ File→import→image
 
 to add custom art. 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/0eb5896b961ad09975eeb0ae08aec282107ba53c_image.png)
+![](/old-cdn/0eb5896b961ad09975eeb0ae08aec282107ba53c_image.png)
 
 Your board is now beautiful
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/e2462343267cd8a90cd643b0eea6dac4adb34b28_image.png)
+![](/old-cdn/e2462343267cd8a90cd643b0eea6dac4adb34b28_image.png)
 
 ## Run Design Rules Check
 
@@ -265,11 +265,11 @@ Click Design → Run Design Rules Check
 
 This runs a script which makes sure that your board has no interference errors, no components are off the board, and no wires are intersecting. It does not however confirm that your board works.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/45d9dc52ccf5d311e8105d5d6b5498618cd0dd0f_image.png)
+![](/old-cdn/45d9dc52ccf5d311e8105d5d6b5498618cd0dd0f_image.png)
 
 Using the output, correct any errors. 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ac4cbd4a863e01e5f5b6609f40a1945a42a3481e_image.png)
+![](/old-cdn/ac4cbd4a863e01e5f5b6609f40a1945a42a3481e_image.png)
 
 Once your PCB passes the DRC, it is finished!
 
@@ -291,19 +291,19 @@ Get the following files of your project:
 
 A PDF of your schematic (In your schematic editor do File → Export → PDF)
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/5e6decf5d2fa92253b9a567b15b92ab3e684266d_image.png)
+![](/old-cdn/5e6decf5d2fa92253b9a567b15b92ab3e684266d_image.png)
 
 Your schematic (in your schematic editor do File → Export → EasyEDA)
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4066809bebc778265301e03e75d70c686cb5e6ed_image.png)
+![](/old-cdn/4066809bebc778265301e03e75d70c686cb5e6ed_image.png)
 
 Your Gerber (in your PCB editor do File → Generate PCB Fabrication File (Gerber))
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/647519e77f09584480f0cefe7b8ed5b6f21d96f3_image.png)
+![](/old-cdn/647519e77f09584480f0cefe7b8ed5b6f21d96f3_image.png)
 
 Your PCB (in your PCB editor do File → Export → EasyEDA)
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ab6f09e8041e0c5eb56a74e34a87aab1e8a936c6_image.png)
+![](/old-cdn/ab6f09e8041e0c5eb56a74e34a87aab1e8a936c6_image.png)
 
 ## Upload your files to GitHub
 
@@ -332,7 +332,7 @@ Finally, edit your ReadME
 ![](/old-cdn/383215c7b9b871788025c40fd95b2cab387938d2_image.png)
 
 Drag in your PCB screenshot (this should be the same screenshot).
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/11e08e488bc6c1098c1bc86ea0699b3e83aface1_image.png)
+![](/old-cdn/11e08e488bc6c1098c1bc86ea0699b3e83aface1_image.png)
 
 Commit this change as well. 
 

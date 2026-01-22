@@ -77,7 +77,7 @@ There are many tutorials on how to install libraries! Google is your best friend
 
 @Cyao in the slack did make an awesome tutorial though! Here it is:
 <video width="100%" controls>
-  <source src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ff3a773c8cbe5f6a_o.mp4" type="video/mp4" />
+  <source src="/old-cdn/ff3a773c8cbe5f6a_o.mp4" type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 
