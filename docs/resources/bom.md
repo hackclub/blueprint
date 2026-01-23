@@ -17,7 +17,7 @@ A BOM, or Bill of Materials, is the comprehensive list of ==**all**== required p
 
 In industrial BOMs, you will generally include information such as part numbers, part names, descriptions, manufacturer/manufacturing method, etc. If you are interested, check out [this BOM writing guide](https://durolabs.co/blog/bill-of-materials-example/)
 
-![Manufactoring BOM Example!](https://hc-cdn.hel1.your-objectstorage.com/s/v3/fbea41efef552a6cc8830f589c44f6f3f2b8e236_pasted_image_20251017223635.png)
+![Manufactoring BOM Example!](/old-cdn/fbea41efef552a6cc8830f589c44f6f3f2b8e236_pasted_image_20251017223635.webp)
 > This is is what industry BOMs look like. Thankfully, you won't have to deal with that for Blueprint! This format is pretty widespread, with robotics teams listing parts similarly as well. 
 
 However, for Blueprint, your BOMs will look vastly different and is much less complex.  Here are the bare minimums for what you need for your Blueprint BOM:
@@ -62,7 +62,7 @@ Here is an example using Google Sheets. I will use formulas to make the Total Pr
 
 1. Total Price Formula. This is equivalent to the Unit Price times the quantity. 
 
-![Step_1](https://hc-cdn.hel1.your-objectstorage.com/s/v3/19deaef50d30d1524066970c1b76a219ad170939_pasted_image_20251017234942.png)
+![Step_1](/old-cdn/19deaef50d30d1524066970c1b76a219ad170939_pasted_image_20251017234942.webp)
 
 You should then drag the blue circle on the bottom right corner to copy the formulas for the below cells. For more information on formatting with Google Sheets, check out this [basic Google Sheets formula guide!](https://www.youtube.com/watch?v=llkP9DxRAPI) 
 
@@ -79,10 +79,10 @@ This calculation represents the cumulative total of purchases including sales ta
 - **Rounding:** Applied to nearest cent using `ROUND` function
 - **First Item:** `=ROUND(Total Price × 1.06625, 2)`
   - **Example:** `=ROUND(D2*1.06625,2)`
-  - ![roundingexample.0](https://hc-cdn.hel1.your-objectstorage.com/s/v3/85f4db06f3ed14e960764b7143931e6875eed6f3_pasted_image_20251018003730.png)
+  - ![roundingexample.0](/old-cdn/85f4db06f3ed14e960764b7143931e6875eed6f3_pasted_image_20251018003730.webp)
 - **Subsequent Items:** `=ROUND(Total Price × 1.06625, 2) + Previous Running Total`
   - **Example:** `=ROUND(D3*1.06625,2)+G2`
-  - ![roundingexample.1](https://hc-cdn.hel1.your-objectstorage.com/s/v3/2905b4cb99a86be967c7144cf6372dd936f00b04_pasted_image_20251018003712.png)
+  - ![roundingexample.1](/old-cdn/2905b4cb99a86be967c7144cf6372dd936f00b04_pasted_image_20251018003712.webp)
 
 --- 
 
@@ -92,4 +92,4 @@ This calculation represents the cumulative total of purchases including sales ta
 2. Select **Download**
 3. Choose **Comma separated values (.csv)**
 
-![BOM](https://hc-cdn.hel1.your-objectstorage.com/s/v3/3479c9e12046945013728171f0a0e4d705464fd1_image.png)
+![BOM](/old-cdn/3479c9e12046945013728171f0a0e4d705464fd1_image.webp)

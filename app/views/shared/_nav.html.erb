@@ -127,7 +127,7 @@
             <% end %>
             <%= link_to user_path(current_user), class: "flex items-center space-x-4" do %>
                 <div class="flex items-center space-x-4">
-                    <% avatar_url = current_user.avatar || "https://hc-cdn.hel1.your-objectstorage.com/s/v3/c283ae01214b9052480f1e216e43dbe09a424048_image.png" %>
+                    <% avatar_url = current_user.avatar || "/old-cdn/c283ae01214b9052480f1e216e43dbe09a424048_image.webp" %>
                     <% name = current_user.display_name || current_user.email || "unknown" %>
                     <img src="<%= avatar_url %>" alt="<%= name %>'s avatar" class="rounded-lg size-12">
                     <div>

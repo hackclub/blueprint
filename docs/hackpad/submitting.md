@@ -86,15 +86,15 @@ git push
 
 Now you need to submit your project for review! To do this, head on over to the "Dashboard tab" and scroll down to find your project.
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/4a53565b47230f1348af4aef6d64186ee4e715e9_Screenshot_2025-11-07_at_12.59.12_AM.png)
+![](/old-cdn/4a53565b47230f1348af4aef6d64186ee4e715e9_Screenshot_2025-11-07_at_12.59.12_AM.webp)
 
 Click on your project to visit it, and then, hit "Submit!"
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/15a14c0b8017544ed5431daa51da6c77616d5411_Screenshot_2025-11-07_at_1.02.58_AM.png)
+![](/old-cdn/15a14c0b8017544ed5431daa51da6c77616d5411_Screenshot_2025-11-07_at_1.02.58_AM.webp)
 
 This will bring up the project submission form. 
 
-![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/3038c05538dc343d746447d6a084b7f0a0209ea8_Screenshot_2025-11-07_at_1.09.47_AM.png)
+![](/old-cdn/3038c05538dc343d746447d6a084b7f0a0209ea8_Screenshot_2025-11-07_at_1.09.47_AM.webp)
 
 Make sure you include a link to your GitHub repository. If you don't have a soldering iron or printer, click the respective check boxes.
 

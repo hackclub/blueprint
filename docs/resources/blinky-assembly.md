@@ -23,7 +23,7 @@
 - Make sure that the chip is completely seated on the board before soldering.  
 - Note that chips are sensitive to overheating so try not to keep the soldering iron on the pin your soldering for any longer than it takes to melt the solder and let it flow around the pin.  
 - A well soldered pin will have a smooth coating of solder, with no parts of the pin’s hole visible.  
-![Image 1](https://hc-cdn.hel1.your-objectstorage.com/s/v3/ecfad937e5afccde3361afeec1f442a290bbba64_image_1.png)  
+![Image 1](/old-cdn/ecfad937e5afccde3361afeec1f442a290bbba64_image_1.webp)  
 
 ### Step 5: Install LEDs  
 - Next put in your LED1-LED10 LEDs.  
@@ -31,7 +31,7 @@
 - Install them by orienting the flat side of the LED with the flat side of the outline.  
 - Note that the flat side of the LED corresponds to the short lead of the LEDs which marks its cathode (negative) side.  
 - Again, solder carefully making sure you don’t overheat the LEDs.  
-![Image 2](https://hc-cdn.hel1.your-objectstorage.com/s/v3/a6bee3823ca490db121e9bd595f2aa76a1896fd6_image_2.png)  
+![Image 2](/old-cdn/a6bee3823ca490db121e9bd595f2aa76a1896fd6_image_2.webp)  
 
 ### Step 6: Mount Capacitor C1  
 - Mount C1, the 1 microfarad electrolytic capacitor.  
@@ -39,12 +39,12 @@
 - The unmarked side opposite the minus is the positive side.  
 - Insert that in the hole on the C1 outline marked with a ‘+’.  
 - Solder the capacitor in place.  
-![Image 3](https://hc-cdn.hel1.your-objectstorage.com/s/v3/dc714e4689acd4bddea5bdeea3caa9582c38e7d9_image_3.png)  
+![Image 3](/old-cdn/dc714e4689acd4bddea5bdeea3caa9582c38e7d9_image_3.webp)  
 
 ### Step 7: Install Potentiometer  
 - Install and solder the potentiometer.  
 - Make sure you can reach the adjustment screw with a small screwdriver.  
-![Image 4](https://hc-cdn.hel1.your-objectstorage.com/s/v3/983f17254765ec883f62937f0f8612bf19068ca9_image_4.png)  
+![Image 4](/old-cdn/983f17254765ec883f62937f0f8612bf19068ca9_image_4.webp)  
 
 ### Step 8: Mount Resistors and Capacitor C2  
 - Mount and solder all the 2 lead components: R1, R2, and C2.  
@@ -52,13 +52,13 @@
 - Note that the bands on the resistors may be hard to read.  
 - The 470 ohm resistor has bands that are yellow-violet-black-brown.  
 - The 1K ohm resistor has bands that are brown-black-black-red.  
-![Image 5](https://hc-cdn.hel1.your-objectstorage.com/s/v3/aff5e52797d5e81c27b879af9d4122d1f5080395_image_5.png)  
+![Image 5](/old-cdn/aff5e52797d5e81c27b879af9d4122d1f5080395_image_5.webp)  
 
 ### Step 9: Install Headers  
 - Mount the two pin and 1 pin headers.  
 - The two pin header will be used to power the circuit.  
 - The one pin header is optional and can be used to see the clock on an oscilloscope or drive another project.  
-![Image 6](https://hc-cdn.hel1.your-objectstorage.com/s/v3/f388ebbee86f8d944eb1d85bf6070f9faec4ae7f_image_6.png)  
+![Image 6](/old-cdn/f388ebbee86f8d944eb1d85bf6070f9faec4ae7f_image_6.webp)  
 
 ### Step 10: Connect Battery Clip  
 - Connect the two pins of the battery clip to the 2 pin header.  

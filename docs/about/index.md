@@ -19,7 +19,7 @@ We're a program by [Hack Club](https://hackclub.com?utm_source=blueprint) open t
 
 Here's a more detailed look at how it all works:
 
-![blueprint how to](https://hc-cdn.hel1.your-objectstorage.com/s/v3/309b8b95c9b370c89f44dc346212a72c120c4e7e_how-to.svg)
+![blueprint how to](/old-cdn/309b8b95c9b370c89f44dc346212a72c120c4e7e_how-to.svg)
 
 ## What can I build?
 
@@ -41,7 +41,7 @@ You want to keep your projects original and your journal highly detailed. Don't 
 
 To help you gauge how much funding you can get, we've created a tier system:
 
-![blueprint tiers](https://hc-cdn.hel1.your-objectstorage.com/s/v3/25de1405658d50e80662edb588cd0ca0887c019f_Untitled-2025-10-22-1113-2.svg)
+![blueprint tiers](/old-cdn/25de1405658d50e80662edb588cd0ca0887c019f_Untitled-2025-10-22-1113-2.svg)
 
 <span class="text-bp-warning">The hour amounts are not hard requirements, they are just estimates of time needed for the average hacker to achieve the quality required.</span>
 
