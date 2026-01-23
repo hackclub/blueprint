@@ -56,6 +56,7 @@ class User < ApplicationRecord
   has_many :kudos, dependent: :destroy
   has_many :shop_orders, dependent: :destroy
   has_one :privileged_session_expiry, dependent: :destroy
+  has_many :packages, as: :trackable, dependent: :destroy
 
   has_many :ahoy_visits, class_name: "Ahoy::Visit"
   has_many :ahoy_events, class_name: "Ahoy::Event"

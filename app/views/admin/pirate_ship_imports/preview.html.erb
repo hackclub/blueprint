@@ -1,0 +1,65 @@
+<div class="mb-10">
+  <%= render "shared/button", text: "Back", url: new_admin_pirate_ship_import_path, class: "py-0" %>
+</div>
+
+<section class="space-y-6">
+  <div class="flex flex-col space-y-4">
+    <h1 class="text-4xl">PirateShip Import Preview</h1>
+    <p class="text-white/70">
+      Association type: <strong><%= @association_type.humanize %></strong>
+    </p>
+  </div>
+
+  <div class="p-4 border border-white/30 rounded max-w-2xl">
+    <h3 class="text-xl mb-3">Summary</h3>
+    <ul class="space-y-1">
+      <li>Total rows: <strong><%= @result.dig(:summary, :rows_total) %></strong></li>
+      <li class="text-bp-success">Would create: <strong><%= @result.dig(:summary, :would_create) %></strong></li>
+      <li class="text-bp-warning">Skipped (existing tracking): <strong><%= @result.dig(:summary, :skipped_duplicate_existing) %></strong></li>
+      <li class="text-bp-warning">Skipped (duplicate in file): <strong><%= @result.dig(:summary, :skipped_duplicate_in_file) %></strong></li>
+      <li class="text-bp-warning">Skipped (missing association): <strong><%= @result.dig(:summary, :skipped_missing_association) %></strong></li>
+      <li class="text-bp-warning">Skipped (no tracking): <strong><%= @result.dig(:summary, :skipped_no_tracking) %></strong></li>
+    </ul>
+  </div>
+
+  <% if @result.dig(:summary, :would_create).to_i > 0 %>
+    <%= form_with url: admin_pirate_ship_import_path, method: :post, class: "inline" do %>
+      <%= hidden_field_tag :csv_blob_signed_id, @csv_blob_signed_id %>
+      <%= hidden_field_tag :association_type, @association_type %>
+      <%= submit_tag "Confirm and import #{@result.dig(:summary, :would_create)} package(s)",
+        class: "btn btn-outline",
+        data: { turbo_confirm: "Create these packages? This cannot be undone." } %>
+    <% end %>
+  <% else %>
+    <p class="text-bp-warning">Nothing to import. All rows were skipped.</p>
+  <% end %>
+
+  <div class="border-2 border-white rounded-none overflow-x-auto">
+    <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white min-w-[800px]">
+      <div class="col-span-1">Row</div>
+      <div class="col-span-2">Action</div>
+      <div class="col-span-3">Tracking</div>
+      <div class="col-span-3">Association</div>
+      <div class="col-span-3">Reason</div>
+    </div>
+
+    <% @result[:packages].each do |r| %>
+      <% row_color = r[:action] == "create" ? "text-bp-success" : "text-bp-warning" %>
+      <div class="grid grid-cols-12 px-3 py-2 text-sm border-b border-white/30 last:border-0 min-w-[800px]">
+        <div class="col-span-1"><%= r[:row_number] %></div>
+        <div class="col-span-2 <%= row_color %>"><%= r[:action] %></div>
+        <div class="col-span-3 font-mono text-xs"><%= r.dig(:dedupe_key, :tracking_number) %></div>
+        <div class="col-span-3">
+          <% if r[:association].present? %>
+            <%= r.dig(:association, :type) %>:
+            <%= r.dig(:association, :label) || r.dig(:association, :id) %>
+          <% elsif r[:association_lookup].present? %>
+            <%= r.dig(:association_lookup, :type) %>
+            (<%= r.dig(:association_lookup, :lookup_value) || "blank" %>)
+          <% end %>
+        </div>
+        <div class="col-span-3 text-white/70"><%= r[:reason] %></div>
+      </div>
+    <% end %>
+  </div>
+</section>

@@ -1,0 +1,43 @@
+<div class="mb-10">
+  <%= render "shared/button", text: "Back", url: admin_root_path, class: "py-0" %>
+</div>
+
+<section class="space-y-6">
+  <div class="flex flex-col space-y-4">
+    <h1 class="text-4xl">PirateShip CSV Import</h1>
+    <p class="text-white/70">
+      Upload a PirateShip CSV export to create Package records.
+      Step 1 will preview changes (dry run). Step 2 will confirm and create packages.
+    </p>
+  </div>
+
+  <%= form_with url: preview_admin_pirate_ship_import_path, multipart: true, method: :post, class: "space-y-6" do |f| %>
+    <div class="space-y-2">
+      <%= label_tag :association_type, "Associate packages to", class: "text-xl" %>
+      <%= select_tag :association_type,
+        options_for_select([
+          ["User (by Email column)", "user"],
+          ["ShopOrder (by Order ID column)", "shop_order"],
+          ["Project (by project_id column)", "project"]
+        ], params[:association_type]),
+        class: "input px-3 w-full max-w-md" %>
+    </div>
+
+    <div class="space-y-2">
+      <%= label_tag :csv_file, "PirateShip CSV file", class: "text-xl" %>
+      <%= file_field_tag :csv_file, accept: ".csv,text/csv", class: "block w-full max-w-md" %>
+    </div>
+
+    <div class="p-4 border border-white/30 rounded max-w-2xl">
+      <h3 class="text-lg mb-2">Required CSV columns</h3>
+      <ul class="list-disc list-inside text-white/70 space-y-1">
+        <li><strong>Always required</strong>: Tracking Number</li>
+        <li><strong>User association</strong>: Email</li>
+        <li><strong>ShopOrder association</strong>: Order ID</li>
+        <li><strong>Project association</strong>: project_id (must be added to the CSV before import)</li>
+      </ul>
+    </div>
+
+    <%= submit_tag "Preview import", class: "btn btn-outline" %>
+  <% end %>
+</section>
