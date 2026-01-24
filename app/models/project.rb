@@ -67,6 +67,7 @@ class Project < ApplicationRecord
   has_many :valid_build_reviews, -> { where(invalidated: false) }, class_name: "BuildReview"
   has_many :project_grants, dependent: :destroy
   has_many :kudos, dependent: :destroy
+  has_many :packages, as: :trackable, dependent: :destroy
 
   def self.airtable_sync_table_id
     "tblwQanyNgONPvBdL"

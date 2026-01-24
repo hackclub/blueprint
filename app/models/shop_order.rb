@@ -63,6 +63,8 @@ class ShopOrder < ApplicationRecord
   belongs_to :rejected_by, class_name: "User", optional: true
   belongs_to :on_hold_by, class_name: "User", optional: true
 
+  has_many :packages, as: :trackable, dependent: :destroy
+
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validate :quantity_within_stock, on: :create
 

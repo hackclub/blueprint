@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_19_191605) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_23_222210) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -341,6 +341,27 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_191605) do
     t.string "email", null: false
     t.string "request_ip"
     t.index ["email"], name: "index_one_time_passwords_on_email"
+  end
+
+  create_table "packages", force: :cascade do |t|
+    t.string "trackable_type", null: false
+    t.bigint "trackable_id", null: false
+    t.datetime "sent_at"
+    t.string "recipient_name"
+    t.string "tracking_number"
+    t.decimal "cost"
+    t.string "carrier"
+    t.string "service"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "recipient_email"
+    t.string "address_line_1"
+    t.string "address_line_2"
+    t.string "city"
+    t.string "state"
+    t.string "postal_code"
+    t.string "country"
+    t.index ["trackable_type", "trackable_id"], name: "index_packages_on_trackable"
   end
 
   create_table "privileged_session_expiries", force: :cascade do |t|

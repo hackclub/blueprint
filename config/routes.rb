@@ -197,6 +197,10 @@ Rails.application.routes.draw do
 
       post "invalidate_privileged_sessions", to: "static_pages#invalidate_privileged_sessions"
 
+      resource :pirate_ship_import, only: [ :new, :create ], controller: "pirate_ship_imports" do
+        post :preview
+      end
+
       resources :projects, only: [ :index, :show ] do
         post :delete, on: :member
         post :revive, on: :member
