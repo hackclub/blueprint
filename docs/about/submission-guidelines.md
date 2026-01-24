@@ -46,7 +46,7 @@ On top of these requirements, a good read is this page: [what is shipping?](/res
 - [x] A BOM in table format at the end of the README, with links
 
 ##### YOU *DO NOT* HAVE:
-- [ ] AI Generated READMEs, Journal entries, or an image of your project
+- [ ] **AI Generated READMEs, Journal entries, or an image of your project**
 - [ ] Taken designs from other people
 - [ ] Missing firmware/software
 
