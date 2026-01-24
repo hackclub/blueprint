@@ -233,7 +233,7 @@
 /* Markdown-rendered content */
 .markdown {
     /* Base */
-    @apply text-white/85 leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word tracking-wide;
+    @apply text-white/88 leading-relaxed font-content print:text-black print:bg-white print:leading-normal print:text-sm wrap-break-word tracking-wide;
 
     /* Trim outer whitespace */
     > *:first-child {
@@ -250,27 +250,22 @@
     h4,
     h5,
     h6 {
-        @apply font-rc-full text-white;
+        @apply text-white font-content font-[500];
     }
     h1 {
-        @apply mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
+        @apply font-rc-full mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
     }
     h2 {
-        @apply mt-10 mb-3 pb-2 text-4xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
+        @apply mt-10 mb-3 text-4xl;
     }
-
     h3 {
-        @apply mt-10 mb-2 text-2xl;
+        @apply mt-8 mb-2 text-3xl;
     }
-
-    /*Same as H2 but as a green accent color*/
     h4 {
-        @apply text-bp-success mt-10 mb-3 pb-2 text-2xl leading-tight tracking-tight border-b border-white/50 print:mt-3 print:mb-1 print:pb-1 print:border-black/20;
+        @apply mt-6 mb-2 text-2xl;
     }
-
-    /*Same as h1 but it has the fancy blueprint lines*/
     h5 {
-        @apply mt-10 mb-4 pb-2 text-5xl leading-tight tracking-tight border-b border-white/50 print:mt-4 print:mb-2 print:pb-1 print:border-black/20;
+        @apply mt-4 mb-2 text-xl;
     }
     h6 {
         @apply mt-3 mb-2 text-lg;
@@ -300,10 +295,10 @@
 
     /* Lists */
     ul {
-        @apply my-2 list-disc list-inside print:my-2 text-lg leading-relaxed pl-0;
+        @apply my-2 list-disc list-outside print:my-2 text-lg leading-relaxed pl-6;
     }
     ol {
-        @apply my-2 list-decimal list-inside print:my-2 text-lg leading-relaxed;
+        @apply my-2 list-decimal list-outside print:my-2 text-lg leading-relaxed pl-6;
     }
     li {
         @apply print:my-0;
@@ -314,6 +309,28 @@
     li > ul,
     li > ol {
         @apply ml-4;
+    }
+
+    /* Task list checkboxes */
+    :is(h1, h2, h3, h4, h5, h6):has(+ p:has(input[type="checkbox"])) {
+        @apply mb-1;
+    }
+    p:has(input[type="checkbox"]) {
+        @apply my-3;
+    }
+    input[type="checkbox"] {
+        @apply appearance-none w-4 h-4 border-2 border-red-400 bg-red-400 rounded cursor-pointer align-middle mr-2;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E");
+        background-size: 12px;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    input[type="checkbox"]:checked {
+        @apply bg-green-400 border-green-600;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+        background-size: 12px;
+        background-position: center;
+        background-repeat: no-repeat;
     }
 
     /* Code */

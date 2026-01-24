@@ -3,32 +3,29 @@
 | description | Guidelines for submitting your project to the site |
 | priority    | 1                                                  |
 
-## Submission guidelines! 
+# Submission guidelines! 
 
-Ready to submit your project? Right this way! 
+Here's everything you need to know to get your project approved!
 
-The main thing we check for is whether or not your project is shipped - [see - what is shipping?](/resources/shipping). The requirements below are a bare *minimum*, not the goal - you're encouraged to go above and beyond! Add a 3D render, custom logo, and more!
+The primary goal of Blueprint is to get you, yes *you* creating shipped projects! It's pretty much the only thing we check for - we try not to have any unnecessary / arbitrary requirements
+
+Below is a list of *hard* requirements from us. Keep in mind that these are a *minimum*, and you're encouraged to go above and beyond! Add a 3D render, custom logo, and more - you might just get something special :)
+
+On top of these requirements, a good read is this page: [what is shipping?](/resources/shipping)
+
+*any questions? ask in [#blueprint!](https://hackclub.enterprise.slack.com/archives/C083S537USC)*
 
 ---
 
-### Requirements
+#### **Requirements**
 
-### 1. Your project is original
-
-If you follow guides from online or even from the [guides](/guides), thats fine! However, you need have an original touch to the project. This is something different for every project. For the split keyboard, maybe add lights that flash different colors based on the program, etc. We WILL verify that your project is original even if you create it from some obscure guide.
-
-
-### 2. Your project is actually shipped & complete
-
-The tl;dr of what this means is:
-
-#### YOUR PROJECT IS ACTUALLY COMPLETE:
-- [x] It has a complete CAD assembly, with all components (including electronics)
+##### YOUR PROJECT DESIGN IS FULLY COMPLETE:
+- [x] It is an original, customized design by you, and is not a direct copy of any guide!
+- [x] It has a complete CAD assembly, with all components (including electronics!)
 - [x] You have firmware present, even if it's untested
-- [x] You have sanity checked your design with someone else
-- [x] (optional) you have a 3D render of your project!
+- [x] You have sanity checked your design with someone else!
 
-#### YOUR GITHUB REPOSITORY CONTAINS ALL OF YOUR PROJECT FILES:
+##### YOUR GITHUB REPOSITORY CONTAINS ALL OF YOUR PROJECT FILES:
 - [x] a BOM, in CSV format in the root directory, WITH LINKS
 - [x] the source files for your PCB, if you have one (.kicad\_pro, .kicad\_sch, gerbers.zip, etc)
 - [x] **A .STEP file of your project's 3D CAD model (and ideally the source design file format as well - .f3d, .FCStd, etc)**
@@ -37,41 +34,33 @@ The tl;dr of what this means is:
 
 *if you're missing a .STEP file with all of your electronics and CAD, your project will not be approved*
 
-#### YOUR README.md FILE CONTAINS THE FOLLOWING:
+##### YOUR README.md FILE CONTAINS THE FOLLOWING:
 - [x] A short description of what your project is
 - [x] A couple sentences on *why* you made the project
+- [x] A couple sentences on how to use your project!
 
 *PICTURES OF YOUR PROJECT*\
 - [x] A screenshot of a full 3D model with your project
 - [x] A screenshot of your PCB, if you have one
 - [x] A wiring diagram, if you're doing any wiring that isn't on a PCB
-- [x] A BOM in table format at the end of the README
+- [x] A BOM in table format at the end of the README, with links
 
-#### YOU *DO NOT* HAVE:
-- [ ] AI Generated READMEs or Journal entries
-- [ ] Stolen work from other people
-- [ ] missing firmware/software
+##### YOU *DO NOT* HAVE:
+- [ ] AI Generated READMEs, Journal entries, or an image of your project
+- [ ] Taken designs from other people
+- [ ] Missing firmware/software
 
-Any project that includes stolen content, AI-generated readmes or journals, or other fraudulent/dishonest material may be permanently rejected and could result in a ban from Blueprint and other Hack Club programs!
-
-### 3) You have a quality journal
-
-Your journal is very important for Blueprint! Not only does it allow us to verify the hours you spent, it also allows for other people to look back at your project and follow it's journey. Here are some important things to keep in mind while journaling:
-
-- Try to keep each entry under 5 hours, this is not a hard requirement but your project will be more likely to be rejected
-- Take into account your thoughts while making a project
-- Don't just log the steps that led to your final project! You should have all of your failures and rabbit holes that didn't end up making it to the final piece.
-
-There is no magic bullet, but as long as you put an honest effort forward you will almost certainly be approved.
-
-### 5) Your project is cost optimized!
-
-You should always aim to make your project as cheap as possible!
-
-- Always get the minimum quantity of your project. We are funding your project to learn not to mass-produce things like merch. On JLCPCB for example, this means only 5 PCB's, or 2 PCBA's.
-
-- JLCPCB Specific: Always choose parts for your PCB which allow you to use economic assembly rather than standard. Try and keep your PCB under 100x100mm if possible and choose Global Standard Direct (or Air Registered Mail if it is cheaper) shipping when you can.
+Any project that includes stolen content, fully AI-generated design files, or other fraudulent/dishonest material may be permanently rejected and could result in a ban from Blueprint and other Hack Club programs!
 
 ---
 
-If you have all of that, you should be good to go! Go ahead and submit your project :)
+#### Examples
+
+Here are some examples of well-shipped projects made by Hack Clubbers! They're seriously awesome
+
+- [NotARoomba's Cyberboard](https://github.com/notaroomba/cyberboard)
+- [Brandon's USB-Mic](https://github.com/ConfusedHello/USB-Mic/?tab=readme-ov-file)
+
+For more examples (and non hack club projects!), check out [what is shipping?](/resources/shipping)
+
+*think your project should be here? dm @alexren!*

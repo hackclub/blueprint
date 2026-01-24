@@ -88,7 +88,7 @@ module MarkdownHelper
   end
 
   def preprocess_checkboxes(text)
-    text.gsub(/^- \[ \] /, '<input type="checkbox" disabled> ').gsub(/^- \[x\] /i, '<input type="checkbox" checked disabled> ')
+    text.gsub(/^- \[ \] /m, '<input type="checkbox" disabled> ').gsub(/^- \[x\] /im, '<input type="checkbox" checked disabled> ')
   end
 
   def preprocess_callouts(text, renderer)

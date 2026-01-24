@@ -1,7 +1,7 @@
 <h1 class="text-4xl">Submit project</h1>
 <p class="text-xl">Finished designing? Right this way!</p>
-<p class="text-xl">  Make sure you read the <a class="text-bp-warning font-bold"href="/about/submission-guidelines" target="_blank" rel="noopener noreferrer">[submission guidelines]</a> before submitting - it'll help your project get approved a lot faster!</p>
-<p class="text-xl">Missing any of the requirements in the submission guidelines will get your project automatically rejected. Read carefully! Ask in #blueprint if anything is unclear</p>
+<p class="text-xl">  Make sure you read the <a class="text-bp-warning font-bold underline"href="/about/submission-guidelines" target="_blank" rel="noopener noreferrer">submission guidelines</a> before submitting - it'll help your project get approved a lot faster!</p>
+<p class="text-xl">Missing any of the requirements in the submission guidelines will get your project automatically returned. Read carefully! Ask in #blueprint if you need any help!</p>
 
 <%= turbo_frame_tag "form_errors" do %>
   <% if @project.errors.any? %>

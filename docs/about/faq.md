@@ -4,9 +4,15 @@
 
 ##### FAQ
 
+# Important
+
 ## When does this program end?
 
 Currently, the end-date of Blueprint is March 31st, 2026. You'll have time afterwards to spend your tickets.
+
+### What kind of projects can I make?
+
+You can make anything related to hardware where you put majority of the work in making the hardware side of the project. This includes things like keyboards, 3D printers and custom pcbs. Projects like home servers where you are mainly working on the software aspect are not allowed for Blueprint. If you are ever unsure of what your project may be considered as, ask in #blueprint on the Hack Club slack
 
 ## How can I earn tickets?
 
@@ -14,9 +20,11 @@ Project grants are awarded on quality rather than hours spent. However, if you t
 
 Tickets are rewarded based on the effort you spent BUILDING your project, not the time spent DESIGNING it!
 
-## What type of projects can I make?
 
-You can make anything related to hardware where you put majority of the work in making the hardware side of the project. This includes things like keyboards, 3D printers and custom pcbs. Projects like home servers where you are mainly working on the software aspect are not allowed for Blueprint. If you are ever unsure of what your project may be considered as, ask in #blueprint on the Hack Club slack
+## How long may reviews take?
+
+Reviews may vary in time! They can take a week or more. We try to review as soon as possible :) 
+
 
 ## How many projects can I make?
 
@@ -26,14 +34,14 @@ As many as you like! We just ask that you only do one of each starter project.
 
 You can get one as a part of Hackpad!
 
-## Does the $20 HackPad grant include a soldering iron?
+## Complete this form if the amount on your HCB card is not enough for you to complete your Blueprint project. If you need more funding from us, or are looking to add your own funds
 
-No. The HackPad grant covers two things only:
+[https://forms.hackclub.com/blueprint-topup
+](https://forms.hackclub.com/blueprint-topup
+)
 
-- Your PCB
-- Your 3D printed case (printed by (preferably) you or #printing-legion!)
+# Int'l fulfillment logistics
 
-A soldering iron is not included in the $20 grant.
 
 ## Will I get a soldering iron mailed to me, or will I get a grant for it?
 
@@ -47,28 +55,6 @@ Fulfillment usually happens within a week of your request, but currently will ta
 
 No, tracking is not available.
 If it’s been more than two weeks since your project was accepted and you still haven’t received your soldering iron, you may ping @Jay , @Tanuki, or @nimit to check on it. **Please do not DM before two weeks have passed.**
-
-## Complete this form if the amount on your HCB card is not enough for you to complete your Blueprint project. If you need more funding from us, or are looking to add your own funds
-
-[https://forms.hackclub.com/blueprint-topup
-](https://forms.hackclub.com/blueprint-topup
-)
-
-## Can I make a Hackpad and a keyboard?
-
-Yes! 
-
-## What can I make
-
-Anything within budget!
-
-## Do I need the journal in my repo?
-
-No! It just needs to be in [blueprint.hackclub.com](blueprint.hackclub.com) :D 
-
-## How long may reviews take?
-
-Reviews may vary in time! They can take a week or more. We try to review as soon as possible :) 
 
 ## How do I top-up my grant? 
 
@@ -118,25 +104,6 @@ Through **printing legion!** It's an international network of Hack Clubbers 3D p
 
 It's hard to say without seeing your project, but generally speaking, as long as you follow the [guidelines](/docs/submission-guidelines) on the submitting page for your project then you're more than likely to be approved!
 
-## What's the minimum complexity for a custom project?
-
-The minimum complexity for a project depends on tiers. Check out [custom projects](/docs/submission-guidelines) for more information on that. Additionally, every project **must** be [shipped](/docs/shipping).
-
-## What if my project does not reach the quality requirement for my tier, can I pay for the difference myself?
-
-Yes!
-
-## How do I get a Blueprint-ed profile picture?
-
-DM Kashsuks!
-
-## Can I use AI
-
-Yes for code, no for Journals
-
-## I'm 18, would I still be eligible for a grant for my project through blueprint?
-
-As long as you submit your Blueprint project before you turn 19, you’re good!
 
 ## Are hackatime-banned individuals allowed to participate?
 
@@ -156,7 +123,5 @@ No. You must do your routing manually.
 
 ## How can I contribute? 
 
-PRs are accepted and appreciated! If you are willing to use rails, do cool art, or make cool and useful hardware guides, DM @CAN on Slack! We appreciate all help :) 
-
-> For any missing content, DM @Tanishq Goyal or ask in #blueprint-support!
+PRs are accepted and appreciated! If you can make art, DM @CAN on Slack! We appreciate all help :) 
 
