@@ -6,7 +6,7 @@
       <p><%= project.title %> was submitted for review <span title="<%= event[:date] %>"><%= c_time_ago_in_words(event[:date]) %> ago</span></p>
     <% end %>
     <div>
-      <p class="text-xl mb-2">Estimated wait time: <strong><%= pluralize(days.ceil, "day") %></strong></p>
+      <p class="text-xl mb-2">Estimated wait time remaining: <strong><%= pluralize(days.ceil, "day") %></strong></p>
       <p><em>This is not super accurate and may change based on number of projects waiting review and the complexity of projects. Asking support will not speed up your review. Please be patient and make sure your project meets all requirements.</em><p>
     </div>
   <% end %>
