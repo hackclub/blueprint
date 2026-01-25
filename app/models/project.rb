@@ -316,122 +316,150 @@ class Project < ApplicationRecord
   end
 
   def generate_timeline(reverse: false)
-    timeline = []
+    refs = []
+    refs << { type: :creation, date: created_at }
+    refs.concat(timeline_journal_refs_cached)
+    refs.concat(timeline_kudo_refs_cached)
+    refs.concat(timeline_ship_refs_cached)
+    refs.concat(timeline_review_refs_cached)
 
-    timeline << { type: :creation, date: created_at }
+    timeline = hydrate_timeline_refs(refs)
+    sorted = timeline.sort_by { |e| e[:date] }
+    reverse ? sorted.reverse : sorted
+  end
 
-    journal_entries.order(created_at: :asc).each do |entry|
-      timeline << { type: :journal, date: entry.created_at, entry: entry }
+  def timeline_journal_refs_cached
+    cache_key = [ "project_timeline", id, "journals", journal_entries.maximum(:updated_at)&.to_f, journal_entries.count ]
+    Rails.cache.fetch(cache_key) do
+      journal_entries.order(created_at: :asc).pluck(:id, :created_at).map do |entry_id, created_at|
+        { type: :journal, id: entry_id, date: created_at }
+      end
     end
+  end
 
-    kudos.order(created_at: :asc).each do |kudo|
-      timeline << { type: :kudo, date: kudo.created_at, kudo: kudo }
+  def timeline_kudo_refs_cached
+    cache_key = [ "project_timeline", id, "kudos", kudos.maximum(:updated_at)&.to_f, kudos.count ]
+    Rails.cache.fetch(cache_key) do
+      kudos.order(created_at: :asc).pluck(:id, :created_at, :user_id).map do |kudo_id, created_at, user_id|
+        { type: :kudo, id: kudo_id, date: created_at, user_id: user_id }
+      end
     end
+  end
 
-    ship_design_events = attribute_updated_event(object: self, attribute: :review_status, after: "design_pending", all: true)
-    ship_build_events = attribute_updated_event(object: self, attribute: :review_status, after: "build_pending", all: true)
-    user_ids = (ship_design_events + ship_build_events).map { |e| e[:whodunnit] }.compact.uniq
-    user_ids += kudos.pluck(:user_id).map(&:to_s)
+  def timeline_ship_refs_cached
+    cache_key = [ "project_timeline", id, "ships", versions.maximum(:id), versions.count ]
+    Rails.cache.fetch(cache_key) do
+      design_events = attribute_updated_event(object: self, attribute: :review_status, after: "design_pending", all: true)
+      build_events = attribute_updated_event(object: self, attribute: :review_status, after: "build_pending", all: true)
 
-    all_design_reviews = design_reviews.where(result: %w[returned rejected])
+      (design_events + build_events).map do |event|
+        { type: :ship, date: event[:timestamp], user_id: event[:whodunnit] }
+      end
+    end
+  end
+
+  def timeline_review_refs_cached
+    design_key = [ "project_timeline", id, "design_reviews", design_reviews.maximum(:updated_at)&.to_f, design_reviews.count ]
+    build_key = [ "project_timeline", id, "build_reviews", build_reviews.maximum(:updated_at)&.to_f, build_reviews.count ]
+
+    design_refs = Rails.cache.fetch(design_key) { build_design_review_refs }
+    build_refs = Rails.cache.fetch(build_key) { build_build_review_refs }
+
+    design_refs + build_refs
+  end
+
+  private
+
+  def build_design_review_refs
+    refs = []
+    all_reviews = design_reviews.where(result: %w[returned rejected])
                                 .or(design_reviews.where(result: "approved", admin_review: true))
                                 .order(created_at: :asc)
-    return_design_events = []
-    reject_design_events = []
-    approve_design_groups = []
     previous_result = nil
+    approve_group = nil
 
-    all_design_reviews.each do |review|
-      user_ids << review.reviewer_id.to_s
-
-      if review.result == "returned"
-        return_design_events << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents }
-      elsif review.result == "rejected"
-        reject_design_events << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents }
-      elsif review.result == "approved"
+    all_reviews.each do |review|
+      case review.result
+      when "returned"
+        refs << { type: :return_design, date: review.created_at, user_id: review.reviewer_id,
+                  feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents }
+      when "rejected"
+        refs << { type: :reject_design, date: review.created_at, user_id: review.reviewer_id,
+                  feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents }
+      when "approved"
         if previous_result != "approved"
-          approve_design_groups << { date: review.created_at, reviews: [] }
+          approve_group = { type: :approve_design, date: review.created_at, reviews: [] }
+          refs << approve_group
         end
-        approve_design_groups.last[:reviews] << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents, admin_review: review.admin_review }
+        approve_group[:reviews] << { date: review.created_at, user_id: review.reviewer_id,
+                                     feedback: review.feedback, tier_override: review.tier_override,
+                                     grant_override_cents: review.grant_override_cents, admin_review: review.admin_review }
       end
-
       previous_result = review.result
     end
+    refs
+  end
 
-    all_build_reviews = build_reviews.where(result: %w[returned rejected])
-                                .or(build_reviews.where(result: "approved", admin_review: true))
-                                .order(created_at: :asc)
-    return_build_events = []
-    reject_build_events = []
-    approve_build_groups = []
+  def build_build_review_refs
+    refs = []
+    all_reviews = build_reviews.where(result: %w[returned rejected])
+                               .or(build_reviews.where(result: "approved", admin_review: true))
+                               .order(created_at: :asc)
     previous_result = nil
+    approve_group = nil
 
-    all_build_reviews.each do |review|
-      user_ids << review.reviewer_id.to_s
-
-      if review.result == "returned"
-        return_build_events << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override }
-      elsif review.result == "rejected"
-        reject_build_events << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override }
-      elsif review.result == "approved"
+    all_reviews.each do |review|
+      case review.result
+      when "returned"
+        refs << { type: :return_build, date: review.created_at, user_id: review.reviewer_id,
+                  feedback: review.feedback, tier_override: review.tier_override }
+      when "rejected"
+        refs << { type: :reject_build, date: review.created_at, user_id: review.reviewer_id,
+                  feedback: review.feedback, tier_override: review.tier_override }
+      when "approved"
         if previous_result != "approved"
-          approve_build_groups << { date: review.created_at, reviews: [] }
+          approve_group = { type: :approve_build, date: review.created_at, reviews: [], tickets_awarded: review.tickets_awarded }
+          refs << approve_group
         end
-        approve_build_groups.last[:reviews] << { date: review.created_at, user_id: review.reviewer_id, feedback: review.feedback, tier_override: review.tier_override, admin_review: review.admin_review }
+        approve_group[:reviews] << { date: review.created_at, user_id: review.reviewer_id,
+                                     feedback: review.feedback, tier_override: review.tier_override, admin_review: review.admin_review }
+        approve_group[:tickets_awarded] ||= review.tickets_awarded
       end
-
       previous_result = review.result
     end
+    refs
+  end
 
-    user_ids.uniq!
-    users = User.where(id: user_ids).index_by { |u| u.id.to_s }
+  def hydrate_timeline_refs(refs)
+    journal_ids = refs.select { |r| r[:type] == :journal }.pluck(:id)
+    kudo_ids = refs.select { |r| r[:type] == :kudo }.pluck(:id)
+    user_ids = refs.flat_map { |r| [ r[:user_id], r.dig(:reviews)&.pluck(:user_id) ] }
+                   .flatten.compact.uniq
+                   .select { |uid| uid.to_s.match?(/\A\d+\z/) }
 
-    ship_design_events.each do |event|
-      user = users[event[:whodunnit].to_s]
-      timeline << { type: :ship, date: event[:timestamp], user: user }
-    end
+    journals_by_id = JournalEntry.where(id: journal_ids).includes(:user).index_by(&:id)
+    kudos_by_id = Kudo.where(id: kudo_ids).includes(:user).index_by(&:id)
+    users_by_id = User.where(id: user_ids).index_by { |u| u.id.to_s }
 
-    ship_build_events.each do |event|
-      user = users[event[:whodunnit].to_s]
-      timeline << { type: :ship, date: event[:timestamp], user: user }
-    end
-
-    return_design_events.each do |event|
-      user = users[event[:user_id].to_s]
-      timeline << { type: :return_design, date: event[:date], user: user, feedback: event[:feedback], tier_override: event[:tier_override], grant_override_cents: event[:grant_override_cents] }
-    end
-
-    reject_design_events.each do |event|
-      user = users[event[:user_id].to_s]
-      timeline << { type: :reject_design, date: event[:date], user: user, feedback: event[:feedback], tier_override: event[:tier_override], grant_override_cents: event[:grant_override_cents] }
-    end
-
-    approve_design_groups.each do |group|
-      reviews_with_users = group[:reviews].map do |r|
-        r.merge(user: users[r[:user_id].to_s])
+    refs.filter_map do |ref|
+      case ref[:type]
+      when :journal
+        entry = journals_by_id[ref[:id]]
+        next nil unless entry
+        ref.merge(entry: entry)
+      when :kudo
+        kudo = kudos_by_id[ref[:id]]
+        next nil unless kudo
+        ref.merge(kudo: kudo)
+      when :ship, :return_design, :reject_design, :return_build, :reject_build
+        ref.merge(user: users_by_id[ref[:user_id].to_s])
+      when :approve_design, :approve_build
+        reviews_with_users = ref[:reviews].map { |r| r.merge(user: users_by_id[r[:user_id].to_s]) }
+        ref.merge(reviews: reviews_with_users)
+      else
+        ref
       end
-      timeline << { type: :approve_design, date: group[:date], reviews: reviews_with_users }
     end
-
-    return_build_events.each do |event|
-      user = users[event[:user_id].to_s]
-      timeline << { type: :return_build, date: event[:date], user: user, feedback: event[:feedback], tier_override: event[:tier_override] }
-    end
-
-    reject_build_events.each do |event|
-      user = users[event[:user_id].to_s]
-      timeline << { type: :reject_build, date: event[:date], user: user, feedback: event[:feedback], tier_override: event[:tier_override] }
-    end
-
-    approve_build_groups.each do |group|
-      reviews_with_users = group[:reviews].map do |r|
-        r.merge(user: users[r[:user_id].to_s])
-      end
-      timeline << { type: :approve_build, date: group[:date], reviews: reviews_with_users }
-    end
-
-    sorted_timeline = timeline.sort_by { |e| e[:date] }
-    reverse ? sorted_timeline.reverse : sorted_timeline
   end
 
   def bom_file_url
@@ -1012,8 +1040,6 @@ class Project < ApplicationRecord
 
     logs.join("\n")
   end
-
-  private
 
   def normalize_repo_link
     normalized = Project.normalize_repo_link(repo_link, user&.github_username)

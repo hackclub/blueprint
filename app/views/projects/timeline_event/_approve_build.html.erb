@@ -1,8 +1,8 @@
 <% reviews = event[:reviews] || [] %>
 <% admin_review = reviews.find { |r| r[:admin_review] } %>
 <% first_review = reviews.first %>
-<% build_review = project.build_reviews.where(result: "approved", invalidated: false).order(created_at: :desc).first %>
-<% has_content = reviews.any? { |r| r[:feedback].present? } || first_review&.dig(:tier_override).present? || build_review&.tickets_awarded %>
+<% tickets_awarded = event[:tickets_awarded] %>
+<% has_content = reviews.any? { |r| r[:feedback].present? } || first_review&.dig(:tier_override).present? || tickets_awarded.present? %>
 
 <% if has_content %>
   <%= render "timeline_event_card" do %>
@@ -13,8 +13,8 @@
       </p>
     </div>
     <div class="timeline-journal">
-      <% if build_review&.tickets_awarded %>
-        <p><strong>Tickets awarded:</strong> <%= build_review.tickets_awarded %> tickets</p>
+      <% if tickets_awarded.present? %>
+        <p><strong>Tickets awarded:</strong> <%= tickets_awarded %> tickets</p>
       <% end %>
       <% if first_review&.dig(:tier_override).present? %>
         <p><strong>Tier:</strong> <%= first_review[:tier_override] %></p>
