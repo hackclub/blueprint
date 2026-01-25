@@ -52,7 +52,7 @@ class JournalEntry < ApplicationRecord
   def rendered_html
     return "" if content.blank?
 
-    Rails.cache.fetch("journal_entry_html/#{cache_key_with_version}", expires_in: 1.week) do
+    Rails.cache.fetch("journal_entry_html/#{cache_key_with_version}", expires_in: 1.week, race_condition_ttl: 10.minutes) do
       base_url = Rails.application.routes.default_url_options[:host] || "localhost:3000"
       Marksmith::Renderer.new(body: content, base_url: "http://#{base_url}").render
     end

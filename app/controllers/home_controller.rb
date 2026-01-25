@@ -38,7 +38,7 @@ class HomeController < ApplicationController
     ipaddr = IPAddr.new(ip) rescue nil
     return false if ipaddr&.private? || ipaddr&.loopback? || ipaddr&.link_local?
 
-    country = Rails.cache.fetch("geo:#{ip}", expires_in: 12.hours) do
+    country = Rails.cache.fetch("geo:#{ip}", expires_in: 12.hours, race_condition_ttl: 30.minutes) do
       Timeout.timeout(0.5) do
         Geocoder.search(ip).first&.country_code&.upcase
       end

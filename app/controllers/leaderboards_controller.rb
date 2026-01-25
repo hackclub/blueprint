@@ -2,7 +2,7 @@ class LeaderboardsController < ApplicationController
   allow_unauthenticated_access
 
   def index
-    @referrals = Rails.cache.fetch("lb:referrals", expires_in: 15.minutes) do
+    @referrals = Rails.cache.fetch("lb:referrals", expires_in: 15.minutes, race_condition_ttl: 2.minutes) do
       rows = User.where.not(referrer_id: nil)
                  .where.not(slack_id: [ nil, "" ])
                  .where(is_mcg: false)
@@ -13,7 +13,7 @@ class LeaderboardsController < ApplicationController
       rows.map { |uid, cnt| [ users[uid], cnt ] }.compact
     end
 
-    @views = Rails.cache.fetch("lb:views", expires_in: 15.minutes) do
+    @views = Rails.cache.fetch("lb:views", expires_in: 15.minutes, race_condition_ttl: 2.minutes) do
       rows = Project.joins(:user)
                     .where(is_deleted: false)
                     .group(:user_id)
@@ -23,7 +23,7 @@ class LeaderboardsController < ApplicationController
       rows.map { |r| [ users[r.user_id], r.total_views.to_i ] }.compact
     end
 
-    @followers = Rails.cache.fetch("lb:followers", expires_in: 15.minutes) do
+    @followers = Rails.cache.fetch("lb:followers", expires_in: 15.minutes, race_condition_ttl: 2.minutes) do
       rows = Follow.joins(:project)
                    .where(projects: { is_deleted: false })
                    .group("projects.user_id")
@@ -33,7 +33,7 @@ class LeaderboardsController < ApplicationController
       rows.map { |r| [ users[r.user_id], r.followers_count.to_i ] }.compact
     end
 
-    @shipped = Rails.cache.fetch("lb:shipped", expires_in: 15.minutes) do
+    @shipped = Rails.cache.fetch("lb:shipped", expires_in: 15.minutes, race_condition_ttl: 2.minutes) do
       rows = Project.joins(:user)
                     .where(is_deleted: false, review_status: "build_approved")
                     .group(:user_id)
@@ -43,7 +43,7 @@ class LeaderboardsController < ApplicationController
       rows.map { |r| [ users[r.user_id], r.shipped_count.to_i ] }.compact
     end
 
-    @total_hours = Rails.cache.fetch("lb:total_hours", expires_in: 15.minutes) do
+    @total_hours = Rails.cache.fetch("lb:total_hours", expires_in: 15.minutes, race_condition_ttl: 2.minutes) do
       rows = Project
                .joins(:journal_entries)
                .where(is_deleted: false)
@@ -55,7 +55,7 @@ class LeaderboardsController < ApplicationController
       rows.map { |r| [ users[r.user_id], r.total_hours.to_f.round(1) ] }.compact
     end
 
-    @first_pass_reviews = Rails.cache.fetch("lb:first_pass", expires_in: 15.minutes) do
+    @first_pass_reviews = Rails.cache.fetch("lb:first_pass", expires_in: 15.minutes, race_condition_ttl: 2.minutes) do
       rows = DesignReview.find_by_sql(<<~SQL)
         SELECT reviewer_id, COUNT(*) AS first_pass_count
         FROM (
