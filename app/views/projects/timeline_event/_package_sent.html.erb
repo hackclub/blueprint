@@ -7,5 +7,6 @@
         <div>
             <p>Tracking Number: <% if package.tracking_link.present? %><a href="<%= package.tracking_link %>" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 text-bp-warning hover:decoration-white"><%= package.tracking_number %></a><% else %><%= package.tracking_number %><% end %></p>
         </div>
+        <p class="text-sm text-gray-400">ⓘ Only visible to you</p>
     <% end %>
 <% end %>
