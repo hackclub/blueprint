@@ -335,7 +335,8 @@ class Project < ApplicationRecord
 
     timeline = hydrate_timeline_refs(refs)
     sorted = timeline.sort_by { |e| e[:date] }
-    reverse ? sorted.reverse : sorted
+    result = reverse ? sorted.reverse : sorted
+    mark_most_recent_ship(result)
   end
 
   def timeline_journal_refs_cached
@@ -388,6 +389,11 @@ class Project < ApplicationRecord
     return nil unless build_pending?
 
     BuildReview.wait_time_estimator.remaining_for_project(project: self)
+  end
+
+  def estimated_review_days
+    eta = design_pending? ? design_review_eta : (build_pending? ? build_review_eta : nil)
+    eta&.dig(:eta_days)
   end
 
   def bom_file_url
@@ -1138,5 +1144,13 @@ class Project < ApplicationRecord
         ref
       end
     end
+  end
+
+  def mark_most_recent_ship(timeline)
+    most_recent_ship = timeline.find { |e| e[:type] == :ship }
+    return timeline unless most_recent_ship
+
+    most_recent_ship[:is_most_recent_ship] = true
+    timeline
   end
 end
