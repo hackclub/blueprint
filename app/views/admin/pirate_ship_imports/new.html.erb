@@ -24,6 +24,16 @@
     </div>
 
     <div class="space-y-2">
+      <%= label_tag :package_type, "Package type", class: "text-xl" %>
+      <%= select_tag :package_type,
+        options_for_select(
+          [["(none)", ""]] + Package.package_types.keys.map { |t| [t.humanize, t] },
+          params[:package_type]
+        ),
+        class: "input px-3 w-full max-w-md" %>
+    </div>
+
+    <div class="space-y-2">
       <%= label_tag :csv_file, "PirateShip CSV file", class: "text-xl" %>
       <%= file_field_tag :csv_file, accept: ".csv,text/csv", class: "block w-full max-w-md" %>
     </div>

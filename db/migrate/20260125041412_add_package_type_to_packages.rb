@@ -1,0 +1,5 @@
+class AddPackageTypeToPackages < ActiveRecord::Migration[8.0]
+  def change
+    add_column :packages, :package_type, :integer
+  end
+end

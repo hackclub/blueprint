@@ -1,11 +1,13 @@
 class Admin::PirateShipImportsController < Admin::ApplicationController
   ASSOCIATION_TYPES = %w[user shop_order project].freeze
+  PACKAGE_TYPES = Package.package_types.keys.freeze
 
   def new
   end
 
   def preview
     @association_type = normalized_association_type!
+    @package_type = normalized_package_type
     upload = params.require(:csv_file)
 
     csv_string = upload.read
@@ -19,7 +21,8 @@ class Admin::PirateShipImportsController < Admin::ApplicationController
     @result = PirateShipHelper.import_packages(
       csv_string:,
       dry_run: true,
-      association_type: @association_type.to_sym
+      association_type: @association_type.to_sym,
+      package_type: @package_type
     )
 
     render :preview
@@ -33,13 +36,15 @@ class Admin::PirateShipImportsController < Admin::ApplicationController
 
   def create
     @association_type = normalized_association_type!
+    @package_type = normalized_package_type
     blob = ActiveStorage::Blob.find_signed!(params.require(:csv_blob_signed_id))
     csv_string = blob.download
 
     @result = PirateShipHelper.import_packages(
       csv_string:,
       dry_run: false,
-      association_type: @association_type.to_sym
+      association_type: @association_type.to_sym,
+      package_type: @package_type
     )
 
     created = @result.dig(:summary, :created)
@@ -58,6 +63,13 @@ class Admin::PirateShipImportsController < Admin::ApplicationController
   def normalized_association_type!
     t = params[:association_type].to_s
     raise ArgumentError, "Invalid association type." unless ASSOCIATION_TYPES.include?(t)
+    t
+  end
+
+  def normalized_package_type
+    t = params[:package_type].to_s.presence
+    return nil if t.blank?
+    raise ArgumentError, "Invalid package type." unless PACKAGE_TYPES.include?(t)
     t
   end
 end

@@ -9,6 +9,7 @@
 #  city            :string
 #  cost            :decimal(, )
 #  country         :string
+#  package_type    :integer
 #  postal_code     :string
 #  recipient_email :string
 #  recipient_name  :string
@@ -27,4 +28,12 @@
 #
 class Package < ApplicationRecord
   belongs_to :trackable, polymorphic: true
+
+  enum :package_type, {
+    hackpad_kit: 0,
+    blinky_kit: 1,
+    soldering_iron: 2,
+    free_stickers: 3,
+    other: 4
+  }
 end

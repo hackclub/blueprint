@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_25_035654) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_25_041412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -361,6 +361,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_25_035654) do
     t.string "state"
     t.string "postal_code"
     t.string "country"
+    t.integer "package_type"
     t.index ["trackable_type", "trackable_id"], name: "index_packages_on_trackable"
   end
 

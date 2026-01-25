@@ -2,15 +2,18 @@ require "csv"
 
 class PirateShipHelper
   ASSOCIATION_TYPES = %i[user shop_order project].freeze
+  PACKAGE_TYPES = Package.package_types.keys.freeze
 
-  def self.import_packages(csv_string:, dry_run: true, association_type: :user)
-    new(csv_string:, association_type:).import_packages(dry_run:)
+  def self.import_packages(csv_string:, dry_run: true, association_type: :user, package_type: nil)
+    new(csv_string:, association_type:, package_type:).import_packages(dry_run:)
   end
 
-  def initialize(csv_string:, association_type: :user)
+  def initialize(csv_string:, association_type: :user, package_type: nil)
     @csv_string = csv_string
     @association_type = association_type.to_sym
+    @package_type = package_type&.to_s
     raise ArgumentError, "Invalid association type: #{@association_type}" unless ASSOCIATION_TYPES.include?(@association_type)
+    raise ArgumentError, "Invalid package type: #{@package_type}" if @package_type.present? && !PACKAGE_TYPES.include?(@package_type)
   end
 
   def import_packages(dry_run: true)
@@ -84,6 +87,7 @@ class PirateShipHelper
     {
       dry_run:,
       association_type: @association_type,
+      package_type: @package_type,
       summary:,
       packages:
     }
@@ -159,6 +163,7 @@ class PirateShipHelper
   def build_package_attributes(row, trackable)
     {
       trackable:,
+      package_type: @package_type,
       sent_at: parse_ship_date(row["Ship Date"]) || parse_created_date(row["Created Date"]),
       recipient_name: row["Recipient"].to_s.strip.presence,
       recipient_email: normalize_email(row["Email"]),

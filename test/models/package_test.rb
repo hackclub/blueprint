@@ -9,6 +9,7 @@
 #  city            :string
 #  cost            :decimal(, )
 #  country         :string
+#  package_type    :integer
 #  postal_code     :string
 #  recipient_email :string
 #  recipient_name  :string

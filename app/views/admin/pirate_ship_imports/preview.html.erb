@@ -7,6 +7,9 @@
     <h1 class="text-4xl">PirateShip Import Preview</h1>
     <p class="text-white/70">
       Association type: <strong><%= @association_type.humanize %></strong>
+      <% if @package_type.present? %>
+        | Package type: <strong><%= @package_type.humanize %></strong>
+      <% end %>
     </p>
   </div>
 
@@ -26,6 +29,7 @@
     <%= form_with url: admin_pirate_ship_import_path, method: :post, class: "inline" do %>
       <%= hidden_field_tag :csv_blob_signed_id, @csv_blob_signed_id %>
       <%= hidden_field_tag :association_type, @association_type %>
+      <%= hidden_field_tag :package_type, @package_type %>
       <%= submit_tag "Confirm and import #{@result.dig(:summary, :would_create)} package(s)",
         class: "btn btn-outline",
         data: { turbo_confirm: "Create these packages? This cannot be undone." } %>
