@@ -10,21 +10,22 @@
   <% end %>
   <div class="flex items-center justify-between">
     <%= render "shared/button", text: "Back", url: admin_design_reviews_path, class: "py-0" %>
-    <!-- Debug: User admin? <%= current_user&.admin? %>, Status: <%= @project.review_status %> -->
-    <% if current_user&.admin? %>
-      <% button_label = case @project.review_status
-        when "design_pending" then "Move to Build Queue"
-        when "design_needs_revision" then "Move to Build Needs-Revision"
-        when "build_pending" then "Move to Design Queue"
-        when "build_needs_revision" then "Move to Design Needs-Revision"
-        when "design_approved" then "Open Build Review"
-        else nil
-        end %>
-      <!-- Debug: Button label: <%= button_label %> -->
-      <% if button_label.present? %>
-        <%= button_to button_label, switch_review_phase_admin_project_path(@project), method: :post, class: "btn btn-primary bg-bp-warning text-bp-dark border-bp-warning", data: { turbo_confirm: "Are you sure? This will change the queue and may invalidate prior reviews for that phase and notify the user." } %>
+    <div class="flex items-center gap-2">
+      <%= render "shared/button", text: "HCB", url: "https://hcb.hackclub.com/ysws-blueprint/card_grants/card_overview?q=#{ERB::Util.url_encode(@project.user.email)}&event_id=ysws-blueprint", class: "py-0", variant: :outline %>
+      <% if current_user&.admin? %>
+        <% button_label = case @project.review_status
+          when "design_pending" then "Move to Build Queue"
+          when "design_needs_revision" then "Move to Build Needs-Revision"
+          when "build_pending" then "Move to Design Queue"
+          when "build_needs_revision" then "Move to Design Needs-Revision"
+          when "design_approved" then "Open Build Review"
+          else nil
+          end %>
+        <% if button_label.present? %>
+          <%= button_to button_label, switch_review_phase_admin_project_path(@project), method: :post, class: "btn btn-primary bg-bp-warning text-bp-dark border-bp-warning", data: { turbo_confirm: "Are you sure? This will change the queue and may invalidate prior reviews for that phase and notify the user." } %>
+        <% end %>
       <% end %>
-    <% end %>
+    </div>
   </div>
   <%= render "shared/card" do %>
         <% if @project.display_banner %>
