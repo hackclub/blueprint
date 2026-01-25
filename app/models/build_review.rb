@@ -148,49 +148,17 @@ class BuildReview < ApplicationRecord
     journal_entries_to_associate(up_to: up_to).update_all(review_id: id, review_type: "BuildReview")
   end
 
-  def self.estimated_wait_time
-    Rails.cache.fetch("build_review_estimated_wait_time", expires_in: 1.day) do
-      sql = <<~SQL
-        WITH status_changes AS (
-          SELECT
-            item_id AS project_id,
-            created_at,
-            id,
-            object_changes->'review_status'->>0 AS before_status,
-            object_changes->'review_status'->>1 AS after_status
-          FROM versions
-          WHERE item_type = 'Project'
-            AND event = 'update'
-            AND (object_changes ? 'review_status')
-        ),
-        pending_starts AS (
-          SELECT
-            project_id,
-            after_status AS pending_status,
-            created_at AS start_at,
-            LEAD(created_at) OVER w AS end_at,
-            LEAD(before_status) OVER w AS end_before_status,
-            LEAD(after_status) OVER w AS end_after_status
-          FROM status_changes
-          WHERE after_status = 'build_pending'
-          WINDOW w AS (PARTITION BY project_id ORDER BY created_at, id)
-        ),
-        completed_windows AS (
-          SELECT
-            EXTRACT(EPOCH FROM (end_at - start_at))::bigint AS wait_seconds
-          FROM pending_starts
-          WHERE end_at IS NOT NULL
-            AND end_before_status = pending_status
-            AND end_after_status IS DISTINCT FROM pending_status
-            AND end_at >= start_at
-        )
-        SELECT percentile_cont(0.9) WITHIN GROUP (ORDER BY wait_seconds) AS p90
-        FROM completed_windows
-      SQL
+  def self.wait_time_estimator
+    ReviewWaitTimeEstimator.new(pending_status: "build_pending")
+  end
 
-      p90 = ActiveRecord::Base.connection.select_value(sql).to_f
-      ((p90.positive? ? p90 : 0) + 3.days.to_i).seconds
-    end
+  def self.eta_for(ysws:, tier:)
+    wait_time_estimator.eta_for_new_submission(ysws: ysws, tier: tier)
+  end
+
+  def self.estimated_wait_time
+    result = wait_time_estimator.eta_for_new_submission(ysws: nil, tier: nil)
+    result[:eta_seconds].to_i.seconds
   end
 
   def self.backfill_journal_associations!

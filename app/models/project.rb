@@ -368,6 +368,18 @@ class Project < ApplicationRecord
     design_refs + build_refs
   end
 
+  def design_review_eta
+    return nil unless design_pending?
+
+    DesignReview.wait_time_estimator.remaining_for_project(project: self)
+  end
+
+  def build_review_eta
+    return nil unless build_pending?
+
+    BuildReview.wait_time_estimator.remaining_for_project(project: self)
+  end
+
   def bom_file_url
     return nil if repo_link.blank?
     parsed = parse_repo
