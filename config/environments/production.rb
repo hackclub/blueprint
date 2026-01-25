@@ -48,8 +48,18 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Use Solid Cache for database-backed caching
-  config.cache_store = :solid_cache_store
+  # Use Redis for caching if REDIS_URL is set, fallback to Solid Cache
+  if ENV["REDIS_URL"].present?
+    config.cache_store = :redis_cache_store, {
+      url: ENV["REDIS_URL"],
+      error_handler: ->(method:, returning:, exception:) {
+        Rails.logger.error("Redis cache error: #{exception.class} - #{exception.message}")
+        Sentry.capture_exception(exception, level: "warning", tags: { method: method.to_s }) if defined?(Sentry)
+      }
+    }
+  else
+    config.cache_store = :solid_cache_store
+  end
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
   config.active_job.queue_adapter = :solid_queue
