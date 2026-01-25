@@ -174,7 +174,20 @@ class Project < ApplicationRecord
   end
 
   def display_banner_blob
-    return demo_picture.blob if demo_picture.attached?
+    demo_version = demo_picture_attachment&.id || 0
+    journal_id = latest_journal_entry&.id || 0
+    journal_version = latest_journal_entry&.updated_at&.to_i || 0
+    cache_key = "project_banner_blob/#{id}/#{demo_version}/#{journal_id}-#{journal_version}"
+
+    blob_id = Rails.cache.fetch(cache_key, expires_in: 1.week, race_condition_ttl: 10.minutes) do
+      find_display_banner_blob_id
+    end
+
+    blob_id ? ActiveStorage::Blob.find_by(id: blob_id) : nil
+  end
+
+  def find_display_banner_blob_id
+    return demo_picture.blob.id if demo_picture.attached?
 
     # Fall back to latest journal entry image if no demo_picture
     return unless latest_journal_entry&.content.present?
@@ -186,18 +199,15 @@ class Project < ApplicationRecord
 
     # Match standard ActiveStorage URLs
     if (match = image_url.match(%r{/rails/active_storage/blobs/(?:redirect/|proxy/)?([^/]+)/}))
-      return ActiveStorage::Blob.find_signed(match[1])
+      return ActiveStorage::Blob.find_signed(match[1])&.id
     end
 
     # Match Marksmith/user-attachments URLs (Base64-encoded JSON with blob_id)
     if (match = image_url.match(%r{/user-attachments/blobs/(?:redirect/|proxy/)?([^/]+)/}))
       token = match[1].split("--").first
       decoded = JSON.parse(Base64.decode64(token))
-      blob_id = decoded.dig("_rails", "data") || decoded["data"]
-      return ActiveStorage::Blob.find_by(id: blob_id)
+      decoded.dig("_rails", "data") || decoded["data"]
     end
-
-    nil
   rescue ActiveSupport::MessageVerifier::InvalidSignature, JSON::ParserError, ArgumentError
     nil
   end
