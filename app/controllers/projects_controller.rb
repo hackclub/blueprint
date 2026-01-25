@@ -106,7 +106,7 @@ class ProjectsController < ApplicationController
       end
     elsif params[:type] == "projects"
       if params[:sort] == "new"
-        scope = Project.joins(:user).where(is_deleted: false).listed.includes(:latest_journal_entry, :demo_picture_attachment, :user).order(created_at: :desc)
+        scope = Project.joins(:user).where(is_deleted: false).listed.includes(:demo_picture_attachment, :user).preload(:latest_journal_entry).order(created_at: :desc)
         scope = scope.where("projects.title ILIKE :q OR projects.description ILIKE :q", q: "%#{search_query}%") if search_query.present?
         @pagy, @projects = pagy(scope, limit: 24)
         preload_project_metrics(@projects)
@@ -116,7 +116,7 @@ class ProjectsController < ApplicationController
         if followed_project_ids.empty?
           @pagy, @projects = pagy_array([], items: 24)
         else
-          scope = Project.joins(:user).where(id: followed_project_ids, is_deleted: false).listed.includes(:latest_journal_entry, :demo_picture_attachment, :user).order(created_at: :desc)
+          scope = Project.joins(:user).where(id: followed_project_ids, is_deleted: false).listed.includes(:demo_picture_attachment, :user).preload(:latest_journal_entry).order(created_at: :desc)
           scope = scope.where("projects.title ILIKE :q OR projects.description ILIKE :q", q: "%#{search_query}%") if search_query.present?
           @pagy, @projects = pagy(scope, limit: 24)
           preload_project_metrics(@projects)
@@ -140,7 +140,7 @@ class ProjectsController < ApplicationController
           # Load projects maintaining Gorse order
           if project_ids.any?
             order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], projects.id::int)", project_ids.map(&:to_i) ])
-            scope = Project.where(id: project_ids).listed.includes(:latest_journal_entry, :demo_picture_attachment)
+            scope = Project.where(id: project_ids).listed.includes(:demo_picture_attachment).preload(:latest_journal_entry)
             scope = scope.where("projects.title ILIKE :q OR projects.description ILIKE :q", q: "%#{search_query}%") if search_query.present?
             @projects = scope.order(Arel.sql(order_clause))
             preload_project_metrics(@projects)
@@ -155,18 +155,18 @@ class ProjectsController < ApplicationController
           project_ids = all_projects.pluck(:id)
           @pagy, paginated_ids = pagy_array(project_ids, limit: 24)
           order_clause = ApplicationRecord.sanitize_sql_array([ "array_position(ARRAY[?], projects.id::int)", paginated_ids.map(&:to_i) ])
-          scope = Project.where(id: paginated_ids).includes(:latest_journal_entry, :demo_picture_attachment)
+          scope = Project.where(id: paginated_ids).includes(:demo_picture_attachment).preload(:latest_journal_entry)
           scope = scope.where("projects.title ILIKE :q OR projects.description ILIKE :q", q: "%#{search_query}%") if search_query.present?
           @projects = scope.order(Arel.sql(order_clause))
           preload_project_metrics(@projects)
         end
       elsif params[:sort] == "top"
-        scope = Project.joins(:user).where(is_deleted: false).listed.includes(:latest_journal_entry, :demo_picture_attachment, :user).order(views_count: :desc)
+        scope = Project.joins(:user).where(is_deleted: false).listed.includes(:demo_picture_attachment, :user).preload(:latest_journal_entry).order(views_count: :desc)
         scope = scope.where("projects.title ILIKE :q OR projects.description ILIKE :q", q: "%#{search_query}%") if search_query.present?
         @pagy, @projects = pagy(scope, limit: 24)
         preload_project_metrics(@projects)
       elsif params[:sort] == "shipped"
-        scope = Project.joins(:user).where(is_deleted: false, review_status: "build_approved").listed.includes(:latest_journal_entry, :demo_picture_attachment, :user).order(created_at: :desc)
+        scope = Project.joins(:user).where(is_deleted: false, review_status: "build_approved").listed.includes(:demo_picture_attachment, :user).preload(:latest_journal_entry).order(created_at: :desc)
         scope = scope.where("projects.title ILIKE :q OR projects.description ILIKE :q", q: "%#{search_query}%") if search_query.present?
         @pagy, @projects = pagy(scope, limit: 24)
         preload_project_metrics(@projects)

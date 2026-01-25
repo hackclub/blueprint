@@ -135,7 +135,7 @@ class GorseService
       handle_response(response, "delete feedback #{feedback_type} user=#{user_id} item=#{item_id}")
     end
 
-    def get_user_recommendation(user_id, page = 1, per_page = 21, type: :project)
+    def get_user_recommendation(user_id, page = 1, per_page = 24, type: :project)
       return [] if ENV["SKIP_GORSE"] == "true"
       offset = (page - 1) * per_page
 
@@ -157,7 +157,7 @@ class GorseService
       ids.first(per_page)
     end
 
-    def get_popular_items(page = 1, per_page = 21, type: :project)
+    def get_popular_items(page = 1, per_page = 24, type: :project)
       return [] if ENV["SKIP_GORSE"] == "true"
       offset = (page - 1) * per_page
       category = type == :entry ? "entry" : "project"
