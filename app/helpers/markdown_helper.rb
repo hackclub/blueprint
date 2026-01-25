@@ -64,7 +64,7 @@ module MarkdownHelper
   end
 
   def render_markdown(text, base_url: nil)
-    base_url ||= (request.base_url rescue nil) || MarkdownHelper.canonical_base_url
+    base_url ||= MarkdownHelper.canonical_base_url || (request.base_url rescue nil)
 
     if defined?(@__markdown_renderer_base_url).nil? || @__markdown_renderer_base_url != base_url || @__markdown_renderer.nil?
       renderer = GuidesLinkRenderer.new(
@@ -108,7 +108,7 @@ module MarkdownHelper
   end
 
   def render_markdown_file(path, base_url: nil)
-    base_url ||= (request.base_url rescue nil) || MarkdownHelper.canonical_base_url
+    base_url ||= MarkdownHelper.canonical_base_url || (request.base_url rescue nil)
     raw = File.read(path)
     cleaned = strip_front_matter_table(raw)
 
