@@ -4,7 +4,7 @@ class HomeController < ApplicationController
     @viral_projects = Project.where(viral: true, is_deleted: false)
                              .order_by_recent_journal
                              .limit(10)
-                             .includes(:banner_attachment, :latest_journal_entry)
+                             .includes(:demo_picture_attachment, :latest_journal_entry, :user)
 
     #   # if current_user.is_pro?
     #   ip = request.remote_ip
