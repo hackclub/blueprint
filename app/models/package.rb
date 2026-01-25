@@ -36,4 +36,38 @@ class Package < ApplicationRecord
     free_stickers: 3,
     other: 4
   }
+
+  PACKAGE_TYPE_LABELS = {
+    "hackpad_kit" => "Hackpad Parts Kit",
+    "blinky_kit" => "Blinky Parts Kit",
+    "soldering_iron" => "Soldering Iron",
+    "free_stickers" => "Free Stickers",
+    "other" => "Other"
+  }.freeze
+
+  def package_type_label
+    PACKAGE_TYPE_LABELS[package_type] || package_type&.titleize
+  end
+
+  def fulfillment_type
+    case package_type
+    when "hackpad_kit", "blinky_kit", "soldering_iron"
+      "Hack Club HQ in Vermont, USA"
+    when "free_stickers"
+      "Hack Club Warehouse in Vermont, USA"
+    else
+      nil
+    end
+  end
+
+  def tracking_link
+    case service
+    when "Pirate Ship Simple Export Rate"
+      "https://a1.asendiausa.com/tracking/?trackingnumber=#{tracking_number}"
+    when "Ground Advantage"
+      "https://tools.usps.com/go/TrackConfirmAction.action?tLabels=#{tracking_number}"
+    else
+      nil
+    end
+  end
 end

@@ -332,6 +332,7 @@ class Project < ApplicationRecord
     refs.concat(timeline_kudo_refs_cached)
     refs.concat(timeline_ship_refs_cached)
     refs.concat(timeline_review_refs_cached)
+    refs.concat(timeline_package_sent_refs_cached)
 
     timeline = hydrate_timeline_refs(refs)
     sorted = timeline.sort_by { |e| e[:date] }
@@ -377,6 +378,18 @@ class Project < ApplicationRecord
     build_refs = Rails.cache.fetch(build_key) { build_build_review_refs }
 
     design_refs + build_refs
+  end
+
+  def timeline_package_sent_refs_cached
+    return [] unless ysws == "hackpad"
+
+    cache_key = [ "project_timeline", id, "package_sent", user_id, user.packages.maximum(:updated_at)&.to_f, user.packages.count ]
+    Rails.cache.fetch(cache_key) do
+      package = user.packages.find_by(package_type: :hackpad_kit, sent_at: ..Time.current)
+      return [] unless package&.sent_at
+
+      [ { type: :package_sent, id: package.id, date: package.sent_at } ]
+    end
   end
 
   def design_review_eta
@@ -1117,12 +1130,14 @@ class Project < ApplicationRecord
   def hydrate_timeline_refs(refs)
     journal_ids = refs.select { |r| r[:type] == :journal }.pluck(:id)
     kudo_ids = refs.select { |r| r[:type] == :kudo }.pluck(:id)
+    package_ids = refs.select { |r| r[:type] == :package_sent }.pluck(:id)
     user_ids = refs.flat_map { |r| [ r[:user_id], r.dig(:reviews)&.pluck(:user_id) ] }
                    .flatten.compact.uniq
                    .select { |uid| uid.to_s.match?(/\A\d+\z/) }
 
     journals_by_id = JournalEntry.where(id: journal_ids).includes(:user).index_by(&:id)
     kudos_by_id = Kudo.where(id: kudo_ids).includes(:user).index_by(&:id)
+    packages_by_id = Package.where(id: package_ids).index_by(&:id)
     users_by_id = User.where(id: user_ids).index_by { |u| u.id.to_s }
 
     refs.filter_map do |ref|
@@ -1135,6 +1150,10 @@ class Project < ApplicationRecord
         kudo = kudos_by_id[ref[:id]]
         next nil unless kudo
         ref.merge(kudo: kudo)
+      when :package_sent
+        package = packages_by_id[ref[:id]]
+        next nil unless package
+        ref.merge(package: package)
       when :ship, :return_design, :reject_design, :return_build, :reject_build
         ref.merge(user: users_by_id[ref[:user_id].to_s])
       when :approve_design, :approve_build
