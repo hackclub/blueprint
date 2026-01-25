@@ -368,100 +368,6 @@ class Project < ApplicationRecord
     design_refs + build_refs
   end
 
-  private
-
-  def build_design_review_refs
-    refs = []
-    all_reviews = design_reviews.where(result: %w[returned rejected])
-                                .or(design_reviews.where(result: "approved", admin_review: true))
-                                .order(created_at: :asc)
-    previous_result = nil
-    approve_group = nil
-
-    all_reviews.each do |review|
-      case review.result
-      when "returned"
-        refs << { type: :return_design, date: review.created_at, user_id: review.reviewer_id,
-                  feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents }
-      when "rejected"
-        refs << { type: :reject_design, date: review.created_at, user_id: review.reviewer_id,
-                  feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents }
-      when "approved"
-        if previous_result != "approved"
-          approve_group = { type: :approve_design, date: review.created_at, reviews: [] }
-          refs << approve_group
-        end
-        approve_group[:reviews] << { date: review.created_at, user_id: review.reviewer_id,
-                                     feedback: review.feedback, tier_override: review.tier_override,
-                                     grant_override_cents: review.grant_override_cents, admin_review: review.admin_review }
-      end
-      previous_result = review.result
-    end
-    refs
-  end
-
-  def build_build_review_refs
-    refs = []
-    all_reviews = build_reviews.where(result: %w[returned rejected])
-                               .or(build_reviews.where(result: "approved", admin_review: true))
-                               .order(created_at: :asc)
-    previous_result = nil
-    approve_group = nil
-
-    all_reviews.each do |review|
-      case review.result
-      when "returned"
-        refs << { type: :return_build, date: review.created_at, user_id: review.reviewer_id,
-                  feedback: review.feedback, tier_override: review.tier_override }
-      when "rejected"
-        refs << { type: :reject_build, date: review.created_at, user_id: review.reviewer_id,
-                  feedback: review.feedback, tier_override: review.tier_override }
-      when "approved"
-        if previous_result != "approved"
-          approve_group = { type: :approve_build, date: review.created_at, reviews: [], tickets_awarded: review.tickets_awarded }
-          refs << approve_group
-        end
-        approve_group[:reviews] << { date: review.created_at, user_id: review.reviewer_id,
-                                     feedback: review.feedback, tier_override: review.tier_override, admin_review: review.admin_review }
-        approve_group[:tickets_awarded] ||= review.tickets_awarded
-      end
-      previous_result = review.result
-    end
-    refs
-  end
-
-  def hydrate_timeline_refs(refs)
-    journal_ids = refs.select { |r| r[:type] == :journal }.pluck(:id)
-    kudo_ids = refs.select { |r| r[:type] == :kudo }.pluck(:id)
-    user_ids = refs.flat_map { |r| [ r[:user_id], r.dig(:reviews)&.pluck(:user_id) ] }
-                   .flatten.compact.uniq
-                   .select { |uid| uid.to_s.match?(/\A\d+\z/) }
-
-    journals_by_id = JournalEntry.where(id: journal_ids).includes(:user).index_by(&:id)
-    kudos_by_id = Kudo.where(id: kudo_ids).includes(:user).index_by(&:id)
-    users_by_id = User.where(id: user_ids).index_by { |u| u.id.to_s }
-
-    refs.filter_map do |ref|
-      case ref[:type]
-      when :journal
-        entry = journals_by_id[ref[:id]]
-        next nil unless entry
-        ref.merge(entry: entry)
-      when :kudo
-        kudo = kudos_by_id[ref[:id]]
-        next nil unless kudo
-        ref.merge(kudo: kudo)
-      when :ship, :return_design, :reject_design, :return_build, :reject_build
-        ref.merge(user: users_by_id[ref[:user_id].to_s])
-      when :approve_design, :approve_build
-        reviews_with_users = ref[:reviews].map { |r| r.merge(user: users_by_id[r[:user_id].to_s]) }
-        ref.merge(reviews: reviews_with_users)
-      else
-        ref
-      end
-    end
-  end
-
   def bom_file_url
     return nil if repo_link.blank?
     parsed = parse_repo
@@ -1116,5 +1022,99 @@ class Project < ApplicationRecord
     content.gsub!(/src=["'](\/user-attachments\/.*?)(?=["'])/, "src=\"https://#{host}\\1\"")
 
     content
+  end
+
+  private
+
+  def build_design_review_refs
+    refs = []
+    all_reviews = design_reviews.where(result: %w[returned rejected])
+                                .or(design_reviews.where(result: "approved", admin_review: true))
+                                .order(created_at: :asc)
+    previous_result = nil
+    approve_group = nil
+
+    all_reviews.each do |review|
+      case review.result
+      when "returned"
+        refs << { type: :return_design, date: review.created_at, user_id: review.reviewer_id,
+                  feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents }
+      when "rejected"
+        refs << { type: :reject_design, date: review.created_at, user_id: review.reviewer_id,
+                  feedback: review.feedback, tier_override: review.tier_override, grant_override_cents: review.grant_override_cents }
+      when "approved"
+        if previous_result != "approved"
+          approve_group = { type: :approve_design, date: review.created_at, reviews: [] }
+          refs << approve_group
+        end
+        approve_group[:reviews] << { date: review.created_at, user_id: review.reviewer_id,
+                                     feedback: review.feedback, tier_override: review.tier_override,
+                                     grant_override_cents: review.grant_override_cents, admin_review: review.admin_review }
+      end
+      previous_result = review.result
+    end
+    refs
+  end
+
+  def build_build_review_refs
+    refs = []
+    all_reviews = build_reviews.where(result: %w[returned rejected])
+                               .or(build_reviews.where(result: "approved", admin_review: true))
+                               .order(created_at: :asc)
+    previous_result = nil
+    approve_group = nil
+
+    all_reviews.each do |review|
+      case review.result
+      when "returned"
+        refs << { type: :return_build, date: review.created_at, user_id: review.reviewer_id,
+                  feedback: review.feedback, tier_override: review.tier_override }
+      when "rejected"
+        refs << { type: :reject_build, date: review.created_at, user_id: review.reviewer_id,
+                  feedback: review.feedback, tier_override: review.tier_override }
+      when "approved"
+        if previous_result != "approved"
+          approve_group = { type: :approve_build, date: review.created_at, reviews: [], tickets_awarded: review.tickets_awarded }
+          refs << approve_group
+        end
+        approve_group[:reviews] << { date: review.created_at, user_id: review.reviewer_id,
+                                     feedback: review.feedback, tier_override: review.tier_override, admin_review: review.admin_review }
+        approve_group[:tickets_awarded] ||= review.tickets_awarded
+      end
+      previous_result = review.result
+    end
+    refs
+  end
+
+  def hydrate_timeline_refs(refs)
+    journal_ids = refs.select { |r| r[:type] == :journal }.pluck(:id)
+    kudo_ids = refs.select { |r| r[:type] == :kudo }.pluck(:id)
+    user_ids = refs.flat_map { |r| [ r[:user_id], r.dig(:reviews)&.pluck(:user_id) ] }
+                   .flatten.compact.uniq
+                   .select { |uid| uid.to_s.match?(/\A\d+\z/) }
+
+    journals_by_id = JournalEntry.where(id: journal_ids).includes(:user).index_by(&:id)
+    kudos_by_id = Kudo.where(id: kudo_ids).includes(:user).index_by(&:id)
+    users_by_id = User.where(id: user_ids).index_by { |u| u.id.to_s }
+
+    refs.filter_map do |ref|
+      case ref[:type]
+      when :journal
+        entry = journals_by_id[ref[:id]]
+        next nil unless entry
+        ref.merge(entry: entry)
+      when :kudo
+        kudo = kudos_by_id[ref[:id]]
+        next nil unless kudo
+        ref.merge(kudo: kudo)
+      when :ship, :return_design, :reject_design, :return_build, :reject_build
+        ref.merge(user: users_by_id[ref[:user_id].to_s])
+      when :approve_design, :approve_build
+        reviews_with_users = ref[:reviews].map { |r| r.merge(user: users_by_id[r[:user_id].to_s]) }
+        ref.merge(reviews: reviews_with_users)
+      else
+        ref
+      end
+    end
   end
 end
