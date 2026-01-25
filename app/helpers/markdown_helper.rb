@@ -1,7 +1,12 @@
 require "redcarpet"
 require "uri"
+require "digest"
 
 module MarkdownHelper
+  def self.canonical_base_url
+    host = ENV["APPLICATION_HOST"]
+    host.present? ? "https://#{host}" : nil
+  end
   class GuidesLinkRenderer < Redcarpet::Render::HTML
     def initialize(options = {})
       @base_url = options[:base_url]
@@ -58,8 +63,8 @@ module MarkdownHelper
     end
   end
 
-  def render_markdown(text)
-    base_url = request.base_url rescue nil
+  def render_markdown(text, base_url: nil)
+    base_url ||= (request.base_url rescue nil) || MarkdownHelper.canonical_base_url
 
     if defined?(@__markdown_renderer_base_url).nil? || @__markdown_renderer_base_url != base_url || @__markdown_renderer.nil?
       renderer = GuidesLinkRenderer.new(
@@ -102,20 +107,15 @@ module MarkdownHelper
     end
   end
 
-  GUIDES_HTML_CACHE = if Rails.env.production?
-    ActiveSupport::Cache::MemoryStore.new(size: 32.megabytes)
-  else
-    ActiveSupport::Cache::NullStore.new
-  end
+  def render_markdown_file(path, base_url: nil)
+    base_url ||= (request.base_url rescue nil) || MarkdownHelper.canonical_base_url
+    raw = File.read(path)
+    cleaned = strip_front_matter_table(raw)
 
-  def render_markdown_file(path)
-    base_url = request.base_url rescue nil
+    return render_markdown(cleaned, base_url: base_url) if Rails.env.development?
+
     key = [ "guide_md_html", path.to_s, File.mtime(path).to_i, base_url ]
-    GUIDES_HTML_CACHE.fetch(key) do
-      raw = File.read(path)
-      cleaned = strip_front_matter_table(raw)
-      render_markdown(cleaned)
-    end
+    Rails.cache.fetch(key) { render_markdown(cleaned, base_url: base_url) }
   end
 
   # Generic metadata builder for a docs section
@@ -125,41 +125,48 @@ module MarkdownHelper
   def docs_metadata(base:, url_prefix:, default_index_title: "")
     paths = Dir.glob(base.join("**/*.md").to_s)
     stats = paths.map { |p| [ p, File.mtime(p).to_i ] }.sort_by(&:first)
-    GUIDES_HTML_CACHE.fetch([ "docs_metadata", base.to_s, url_prefix, default_index_title, stats ]) do
-      items = []
-      paths.each do |p|
-        rel = Pathname.new(p).relative_path_from(base).to_s
+    return build_docs_metadata(base, url_prefix, default_index_title, paths) if Rails.env.development?
 
-        slug = nil
-        url  = nil
-        if rel == "index.md"
-          slug = ""
-          url  = url_prefix
-        else
-          s = rel.sub(/\.md\z/, "")
-          if File.basename(s) == "index"
-            dir = File.dirname(s)
-            slug = (dir == "." ? "" : dir)
-          else
-            slug = s
-          end
-          url = slug.blank? ? url_prefix : "#{url_prefix}/#{slug}"
-        end
-
-        meta = parse_guide_metadata(p)
-        fallback_title = if slug.blank?
-          default_index_title
-        else
-          slug.tr("-_/", " ").split.map(&:capitalize).join(" ")
-        end
-        title = meta[:title].presence || fallback_title
-        desc  = meta[:description].presence
-        prio  = meta[:priority]
-        unlisted = meta[:unlisted] || false
-        items << { title: title, path: url, description: desc, slug: slug, file: p, priority: prio, unlisted: unlisted }
-      end
-      items
+    stats_digest = Digest::SHA256.hexdigest(stats.flatten.join("|"))
+    Rails.cache.fetch([ "docs_metadata", base.to_s, url_prefix, default_index_title, stats_digest ]) do
+      build_docs_metadata(base, url_prefix, default_index_title, paths)
     end
+  end
+
+  def build_docs_metadata(base, url_prefix, default_index_title, paths)
+    items = []
+    paths.each do |p|
+      rel = Pathname.new(p).relative_path_from(base).to_s
+
+      slug = nil
+      url  = nil
+      if rel == "index.md"
+        slug = ""
+        url  = url_prefix
+      else
+        s = rel.sub(/\.md\z/, "")
+        if File.basename(s) == "index"
+          dir = File.dirname(s)
+          slug = (dir == "." ? "" : dir)
+        else
+          slug = s
+        end
+        url = slug.blank? ? url_prefix : "#{url_prefix}/#{slug}"
+      end
+
+      meta = parse_guide_metadata(p)
+      fallback_title = if slug.blank?
+        default_index_title
+      else
+        slug.tr("-_/", " ").split.map(&:capitalize).join(" ")
+      end
+      title = meta[:title].presence || fallback_title
+      desc  = meta[:description].presence
+      prio  = meta[:priority]
+      unlisted = meta[:unlisted] || false
+      items << { title: title, path: url, description: desc, slug: slug, file: p, priority: prio, unlisted: unlisted }
+    end
+    items
   end
 
   # Docs-specific convenience wrappers (formerly guides)
@@ -238,56 +245,46 @@ module MarkdownHelper
   end
 
   def parse_guide_metadata(path)
+    return build_guide_metadata(path) if Rails.env.development?
+
     key = [ "guide_md_meta", path.to_s, File.mtime(path).to_i ]
-    GUIDES_HTML_CACHE.fetch(key) do
-      meta = { title: nil, description: nil, priority: nil, unlisted: false }
-      in_table = false
-      File.foreach(path) do |raw|
-        line = raw.rstrip
-        # Stop if we've passed the initial table block
-        break if in_table && !(line.start_with?("|") || line.strip.empty?)
+    Rails.cache.fetch(key) { build_guide_metadata(path) }
+  end
 
-        # Skip leading blank lines
-        next if !in_table && line.strip.empty?
+  def build_guide_metadata(path)
+    meta = { title: nil, description: nil, priority: nil, unlisted: false }
+    in_table = false
+    File.foreach(path) do |raw|
+      line = raw.rstrip
+      break if in_table && !(line.start_with?("|") || line.strip.empty?)
+      next if !in_table && line.strip.empty?
 
-        if line.start_with?("|")
-          in_table = true
-          # Split cells and strip
-          cells = line.split("|")
-          # remove leading and trailing empty caused by leading/ending |
-          cells.shift if cells.first&.strip == ""
-          cells.pop   if cells.last&.strip == ""
-          cells = cells.map { |c| c.strip }
+      if line.start_with?("|")
+        in_table = true
+        cells = line.split("|")
+        cells.shift if cells.first&.strip == ""
+        cells.pop   if cells.last&.strip == ""
+        cells = cells.map { |c| c.strip }
 
-          # Skip separator rows like |---|---|
-          if cells.all? { |c| c.match?(/\A:?-{3,}:?\z/) }
-            next
+        next if cells.all? { |c| c.match?(/\A:?-{3,}:?\z/) }
+
+        if cells.length >= 2
+          key = cells[0].to_s.downcase
+          val = cells[1].to_s
+          case key
+          when "title", "description"
+            meta[key.to_sym] = val
+          when "priority"
+            meta[:priority] = Integer(val) rescue nil
+          when "unlisted"
+            meta[:unlisted] = val.to_s.downcase == "true"
           end
-
-          # Expect key | value rows
-          if cells.length >= 2
-            key = cells[0].to_s.downcase
-            val = cells[1].to_s
-            case key
-            when "title", "description"
-              meta[key.to_sym] = val
-            when "priority"
-              begin
-                meta[:priority] = Integer(val)
-              rescue ArgumentError, TypeError
-                meta[:priority] = nil
-              end
-            when "unlisted"
-              meta[:unlisted] = val.to_s.downcase == "true"
-            end
-          end
-        else
-          # First non-table, non-blank line: stop scanning
-          break
         end
+      else
+        break
       end
-      meta
     end
+    meta
   rescue Errno::ENOENT
     { title: nil, description: nil, priority: nil, unlisted: false }
   end
