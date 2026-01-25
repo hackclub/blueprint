@@ -7,7 +7,7 @@
 #  address_line_2  :string
 #  carrier         :string
 #  city            :string
-#  cost            :decimal(, )
+#  cost            :decimal(10, 2)
 #  country         :string
 #  package_type    :integer
 #  postal_code     :string
