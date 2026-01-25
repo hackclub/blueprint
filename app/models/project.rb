@@ -632,11 +632,11 @@ class Project < ApplicationRecord
   end
 
   def follower_count
-    followers.count
+    preloaded_follower_count || followers.count
   end
 
   def view_count
-    views_count
+    preloaded_view_count || views_count
   end
 
   def self.view_counts_for(project_ids)
