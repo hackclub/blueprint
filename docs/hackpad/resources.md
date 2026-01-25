@@ -5,8 +5,6 @@ With that in mind, there are *thousands* of other resources on the internet that
 
 If a guide doesn't seem to work, try it again. If it *really* doesn't work, try another guide! The magic of it is to keep at it, because if so many other teens can do it, you absolutely can too.
 
-There is also a list of [common DRC errors here](/errors)
-
 ## KiCad Libraries
 - [Keyswitch footprints](https://github.com/ai03-2725/MX_V2)
 - [XIAO Footprints](https://github.com/Seeed-Studio/OPL_Kicad_Library)
@@ -63,4 +61,3 @@ It has an OLED, a rotary encoder, 4 switches in a matrix, 2 addressable LEDs, an
 - Make multiple revisions! I rerouted my first macropad like 10 times while adding stuff.
 - After routing everything, run Tools > Cleanup Tracks & Vias. You gotta press the Build changes button twice for the optimizations to apply.
 - Use a ground fill, they are good!
-- Maybe use some thicker traces! Edit the trace width a at the top left "Track: use netclass width", click edit predefined and add yours. Then select it in the same menu.

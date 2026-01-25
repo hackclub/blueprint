@@ -21,9 +21,10 @@ To publish your project, we need to make sure that the source files of our proje
 
 ### 1) Make sure you have everything necessary:
 
-Before we organize anything, make sure 
+Before we organize anything, make sure you have the following:
 - A *complete* CAD model of the assembled case in .STEP or .STP file format!
     - This should include the PCB (a blank rectangle is okay!) and all parts of the case
+- Completed firmware for your hackpad!
 
 Additionally, make sure your project follows the requirements:
 - Your design uses a through-hole Seeed XIAO RP2040 as the main MCU
@@ -49,7 +50,6 @@ This should contain your PCB Design files. This includes the .kicad_pro, .kicad_
 This should contain the source files for your firmware. main.py if you're using KMK, and then several files if you're using QMK
 
 In total, you should have 3 folders in your project folder.
-
 
 ## Adding a README
 A README is essential to all open-source projects. It allows people to know more about you and your project without having to dig into every single 
