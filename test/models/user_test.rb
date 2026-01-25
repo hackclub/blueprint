@@ -18,6 +18,8 @@
 #  is_mcg                      :boolean          default(FALSE), not null
 #  is_pro                      :boolean          default(FALSE)
 #  last_active                 :datetime
+#  last_impersonated_at        :datetime
+#  last_impersonation_ended_at :datetime
 #  reviewer                    :boolean          default(FALSE), not null
 #  shopkeeper                  :boolean          default(FALSE), not null
 #  timezone_raw                :string

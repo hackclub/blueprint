@@ -147,6 +147,9 @@ class Admin::UsersController < Admin::ApplicationController
     return redirect_back(fallback_location: admin_user_path(user), alert: "Cannot impersonate admins/staff") if user.admin? || user.special_perms?
 
     previous_admin_id = current_user.id
+    PaperTrail.request.whodunnit = previous_admin_id.to_s
+    user.last_impersonated_at = Time.current
+    user.save!(validate: false)
     reset_session
     session[:original_id] = previous_admin_id
     session[:user_id] = user.id
@@ -158,9 +161,15 @@ class Admin::UsersController < Admin::ApplicationController
       return redirect_to main_app.root_path, alert: "Not currently impersonating"
     end
 
+    impersonated_user = User.find_by(id: session[:user_id])
     orig_id = session[:original_id]
     reset_session
     session[:user_id] = orig_id
+    if impersonated_user
+      PaperTrail.request.whodunnit = orig_id.to_s
+      impersonated_user.last_impersonation_ended_at = Time.current
+      impersonated_user.save!(validate: false)
+    end
     redirect_to main_app.root_path, notice: "Stopped impersonating"
   end
 
