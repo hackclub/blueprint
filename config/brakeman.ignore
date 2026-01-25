@@ -1,0 +1,10 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "14d51aea5511ae71d3735db51da7aa24fdbe5a1ed5212fa6184f9ada1b250432",
+      "note": "False positive: image_path comes from Dir.glob on a controlled directory and is validated with File.realpath"
+    }
+  ],
+  "updated": "2026-01-25",
+  "brakeman_version": "7.1.2"
+}

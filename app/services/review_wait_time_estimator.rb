@@ -25,7 +25,7 @@ class ReviewWaitTimeEstimator
     effective_throughput = stats[:effective_by_bucket][bucket] || stats[:effective_throughput]
 
     eta_seconds = ((work_ahead + work_unit) / effective_throughput) * 1.day.to_i
-    eta_seconds = [eta_seconds, 1.day.to_i].max  # Minimum 1 day floor
+    eta_seconds = [ eta_seconds, 1.day.to_i ].max
 
     bucket_pending = stats[:pending_by_bucket][bucket]&.size || 0
 
@@ -51,7 +51,7 @@ class ReviewWaitTimeEstimator
     effective_throughput = stats[:effective_by_bucket][bucket] || stats[:effective_throughput]
 
     eta_seconds = ((work_ahead + my_work) / effective_throughput) * 1.day.to_i
-    eta_seconds = [eta_seconds, 1.day.to_i].max  # Minimum 1 day floor
+    eta_seconds = [ eta_seconds, 1.day.to_i ].max
     already_waited = position_info[:already_waited_seconds]
 
     bucket_pending = stats[:pending_by_bucket][bucket]&.size || 0

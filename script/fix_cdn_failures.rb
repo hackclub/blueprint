@@ -54,7 +54,7 @@ File.write(FAILURES_FILE, JSON.pretty_generate(remaining))
 # Replace URLs in codebase
 TEXT_EXTENSIONS = %w[.rb .erb .haml .slim .js .ts .jsx .tsx .css .scss .sass .html .yml .yaml .json .md .txt].freeze
 
-fixed_mapping = fixed.to_h { |f| [f[:url], "/old-cdn/#{f[:file]}"] }
+fixed_mapping = fixed.to_h { |f| [ f[:url], "/old-cdn/#{f[:file]}" ] }
 
 if fixed_mapping.any?
   puts "\nReplacing URLs in codebase..."

@@ -198,7 +198,7 @@ class InternetArchiveFetcher
   def follow_redirects(url, limit = 5)
     limit.times do
       response = faraday_client.get(url)
-      return response unless [301, 302, 303, 307, 308].include?(response.status)
+      return response unless [ 301, 302, 303, 307, 308 ].include?(response.status)
 
       url = response.headers["location"]
       return response if url.nil?
