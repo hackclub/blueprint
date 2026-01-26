@@ -80,6 +80,8 @@ class Package < ApplicationRecord
       "https://a1.asendiausa.com/tracking/?trackingnumber=#{tracking_number}"
     when "Ground Advantage"
       "https://tools.usps.com/go/TrackConfirmAction.action?tLabels=#{tracking_number}"
+    when "UPS Ground Saver"
+      "https://wwwapps.ups.com/WebTracking/processInputRequest?tracknum=#{tracking_number}"
     else
       nil
     end

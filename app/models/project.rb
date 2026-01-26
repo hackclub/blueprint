@@ -381,11 +381,15 @@ class Project < ApplicationRecord
   end
 
   def timeline_package_sent_refs_cached
-    return [] unless ysws == "hackpad"
+    package_type = case ysws
+    when "hackpad" then :hackpad_kit
+    when "led" then :blinky_kit
+    end
+    return [] unless package_type
 
     cache_key = [ "project_timeline", id, "package_sent", user_id, user.packages.maximum(:updated_at)&.to_f, user.packages.count ]
     Rails.cache.fetch(cache_key) do
-      package = user.packages.find_by(package_type: :hackpad_kit, sent_at: ..Time.current)
+      package = user.packages.find_by(package_type: package_type, sent_at: ..Time.current)
       return [] unless package&.sent_at
 
       [ { type: :package_sent, id: package.id, date: package.sent_at } ]
