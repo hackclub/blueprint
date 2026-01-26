@@ -129,7 +129,8 @@ class User < ApplicationRecord
       "Github Linked" => lambda { |user| user.github_user? },
       "Referrer ID" => :referrer_id,
       "Referrer Email" => lambda { |user| user.referrer&.email },
-      "Loops - blueprintCreatedProjectAt" => lambda { |user| user.projects.order(:created_at).first&.created_at }
+      "Loops - blueprintCreatedProjectAt" => lambda { |user| user.projects.order(:created_at).first&.created_at },
+      "Tickets" => lambda { |user| user.tickets }
     }
   end
 
