@@ -26,6 +26,8 @@
 #
 #  index_packages_on_trackable  (trackable_type,trackable_id)
 #
+require "ostruct"
+
 class Package < ApplicationRecord
   belongs_to :trackable, polymorphic: true
 
@@ -43,6 +45,18 @@ class Package < ApplicationRecord
     "soldering_iron" => "Soldering Iron",
     "free_stickers" => "Free Stickers",
     "other" => "Other"
+  }.freeze
+
+  PACKAGE_CONTENTS = {
+    "hackpad_kit" => [
+      { name: "DIY Computer Peripheral Kit (HS 8542.31.0075 - US)", quantity: 1, value: 15.00 }
+    ],
+    "blinky_kit" => [
+      { name: "DIY Electronics Kit (HS 9503.00 - US)", quantity: 1, value: 3.00 }
+    ],
+    "other" => [
+      { name: "Miscellaneous Items", quantity: 1, value: 0.00 }
+    ]
   }.freeze
 
   def package_type_label
@@ -69,5 +83,42 @@ class Package < ApplicationRecord
     else
       nil
     end
+  end
+
+  def shipping_cost
+    cost
+  end
+
+  def owner
+    case trackable
+    when User then trackable
+    when Project, ShopOrder then trackable.user
+    end
+  end
+
+  def generate_receipt!
+    FerrumPdf.render_pdf(
+      html: CustomsReceiptTemplate.new(self).call,
+      pdf_options: { print_background: true }
+    )
+  end
+
+  def recipient_address
+    [
+      recipient_name,
+      address_line_1,
+      address_line_2.presence,
+      "#{city}, #{state} #{postal_code}",
+      country
+    ].compact.join("\n")
+  end
+
+  def contents
+    items = PACKAGE_CONTENTS[package_type] || PACKAGE_CONTENTS["other"]
+    items.map { |item| OpenStruct.new(item) }
+  end
+
+  def total_value
+    contents.sum { |item| item.quantity * item.value }
   end
 end

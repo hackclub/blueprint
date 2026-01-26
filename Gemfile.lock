@@ -189,6 +189,15 @@ GEM
       multipart-post (~> 2.0)
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
+    ferrum (0.17.1)
+      addressable (~> 2.5)
+      base64 (~> 0.2)
+      concurrent-ruby (~> 1.1)
+      webrick (~> 1.7)
+      websocket-driver (~> 0.7)
+    ferrum_pdf (3.1.0)
+      actionpack (>= 6.0.0)
+      ferrum (~> 0.15)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -343,6 +352,9 @@ GEM
     pg (1.6.2-arm64-darwin)
     pg (1.6.2-x86_64-linux)
     pg (1.6.2-x86_64-linux-musl)
+    phlex (2.4.0)
+      refract (~> 1.0)
+      zeitwerk (~> 2.7)
     pp (0.6.3)
       prettyprint
     prawn (2.5.0)
@@ -426,6 +438,9 @@ GEM
       redis-client (>= 0.22.0)
     redis-client (0.25.2)
       connection_pool
+    refract (1.1.0)
+      prism
+      zeitwerk
     regexp_parser (2.11.2)
     reline (0.6.2)
       io-console (~> 0.5)
@@ -567,6 +582,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webrick (1.9.2)
     websocket (1.2.11)
     websocket-driver (0.8.0)
       base64
@@ -605,6 +621,7 @@ DEPENDENCIES
   dotenv-rails
   erb_lint
   faraday (~> 2.14)
+  ferrum_pdf
   flipper
   flipper-active_record
   flipper-ui
@@ -623,6 +640,7 @@ DEPENDENCIES
   pagy
   paper_trail
   pg (~> 1.6)
+  phlex
   prawn
   prawn-svg
   propshaft

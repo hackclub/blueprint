@@ -187,6 +187,10 @@ Rails.application.routes.draw do
 
   resources :posters, only: [ :show ]
 
+  resources :packages, only: [] do
+    get :customs_receipt, on: :member
+  end
+
   namespace :admin do
     post "stop_impersonating", to: "users#stop_impersonating"
 

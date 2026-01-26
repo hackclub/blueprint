@@ -109,6 +109,9 @@ gem "prawn"
 gem "prawn-svg"
 gem "combine_pdf"
 
+gem "phlex"
+gem "ferrum_pdf"
+
 gem "active_storage_validations"
 
 gem "nokogiri"
