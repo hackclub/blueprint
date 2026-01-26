@@ -333,6 +333,7 @@ class Project < ApplicationRecord
     refs.concat(timeline_ship_refs_cached)
     refs.concat(timeline_review_refs_cached)
     refs.concat(timeline_package_sent_refs_cached)
+    refs.concat(timeline_guide_next_steps_ref)
 
     timeline = hydrate_timeline_refs(refs)
     sorted = timeline.sort_by { |e| e[:date] }
@@ -394,6 +395,21 @@ class Project < ApplicationRecord
 
       [ { type: :package_sent, id: package.id, date: package.sent_at } ]
     end
+  end
+
+  def timeline_guide_next_steps_ref
+    return [] unless ysws.in?(%w[hackpad led])
+    return [] unless design_approved?
+    return [] if timeline_package_sent_refs_cached.any?
+
+    package_type = ysws == "hackpad" ? :hackpad_kit : :blinky_kit
+    kit_sent = user.packages.exists?(package_type: package_type)
+    iron_sent = true # TODO: check if soldering iron has been sent
+    grant_sent = true # TODO: check if grant has been sent
+
+    return [] if kit_sent && iron_sent && grant_sent
+
+    [ { type: :guide_next_steps, date: 1.second.from_now, kit_sent: kit_sent, iron_sent: iron_sent, grant_sent: grant_sent } ]
   end
 
   def design_review_eta
@@ -1139,7 +1155,7 @@ class Project < ApplicationRecord
                    .flatten.compact.uniq
                    .select { |uid| uid.to_s.match?(/\A\d+\z/) }
 
-    journals_by_id = JournalEntry.where(id: journal_ids).includes(:user).index_by(&:id)
+    journals_by_id = JournalEntry.where(id: journal_ids).index_by(&:id)
     kudos_by_id = Kudo.where(id: kudo_ids).includes(:user).index_by(&:id)
     packages_by_id = Package.where(id: package_ids).index_by(&:id)
     users_by_id = User.where(id: user_ids).index_by { |u| u.id.to_s }

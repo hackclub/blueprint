@@ -1,0 +1,12 @@
+<% if current_user.present? && current_user == project.user %>
+    <% fulfillment_items = [] %>
+    <% fulfillment_items << "a parts kit" unless event[:kit_sent] %>
+    <% fulfillment_items << "a soldering iron" unless event[:iron_sent] %>
+    <%= render "timeline_event_card" do %>
+      <p>We're preparing <%= fulfillment_items.to_sentence %> for your project.</p>
+      <% unless event[:grant_sent] %>
+        <p>Your grant to purchase the PCB will also be sent soon. Watch out for an email from HCB</p>
+      <% end %>
+      <p>You'll see updates here when things are sent!</p>
+    <% end %>
+<% end %>
