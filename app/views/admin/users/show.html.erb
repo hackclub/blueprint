@@ -103,6 +103,30 @@
                   class: "btn border-blue-500 bg-blue-500 cursor-pointer text-white"
                 %>
           <% end %>
+          <button type="button" data-controller="modal" data-modal-target-id-value="ticketOverride" data-action="click->modal#show" class="btn border-amber-500 bg-amber-500 cursor-pointer text-white">
+            Ticket Override (<%= @user.tickets %>)
+          </button>
+        </div>
+        <div id="ticketOverrideModal" data-controller="modal" data-action="modal:show-ticketOverride@window->modal#show modal:hide-ticketOverride@window->modal#hide" class="hidden fixed inset-0 z-50 flex items-center justify-center" data-modal-overlay-target="overlay">
+          <div class="absolute inset-0 bg-black/50" data-modal-target="overlay"></div>
+          <div class="relative bg-bp-dark border border-white/10 rounded-lg p-6 w-full max-w-md" data-modal-target="panel">
+            <h3 class="text-xl font-rc-full mb-4">Ticket Override</h3>
+            <p class="mb-4 text-white/70">Current tickets: <span class="font-bold text-white"><%= @user.tickets %></span></p>
+            <%= form_with url: add_ticket_adjustment_admin_user_path(@user), method: :post, local: true, class: "space-y-4" do |f| %>
+              <div>
+                <label class="block text-sm mb-1">Adjustment (positive to add, negative to remove)</label>
+                <input type="number" name="adjustment" value="0" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded text-white" required>
+              </div>
+              <div>
+                <label class="block text-sm mb-1">Internal Reason</label>
+                <input type="text" name="reason" placeholder="Reason for adjustment..." class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded text-white" required>
+              </div>
+              <div class="flex gap-2 justify-end">
+                <button type="button" data-action="click->modal#hide" class="btn border-white/20 bg-white/10 cursor-pointer text-white">Cancel</button>
+                <button type="submit" class="btn border-bp-success bg-bp-success cursor-pointer text-bp-dark">Apply</button>
+              </div>
+            <% end %>
+          </div>
         </div>
       <% end %>
     <% end %>

@@ -86,6 +86,20 @@ class Admin::UsersController < Admin::ApplicationController
     redirect_to admin_user_path(@user), notice: "User unbanned"
   end
 
+  def add_ticket_adjustment
+    @user = User.find(params[:id])
+    adjustment = params[:adjustment].to_i
+    reason = params[:reason].to_s.strip
+
+    if reason.blank?
+      redirect_to admin_user_path(@user), alert: "Reason is required"
+      return
+    end
+
+    @user.manual_ticket_adjustments.create!(adjustment: adjustment, internal_reason: reason)
+    redirect_to admin_user_path(@user), notice: "Ticket adjustment added successfully"
+  end
+
   def revoke_to_user
     @user = User.find(params[:id])
     @user.update!(admin: false, reviewer: false, fulfiller: false, shopkeeper: false)

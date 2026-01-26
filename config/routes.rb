@@ -225,6 +225,7 @@ Rails.application.routes.draw do
         post :impersonate, on: :member
         post :ban, on: :member
         post :unban, on: :member
+        post :add_ticket_adjustment, on: :member
       end
 
       resources :hcb_transactions, only: [ :index ]
