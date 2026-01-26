@@ -7,6 +7,10 @@
         <div>
             <p>Tracking Number: <% if package.tracking_link.present? %><a href="<%= package.tracking_link %>" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 text-bp-warning hover:decoration-white"><%= package.tracking_number %></a><% else %><%= package.tracking_number %><% end %></p>
         </div>
+        <div>
+            <p>If a customs officer has asked for a receipt/invoice, you can generate one <a href="<%= customs_receipt_package_path(package) %>" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 text-bp-warning hover:decoration-white">here</a>.</p>
+            <p class="text-sm"><em>This document only lists the item value and confirms you were not charged. Hack Club runs on a limited budget and cannot cover or estimate customs, tariff, or import fees, which are determined by your country. Please contact your local authorities for details.</em></p>
+        </div>
         <p class="text-sm text-gray-400">ⓘ Only visible to you</p>
     <% end %>
 <% end %>
