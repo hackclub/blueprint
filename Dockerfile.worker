@@ -14,10 +14,13 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 # Rails app lives here
 WORKDIR /rails
 
-# Install base packages
+# Install base packages (including Chromium for PDF generation)
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl wget libjemalloc2 libvips sqlite3 && \
+    apt-get install --no-install-recommends -y curl wget libjemalloc2 libvips sqlite3 \
+    chromium chromium-sandbox fonts-liberation fonts-noto-color-emoji && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+ENV CHROMIUM_PATH="/usr/bin/chromium"
 
 # Set production environment
 ENV RAILS_ENV="production" \
