@@ -10,6 +10,7 @@
 #  ban_type                    :integer
 #  birthday                    :date
 #  email                       :string           not null
+#  first_synced_to_airtable    :boolean          default(FALSE), not null
 #  free_stickers_claimed       :boolean          default(FALSE), not null
 #  fulfiller                   :boolean          default(FALSE), not null
 #  github_username             :string

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_25_042136) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_27_204430) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -659,6 +659,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_25_042136) do
     t.boolean "shopkeeper", default: false, null: false
     t.datetime "last_impersonated_at"
     t.datetime "last_impersonation_ended_at"
+    t.boolean "first_synced_to_airtable", default: false, null: false
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
   end
 
