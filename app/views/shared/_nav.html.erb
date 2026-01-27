@@ -7,7 +7,7 @@
   <% nav_links = {
       "Dashboard" => user_logged_in? ? home_path : login_path,
       "Hackpad" => user_logged_in? ? (current_user.is_pro ? nil : hackpad_path) : nil,
-      "Custom Projects" => about_path,
+      (user_logged_in? && current_user.is_pro? ? "About" : "Custom Projects") => about_path,
       # "My Projects" => user_logged_in? ? projects_path : login_path,
       "Guided Projects" => starter_projects_path,
       "Design Resources" => resources_path,
