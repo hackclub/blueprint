@@ -109,6 +109,8 @@ class AirtableSync < ApplicationRecord
 
     upsert_all(sync_data, unique_by: :record_identifier) if sync_data.any?
 
+    mark_first_synced!(klass, records)
+
     records
   end
 
@@ -259,5 +261,14 @@ class AirtableSync < ApplicationRecord
     end
 
     [ base, MAX_AIRTABLE_BATCH_SIZE ].min
+  end
+
+  def self.mark_first_synced!(klass, records)
+    return unless klass == User
+
+    ids = records.map(&:id)
+    return if ids.empty?
+
+    User.where(id: ids, first_synced_to_airtable: false).update_all(first_synced_to_airtable: true)
   end
 end
