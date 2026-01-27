@@ -291,12 +291,25 @@ class AuthController < ApplicationController
       primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
       has_address = addresses.any?
 
-      user.update!(
+      attrs = {
         identity_vault_access_token: access_token,
         identity_vault_id: identity_vault_id,
         ysws_verified: identity[:verification_status] == "verified" && identity[:ysws_eligible] && has_address,
         idv_country: primary_address[:country]
-      )
+      }
+
+      if user.birthday.nil? && identity[:birthday].present?
+        begin
+          parsed = Date.iso8601(identity[:birthday].to_s)
+          attrs[:birthday] = parsed if parsed <= Date.current && parsed > 120.years.ago.to_date
+        rescue ArgumentError
+          Rails.logger.tagged("Authentication") do
+            Rails.logger.warn({ event: "invalid_idv_birthday", value: identity[:birthday] }.to_json)
+          end
+        end
+      end
+
+      user.update!(attrs)
 
       ahoy.track("hca_login", user_id: user.id)
 

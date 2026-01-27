@@ -932,13 +932,24 @@ class User < ApplicationRecord
     primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
     has_address = addresses.any?
 
-    update!(
+    attrs = {
       identity_vault_access_token: access_token,
       identity_vault_id:,
       ysws_verified: idv_data.dig(:identity,
                                   :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible) && has_address,
       idv_country: primary_address.dig(:country)
-    )
+    }
+
+    if birthday.nil? && idv_data.dig(:identity, :birthday).present?
+      begin
+        parsed = Date.iso8601(idv_data.dig(:identity, :birthday).to_s)
+        attrs[:birthday] = parsed if parsed <= Date.current && parsed > 120.years.ago.to_date
+      rescue ArgumentError
+        Rails.logger.warn({ event: "invalid_idv_birthday", value: idv_data.dig(:identity, :birthday) }.to_json)
+      end
+    end
+
+    update!(attrs)
   end
 
   def fetch_idv(access_token = nil)
