@@ -166,7 +166,7 @@ Therefore, I click `W` (for wire) and connect the mounting holes as such:
 
 - Monostable Mode, or One Shot, is great for creating time delays. This is almost used as a stopwatch; you press a button (trigger), and the timer turns ON for a set amount of time, then automatically turns OFF.
 
-- **Astable Mode produces a continuous oscillating signal. In this configuration, the 555 timer repeatedly toggles its output between high and low states, with both the frequency and pulse width adjustable. Essentially, this mode mode makes the timer act like a blinking light. It keeps switching ON and OFF again and again, without needing you to press anything. We will be using this mode, as it lets the LED blink at a speed we can adjust.**
+- **Astable Mode produces a continuous oscillating signal. In this configuration, the 555 timer repeatedly toggles its output between high and low states, with both the frequency and pulse width adjustable. Essentially, this mode makes the timer act like a blinking light. It keeps switching ON and OFF again and again, without needing you to press anything. We will be using this mode, as it lets the LED blink at a speed we can adjust.**
 
 - Bistable Mode causes the 555 timer to toggle its output between high and low states depending on the state of two inputs. Essentially, it acts like a toggle switch. Foe example, you can press button A to turn the LED ON, then press button B to turn the LED off.
 
