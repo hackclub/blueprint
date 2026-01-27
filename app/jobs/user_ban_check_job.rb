@@ -2,10 +2,10 @@ class UserBanCheckJob < ApplicationJob
   queue_as :background
 
   # Ban priority: higher priority bans take precedence
-  BAN_PRIORITY = [ :blueprint, :hardware, :slack, :age, :hackatime ].freeze
+  BAN_PRIORITY = [ :blueprint, :hcb, :hardware, :slack, :age, :hackatime ].freeze
 
   # Ban types that are set/managed manually by humans and should not be modified by this job
-  MANUAL_BAN_TYPES = %w[blueprint hardware slack].freeze
+  MANUAL_BAN_TYPES = %w[blueprint hardware slack hcb].freeze
 
   def perform
     Rails.logger.info "UserBanCheckJob started at #{Time.current}"
