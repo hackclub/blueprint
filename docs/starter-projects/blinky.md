@@ -39,7 +39,7 @@ We will all build this LED chaser which blinks 10 LEDs in a variable speed seque
 
 Here’s the schematic:
 
-![](/old-cdn/5447f846be0c0dfc8fb9e18855233e17eee82b6b_image.webp)
+![](https://files.catbox.moe/t02j8o.png)
 
 ## What We’ll Be Doing
 
@@ -131,7 +131,7 @@ You will now need to go through and find all of your components. Luckily, we alr
 
 - **[NE555P](https://www.ti.com/lit/ds/symlink/ne555.pdf)** (this is your 555 IC which is famous in circuitry)
 - **CD4017** (this is your main 4017 IC. It controls all of the LED’s flashing given an input from the 555)
-- **MountingHole_Pad** (this is your header, or little pins which you will use to power your circuit. You will need 2 off these. Additionally, there is another little header which you can use for debugging your circuit)
+- **Conn_01x02_Socket / Conn_01x01_Socket** (this is your header, or little pins which you will use to power your circuit. You will need 2 off these. Additionally, there is another little header which you can use for debugging your circuit)
 - **C_Polarized** (this is an electrolytic capacitor, it is directional so be careful!)
 - **C** (this is a normal capacitor)
 - **R** (this is a 1k ohm resistor and 470 ohm resistor)
@@ -160,7 +160,7 @@ First, we know that the battery pads connect to +5v ([5 volts of power](https://
 
 Therefore, I click `W` (for wire) and connect the mounting holes as such:
 
-![](/old-cdn/131c8dfacde59ed5e224b156257712a6e735e49f_image.webp)
+![](https://files.catbox.moe/doppuk.png)
 
 **Now, let's take a look at the [555 timer](https://www.instructables.com/555-Timer/#step6).** There are three different modes:
 
@@ -231,7 +231,7 @@ Unfortunately, the **CD4017** footprint is not included in KiCad by default. Let
 
 Your footprints should look something like this:
 
-![](/old-cdn/bf6e6b7ca1eeba39f6ddd680f6efa7a7b06cbfd4_image.webp)
+![](https://files.catbox.moe/b4llal.png)
 
 ---
 
@@ -302,7 +302,7 @@ Your routing is complete!
 
 > Tip 2: Use a [ground plane](https://www.kicadtips.com/how-to/make-a-ground-plane) to help with routing and to reduce noise. Thats what the red and blue layers are for! Its not necessary, but looks nice and is easy to set up!
 
-![](/old-cdn/a37611747f571d7a98564a52686e42722adfa6c0_image.webp)
+![](https://files.catbox.moe/cvtxud.png)
 
 ## Customization
 
@@ -316,7 +316,7 @@ To add art, just select the “Top Silkscreen Layer” or “Bottom Silkscreen L
 
 Your board is now beautiful
 
-![](/old-cdn/159975437b4e769b6bcf42d8f52560b11d06c143_image.webp)
+![](https://files.catbox.moe/hycsid.png)
 
 ## Run Design Rules Check
 
@@ -340,7 +340,7 @@ Once your PCB passes the DRC, it is finished!
 
 In PCB editor click View > 3D Viewer to see your finished work!
 
-![](/old-cdn/50638b1bb956cd429eab5755e7aaf142ffe088db_image.webp)
+![](https://files.catbox.moe/8a6auv.png)
 
 ## Add Your Files to Your GitHub Repo
 
