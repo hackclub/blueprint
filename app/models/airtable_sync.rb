@@ -36,82 +36,18 @@ class AirtableSync < ApplicationRecord
     )
   end
 
+  def self.sync_records!(klass, records, no_upload: false)
+    sync_with_records!(klass, records, no_upload:, log_prefix: "Airtable urgent sync")
+  end
+
   def self.sync!(classname, limit: nil, sync_all: true, no_upload: false)
-    batch = false
-    klass = resolve_class(classname)
-    validate_sync_methods!(klass)
-
-    table_id = klass.airtable_sync_table_id
-    field_mappings = klass.airtable_sync_field_mappings
-    has_sync_id = klass.respond_to?(:airtable_sync_sync_id)
-
-    batch = true if has_sync_id
-
-    should_multi_batch = klass.respond_to?(:airtable_should_batch) && klass.airtable_should_batch
+    ctx = sync_context_for(classname)
+    klass = ctx[:klass]
 
     Rails.logger.info("Airtable sync: Loading #{klass.name} records...")
-    records = batch || sync_all ? all_records(klass, limit) : outdated_records(klass, limit)
-    Rails.logger.info("Airtable sync: Found #{records.size} #{klass.name} records to sync")
+    records = ctx[:sync_id].present? || sync_all ? all_records(klass, limit) : outdated_records(klass, limit)
 
-    airtable_ids = []
-
-    if batch
-      total = records.size
-      batch_size = effective_batch_size(klass, total)
-
-      if total > MAX_AIRTABLE_BATCH_SIZE && !should_multi_batch
-        Sentry.capture_message(
-          "Airtable sync exceeds #{MAX_AIRTABLE_BATCH_SIZE} records without multi-batch enabled",
-          level: :warning,
-          extra: { class_name: klass.name, record_count: total }
-        )
-      end
-
-      if should_multi_batch && total > batch_size
-        batches = build_equal_batches(records, batch_size)
-
-        batches.each_with_index do |batch_records, index|
-          Rails.logger.info(
-            "Airtable multi-batch sync: #{klass.name} " \
-            "batch #{index + 1}/#{batches.size} " \
-            "(#{batch_records.size} records)"
-          )
-          batch_sync!(table_id, batch_records, klass.airtable_sync_sync_id, field_mappings, no_upload:, batch_index: index + 1)
-        end
-      else
-        batch_sync!(table_id, records, klass.airtable_sync_sync_id, field_mappings, no_upload:)
-      end
-    else
-      total = records.size
-      records.each_with_index do |record, index|
-        if (index + 1) % 100 == 0 || index + 1 == total
-          Rails.logger.info("Airtable sync: Processing #{klass.name} (#{index + 1}/#{total})")
-        end
-        old_airtable_id = find_by(record_identifier: build_identifier(record))&.airtable_id
-        airtable_ids << individual_sync!(table_id, record, field_mappings, old_airtable_id)
-      end
-    end
-
-    return records if no_upload
-
-    sync_data = records.map do |record|
-      data = {
-        record_identifier: build_identifier(record),
-        last_synced_at: Time.current,
-        created_at: Time.current,
-        updated_at: Time.current
-      }
-      if !batch
-        data[:airtable_id] = airtable_ids.shift
-      end
-      data
-    end
-
-    upsert_all(sync_data, unique_by: :record_identifier) if sync_data.any?
-
-    mark_first_synced!(klass, records)
-
-    records
+    sync_with_records!(klass, records, no_upload:, log_prefix: "Airtable sync")
   end
 
   def self.batch_sync!(table_id, records, sync_id, mappings, no_upload: false, batch_index: nil)
@@ -199,6 +135,94 @@ class AirtableSync < ApplicationRecord
     unless klass.respond_to?(:airtable_sync_field_mappings)
       raise "#{klass.name} must implement airtable_sync_field_mappings class method"
     end
+  end
+
+  def self.sync_context_for(classname)
+    klass = resolve_class(classname)
+    validate_sync_methods!(klass)
+
+    {
+      klass:,
+      table_id: klass.airtable_sync_table_id,
+      mappings: klass.airtable_sync_field_mappings,
+      sync_id: (klass.airtable_sync_sync_id if klass.respond_to?(:airtable_sync_sync_id)),
+      should_multi_batch: klass.respond_to?(:airtable_should_batch) && klass.airtable_should_batch
+    }
+  end
+
+  def self.sync_with_records!(klass, records, no_upload:, log_prefix:)
+    ctx = sync_context_for(klass)
+    klass = ctx[:klass]
+
+    Rails.logger.info("#{log_prefix}: Found #{records.size} #{klass.name} records to sync")
+
+    airtable_ids = if ctx[:sync_id].present?
+      perform_batch_sync!(ctx, records, no_upload:, log_prefix:)
+      []
+    else
+      perform_individual_sync!(ctx, records, log_prefix:)
+    end
+
+    return records if no_upload
+
+    upsert_sync_state!(records, airtable_ids, batch: ctx[:sync_id].present?)
+    mark_first_synced!(klass, records)
+
+    records
+  end
+
+  def self.perform_batch_sync!(ctx, records, no_upload:, log_prefix:)
+    klass = ctx[:klass]
+    total = records.size
+    batch_size = effective_batch_size(klass, total)
+
+    if total > MAX_AIRTABLE_BATCH_SIZE && !ctx[:should_multi_batch]
+      Sentry.capture_message(
+        "Airtable sync exceeds #{MAX_AIRTABLE_BATCH_SIZE} records without multi-batch enabled",
+        level: :warning,
+        extra: { class_name: klass.name, record_count: total }
+      )
+    end
+
+    if ctx[:should_multi_batch] && total > batch_size
+      batches = build_equal_batches(records, batch_size)
+      batches.each_with_index do |batch_records, index|
+        Rails.logger.info("#{log_prefix}: #{klass.name} batch #{index + 1}/#{batches.size} (#{batch_records.size} records)")
+        batch_sync!(ctx[:table_id], batch_records, ctx[:sync_id], ctx[:mappings], no_upload:, batch_index: index + 1)
+      end
+    else
+      batch_sync!(ctx[:table_id], records, ctx[:sync_id], ctx[:mappings], no_upload:)
+    end
+  end
+
+  def self.perform_individual_sync!(ctx, records, log_prefix:)
+    airtable_ids = []
+    total = records.size
+
+    records.each_with_index do |record, index|
+      if (index + 1) % 100 == 0 || index + 1 == total
+        Rails.logger.info("#{log_prefix}: Processing #{ctx[:klass].name} (#{index + 1}/#{total})")
+      end
+      airtable_ids << individual_sync!(ctx[:table_id], record, ctx[:mappings], nil)
+    end
+
+    airtable_ids
+  end
+
+  def self.upsert_sync_state!(records, airtable_ids, batch:)
+    now = Time.current
+    sync_data = records.map do |record|
+      data = {
+        record_identifier: build_identifier(record),
+        last_synced_at: now,
+        created_at: now,
+        updated_at: now
+      }
+      data[:airtable_id] = airtable_ids.shift unless batch
+      data
+    end
+
+    upsert_all(sync_data, unique_by: :record_identifier) if sync_data.any?
   end
 
   def self.all_records(klass, limit)

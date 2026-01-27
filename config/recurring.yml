@@ -35,6 +35,11 @@ production:
     queue: background
     schedule: every 15 minutes
 
+  urgent_sync_airtable_users:
+    class: AirtableUrgentSyncUsersJob
+    queue: default
+    schedule: every 3 minutes
+
   # sync_hcb_data:
   #   class: HcbSyncJob
   #   queue: background
