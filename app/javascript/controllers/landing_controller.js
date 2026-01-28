@@ -5,15 +5,22 @@ export default class extends Controller {
 
   connect() {
     this.heroImage = this.heroTarget.children[0];
+    this.ticking = false;
+    this.boundOnLoad = this.onLoad.bind(this);
+    this.boundOnScroll = this.onScroll.bind(this);
 
-    this.heroImage.addEventListener("load", this.onLoad.bind(this));
-    document.addEventListener("scroll", this.onScroll.bind(this));
-    this.onScroll();
+    this.heroImage.addEventListener("load", this.boundOnLoad);
+    document.addEventListener("scroll", this.boundOnScroll, { passive: true });
+
+    if (this.heroImage.complete) {
+      this.heroHeight = this.heroTarget.offsetHeight;
+    }
+    this.scheduleUpdate();
   }
 
   disconnect() {
-    this.heroImage.removeEventListener("load", this.onLoad.bind(this));
-    document.removeEventListener("scroll", this.onScroll.bind(this));
+    this.heroImage.removeEventListener("load", this.boundOnLoad);
+    document.removeEventListener("scroll", this.boundOnScroll);
   }
 
   onLoad() {
@@ -21,6 +28,20 @@ export default class extends Controller {
   }
 
   onScroll() {
+    this.scheduleUpdate();
+  }
+
+  scheduleUpdate() {
+    if (this.ticking) return;
+
+    this.ticking = true;
+    requestAnimationFrame(() => {
+      this.updateMasks();
+      this.ticking = false;
+    });
+  }
+
+  updateMasks() {
     const scrollPercent = Math.max(
       0,
       Math.min(
@@ -29,11 +50,14 @@ export default class extends Controller {
       )
     );
 
-    let angle = 180 + ((120 - 180) * scrollPercent) / 100;
-    let percent = 100 - (30 + (70 * scrollPercent) / 100);
+    const angle = 180 + ((120 - 180) * scrollPercent) / 100;
+    const percent = 100 - (30 + (70 * scrollPercent) / 100);
+    const mask = `linear-gradient(${angle}deg, rgba(0,0,0,0.4) ${percent}%, rgba(0,0,0,0) ${percent}%)`;
+    const outlineMask = `linear-gradient(${angle}deg, rgba(0,0,0,0) ${percent}%, rgba(0,0,0,1) ${percent}%)`;
+    const overlayMask = `linear-gradient(${angle}deg, rgba(0,0,0,1) ${percent}%, rgba(0,0,0,0) ${percent}%)`;
 
-    this.heroTarget.style.maskImage = `linear-gradient(${angle}deg, rgba(0,0,0,0.4) ${percent}%, rgba(0,0,0,0) ${percent}%)`;
-    this.heroOutlineTarget.style.maskImage = `linear-gradient(${angle}deg, rgba(0,0,0,0) ${percent}%, rgba(0,0,0,1) ${percent}%)`;
-    this.overlayTarget.style.maskImage = `linear-gradient(${angle}deg, rgba(0,0,0,1) ${percent}%, rgba(0,0,0,0) ${percent}%)`;
+    this.heroTarget.style.maskImage = mask;
+    this.heroOutlineTarget.style.maskImage = outlineMask;
+    this.overlayTarget.style.maskImage = overlayMask;
   }
 }

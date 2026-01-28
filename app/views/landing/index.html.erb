@@ -63,6 +63,9 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <%# Preload LCP hero image for faster rendering %>
+    <link rel="preload" href="<%= image_path('hero.webp') %>" as="image" type="image/webp" fetchpriority="high">
   </head>
 
   <body class="grid-bg grainy-bg overflow-x-hidden">
@@ -108,7 +111,7 @@
 
     
       <div class="relative w-full">
-        <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0">
+        <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0" fetchpriority="high" decoding="async">
         
         <!-- Hero title -->
         <div class="absolute top-0 left-0 right-0 flex items-center justify-center min-h-screen" data-landing-target="heroContent">
@@ -117,8 +120,8 @@
               <!-- Left: logo + caption + CTA -->
               <div class="space-y-4 md:space-y-6 text-center md:text-left">
                 <div class="text-base md:text-2xl font-rc-full">Hack Club presents...</div>
-                <%= image_tag "blueprint_logo.webp", alt: "Blueprint", class: "mx-auto md:mx-0 w-48 md:w-[28rem] h-auto hidden md:block" %>
-                <%= image_tag "blueprint_logo_centered.webp", alt: "Blueprint", class: "w-full max-w-xs mx-auto h-auto md:hidden" %>
+                <%= image_tag "blueprint_logo.webp", alt: "Blueprint", class: "mx-auto md:mx-0 w-48 md:w-[28rem] h-auto hidden md:block", fetchpriority: "high", decoding: "async" %>
+                <%= image_tag "blueprint_logo_centered.webp", alt: "Blueprint", class: "w-full max-w-xs mx-auto h-auto md:hidden", fetchpriority: "high", decoding: "async" %>
                 
                 <div class="space-y-1 md:space-y-0 text-sm md:text-2xl font-rc-full">
                   <h2 class="hidden md:block mb-2 md:text-3xl">Design a macropad - get it sent from Hack Club for free!</h2>
@@ -143,8 +146,8 @@
 
               <!-- Right: hero image -->
               <div class="justify-center hidden md:flex md:justify-end group z-10 wobble-1">
-                <%= image_tag "hackpad.webp", alt: "Blueprint project example", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg group-hover:hidden" %>
-                <%= image_tag "hackpad_inside.webp", alt: "Blueprint project xpexample", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg hidden group-hover:block" %>
+                <%= image_tag "hackpad.webp", alt: "Blueprint project example", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg group-hover:hidden", fetchpriority: "high", decoding: "async" %>
+                <%= image_tag "hackpad_inside.webp", alt: "Blueprint project xpexample", class: "w-full max-w-sm lg:max-w-none md:w-[36rem] h-auto object-contain drop-shadow-lg hidden group-hover:block", loading: "lazy", decoding: "async" %>
               </div>
             </div>
           </div>
@@ -167,19 +170,19 @@
           <h2 class="text-2xl md:text-5xl text-center font-rc-full mb-6 md:mb-12">Here's How It Works:</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-screen-2xl mx-auto">
             <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
-              <%= image_tag "landing/hackpad/cad_design.webp", class: "w-full h-auto mb-4" %>
+              <%= image_tag "landing/hackpad/cad_design.webp", class: "w-full h-auto mb-4", loading: "lazy", decoding: "async" %>
               <p class="md:text-lg font-rc-full">Design a case</p>
             </div>
             <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
-              <%= image_tag "landing/hackpad/pcb_design.webp", class: "w-full h-auto mb-4" %>
+              <%= image_tag "landing/hackpad/pcb_design.webp", class: "w-full h-auto mb-4", loading: "lazy", decoding: "async" %>
               <p class="md:text-lg font-rc-full">Design a PCB</p>
             </div>
             <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
-              <%= image_tag "landing/hackpad/firmware.webp", class: "w-full h-auto mb-4" %>
+              <%= image_tag "landing/hackpad/firmware.webp", class: "w-full h-auto mb-4", loading: "lazy", decoding: "async" %>
               <p class="md:text-lg font-rc-full">Write firmware</p>
             </div>
             <div class="border border-white/10 bg-bp-darker p-6 md:p-8 text-center">
-              <%= image_tag "landing/parts_cropped.webp", class: "w-full h-auto mb-4" %>
+              <%= image_tag "landing/parts_cropped.webp", class: "w-full h-auto mb-4", loading: "lazy", decoding: "async" %>
               <p class="md:text-lg font-rc-full">We ship the parts (you get a macropad)</p>
             </div>
           </div>
@@ -261,7 +264,7 @@
 
       <!-- Divider Image -->
       <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
-        <%= image_tag "landing/flag_divider.webp", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+        <%= image_tag "landing/flag_divider.webp", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);", loading: "lazy", decoding: "async" %>
       </div>
 
       <!-- Join Community Section -->
@@ -319,7 +322,7 @@
 
       <!-- Divider Image -->
       <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
-        <%= image_tag "landing/flag_divider_in.webp", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+        <%= image_tag "landing/flag_divider_in.webp", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);", loading: "lazy", decoding: "async" %>
       </div>
 
       <div class="text-center max-w-4xl mx-auto px-4">
@@ -336,7 +339,7 @@
 
       <!-- Divider Image -->
       <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
-        <%= image_tag "landing/flag_divider_out.webp", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);" %>
+        <%= image_tag "landing/flag_divider_out.webp", class: "w-full h-auto opacity-75", style: "transform: rotate(-2deg) scale(1.15);", loading: "lazy", decoding: "async" %>
       </div>
     </main>
 
