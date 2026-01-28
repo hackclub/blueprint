@@ -7,9 +7,11 @@
 #  approved_tier               :integer
 #  approx_hour                 :decimal(3, 1)
 #  build_review_claimed_at     :datetime
+#  build_slack_message         :string
 #  demo_link                   :string
 #  description                 :text
 #  design_review_claimed_at    :datetime
+#  design_slack_message        :string
 #  funding_needed_cents        :integer          default(0), not null
 #  hackatime_project_keys      :string           default([]), is an Array
 #  is_deleted                  :boolean          default(FALSE)
@@ -23,7 +25,6 @@
 #  review_status               :string
 #  reviewer_note               :text
 #  skip_gh_sync                :boolean          default(FALSE)
-#  slack_message               :string
 #  tier                        :integer
 #  title                       :string
 #  unlisted                    :boolean          default(FALSE), not null

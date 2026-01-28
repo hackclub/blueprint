@@ -79,6 +79,17 @@
             </div>
           </div>
 
+          <div data-controller="slack-link-validator">
+            <%= f.label :build_slack_message, "Slack post link*", class: "block text-xl font-medium font-rc-full" %>
+            <p>Post your project in <a href="https://hackclub.slack.com/archives/C09SJ2R1002" target="_blank" class="underline text-bp-warning">#blueprint-drafts</a> and copy the message link! You should include the name of your project, the description, a picture of it, and its github URL! See the existing posts for examples, and ask in #blueprint if you need help</p>
+            <%= f.text_field :build_slack_message,
+                  required: true,
+                  placeholder: "https://hackclub.slack.com/archives/C09SJ2R1002/p...",
+                  class: "input px-3 mt-1 block w-full",
+                  data: { slack_link_validator_target: "input", action: "input->slack-link-validator#validate paste->slack-link-validator#validate" } %>
+            <p class="hidden text-sm text-bp-danger mt-1" data-slack-link-validator-target="error">Please enter a valid Slack message link from #blueprint-drafts! It should look something like this: https://hackclub.slack.com/archives/C09SJ2R1002/p1234567891011121</p>
+          </div>
+
           <div>
             <%= f.label :reviewer_note, "Note to reviewer (optional)", class: "block text-xl font-medium font-rc-full" %>
             <p>Anything you'd like the reviewer to know about your project?</p>

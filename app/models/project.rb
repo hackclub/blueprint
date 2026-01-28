@@ -7,9 +7,11 @@
 #  approved_tier               :integer
 #  approx_hour                 :decimal(3, 1)
 #  build_review_claimed_at     :datetime
+#  build_slack_message         :string
 #  demo_link                   :string
 #  description                 :text
 #  design_review_claimed_at    :datetime
+#  design_slack_message        :string
 #  funding_needed_cents        :integer          default(0), not null
 #  hackatime_project_keys      :string           default([]), is an Array
 #  is_deleted                  :boolean          default(FALSE)
@@ -23,7 +25,6 @@
 #  review_status               :string
 #  reviewer_note               :text
 #  skip_gh_sync                :boolean          default(FALSE)
-#  slack_message               :string
 #  tier                        :integer
 #  title                       :string
 #  unlisted                    :boolean          default(FALSE), not null
@@ -237,7 +238,7 @@ class Project < ApplicationRecord
   after_update :approve_design!, if: -> { saved_change_to_review_status? && design_approved? }
   after_update :approve_build!, if: -> { saved_change_to_review_status? && build_approved? }
   after_update :dm_status!, if: -> { saved_change_to_review_status? }
-  after_update :notify_slack_on_submission!, if: -> { saved_change_to_review_status? && (design_pending? || build_pending?) }
+
   after_commit :sync_to_gorse, on: [ :create, :update ]
   after_commit :delete_from_gorse, on: :destroy
   after_commit :sync_journal_entries_to_gorse, if: -> { saved_change_to_is_deleted? }

@@ -16,13 +16,14 @@ class SlackReviewNotificationJob < ApplicationJob
     return unless review.feedback.present?
 
     project = review.project
-    return unless project&.slack_message.present?
+    slack_message_url = review_type == "DesignReview" ? project&.design_slack_message : project&.build_slack_message
+    return unless slack_message_url.present?
 
-    thread_ts = extract_thread_ts(project.slack_message)
+    thread_ts = extract_thread_ts(slack_message_url)
     return unless thread_ts
 
     client = Slack::Web::Client.new(token: ENV.fetch("SLACK_BLUEY_TOKEN", nil))
-    channel_id = extract_channel_id(project.slack_message)
+    channel_id = extract_channel_id(slack_message_url)
 
     sanitized_feedback = sanitize_slack_text(review.feedback)
     review_type_label = review_type == "DesignReview" ? "design" : "build"

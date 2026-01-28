@@ -300,7 +300,28 @@ class ProjectsController < ApplicationController
     # Apply incoming attributes first so attachments are reflected on the model
     @project.assign_attributes(project_params)
 
-    # Validate cart screenshots for funding projects on ship
+    if has_ship
+      slack_field = @project.is_currently_build? ? :build_slack_message : :design_slack_message
+      slack_value = @project.is_currently_build? ? @project.build_slack_message : @project.design_slack_message
+
+      if slack_value.blank?
+        prepare_ship_state
+        @project.errors.add(slack_field, "is required")
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream: turbo_stream.replace(
+              "form_errors",
+              partial: "projects/form_errors"
+            ), status: :unprocessable_entity
+          end
+          format.html do
+            render form_to_render, status: :unprocessable_entity
+          end
+        end
+        return
+      end
+    end
+
     if has_ship && @project.needs_funding? && @project.ysws != "hackpad" && @project.funding_needed_cents.to_i > 0
       pending = @project.attachment_changes["cart_screenshots"]
       has_new_uploads = pending && pending.respond_to?(:attachables) && pending.attachables.present?
@@ -579,6 +600,8 @@ class ProjectsController < ApplicationController
       :skip_gh_sync,
       :approx_hour,
       :reviewer_note,
+      :design_slack_message,
+      :build_slack_message,
       cart_screenshots: []
     )
 

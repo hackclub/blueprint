@@ -64,3 +64,6 @@ Here are some examples of well-shipped projects made by Hack Clubbers! They're s
 For more examples (and non hack club projects!), check out [what is shipping?](/resources/shipping)
 
 *think your project should be here? dm @alexren!*
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+*--this space is intentionally left blank--*
