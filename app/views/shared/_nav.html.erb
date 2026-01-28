@@ -23,7 +23,7 @@
 <% if active_projects_count > 5 %>
   <% nav_links = nav_links.to_a.insert(2, ["My Projects", projects_path]).to_h %>
 <% end %>
-<% submenu = ["Custom Projects", "Guided Projects", "Design Resources", "Hackpad"] %>
+<% submenu = ["Custom Projects", "Guided Projects", "About", "Design Resources", "Hackpad"] %>
 <% always_show_submenu = ["Hackpad"] %>
 
 <% normalize_path = ->(p) { p.to_s.sub(%r{/$}, "") } %>
