@@ -43,6 +43,12 @@ class ReviewWaitTimeEstimator
     stats = queue_stats
     position_info = queue_position_for(project: project, stats: stats)
 
+    if position_info.nil?
+      Rails.cache.delete(cache_key("queue_stats"))
+      stats = queue_stats
+      position_info = queue_position_for(project: project, stats: stats)
+    end
+
     return nil unless position_info
 
     bucket = position_info[:bucket]
