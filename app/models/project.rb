@@ -139,6 +139,8 @@ class Project < ApplicationRecord
 
   validates :title, presence: true
   validates :funding_needed_cents, numericality: { greater_than_or_equal_to: 0 }
+  validates :approx_hour, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 99.9 }, allow_nil: true
+  validate :approx_hour_one_decimal
   validate :funding_needed_within_tier_max
   has_one_attached :banner
   has_one_attached :demo_picture do |attachable|
@@ -1087,6 +1089,11 @@ class Project < ApplicationRecord
   end
 
   private
+
+  def approx_hour_one_decimal
+    return if approx_hour.nil?
+    errors.add(:approx_hour, "must have at most 1 decimal place") if approx_hour.round(1) != approx_hour
+  end
 
   def build_design_review_refs
     refs = []

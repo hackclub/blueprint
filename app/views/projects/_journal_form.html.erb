@@ -34,7 +34,7 @@
       <div class="space-y-2">
         <div>
           <%= f.label :duration_hours, "How many hours did you spend since the last journal?", class: "block text-xl font-rc-full" %>
-          <p class="text-sm">It's okay if you don't know. This can be an estimate.</p>
+          <p class="text-sm">It's okay if you don't know. This can be an estimate. (One decimal place max)</p>
         </div>
         <%= f.number_field :duration_hours,
               value: (f.object.duration_seconds.to_i / 3600.0).round(1),
