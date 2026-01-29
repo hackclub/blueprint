@@ -88,6 +88,7 @@
 
     <!-- Rows -->
     <% if @projects.present? %>
+      <% now = Time.current %>
       <% @projects.each do |project| %>
         <%
           claimed_by_other = project.design_review_claimed_by.present? &&
@@ -135,7 +136,7 @@
             <%= sprintf("%.2f", project.funding_needed_cents / 100.0) %>
           </div>
           <div class="flex items-center col-span-1">
-            <% hours = (project.journal_entries.map(&:duration_seconds).sum / 3600.0).round(1) %>
+            <% hours = (project[:total_duration_seconds].to_f / 3600.0).round(1) %>
             <%= hours %>
           </div>
           <div class="flex items-center col-span-1">
@@ -147,20 +148,13 @@
             <% end %>
           </div>
           <div class="flex items-center col-span-1">
-            <%= project.journal_entries.size %>
+            <%= project[:journal_entries_count].to_i %>
           </div>
           <div class="flex items-center col-span-2">
-            <% 
-              start_time = nil
-              
-              if project.respond_to?(:versions)
-                events = attribute_updated_event(object: project, attribute: :review_status, after: "design_pending", all: true)
-                start_time = events.last[:timestamp] if events.present?
-              end
-            %>
+            <% start_time = project[:waiting_since] %>
             
             <% if start_time %>
-              <% waiting_time = Time.current - start_time %>
+              <% waiting_time = now - start_time %>
               <% days = (waiting_time / 1.day).floor %>
               <% hours_remaining = ((waiting_time % 1.day) / 1.hour).floor %>
               <% if days > 0 %>
@@ -169,7 +163,7 @@
                 <%= "#{hours_remaining}h" %>
               <% end %>
             <% else %>
-              Error
+              –
             <% end %>
           </div>
           <div class="flex flex-col items-start col-span-1 gap-1">

@@ -7,31 +7,58 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     released = Reviews::ClaimProject.release_all_for_reviewer!(reviewer: current_user, type: :build)
     flash.now[:notice] = "Review session ended." if released > 0
 
-    reviewed_ids = Project.joins(:build_reviews)
-                            .where(is_deleted: false, review_status: :build_pending)
-                            .where(build_reviews: { invalidated: false })
-                            .distinct
-                            .pluck(:id)
-
     waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'build_pending')"
-    us_priority_sql = "CASE WHEN COALESCE(NULLIF((SELECT idv_country FROM users WHERE users.id = projects.user_id), ''), (SELECT country FROM ahoy_visits WHERE ahoy_visits.user_id = projects.user_id AND country IS NOT NULL AND country != '' ORDER BY started_at DESC LIMIT 1)) IN ('US', 'United States') THEN 0 ELSE 1 END"
 
     claim_cutoff = Reviews::ClaimProject::TTL.ago
 
-    pre_reviewed_sql = "CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN 0 ELSE 1 END"
+    # Use EXISTS/NOT EXISTS subqueries instead of interpolated IN (...) for better performance and NULL safety
+    pre_reviewed_exists_sql = "EXISTS (SELECT 1 FROM build_reviews WHERE build_reviews.project_id = projects.id AND build_reviews.invalidated = FALSE)"
+    not_reviewed_exists_sql = "NOT EXISTS (SELECT 1 FROM build_reviews WHERE build_reviews.project_id = projects.id AND build_reviews.invalidated = FALSE)"
+
+    # Compute last_review_entry_at in SQL (max journal_entries.created_at from approved admin reviews)
+    # Use MAX over VALUES to handle NULLs correctly (GREATEST returns NULL if either arg is NULL)
+    last_review_entry_at_sql = <<~SQL.squish
+      (SELECT MAX(ts) FROM (VALUES
+        ((SELECT MAX(je.created_at) FROM build_reviews br
+          JOIN build_review_journal_entries brje ON brje.build_review_id = br.id
+          JOIN journal_entries je ON je.id = brje.journal_entry_id
+          WHERE br.project_id = projects.id AND br.result = 'approved' AND br.invalidated = FALSE AND br.admin_review = TRUE)),
+        ((SELECT MAX(je.created_at) FROM design_reviews dr
+          JOIN design_review_journal_entries drje ON drje.design_review_id = dr.id
+          JOIN journal_entries je ON je.id = drje.journal_entry_id
+          WHERE dr.project_id = projects.id AND dr.result = 'approved' AND dr.invalidated = FALSE AND dr.admin_review = TRUE))
+      ) AS v(ts))
+    SQL
 
     if current_user.admin?
       @projects = Project.where(is_deleted: false, review_status: :build_pending)
-                        .includes(:journal_entries, :build_review_claimed_by, user: :latest_locatable_visit)
-                        .select("projects.*, CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN true ELSE false END AS pre_reviewed, #{waiting_since_sql} AS waiting_since")
-                        .order(Arel.sql("#{pre_reviewed_sql}, #{waiting_since_sql} ASC NULLS LAST"))
+                        .left_joins(:journal_entries)
+                        .includes(:build_review_claimed_by, :latest_journal_entry, :demo_picture_attachment, user: :latest_locatable_visit)
+                        .select(
+                          "projects.*",
+                          "(#{pre_reviewed_exists_sql}) AS pre_reviewed",
+                          "#{waiting_since_sql} AS waiting_since",
+                          "#{last_review_entry_at_sql} AS last_review_entry_at",
+                          "COALESCE(SUM(CASE WHEN journal_entries.id IS NOT NULL AND (journal_entries.created_at > #{last_review_entry_at_sql} OR #{last_review_entry_at_sql} IS NULL) THEN journal_entries.duration_seconds ELSE 0 END), 0) AS hours_since_last_review_seconds",
+                          "COUNT(CASE WHEN journal_entries.id IS NOT NULL AND (journal_entries.created_at > #{last_review_entry_at_sql} OR #{last_review_entry_at_sql} IS NULL) THEN 1 END) AS entries_since_last_review_count"
+                        )
+                        .group("projects.id")
+                        .order(Arel.sql("CASE WHEN (#{pre_reviewed_exists_sql}) THEN 0 ELSE 1 END, waiting_since ASC NULLS LAST"))
     elsif current_user.reviewer_perms?
       @projects = Project.where(is_deleted: false, review_status: :build_pending)
-                        .where.not(id: reviewed_ids)
+                        .where(not_reviewed_exists_sql)
                         .where("ysws IS NULL OR ysws != ?", "led")
-                        .includes(:journal_entries, :build_review_claimed_by, user: :latest_locatable_visit)
-                        .select("projects.*, #{waiting_since_sql} AS waiting_since")
-                        .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
+                        .left_joins(:journal_entries)
+                        .includes(:build_review_claimed_by, :latest_journal_entry, :demo_picture_attachment, user: :latest_locatable_visit)
+                        .select(
+                          "projects.*",
+                          "#{waiting_since_sql} AS waiting_since",
+                          "#{last_review_entry_at_sql} AS last_review_entry_at",
+                          "COALESCE(SUM(CASE WHEN journal_entries.id IS NOT NULL AND (journal_entries.created_at > #{last_review_entry_at_sql} OR #{last_review_entry_at_sql} IS NULL) THEN journal_entries.duration_seconds ELSE 0 END), 0) AS hours_since_last_review_seconds",
+                          "COUNT(CASE WHEN journal_entries.id IS NOT NULL AND (journal_entries.created_at > #{last_review_entry_at_sql} OR #{last_review_entry_at_sql} IS NULL) THEN 1 END) AS entries_since_last_review_count"
+                        )
+                        .group("projects.id")
+                        .order(Arel.sql("waiting_since ASC NULLS LAST"))
     end
 
     @claim_cutoff = claim_cutoff
@@ -40,12 +67,14 @@ class Admin::BuildReviewsController < Admin::ApplicationController
                                   .group("users.id")
                                   .select("users.*, COUNT(build_reviews.id) AS reviews_count")
                                   .order("reviews_count DESC")
+                                  .limit(10)
 
     @top_reviewers_week = User.joins(:build_reviews)
                               .where("build_reviews.created_at >= ?", 7.days.ago)
                               .group("users.id")
                               .select("users.*, COUNT(build_reviews.id) AS reviews_count")
                               .order("reviews_count DESC")
+                              .limit(10)
   end
 
   def show
