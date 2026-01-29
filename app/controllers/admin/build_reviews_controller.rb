@@ -20,12 +20,10 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     last_review_entry_at_sql = <<~SQL.squish
       (SELECT MAX(ts) FROM (VALUES
         ((SELECT MAX(je.created_at) FROM build_reviews br
-          JOIN build_review_journal_entries brje ON brje.build_review_id = br.id
-          JOIN journal_entries je ON je.id = brje.journal_entry_id
+          JOIN journal_entries je ON je.review_type = 'BuildReview' AND je.review_id = br.id
           WHERE br.project_id = projects.id AND br.result = 'approved' AND br.invalidated = FALSE AND br.admin_review = TRUE)),
         ((SELECT MAX(je.created_at) FROM design_reviews dr
-          JOIN design_review_journal_entries drje ON drje.design_review_id = dr.id
-          JOIN journal_entries je ON je.id = drje.journal_entry_id
+          JOIN journal_entries je ON je.review_type = 'DesignReview' AND je.review_id = dr.id
           WHERE dr.project_id = projects.id AND dr.result = 'approved' AND dr.invalidated = FALSE AND dr.admin_review = TRUE))
       ) AS v(ts))
     SQL
