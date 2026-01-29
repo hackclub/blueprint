@@ -52,7 +52,7 @@ This should contain the source files for your firmware. main.py if you're using 
 In total, you should have 3 folders in your project folder.
 
 ## Adding a README
-A README is essential to all open-source projects. It allows people to know more about you and your project without having to dig into every single 
+A README is essential to all open-source projects. It allows people to know more about you and your project without having to dig into every single file.
 
 The README is pretty flexible, but you MUST include the following parts:
 
