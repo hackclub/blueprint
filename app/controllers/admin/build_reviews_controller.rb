@@ -17,14 +17,17 @@ class Admin::BuildReviewsController < Admin::ApplicationController
 
     # Compute last_review_entry_at in SQL (max journal_entries.created_at from approved admin reviews)
     # Use MAX over VALUES to handle NULLs correctly (GREATEST returns NULL if either arg is NULL)
-    last_review_entry_at_sql = <<~SQL.squish
+    build_approved = BuildReview.results.fetch("approved")
+    design_approved = DesignReview.results.fetch("approved")
+
+    last_review_entry_at_sql = ActiveRecord::Base.sanitize_sql_array([<<~SQL.squish, build_approved, design_approved])
       (SELECT MAX(ts) FROM (VALUES
         ((SELECT MAX(je.created_at) FROM build_reviews br
           JOIN journal_entries je ON je.review_type = 'BuildReview' AND je.review_id = br.id
-          WHERE br.project_id = projects.id AND br.result = #{BuildReview.results[:approved]} AND br.invalidated = FALSE AND br.admin_review = TRUE)),
+          WHERE br.project_id = projects.id AND br.result = ? AND br.invalidated = FALSE AND br.admin_review = TRUE)),
         ((SELECT MAX(je.created_at) FROM design_reviews dr
           JOIN journal_entries je ON je.review_type = 'DesignReview' AND je.review_id = dr.id
-          WHERE dr.project_id = projects.id AND dr.result = #{DesignReview.results[:approved]} AND dr.invalidated = FALSE AND dr.admin_review = TRUE))
+          WHERE dr.project_id = projects.id AND dr.result = ? AND dr.invalidated = FALSE AND dr.admin_review = TRUE))
       ) AS v(ts))
     SQL
 
