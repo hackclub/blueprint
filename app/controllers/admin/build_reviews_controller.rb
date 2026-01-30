@@ -21,17 +21,17 @@ class Admin::BuildReviewsController < Admin::ApplicationController
       (SELECT MAX(ts) FROM (VALUES
         ((SELECT MAX(je.created_at) FROM build_reviews br
           JOIN journal_entries je ON je.review_type = 'BuildReview' AND je.review_id = br.id
-          WHERE br.project_id = projects.id AND br.result = 'approved' AND br.invalidated = FALSE AND br.admin_review = TRUE)),
+          WHERE br.project_id = projects.id AND br.result = #{BuildReview.results[:approved]} AND br.invalidated = FALSE AND br.admin_review = TRUE)),
         ((SELECT MAX(je.created_at) FROM design_reviews dr
           JOIN journal_entries je ON je.review_type = 'DesignReview' AND je.review_id = dr.id
-          WHERE dr.project_id = projects.id AND dr.result = 'approved' AND dr.invalidated = FALSE AND dr.admin_review = TRUE))
+          WHERE dr.project_id = projects.id AND dr.result = #{DesignReview.results[:approved]} AND dr.invalidated = FALSE AND dr.admin_review = TRUE))
       ) AS v(ts))
     SQL
 
     if current_user.admin?
       @projects = Project.where(is_deleted: false, review_status: :build_pending)
                         .left_joins(:journal_entries)
-                        .includes(:build_review_claimed_by, :latest_journal_entry, :demo_picture_attachment, user: :latest_locatable_visit)
+                        .includes(:build_review_claimed_by, :latest_journal_entry, :demo_picture_attachment, :user)
                         .select(
                           "projects.*",
                           "(#{pre_reviewed_exists_sql}) AS pre_reviewed",
@@ -47,7 +47,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
                         .where(not_reviewed_exists_sql)
                         .where("ysws IS NULL OR ysws != ?", "led")
                         .left_joins(:journal_entries)
-                        .includes(:build_review_claimed_by, :latest_journal_entry, :demo_picture_attachment, user: :latest_locatable_visit)
+                        .includes(:build_review_claimed_by, :latest_journal_entry, :demo_picture_attachment, :user)
                         .select(
                           "projects.*",
                           "#{waiting_since_sql} AS waiting_since",
