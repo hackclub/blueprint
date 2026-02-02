@@ -808,26 +808,23 @@ class Project < ApplicationRecord
     has_override = approved_design_reviews.any? { |r| r.hours_override.present? } ||
                    approved_build_reviews.any? { |r| r.hours_override.present? }
 
+    # Calculate total hours from ALL journal entries (used for self-reported fallback)
+    total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0
+
     # Check if this is an LED project
     if ysws == "led"
-        # if !has_override
-        #   hours_for_airtable = 5
-        # else
-        total_effective_hours = 0
-        approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
-        approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
-        hours_for_airtable = total_effective_hours
-      # end
+      total_effective_hours = 0
+      approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+      approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+      hours_for_airtable = total_effective_hours
+      self_reported_hours = total_hours_logged
       reasoning = "This project followed the 555 LED blinker guide. This was a guide that we have used at workshops before and which took students new to hardware a minimum of 5 hours to complete. This project at least meets the standards of a project submitted at this event. - Clay"
     elsif ysws == "hackpad"
-        # if !has_override
-        #   hours_for_airtable = 15
-        # else
-        total_effective_hours = 0
-        approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
-        approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
-        hours_for_airtable = total_effective_hours
-      # end
+      total_effective_hours = 0
+      approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+      approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+      hours_for_airtable = total_effective_hours
+      self_reported_hours = (approved_design_reviews.any? && approved_build_reviews.empty? && approx_hour.present?) ? approx_hour.to_f : total_hours_logged
       reasoning = "This is a hackpad submitted for Blueprint initially reviewed by a hack clubber and then given a final pass by either @CAN or @alexren before being submitted to unified.
 
 Hours are set to the author's self reported total if it is between 5-20 hours, as the median was 15 based on 400+ individual hackpads that were hand reviewed and verified.
@@ -836,19 +833,13 @@ If it falls outside of that range, a further in-depth check is done by either @a
 
 Any issues should go to @alexren."
     elsif ysws == "squeak"
-        # if !has_override
-        #   hours_for_airtable = 5
-        # else
-        total_effective_hours = 0
-        approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
-        approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
-        hours_for_airtable = total_effective_hours
-      # end
+      total_effective_hours = 0
+      approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
+      approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
+      hours_for_airtable = total_effective_hours
+      self_reported_hours = total_hours_logged
       reasoning = "This project followed the Squeak guide. This project at least meets the standards of a project submitted at this event."
     else
-      # Calculate total hours from ALL journal entries
-      total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0
-
       # Calculate total effective hours from all approved reviews (design + build)
       total_effective_hours = 0
       approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
@@ -856,6 +847,7 @@ Any issues should go to @alexren."
 
       # Use total effective hours if any reviews exist, otherwise use total logged
       hours_for_airtable = (approved_design_reviews.any? || approved_build_reviews.any?) ? total_effective_hours : total_hours_logged
+      self_reported_hours = total_hours_logged
 
       reasoning = "This user logged #{total_hours_logged.round(1)} hours across #{pluralize(journal_entries.count, 'journal entry')}.\n\n\n"
 
@@ -897,7 +889,7 @@ Any issues should go to @alexren."
       "Project Name" => title,
       "Requested Grant Amount" => grant ? (grant / 100.0) : nil,
       "Grant Tier" => tier,
-      "Hours Self-Reported" => journal_entries.sum(:duration_seconds) / 3600.0,
+      "Hours Self-Reported" => self_reported_hours,
       "Checkout Screens" => (cart_screenshots.attached? ? cart_screenshots.map { |s|
         {
           "url" => Rails.application.routes.url_helpers.rails_blob_url(s, host: ENV.fetch("APPLICATION_HOST")),
