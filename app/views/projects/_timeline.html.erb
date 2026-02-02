@@ -1,18 +1,40 @@
 <% timeline = project.generate_timeline(reverse: true) %>
-  <div class="flex flex-col space-y-8">
-      <div class="border-b border-white/20 pb-1 flex justify-between items-baseline">
-        <p class="text-4xl font-rc-full">Timeline</p>
-        <% if current_user&.id == project.user_id %>
-          <%= link_to export_project_journal_entries_path(project), class: "hover:text-white/80" do %>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-            </svg>
-          <% end %>
-        <% end %>
-      </div>
-      <div class="flex flex-col">
-          <% timeline.each do |event| %>
-              <%= render "projects/timeline_event", project: project, event: event %>
-          <% end %>
-      </div>
+<div class="flex flex-col space-y-8"
+     data-controller="tabs"
+     data-tabs-active-tab-value="timeline">
+
+  <%# TAB BUTTONS %>
+  <div class="border-b border-white/20 flex justify-between items-baseline">
+    <div class="flex gap-6">
+      <button data-tabs-target="tab" data-tabs-name="timeline" data-action="click->tabs#select"
+              data-tabs-active-class="border-b border-white"
+              data-tabs-inactive-class="text-white/60 hover:text-white/80"
+              class="text-4xl font-rc-full pb-1">Timeline</button>
+      <button data-tabs-target="tab" data-tabs-name="journal" data-action="click->tabs#select"
+              data-tabs-active-class="border-b border-white"
+              data-tabs-inactive-class="text-white/60 hover:text-white/80"
+              class="text-4xl font-rc-full pb-1">Journal</button>
+    </div>
+    <% if current_user&.id == project.user_id %>
+      <%= link_to export_project_journal_entries_path(project), class: "hover:text-white/80" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+        </svg>
+      <% end %>
+    <% end %>
   </div>
+
+  <%# TIMELINE CONTENT %>
+  <div data-tabs-target="panel" data-tabs-name="timeline" class="flex flex-col">
+    <% timeline.each do |event| %>
+      <%= render "projects/timeline_event", project: project, event: event %>
+    <% end %>
+  </div>
+
+  <%# JOURNAL CONTENT %>
+  <div data-tabs-target="panel" data-tabs-name="journal" class="flex flex-col">
+    <%= render "shared/card", class: "markdown timeline-journal" do %>
+      <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: @project.generate_journal(false), base_url: "https://#{ENV['APPLICATION_HOST']}").render) %>
+    <% end %>
+  </div>
+</div>
