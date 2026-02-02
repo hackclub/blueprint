@@ -810,35 +810,40 @@ class Project < ApplicationRecord
 
     # Check if this is an LED project
     if ysws == "led"
-      if !has_override
-        hours_for_airtable = 5
-      else
+        # if !has_override
+        #   hours_for_airtable = 5
+        # else
         total_effective_hours = 0
         approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
         approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
         hours_for_airtable = total_effective_hours
-      end
+      # end
       reasoning = "This project followed the 555 LED blinker guide. This was a guide that we have used at workshops before and which took students new to hardware a minimum of 5 hours to complete. This project at least meets the standards of a project submitted at this event. - Clay"
     elsif ysws == "hackpad"
-      if !has_override
-        hours_for_airtable = 15
-      else
+        # if !has_override
+        #   hours_for_airtable = 15
+        # else
         total_effective_hours = 0
         approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
         approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
         hours_for_airtable = total_effective_hours
-      end
-      reasoning = "Previous Hack Pad projects have been surveyed and the average and median time spent has already been calculated. I (Clay Nicholson) reviewed and approved the submission and placed the order. The median submission based on this data spent 15 hours, while the mean was 20.
-       This hackpad was more or less within that range of hours - nothing sticks out, so I am automatically approving these hours without reviewing the design."
+      # end
+      reasoning = "This is a hackpad submitted for Blueprint initially reviewed by a hack clubber and then given a final pass by either @CAN or @alexren before being submitted to unified.
+
+Hours are set to the author's self reported total if it is between 5-20 hours, as the median was 15 based on 400+ individual hackpads that were hand reviewed and verified.
+
+If it falls outside of that range, a further in-depth check is done by either @alexren or @CAN and then adjusted based on quality.
+
+Any issues should go to @alexren."
     elsif ysws == "squeak"
-      if !has_override
-        hours_for_airtable = 5
-      else
+        # if !has_override
+        #   hours_for_airtable = 5
+        # else
         total_effective_hours = 0
         approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
         approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
         hours_for_airtable = total_effective_hours
-      end
+      # end
       reasoning = "This project followed the Squeak guide. This project at least meets the standards of a project submitted at this event."
     else
       # Calculate total hours from ALL journal entries
