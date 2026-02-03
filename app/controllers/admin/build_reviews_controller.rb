@@ -20,7 +20,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     build_approved = BuildReview.results.fetch("approved")
     design_approved = DesignReview.results.fetch("approved")
 
-    last_review_entry_at_sql = ActiveRecord::Base.sanitize_sql_array([<<~SQL.squish, build_approved, design_approved])
+    last_review_entry_at_sql = ActiveRecord::Base.sanitize_sql_array([ <<~SQL.squish, build_approved, design_approved ])
       (SELECT MAX(ts) FROM (VALUES
         ((SELECT MAX(je.created_at) FROM build_reviews br
           JOIN journal_entries je ON je.review_type = 'BuildReview' AND je.review_id = br.id
