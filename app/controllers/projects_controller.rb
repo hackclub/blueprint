@@ -4,7 +4,8 @@ class ProjectsController < ApplicationController
   def index
     @projects = current_user.projects.where(is_deleted: false)
       .order_by_recent_journal
-      .includes(:banner_attachment)
+      .includes(:demo_picture_attachment)
+      .preload(:latest_journal_entry)
   end
 
   def explore
