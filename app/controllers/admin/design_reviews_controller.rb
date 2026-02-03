@@ -53,7 +53,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                                   .limit(10)
 
     @top_reviewers_week = User.joins(:design_reviews)
-                              .where("design_reviews.created_at >= ?", 7.days.ago)
+                              .where("design_reviews.created_at >= ?", Time.current.beginning_of_week)
                               .group("users.id")
                               .select("users.*, COUNT(design_reviews.id) AS reviews_count")
                               .order("reviews_count DESC")
