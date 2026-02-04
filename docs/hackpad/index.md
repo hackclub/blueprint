@@ -1,453 +1,165 @@
-| title       | Tutorial                                    |
-| ----------- | ----------------------------------------- |
-| description | Kick off with these guides for Blueprint. |
-| unlisted    | false                                      |
+| title       | DIY Guide |
+| ----------- | --------- |
+| description | A step-by-step guide to designing and building your own macropad from scratch. |
+| priority    | 1         |
 
-# Make your own Hackpad! 
+# How to make your own macropad!
 
-Hey! Want to make your own macropad but have absolutely no clue where to start? You found the right place! In this tutorial, we're going to make a 4-key macropad as an example. **For a full submission, you will have to edit it to be your own** (add a extra keys?? a knob?? OLED screen? up to you!)
+Hey there! Want to make your own macropad but have no clue where to start? Right this way!
 
-**Read over the [FAQ](/faq) first so that you have an idea of what you're working with!**
+In this guide, we'll go over how to make a simple 3-key macropad as an example, step-by step.
 
-This process is going to be broken into roughly 4 parts, each with its own sub-parts:
+_For a full submission, you will have to edit it to be your own (add extra keys? a knob? up to you!)_
 
-- [Make your own Hackpad!](#make-your-own-hackpad)
-  - [Initial Setup](#initial-setup)
-  - [Designing your PCB](#designing-your-pcb)
-    - [Drawing the Schematic](#drawing-the-schematic)
-    - [Routing the PCB](#routing-the-pcb)
-  - [Creating your case](#creating-your-case)
-  - [Creating your case in Fusion360](#creating-your-case-in-fusion360)
-    - [Creating the bottom](#creating-the-bottom)
-    - [Creating the top](#creating-the-top)
-    - [Finishing Touches](#finishing-touches)
-  - [Firmware](#firmware)
-- [Next steps](#next-steps)
+This process is going to be broken into 3 parts, each with its own sub-parts:
 
-If you're unsure about anything, send a message in #blueprint! We have so many eager people to help.
+1. PCB Design
+    1. Drawing the schematic
+    2. Routing the PCB
+    3. Defining the edges
+2. Case Design
+    1. Creating the bottom
+    2. Creating the plate
+    3. Adding mounting holes
+3. Firmware Setup
+
+If anything is unclear, 9 times out of 10 you can usually google it; that being said, PLEASE send what you're stuck on in #hackpad!
 
 There's also [this](/hackpad/resources) giant wall of resources to reference!
 
-### List of approved parts
-
-Here is the list of parts that come with the kit! Feel free to use anything in it
-
-- Seeed XIAO RP2040 - since you're soldering, you can mount it SMD style! Please note it is significantly harder than doing it through-hole, so if it's your first time soldering I would avoid it.
-- Through-hole 1N4148 Diodes (Max 20x)
-- MX-Style switches (Max 16x)
-- EC11 Rotary encoders (Max 2x)
-- 0.91 inch OLED displays (Max 1x) (make sure the pin order is GND-VCC-SCL-SDA, otherwise it WILL NOT WORK)
-- Blank DSA keycaps (White)
-- SK6812 MINI-E LEDs (Max 16x)
-- M3x16mm screws
-- [M3x5mx4mm heatset inserts](https://www.aliexpress.us/item/2255800046543591.html)
-- 3D PRINTED CASE ONLY. NO ACRYLIC.
-  
-Lets start with:
-
-## Initial Setup
-
-Inital setup is super simple! First, install the necessary pre-requesite software:
-
-- [KiCAD](https://www.kicad.org/), an open source PCB designer tool
-- [Fusion360](https://www.autodesk.com/products/fusion-360/overview), a parametric 3D modeling software.
-- [VSCode](https://code.visualstudio.com/) is an open-source code editor. Not necessary but highly recommended!
-
-While all of that is installing, let's start with creating a new project! Make sure to read the full instructions before proceeding.
-
-First, head on over to the "dashboard" page and scroll down. You'll see a "my projects" tab! Click "Create new project"
-
-![img](/old-cdn/2550ab6f4c0a711cfed3ee300800bc3298de3458_image__24_.webp)
-
-Then, fill in a title + description for your project:
-
-![filling_in_project_info!!](/old-cdn/2de46802025c02ddd6ffb2513550721304a018b2_image__23_.webp)
-
-After that, come back here! You're officially done all the setup, so now we can move onto...
+First, we're going to start with...
 
 ## Designing your PCB
 
-We're going to be using KiCAD for this part of the guide! Make sure you have it open
+For this guide we're going to be using [KiCad](https://www.kicad.org/), which is an open source PCB designer tool.
 
-To start, we're going to have to install a KiCAD library. We are going to use the following respository:
+To start, we're going to have to import the necessary footprints. For this guide, I made a special care package
 
-- [OPL Kicad Library](https://github.com/Seeed-Studio/OPL_Kicad_Library/) 
+### Drawing the schematic
 
-There are many tutorials on how to install libraries! Google is your best friend here :)
+The schematic of a PCB is what defines all the different connections of your PCB, so we're going to start with that!
 
-@Cyao in the slack did make an awesome tutorial though! Here it is:
-<video width="100%" controls>
-  <source src="/old-cdn/ff3a773c8cbe5f6a_o.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
+First, open KiCad up KiCad and create a new project, then click on the "Schematic Editor" button:
 
+![Screenshot of button](/docs-assets/hackpad/v1/schematicbutton.webp)
 
-### Drawing the Schematic
+This should open up the schematic editor. Once you're in, press the A key on your keyboard. This should open up a menu where you can add add components. Search for the following and add them:
 
-Start by opening up KiCad, a window will pop up, create a new project then click on the "Schematic Editor" button:
+- Seeed XIAO SAMD21 (Seeed does not have an official RP2040 footprint, so we're using the SAMD21 footprint as a placeholder instead)
+- SW_Push (this will be our switch! copy this 3 times)
 
-<img src="/old-cdn/70f2f1950d3af13329ddc7f8ece3524070d409bc_schematicbutton.webp" class="max-w-96" />
+After, your schematic should look something like this:
 
-This should open up a new window with your schematic editor! Once you're in, press the A key on your keyboard. This should open up a menu where you can add **symbols** for your different components! Search for the following to add them:
-- XIAO-RP2040-DIP (your microcontroller)
-- SW_Push (This will be our keyboard switch! Copy and paste this 4 times)
-- SK6812 MINI LED (it's an RGB LED, also known as neopixels - I will be using 2 of these! We will be using the symbol named "SK6812" for these, as the SK6812MINI's symbol has the wrong pinout)
+<img src="/docs-assets/hackpad/v1/schematiclayoutnowire.webp" style="max-height: 300px" />
 
-Start by placing these symbols down. They don't have to be in any particular order, but place them somewhat close together.
+Next, press the W key on your keyboard. This should make a green wire start to appear. Connect your components like so:
 
-To rotate the symbols, click R. And to mirror them, click X.
+<img src="/docs-assets/hackpad/v1/routedschematic.webp" style="max-height: 300px" />
 
-<img src="/old-cdn/a86d89dc2f566ca6_image.webp" class="max-w-96" />
+(to get the GND symbol, press P and search for it!)
 
-Afterwards, it should look something like this ^^
+Once all the components are connected, we can start assigning _footprints_ to the symbols we have here. Footprints are what gets physically drawn on the PCB. To do this, click the "run footprint assignment tool"
+in the top right.
 
-Now it's time to start wiring. Hit the W key on your keyboard to start wiring! This should make a green wire appear. Connect your components like so:
-
-<img src="/old-cdn/6bdb47c21da725e4_image.webp" class="max-w-96" />
-
-Don't forget to add the GND and +5V symbols! Press P and search for it.
-
-Once all the components are connected, we can start assigning **footprints** to the symbols we have here. Footprints are what gets physically drawn on the PCB. To do this, click the "run footprint assignment tool" in the top right.
-
-<img src="/old-cdn/f5b7fde1908bf5ec3dbaa8bc26f9c6b95d97a84e_assignfootprints.webp" class="max-w-96" />
+<img src="/docs-assets/hackpad/v1/footprintassign.webp" style="max-height: 200px" />
 
 This should open up a window where you can assign different footprints to your components! Assign them based on the image below:
 
-<img src="/old-cdn/5794ff769b4c38ac_image2.webp" class="max-w-200" />
+![Assigned footprints](/docs-assets/hackpad/v1/assignedfootprints.webp)
 
-Be sure to change the SK6812's footprints to one including "SK6812MINI" in their name! Once you're done, you can hit apply & save schematic. We're now officially done with the schematic! Onto making the pcb itself:
+Once you're done, you can hit apply & save schematic. We're now officially done with the schematic! Onto making the pcb itself:
 
-### Routing the PCB
+### Route the PCB
 
-Great job on finishing the schematic! Hit this button to open the PCB editor: 
+Go back to KiCad project page, and hit the "PCB editor" button. Once the PCB editor is open, hit the "Update PCB from schematic" button in the top right:
 
-<img src="/old-cdn/8decb4a5e5188aacec38a99c6ec868b58be838c2_switchtopcb.webp" class="max-w-96" />
+![Update PCB](/docs-assets/hackpad/v1/updatepcb.webp)
 
-Hit the "Update PCB from schematic" button in the top right. This will bring in all your parts!
+Ignore any errors with the XIAO footprint, it's kind of bugged atm.
 
-<img src="/old-cdn/d1c6b55d3c015423db630ccb10cf966c0816a99a_updatefromschematic.webp" class="max-w-96" />
+It should have dumped all the components on the page. Right click the XIAO, and click "flip side". This should flip the footprint to the other side.
+After that, arrange all the components like so:
 
-Click anywhere on your screen to place your components down, it should look something like this:
+<img src="/docs-assets/hackpad/v1/pcblayout.webp" style="max-height: 400px"/>
 
-<img src="/old-cdn/d1796f34df89ab20e6b6357175b3757a9ff6bef5_pcbstart.webp" class="max-w-96" />
+Now it's time to route the PCB! Hit X on your keyboard and hit any golden pad with a blue line. It should dim the entire screen and show you where to go. Route the PCB like so:
 
-**Now, keep in mind that the PCB should be below 100 mm × 100 mm!** This is a hard limit :) This is because this tends to be much cheaper with PCB manufacturers. For example, JLCPCB offers significantly lower pricing for boards that stay within this size tier.
+<img src="/docs-assets/hackpad/v1/routedpcb.webp" style="max-height: 400px"/>
 
-First, to be able to better place the components, we would need to change the grid. 
+(to get the blue lines, change the layer on the right from F.cu to B.cu)
 
-Grids are used to allow efficient placement, movement and connection between symbols and wires. It defines what is the spacing of the grid, which components will snap to.
+Our PCB is almost done, but we need one final step; we need to actually define the size of the board! Head on over to Edge.cuts, and draw a rectangle outline our board:
 
-Select the button at the top that says "1.2700 mm (50 mils)". You can use this menu to change what grid you are on. Then click on Edit Grids...
+<img src="/docs-assets/hackpad/v1/edgecuts.webp" style="max-height: 400px" />
 
-<img src="/old-cdn/a720050b61b09862e984bd28d0a6751f90422016_grid.webp" class="max-w-96" />
+(PS: You can hit the 3D viewer button in the top right for a cool view of your pcb!)
 
-You should have the following menu open:
+If everything was done correctly, you are now officially done the PCB! Onto case design:
 
-<img src="/old-cdn/140e75affeaabf2daaf654f516a5dc5195c323d0_editgrid.webp" class="max-w-96" />
-
-Now click on the + button at the bottom left, and enter "2.38125" in the field named "X". Press Ok, then click on Ok again. Now you have defined a custom grid!
-(this is the distance between the switches divided by 8. 19.05mm / 8 = 2.38125mm)
-
-We now need to place the components:
-
-Select a footprint, drag it around to move it (Or if you prefer, click a component to select it, press M to move it and click again to put it down). To rotate the footprint, press R when selecting it.
-
-When placing the switches, I recommend you to use the newly defined grid of 2.38125 mm (Select it in the menu), and for placing other components, I recommend a grid of 0.10000 mm. **Important**: While moving the switches, select the blue circle at the center, this will make sure all the switches are alighed properly. You should align the outer while lines of the switches as so:
-
-<img src="/old-cdn/6863a3637ac91daf5f2e5618aed19f3d94fdcb47_align.webp" class="max-w-96" />
-
-There is a front side and back side of the board. You can tell them apart by color
-
-<img src="/old-cdn/1e70eb3e035e4a0ab0c1506dd30a3815efd292c7_frontback.webp" class="max-w-96" />
-
-If you want to put the footprint on the back side, press F. Here is what the footprints look like on different sides:
-
-<img src="/old-cdn/e6e0a19a9a9bfe61edc63ff76a0c996582391120_compfrontback.webp" class="max-w-96" />
-
-Move, rotate and flip your footprints into a design that you like! Keep in mind that it must be under 100mm x 100mm. It should look something like this:
-
-<img src="https://hackpad.hackclub.com/docs/v2/placedfootprints.png" class="max-w-96" />
-
-You need to define the outline of the board. Select the Edge.Cuts layer on the right toolbar.
-
-<img src="/old-cdn/d3ff3725449696af6d0497027fe858c387154c2d_righttoolbar.webp" class="max-w-96" />
-
-Now, you can use the "Draw Rectangle" button to draw the boarders of the board:
-
-<img src="/old-cdn/d543d12062fe70b729e9883742257d3fc4398488_edgecutsselect.webp" class="max-w-96" />
-
-This shall be the size of your physical board.
-
-**IMPORTANT**! Remember to have the head of the XIAO poking out of the Edge.Cuts rectangle. This is mandatory to be able to plug your USB cable in.
-
-<img src="/old-cdn/3982f14c0636b7a40997d86e759bc43331c58ee6_xiaohead.webp" class="max-w-96" />
-
-Now it's time to route the PCB! Hit X on your keyboard and hit any golden pad with a thin blue line poking out of it. It should dim the entire screen, show you which direction you need to go with a thin blue line and highlight the destination:
-
-<img src="/old-cdn/84c2d9ef431116b35206cfe1ea5605e951019885_routing.webp" class="max-w-96" />
-
-Join the highlighted pads together. If there isn't enough space on the front side, or there is a trace already present that is blocking you, you can route on the back side by clicking B.Cu on the right toolbar. At the same time, if you want to change sides during routing, press V and a via shall be added, which will transfer your trace to the other side of the board:
-
-<img src="/old-cdn/2c5f108cb7c1ad9cf0ad669468cf0373f9133a81_via.webp" class="max-w-96" />
-
-**Attention**! Wires and pads of different colors (except golden) can't be connected together directly! You must via to the other side.
-
-Continue until there are no thin blue lines on the screen! Your final product should look something like this:
-
-<img src="/old-cdn/af8a5ad6b744cfb84090242997957f54410acdbd_finalpcb.webp" class="max-w-96" />
-
-Also, it is **VERY IMPORTANT** that you brand your hackpad! Put the name of your hackpad on any silkscreen of your PCB. Do this by using the text tool. Also, write "XIAO HERE" on the side you would like your XIAO to be placed on. 
-
-To do this select F.Silkscreen (If your xiao is on the back side, use B.Silkscreen when placing the "XIAO HERE" text), and click on the add text button:
-
-<img src="/old-cdn/6fb7d15b52317c1d7432c048de06de5e4fa4fd64_addtext.webp" class="max-w-96" />
-
-Enter your text and place it down! 
-
-<img src="/old-cdn/2a961bf38e363dd35b0679e5a4c1e2f20199db90_realfinalpcb.webp" class="max-w-96" />
-
-
-Good work! You're almost done with the PCB. Let's run the DRC to make sure the PCB works. The silkscreen warnings you see are okay, make sure there are no more errors!
-
-<img src="/old-cdn/87367f8b352a2d1233f1c35a03dd8a67efe5a2b0_drcbutton.webp" class="max-w-96" />
-
-PS. You might need to change tabs to see all errors. (Click on "Unconnected Items")
-
-Thats all for your PCB! Great job.
-
-## Creating your case
+## Create your case
 
 This guide uses [Fusion360](https://www.autodesk.com/products/fusion-360/personal) for designing the case. You can use other software, but it may be harder to follow along!
 
-First thing first, go to [ai03's plate generator](https://kbplate.ai03.com/).
+Before we start designing, it's useful to familiarize yourself with the different types of [keyboard mounts](https://www.keyboard.university/200-courses/keyboard-mounting-styles-4lpp7).
+For this guide, we'll be using a sandwich-mount style.
 
-Then, open [keyboard-layout-editor.com](https://www.keyboard-layout-editor.com/) in a new tab. 
+To start, make a new sketch. Draw a rectangle with the same dimensions as our PCB from earlier:
 
-On the top left you should see a small keyboard. Now click the keys that doesn't match your macropad and press "Delete Keys". And if you need more keys, press the "Add keys button". The text displayed on the keys have no importance.
+<img src="/docs-assets/hackpad/v1/sketch1.webp" class="max-w-96" />
 
-After you made the layout match your macropad, switch to the "Raw Data" tab in the middle:
+Next, draw a larger rectangle with a 10mm margin:
 
-<img src="https://hackpad.hackclub.com/docs/v2/layout.png" class="max-w-96" />
+<img src="/docs-assets/hackpad/v1/sketchmarg.webp" class="max-w-96" />
 
-Copy the text inside the textbox, and paste it into ai03's plate generator.
+Next, we're going to draw the accomodating holes for it:
 
-After that, scroll down, look at the preview to verify if it conforms to your macropad, and then press download DXF.
+<img src="/docs-assets/hackpad/v1/sketchhole.webp" class="max-w-96" />
 
-## Creating your case in Fusion360
+Extrude the base of the case by 3mm:
 
-Fusion360 has a [free plan for students](https://www.autodesk.com/education/home), you can create a education account. You can also use [Autodesk Fusion for personal use](https://www.autodesk.com/products/fusion-360/personal) After you have your account, either download the native Fusion360 application, or [use this magic link](https://fusion.online.autodesk.com/webapp?submit_button=Launch+Autodesk+Fusion) to launch it directly in your browser :D
+<img src="/docs-assets/hackpad/v1/extrudebase.webp" class="max-w-96" />
 
-If you are using the browser version, don't forget to save regularly, since your session will close if you leave it alone for too long.
+Extrude the sides by 10mm (it should be 13mm tall in total!):
 
-I **strongly** recommend you use the desktop application if you are on a supported platform, since the web one is buggy and super slow.
+<img src="/docs-assets/hackpad/v1/extrudewall.webp" class="max-w-96" />
 
-### Creating the bottom
-Start by creating a new project, and a new component, this is better for organization.
+That's the bottom half of the plate done. Next, we're going to make the plate. Head on over to [ai03's plate generator](https://kbplate.ai03.com/)
+and paste in the following data:
 
-<img src="https://hackpad.hackclub.com/docs/v2/fusioncomp.png" class="max-w-96" />
-<img src="/old-cdn/ba29ae66ece9794dacbab6be26b730b618e27288_newcomponent.webp" class="max-w-96" />
-
-Now go back to KiCAD PCB editor and click on your Edge.Cuts outline. In the bottom left of your screen, you can find the length and widgth of your PCB. Alternatively, measure the dimensions of your board with the ruler tool. Click on one end of your Edge.Cuts and click again on the other end.
-
-<img src="/old-cdn/b89bd15fbe8d457d09eadc0e244eea7ad64f721d_ruler.webp" class="max-w-96" />
-<img src="/old-cdn/21420ec275e3d644176ed17ee0e4e8e315474a41_pcbsize.webp" class="max-w-96" />
-
-If you used the Edge.Cuts outline, the width and height of your board are the widgth and height listed.
-
-If you used the ruler tool, the width of the board is the absolute value of x (41mm in my case), and the height is the absolute value of y (62.702mm) in my case.
-
-Next, create a sketch by by pressing the green + button on the top left, then clicking the bottom orange retangle at the center of the screen.
-
-<img src="https://hackpad.hackclub.com/docs/v2/1sketch1.png" class="max-w-96" />
-
-Create a rectangle that is 1mm bigger than your hackpad's PCB. For example, my PCB is 41mm x 62.7mm, I added 1mm to each size on the sketch. To set the size of a rectangle, click on the Sketch dimension button (You might need to expand the "Create" menu to see it, or press the D key), then click on the edge you want to define the length.
-
-<img src="/old-cdn/80bf23120968456e67f2a8fc478b4f4cadca7e49_fusionrect.webp" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/fusiondim.png" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/1sketch2.png" class="max-w-96" />
-
-Create another rectangle with 20mm extra on each dimension! (I will have 61mm x 82.7mm):
-
-<img src="/old-cdn/3c5a322be956e5f732e0d509895a6cdd8b89992f_fusionrect2.webp" class="max-w-96" />
-
-Center this rectangle by pressing the Sketch Dimension button, press one edge of the small rectangle then the corresponding edge of the big rectangle and setting the values to 9.5mm. (You only need to constrain one of the horizontal edges, and one of the vertical edges)
-
-<img src="https://hackpad.hackclub.com/docs/v2/fusionrect3.png" class="max-w-96" />
-
-Now use the circle tool to draw 4 circles, one at each corner of the larger rectangle. Set the diameter to 3.4mm when creating the circle, or use the sketch dimension tool to set their size to 3.4mm. Then, use the dimension tool to set their distance to their corresponding edges to 5mm (by clicking on their centers, then the corresponding edge):
-
-<img src="https://hackpad.hackclub.com/docs/v2/fusioncircle.png" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/fusioncircledim.png" class="max-w-96" />
-<img src="/old-cdn/7dee9afd3086778a2dbec469644e7ae6a7031bf2_fusioncircle2.webp" class="max-w-96" />
-
-Now add 4 more circles, this time with a diameter of 6mm. Select the center of the small circle when you place the larger circle's center point, or select the coincident tool, and click on the centers of corresponding circles to align them.
-
-<img src="https://hackpad.hackclub.com/docs/v2/fusioncoincident.png" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/fusionfinishsketch.png" class="max-w-96" />
-
-Press "Finish sketch" (green checkmark at top right of screen), then select all the outer circles (shift click) and press extrude (E key or the button at the top). In the extrude menu, select Offset in Start, and enter 3.1mm as the Offset, then enter 9.9 mm in the Distance field and click ok:
-
-<img src="/old-cdn/e5012fc0a662c8d120b6730ee0e57937496b3fbd_fusionextrude.webp" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/fusionselect.png" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/fusionextrudemenu.png" class="max-w-96" />
-
-Now, you must re-show the object be opening the Sketches folder on the left, and clicking the eye icon to the left of Sketch1. Then select the outer rectangle and press extrude. This time the Start shall be "Profile Plane" (and will be this for all future extrudes), and set the distance to 13mm:
-
-<img src="https://hackpad.hackclub.com/docs/v2/fusionshow.png" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/fusionextrude2.png" class="max-w-96" />
-
-Now, click the center square, and extrude it by 3mm. You can move arround and you will see something like this:
-
-<img src="/old-cdn/5b2e76d3daebd0d8af8f9f68e4643daa3f35253e_fusioncasehalf.webp" class="max-w-96" />
-
-That's the base of your case done!
-
-Now go to kicad and measure the distance from the edge of the PCB to the USB port using the ruler tool
-
-<img src="/old-cdn/de05c35d940dc2e5c5594e6fe47bd7abb88cd91b_kicadusbdist.webp" class="max-w-96" />
-
-Now select the top of the case:
-
-<img src="https://hackpad.hackclub.com/docs/v2/fusiontop.png" class="max-w-96" />
-
-And create a new sketch (Create Sketch button). Draw a rectangle at the top, and place your starting point on the top edge, and ending point on the inner top edge. Now define it's width to 18.5mm (You can define it by clicking on the left edge, then the right edge with the distance tool). After that, set the distance from the left of the rectangle to the left edge of the case to x_distance_in_kicad+5.75mm:
-
-<img src="/old-cdn/d00ca2f93d6ff63d960e7b0566ed7b6612867672_fusionhole.webp" class="max-w-96" />
-
-Click finish sketch, select the rectangle we just drew and press extrude. This time set the distance to -7.5mm
-
-<img src="/old-cdn/29df5be214c13403164543b583d88b3cacceac95_fusioncase.webp" class="max-w-96" />
-
-Right now our case looks a little ugly, it's so blocky! Lets round the vertical edges, press the Fillet button found in the top, click on each edge and make it 5mm. Should look as such:
-
-<img src="/old-cdn/37804a2891e02800f2d4b3f953a398ee5353fc98_fillet.webp" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/edgeround.png" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/fusiongfinaltop.png" class="max-w-96" />
-
-Now we finished the bottom case! Congratulations!
-
-You can now export the model by clicking File > Export... at the top left, and selecting STEP Files as the Type.
-
-To download the resulting STEP file on the web, go to [https://myhub.autodesk360.com/](https://myhub.autodesk360.com/), go to your project and click the download icon.
-
-
-### Creating the top
-
-Next, we will make the other half of our case. Start by clicking new design.
-
-<img src="https://hackpad.hackclub.com/docs/v2/fusionnewdesign.png" class="max-w-96" />
-
-Now go to the INSERT menu, expand it and click "Insert DXF". Select the dxf file we generated at the start (in the web you need to first click Upload from Fusion Team..., upload it from there, click refresh then select the file), and click ok. Now delete the outer lines surrounding the keyholes. You should have something like this:
-
-<img src="/old-cdn/1480f89f7a6e146650ec11668c9c065be4103dc8_fusionholes.webp" class="max-w-96" />
-
-Now select everything and click on the Lock button
-
-<img src="https://hackpad.hackclub.com/docs/v2/fusionlock.png" class="max-w-96" />
-
-Go back to KiCAD PCB editor and measure the dimensions of your board with the ruler tool. Click on one end of your Edge.Cuts and click again on the other end. You can also select your Edge.Cuts and find the width and height in the bottom right.
-
-<img src="/old-cdn/b89bd15fbe8d457d09eadc0e244eea7ad64f721d_ruler.webp" class="max-w-96" />
-<img src="https://hackpad.hackclub.com/docs/v2/swoffset.png" class="max-w-96" />
-
-Now lets create a new rectangle, define it's width and height be the same as the size of the top plate. Set the distance between the left keyhole end and the left rectangle edge the x distance you just measured + 9.5 (for me it's 3.99+9.5). Same for the bottom edge of the keyhole and bottom edge of the rectangle, y distance + 9.5.
-
-<img src="/old-cdn/e577de2f63de0008edf4683ab1525982798272c7_fusionalmost.webp" class="max-w-96" />
-
-Add another rectangle, this time with it's start starting on the top line of our rectangle. Set it's width to 18.5mm and height to 31mm. After that use the distance tool to set the distance from the left of the innder rectangle to the left edge of the outer rectangle to x_distance_in_kicad+5.75mm
-
-Add 4 more circles of 3.4mm and set their position to 5mm from the edges with the distance tool:
-
-<img src="/old-cdn/63d310314e568bb206df0790c421d427adc29860_fusionfinalsketch.webp" class="max-w-96" />
-
-Click finish sketch, and pad out the main part by 1.5mm.
-
-<img src="https://hackpad.hackclub.com/docs/v2/fusionplate.png" class="max-w-96" />
-
-But currently the plate is kinda ugly. Do the same things with the fillet as the case:
-
-<img src="/old-cdn/d39d3891cd4c372befaecadd1fbe95cea39c60ad_fusionplatefinal.webp" class="max-w-96" />
-
-You finished your plate!! Congrats 🎉
-
-### Finishing Touches
-
-Next, we will brand our case! This part will not be seen and is for us to be able to keep track of who's submission is whos. Go to the bottom of the case, or somewhere that won't be seen, and create a new sketch. Make a text box, and enter the name of your hackpad on it. 
-
-<img src="/old-cdn/7fc1b459839b1c49adb20cfa302670cfce15576f_createtext.webp" class="max-w-96" />
-
-Extrude this sketch 0.2mm INTO the case, don't worry about the overhang! If you are getting an error when extruding, keep the font as Arial.
-
-<img src="/old-cdn/f4cb3ff26d029cec2fa3b397f2d326a499374baf_extrudedtext.webp" class="max-w-96" />
-
-Thats it! Your case is now done.
-
-I would also recommend importing 3d models of all your components to test fit everything: 
-
-<img src="/old-cdn/b90f22b0f1ab616c9e65910eb893d49988192a25_testedcase.webp" class="max-w-96" />
-
-## Firmware
-
-You can use the [QMK firmware](https://qmk.fm/) project as firmware! You can find out how to port your keyboard here: \
-[QMK Porting Guide](https://docs.qmk.fm/porting_your_keyboard_to_qmk)
-
-Or if you wish, you can use kmk. It's made in python and can be hot reloaded.
-
-Here is the starter code, with explanations in the comments:
-
-```python
-# You import all the IOs of your board
-import board
-
-# These are imports from the kmk library
-from kmk.kmk_keyboard import KMKKeyboard
-from kmk.scanners.keypad import KeysScanner
-from kmk.keys import KC
-from kmk.modules.macros import Press, Release, Tap, Macros
-
-# This is the main instance of your keyboard
-keyboard = KMKKeyboard()
-
-# Add the macro extension
-macros = Macros()
-keyboard.modules.append(macros)
-
-# Define your pins here!
-PINS = [board.D3, board.D4, board.D2, board.D1]
-
-# Tell kmk we are not using a key matrix
-keyboard.matrix = KeysScanner(
-    pins=PINS,
-    value_when_pressed=False,
-)
-
-# Here you define the buttons corresponding to the pins
-# Look here for keycodes: https://github.com/KMKfw/kmk_firmware/blob/main/docs/en/keycodes.md
-# And here for macros: https://github.com/KMKfw/kmk_firmware/blob/main/docs/en/macros.md
-keyboard.keymap = [
-    [KC.A, KC.DELETE, KC.MACRO("Hello world!"), KC.Macro(Press(KC.LCMD), Tap(KC.S), Release(KC.LCMD)),]
-]
-
-# Start kmk!
-if __name__ == '__main__':
-    keyboard.go()
+```
+["","",""],
 ```
 
-If you have something more advanced on your PCB, [look inside the kmk docs for how to add it!](https://github.com/KMKfw/kmk_firmware/blob/main/docs/en/Getting_Started.md)
+That should generate a plate. Hit download DXF, and then import that into Fusion 360
 
-Save it in a main.py file in the firmware folder of your repo
+<img src="/docs-assets/hackpad/v1/platesketch.webp" class="max-w-96" />
 
-Now after you received you macropad, plug it in and hold the bootloader button and press reset. You should see a external drive on your PC, [download circuitpython](https://downloads.circuitpython.org/bin/seeeduino_xiao_rp2040/en_US/adafruit-circuitpython-seeeduino_xiao_rp2040-en_US-9.2.4.uf2) and drag the file onto the drive. 
+Extrude the plate by 3mm:
 
-The board should automatically restart and be recognised as a new external drive. Now [download kmk](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/main.zip), unzip it and copy the KMK folder and the boot.py file to the root of the external drive. Then create copy your main.py file over. And voila you got your macropad!
+<img src="/docs-assets/hackpad/v1/extrudeplate.webp" class="max-w-96" />
+
+Lastly, add a USB cutout:
+
+<img src="/docs-assets/hackpad/v1/usbcutout.webp" class="max-w-96" />
+
+Congrats!! You are now done your case
+
+## Build your firmware
+
+This tutorial uses the [QMK firmware](https://qmk.fm/) project as firmware! You can find out how to port your keyboard here:
+
+[QMK Porting Guide](https://docs.qmk.fm/porting_your_keyboard_to_qmk)
 
 # Next steps
-We just made a pretty cool macropad, but obviously there's a lot of cooler stuff out there - that's up to you to figure out! Again, don't copy this guide 1:1, add your own design into it.
 
+We just made a pretty cool macropad, but obviously there's a lot of cooler stuff out there - that's up to you to figure out!
 
----
+The biggest tip I have for that is to simply look at other PCB designs and reverse engineer it from there. For example, my own macropad design is actually in the repository
+[here](https://github.com/hackclub/hackpad/tree/main/hackpads/orpheuspad)! It has:
 
-Want some resources and tips? [Check this out!](/hackpad/resources)
+- 2x neopixel/SK6812 MINI-E LEDs
+- 1 0.91 128x32 OLED
+- 1 rotary encoder/knob
+- 4 switches (5 if you include the rotary encoder!) - this is done in a [matrix](https://docs.qmk.fm/how_a_matrix_works), so it's a good point to check!
 
-Or maybe do you think you are done? Check out how to submit [here](/hackpad/submitting)
-
+Everything is fully open source, so you can try and reverse engineer from there. This process applies to practically everything else

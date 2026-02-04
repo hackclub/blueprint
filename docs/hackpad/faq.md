@@ -1,42 +1,47 @@
+| title       | FAQ |
+| ----------- | --- |
+| description | Frequently asked questions about the hackpad program. |
+| priority    | 6   |
+
 # Frequently Asked Questions
 
-Welcome to the FAQ section! If you have something you think should be added here please ping @alexren in the #blueprint channel!
+Welcome to the FAQ section! If you have something you think should be added here please ping @alexren in the #hackpad channel
 
 **What gets shipped to me?**
-- A kit of all the electronic components for your macropad!
-- a $15 HCB Card grant to get your **PCB** made from JLCPCB, and to get a case 3D printed from #printing-legion if needed
+- A kit of all the parts in the [Kit Contents page](/hackpad/parts)!
+- a $15 HCB Card grant to get your **PCB** made, and a case 3D printed from [printing legion](https://www.printlegion.hackclu.com/) if needed!
+- a $18 HCB Card grant to get your soldering iron, if you need one. This is non-transferrable.
 
-**When is the deadline?** \
-Same deadline as Blueprint! March 31st, 2026
+**What is an HCB Card grant??**
 
-**Where can I find KiCAD footprints / what's the measurement for this thing / etc** \
+[READ ME](/hackpad/cardgrant) FOR INFO
+
+**Where can I find KiCAD footprints / what's the measurement for this thing / etc**
+
 A lot of these questions can be answered by checking out the [resources and tips section](/hackpad/resources)! You can find **KiCAD footprints**, 3D models, etc
 
-**Can I use a microcontroller other than the XIAO RP2040?** \
-Sorry, no! If you want to use something else, you can enable "expert mode" in Blueprint and build a custom project instead!
+**Can I use a microcontroller other than the XIAO RP2040?**
+
+Unfortunately not for hackpad! If you want to use a custom microcontroller, you'll have to submit it as a custom project to Blueprint.
 
 The XIAO is a great primer and I recommend using it, but it's totally understandable if you want to do something more advanced! We won't stop you :)
 
-**Will my hackpad come assembled?** \
-Unfortunately not! Not to fear though - assembling a macropad isn't that hard!
+**Will my hackpad come assembled?**
 
-**Can I use acrylic/cnc metal/etc for the case/plate?** \
-NO!!! Only 3D prints are supported.
+Unfortunately not! Not to fear though - assembling a macropad is a great learning experience!
 
-**Can I use parts outside of the approved list?** \
-Yes! You are responsible for sourcing it on your own money though
+**Can I use acrylic/cnc metal/etc for the case/plate?**
 
-**What colours are the keycaps?** \
-White!
+NO! Only 3D prints are supported.
 
-**Can I use Choc switches?** \
-No!
+**Can I use parts outside of the approved list?**
 
-**What are the footprint name for through hole diodes?** \
-The footprint for 1N4148 Diodes are D_DO-35_SOD27_P7.62mm_Horizontal.
+Yes! You are responsible for sourcing it on your own money though.
 
-**Where will everything be shipped from?** \
-It'll be shipped from HQ, which is located in Shelburne VT.
+**Where will everything be shipped from?**
 
-**I have more questions!!!**  \
-Join the #blueprint channel in the Hack Club slack!
+It'll be shipped from [Hack Club HQ](https://maps.app.goo.gl/EPwC2izABPnbVgjq9), which is located in Shelburne, Vermont USA.
+
+**I have more questions!!!**
+
+Join the #hackpad channel in the Hack Club slack!
