@@ -13,7 +13,7 @@ class HcbOauthService
         client_id: ENV.fetch("HCB_CLIENT_ID"),
         redirect_uri:,
         response_type: "code",
-        scope: "read write",
+        scope: "read",
         state:
       }.compact_blank
 
