@@ -53,4 +53,4 @@ production:
   hcb_token_refresh:
     class: HcbTokenRefreshJob
     queue: background
-    schedule: every 105 minutes
+    schedule: every hour at minute 42
