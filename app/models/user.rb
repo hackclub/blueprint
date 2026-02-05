@@ -12,6 +12,10 @@
 #  free_stickers_claimed       :boolean          default(FALSE), not null
 #  fulfiller                   :boolean          default(FALSE), not null
 #  github_username             :string
+#  hcb_access_token            :text
+#  hcb_integration_enabled     :boolean          default(FALSE), not null
+#  hcb_refresh_token           :text
+#  hcb_token_expires_at        :datetime
 #  identity_vault_access_token :string
 #  idv_country                 :string
 #  internal_notes              :text
@@ -35,7 +39,8 @@
 #
 # Indexes
 #
-#  index_users_on_referrer_id  (referrer_id)
+#  index_users_on_referrer_id                  (referrer_id)
+#  index_users_unique_hcb_integration_enabled  (hcb_integration_enabled) UNIQUE WHERE (hcb_integration_enabled = true)
 #
 # Foreign Keys
 #
@@ -46,6 +51,9 @@ class User < ApplicationRecord
   def to_s
     "User##{id}"
   end
+
+  encrypts :hcb_access_token
+  encrypts :hcb_refresh_token
 
   has_many :projects
   has_many :journal_entries
@@ -81,13 +89,15 @@ class User < ApplicationRecord
   scope :with_email, ->(email) { where("LOWER(email) = ?", email.to_s.strip.downcase) }
 
   validates :is_banned, inclusion: { in: [ true, false ] }
+  validate :hcb_integration_requires_admin
+  validate :only_one_hcb_integration_admin, if: -> { hcb_integration_enabled? && will_save_change_to_hcb_integration_enabled? }
 
   before_validation :normalize_email
   after_commit :advance_projects_after_idv!, on: :update, if: -> { previous_changes.key?("ysws_verified") && ysws_verified? }
   after_commit :sync_to_gorse, on: :create
   after_commit :delete_from_gorse, on: :destroy
 
-  has_paper_trail
+  has_paper_trail ignore: %i[hcb_access_token hcb_refresh_token hcb_token_expires_at]
   has_recommended :projects
   has_recommended :journal_entries
 
@@ -1043,5 +1053,21 @@ class User < ApplicationRecord
 
   def normalize_email
     self.email = email.to_s.strip.downcase if email.present?
+  end
+
+  def hcb_integration_requires_admin
+    return unless hcb_integration_enabled?
+
+    errors.add(:hcb_integration_enabled, "can only be enabled for admins") unless admin?
+  end
+
+  def only_one_hcb_integration_admin
+    return unless admin? && hcb_integration_enabled?
+
+    User.transaction do
+      if User.lock.where(hcb_integration_enabled: true).where.not(id: id).exists?
+        errors.add(:hcb_integration_enabled, "is already enabled for another admin")
+      end
+    end
   end
 end

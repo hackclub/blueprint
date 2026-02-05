@@ -12,6 +12,10 @@
 #  free_stickers_claimed       :boolean          default(FALSE), not null
 #  fulfiller                   :boolean          default(FALSE), not null
 #  github_username             :string
+#  hcb_access_token            :text
+#  hcb_integration_enabled     :boolean          default(FALSE), not null
+#  hcb_refresh_token           :text
+#  hcb_token_expires_at        :datetime
 #  identity_vault_access_token :string
 #  idv_country                 :string
 #  internal_notes              :text
@@ -35,7 +39,8 @@
 #
 # Indexes
 #
-#  index_users_on_referrer_id  (referrer_id)
+#  index_users_on_referrer_id                  (referrer_id)
+#  index_users_unique_hcb_integration_enabled  (hcb_integration_enabled) UNIQUE WHERE (hcb_integration_enabled = true)
 #
 # Foreign Keys
 #

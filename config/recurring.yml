@@ -49,3 +49,8 @@ production:
     class: UserBanCheckJob
     queue: background
     schedule: every hour at minute 32
+
+  hcb_token_refresh:
+    class: HcbTokenRefreshJob
+    queue: background
+    schedule: every 105 minutes

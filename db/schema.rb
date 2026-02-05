@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_03_210202) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_05_150112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -662,6 +662,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_03_210202) do
     t.datetime "last_impersonated_at"
     t.datetime "last_impersonation_ended_at"
     t.boolean "first_synced_to_airtable", default: false, null: false
+    t.boolean "hcb_integration_enabled", default: false, null: false
+    t.text "hcb_access_token"
+    t.text "hcb_refresh_token"
+    t.datetime "hcb_token_expires_at"
+    t.index ["hcb_integration_enabled"], name: "index_users_unique_hcb_integration_enabled", unique: true, where: "(hcb_integration_enabled = true)"
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
   end
 
