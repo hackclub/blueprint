@@ -23,7 +23,7 @@ class HcbOauthController < ApplicationController
         }.to_json)
       end
       session.delete(:hcb_oauth_state)
-      redirect_to admin_path, alert: "HCB OAuth failed: invalid state parameter"
+      redirect_to admin_root_path, alert: "HCB OAuth failed: invalid state parameter"
       return
     end
 
@@ -37,7 +37,7 @@ class HcbOauthController < ApplicationController
           error_description: params[:error_description]
         }.to_json)
       end
-      redirect_to admin_path, alert: "HCB OAuth denied: #{params[:error_description] || params[:error]}"
+      redirect_to admin_root_path, alert: "HCB OAuth denied: #{params[:error_description] || params[:error]}"
       return
     end
 
@@ -60,7 +60,7 @@ class HcbOauthController < ApplicationController
         }.to_json)
       end
 
-      redirect_to admin_path, notice: "HCB integration connected successfully!"
+      redirect_to admin_root_path, notice: "HCB integration connected successfully!"
     rescue Faraday::BadRequestError, Faraday::UnauthorizedError => e
       Sentry.capture_exception(e)
       Rails.logger.tagged("HcbOauth") do
@@ -69,7 +69,7 @@ class HcbOauthController < ApplicationController
           error: e.message
         }.to_json)
       end
-      redirect_to admin_path, alert: "HCB OAuth failed: could not exchange authorization code"
+      redirect_to admin_root_path, alert: "HCB OAuth failed: could not exchange authorization code"
     rescue StandardError => e
       Sentry.capture_exception(e)
       Rails.logger.tagged("HcbOauth") do
@@ -78,7 +78,7 @@ class HcbOauthController < ApplicationController
           error: e.message
         }.to_json)
       end
-      redirect_to admin_path, alert: "HCB OAuth failed unexpectedly"
+      redirect_to admin_root_path, alert: "HCB OAuth failed unexpectedly"
     end
   end
 
@@ -92,6 +92,6 @@ class HcbOauthController < ApplicationController
 
     ahoy.track "hcb_oauth_disconnect"
 
-    redirect_to admin_path, notice: "HCB integration disconnected"
+    redirect_to admin_root_path, notice: "HCB integration disconnected"
   end
 end
