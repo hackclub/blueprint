@@ -11,7 +11,6 @@ Finally finished your hackpad? Nice job! Follow along and we're going to make su
 - Structuring your project files
 - Creating production files
 - Adding a README
-- Filling out the submission form
 
 ## Create a new GitHub Repository
 
@@ -122,7 +121,7 @@ It'll be different for each hackpad, but good examples of what I'm looking for a
 
 ## Make a ship post!
 
-Next, you should make a ship post in #highway-pitstop on slack! Format it like so:
+Next, you should make a ship post in #blueprint-drafts on slack! Format it like so:
 
 **Hackpad name:** Orpheuspad
 
@@ -134,31 +133,9 @@ Next, you should make a ship post in #highway-pitstop on slack! Format it like s
 
 **You'll need to make a post to get feedback on your project, so don't forget this step!**
 
-## Fill out the form!
+## Submit on the dashboard!
 
-First, double check your submission against the [Orpheuspad](https://github.com/hackclub/hackpad/tree/main/hackpads/orpheuspad) example to make sure you have the correct structure. Everything should match exactly, except for the filenames.
-
-Here's what it should look like
-
-<img src="/docs-assets/hackpad/v2/tree2.webp" class="max-w-96" />
-
-If anything is unclear, make sure to ask in #hackpad!
-
-Once everything is organized, you can fill out the following form!
-
-[Submission Form](https://forms.hackclub.com/highway)
+head on over to your [dashboard](/home) and hit "submit design review" - you're good on the rest!
 
 ### After submitting
-
-If everything went correctly, your submission will be reviewed (and hopefully approved!) by @alexren. You'll get a reply to your #highway-pitstop post, so MAKE SURE TO MAKE ONE!
-
-If it's approved, then you'll get:
-- A hackpad kit with all the parts you need to build your hackpad.
-- A $18 Card grant to buy a soldering iron, if requested.
-- A $15 Card grant to buy your PCB + Get a 3D printed case from another Hack Clubber!
-
-If it's rejected, you'll get feedback on what you need to change!
-
-For many of you, the firmware may not work the first try. That's okay! Keep working at it until it's fixed; if you send a video in #hackpad showing it working, I'll ship you a free custom hack-club keycap and sticker!
-
 Any questions? Check out the [FAQ](/hackpad/faq)
