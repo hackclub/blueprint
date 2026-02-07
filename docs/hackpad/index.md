@@ -1,13 +1,12 @@
 | title       | DIY Guide |
 | ----------- | --------- |
 | description | A step-by-step guide to designing and building your own macropad from scratch. |
-| priority    | 1         |
 
 # How to make your own macropad!
 
 Hey there! Want to make your own macropad but have no clue where to start? Right this way!
 
-In this guide, we'll go over how to make a simple 3-key macropad as an example, step-by step.
+In this guide, we'll go over how to make a simple 3-key macropad as an example, step by step.
 
 _For a full submission, you will have to edit it to be your own (add extra keys? a knob? up to you!)_
 
@@ -25,7 +24,7 @@ This process is going to be broken into 3 parts, each with its own sub-parts:
 
 If anything is unclear, 9 times out of 10 you can usually google it; that being said, PLEASE send what you're stuck on in #hackpad!
 
-There's also [this](/hackpad/resources) giant wall of resources to reference!
+There's also [this](/resources) giant wall of resources to reference!
 
 First, we're going to start with...
 
@@ -33,64 +32,63 @@ First, we're going to start with...
 
 For this guide we're going to be using [KiCad](https://www.kicad.org/), which is an open source PCB designer tool.
 
-To start, we're going to have to import the necessary footprints. For this guide, I made a special care package
+To start, we're going to have to import the necessary footprints. For this guide, there's a KiCAD library made by Hack Club in the [resources](/resources) section - it's called the care package!
+
+Once that's downloaded, you should end up with a file called `kicad_care_package.zip` - unzip that and you'll end up with a bunch of files like this:
+
+![screenshot](https://cdn.hackclub.com/019c2587-9e6a-79ed-98ee-1d57b00f515a/image.png)
+
+The `.sym` files are symbol libraries, while the `.pretty` folder contains the footprint libraries. You'll have to search up how to install them - I find YouTube works best!
 
 ### Drawing the schematic
 
-The schematic of a PCB is what defines all the different connections of your PCB, so we're going to start with that!
+The **schematic** of a PCB is what defines all the different connections of your PCB, so we're going to start with it first!
 
 First, open KiCad up KiCad and create a new project, then click on the "Schematic Editor" button:
 
-![Screenshot of button](/docs-assets/hackpad/v1/schematicbutton.webp)
+<img src="/docs-assets/hackpad/v1/schematicbutton.webp" style={{ maxHeight: '300px'}} />
 
 This should open up the schematic editor. Once you're in, press the A key on your keyboard. This should open up a menu where you can add add components. Search for the following and add them:
 
-- Seeed XIAO SAMD21 (Seeed does not have an official RP2040 footprint, so we're using the SAMD21 footprint as a placeholder instead)
+- MOUDLE-SEEEDUINO-XIAO (This will be our microcontroller! I know the name is funny - this was from the manufacturer)
 - SW_Push (this will be our switch! copy this 3 times)
 
 After, your schematic should look something like this:
+<img src="https://cdn.hackclub.com/019c295f-e6e4-7a8e-97c0-81cb64e25e92/image.png" style={{ maxHeight: '300px'}} />
 
-<img src="/docs-assets/hackpad/v1/schematiclayoutnowire.webp" style="max-height: 300px" />
-
-Next, press the W key on your keyboard. This should make a green wire start to appear. Connect your components like so:
-
-<img src="/docs-assets/hackpad/v1/routedschematic.webp" style="max-height: 300px" />
-
+Next, we need to actually wire these components together! To do so, press the W key on your keyboard. This should make a green wire start to appear. Connect all your switches to pins 11, 10, and 9 of the microcontroller:
+<img src="https://cdn.hackclub.com/019c2961-c885-70b4-a4fa-c23be6fde671/image.png" style={{ maxHeight: '300px'}} />
 (to get the GND symbol, press P and search for it!)
 
-Once all the components are connected, we can start assigning _footprints_ to the symbols we have here. Footprints are what gets physically drawn on the PCB. To do this, click the "run footprint assignment tool"
-in the top right.
+Once all the components are connected, we can start assigning _footprints_ to the symbols we have here. Footprints are what gets physically drawn on the PCB. To do this, click the "run footprint assignment tool" in the top right.
 
-<img src="/docs-assets/hackpad/v1/footprintassign.webp" style="max-height: 200px" />
+<img src="/docs-assets/hackpad/v1/footprintassign.webp" style={{ maxHeight: '200px' }} />
 
 This should open up a window where you can assign different footprints to your components! Assign them based on the image below:
+<img src="https://cdn.hackclub.com/019c296a-4155-7baa-8aa2-7e1389ebc367/image.png" />
 
-![Assigned footprints](/docs-assets/hackpad/v1/assignedfootprints.webp)
-
-Once you're done, you can hit apply & save schematic. We're now officially done with the schematic! Onto making the pcb itself:
+Once you're done, you can hit apply & save schematic. We're now officially done with the schematic! Onto making the physical PCB itself:
 
 ### Route the PCB
 
 Go back to KiCad project page, and hit the "PCB editor" button. Once the PCB editor is open, hit the "Update PCB from schematic" button in the top right:
+<img src="/docs-assets/hackpad/v1/updatepcb.webp" />
 
-![Update PCB](/docs-assets/hackpad/v1/updatepcb.webp)
+It should have dumped all the components on the page. Right click the XIAO, and click "flip side". This should flip the footprint to the other side - this means when soldering, we will be assembling the macropad on the *bottom*
 
-Ignore any errors with the XIAO footprint, it's kind of bugged atm.
-
-It should have dumped all the components on the page. Right click the XIAO, and click "flip side". This should flip the footprint to the other side.
 After that, arrange all the components like so:
-
-<img src="/docs-assets/hackpad/v1/pcblayout.webp" style="max-height: 400px"/>
+<img src="/docs-assets/hackpad/v1/pcblayout.webp" style={{ maxHeight: '400px'}}/>
 
 Now it's time to route the PCB! Hit X on your keyboard and hit any golden pad with a blue line. It should dim the entire screen and show you where to go. Route the PCB like so:
 
-<img src="/docs-assets/hackpad/v1/routedpcb.webp" style="max-height: 400px"/>
+<img src="/docs-assets/hackpad/v1/routedpcb.webp" style={{ maxHeight: '400px'}}/>
 
 (to get the blue lines, change the layer on the right from F.cu to B.cu)
 
 Our PCB is almost done, but we need one final step; we need to actually define the size of the board! Head on over to Edge.cuts, and draw a rectangle outline our board:
+<img src="/docs-assets/hackpad/v1/edgecuts.webp" style={{ maxHeight: '400px'}} />
 
-<img src="/docs-assets/hackpad/v1/edgecuts.webp" style="max-height: 400px" />
+You can measure how long your pcb ends up being by using the "measure" tool!
 
 (PS: You can hit the 3D viewer button in the top right for a cool view of your pcb!)
 
@@ -100,54 +98,47 @@ If everything was done correctly, you are now officially done the PCB! Onto case
 
 This guide uses [Fusion360](https://www.autodesk.com/products/fusion-360/personal) for designing the case. You can use other software, but it may be harder to follow along!
 
-Before we start designing, it's useful to familiarize yourself with the different types of [keyboard mounts](https://www.keyboard.university/200-courses/keyboard-mounting-styles-4lpp7).
+Before we start designing, it's useful to familiarize yourself with the different types of [keyboard mounts](https://www.monsgeek.com/blog/comprehensive-guide-to-keyboard-mounting-styles/).
 For this guide, we'll be using a sandwich-mount style.
 
-To start, make a new sketch. Draw a rectangle with the same dimensions as our PCB from earlier:
+To start, make a new sketch. Draw a rectangle with the same dimensions as our PCB from earlier, plus 0.4mm on each side to account for printing tolerances:
+<img src="/docs-assets/hackpad/v1/sketch1.webp" className="max-w-96" />
 
-<img src="/docs-assets/hackpad/v1/sketch1.webp" class="max-w-96" />
+(I didn't quite do that here - it's supposed to be 19.4mm and 57.8mm!)
 
 Next, draw a larger rectangle with a 10mm margin:
-
-<img src="/docs-assets/hackpad/v1/sketchmarg.webp" class="max-w-96" />
+<img src="/docs-assets/hackpad/v1/sketchmarg.webp" className="max-w-96" />
 
 Next, we're going to draw the accomodating holes for it:
-
-<img src="/docs-assets/hackpad/v1/sketchhole.webp" class="max-w-96" />
+<img src="/docs-assets/hackpad/v1/sketchhole.webp" className="max-w-96" />
 
 Extrude the base of the case by 3mm:
-
-<img src="/docs-assets/hackpad/v1/extrudebase.webp" class="max-w-96" />
+<img src="/docs-assets/hackpad/v1/extrudebase.webp" className="max-w-96" />
 
 Extrude the sides by 10mm (it should be 13mm tall in total!):
-
-<img src="/docs-assets/hackpad/v1/extrudewall.webp" class="max-w-96" />
+<img src="/docs-assets/hackpad/v1/extrudewall.webp" className="max-w-96" />
 
 That's the bottom half of the plate done. Next, we're going to make the plate. Head on over to [ai03's plate generator](https://kbplate.ai03.com/)
 and paste in the following data:
 
 ```
-["","",""],
+["","",""]
 ```
 
-That should generate a plate. Hit download DXF, and then import that into Fusion 360
-
-<img src="/docs-assets/hackpad/v1/platesketch.webp" class="max-w-96" />
+That should generate a plate. Hit download DXF, and then import that into Fusion 360 - make sure that the plate is centered!
+<img src="/docs-assets/hackpad/v1/platesketch.webp" className="max-w-96" />
 
 Extrude the plate by 3mm:
-
-<img src="/docs-assets/hackpad/v1/extrudeplate.webp" class="max-w-96" />
+<img src="/docs-assets/hackpad/v1/extrudeplate.webp" className="max-w-96" />
 
 Lastly, add a USB cutout:
-
-<img src="/docs-assets/hackpad/v1/usbcutout.webp" class="max-w-96" />
+<img src="/docs-assets/hackpad/v1/usbcutout.webp" className="max-w-96" />
 
 Congrats!! You are now done your case
 
 ## Build your firmware
 
-This tutorial uses the [QMK firmware](https://qmk.fm/) project as firmware! You can find out how to port your keyboard here:
-
+This tutorial uses the [QMK firmware](https://qmk.fm/) project as firmware! You can find out how to port your keyboard here: \
 [QMK Porting Guide](https://docs.qmk.fm/porting_your_keyboard_to_qmk)
 
 # Next steps
@@ -155,7 +146,7 @@ This tutorial uses the [QMK firmware](https://qmk.fm/) project as firmware! You 
 We just made a pretty cool macropad, but obviously there's a lot of cooler stuff out there - that's up to you to figure out!
 
 The biggest tip I have for that is to simply look at other PCB designs and reverse engineer it from there. For example, my own macropad design is actually in the repository
-[here](https://github.com/hackclub/hackpad/tree/main/hackpads/orpheuspad)! It has:
+[here](https://github.com/hackclub/hackpad/tree/clean/extras/orpheuspad)! It has:
 
 - 2x neopixel/SK6812 MINI-E LEDs
 - 1 0.91 128x32 OLED
