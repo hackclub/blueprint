@@ -13,64 +13,108 @@
     <% else %>
       <div class="space-y-4">
         <% @shop_orders.each do |order| %>
-          <div class="bg-bp-darker p-6 flex flex-col md:flex-row gap-6">
-            <% if order.shop_item.image.attached? %>
-              <div class="w-32 h-32 flex-shrink-0 bg-bp-dark overflow-hidden flex items-center justify-center">
-                <%= image_tag order.shop_item.image, class: "max-h-full max-w-full object-contain" %>
-              </div>
-            <% end %>
-
-            <div class="flex-grow space-y-2">
-              <h2 class="text-2xl font-medium"><%= order.shop_item.name %></h2>
-              <p class="text-bp-muted"><%= order.shop_item.desc %></p>
-              
-              <div class="flex flex-wrap gap-4 text-sm pt-2">
+          <% total_tickets = (order.frozen_unit_ticket_cost || 0) * (order.quantity || 0) %>
+          <div class="bg-bp-darker p-6 space-y-4">
+            <!-- Top summary row -->
+            <div class="flex flex-col md:flex-row justify-between text-xs md:text-sm text-bp-muted gap-4">
+              <div class="flex flex-wrap gap-6">
                 <div>
-                  <span class="text-bp-muted">Quantity:</span>
-                  <span class="ml-1"><%= order.quantity %></span>
-                </div>
-                <div>
-                  <span class="text-bp-muted">Cost:</span>
-                  <span class="ml-1"><%= pluralize(order.frozen_unit_ticket_cost * order.quantity, "ticket") %></span>
-                </div>
-                <div>
-                  <span class="text-bp-muted">Ordered:</span>
-                  <span class="ml-1"><%= order.created_at.strftime("%B %d, %Y") %></span>
-                </div>
-                <% if order.fufilled? %>
-                  <div>
-                    <span class="text-bp-muted">Fulfilled:</span>
-                    <span class="ml-1"><%= order.fufilled_at.strftime("%B %d, %Y") %></span>
+                  <div class="uppercase tracking-wide">Order placed</div>
+                  <div class="mt-1 text-white text-sm md:text-base">
+                    <%= order.created_at.strftime("%b %d, %Y") %>
                   </div>
-                  <% if order.tracking_number.present? %>
-                    <div>
-                      <% if order.tracking_number.match?(/\Ahttps?:\/\//) %>
-                        <%= link_to "Tracking link", order.tracking_number, target: "_blank", rel: "noopener noreferrer", class: "underline hover:text-white" %>
-                      <% else %>
-                        <span class="text-bp-muted">Tracking:</span>
-                        <span class="ml-1"><%= order.tracking_number %></span>
-                      <% end %>
-                    </div>
-                  <% end %>
-                <% end %>
+                </div>
+                <div>
+                  <div class="uppercase tracking-wide">Total</div>
+                  <div class="mt-1 text-white text-sm md:text-base">
+                    <%= pluralize(total_tickets, "ticket") %>
+                  </div>
+                </div>
+                <div>
+                  <div class="uppercase tracking-wide">Ship to</div>
+                  <div class="mt-1 text-white text-sm md:text-base">
+                    <% if order.parsed_address %>
+                      <% name_parts = [
+                        order.parsed_address["first_name"],
+                        order.parsed_address["last_name"]
+                      ].compact.reject(&:blank?) %>
+                      <%= name_parts.join(" ").presence || order.user.display_name %>
+                    <% else %>
+                      <%= order.user.display_name %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="md:text-right">
+                <div class="uppercase tracking-wide">Order #</div>
+                <div class="mt-1 text-white text-sm md:text-base font-medium">
+                  #<%= order.id %>
+                </div>
               </div>
             </div>
 
-            <div class="flex-shrink-0 flex items-start">
-              <% case order.state %>
-              <% when "pending" %>
-                <span class="px-4 py-2 bg-bp-warning/20 text-bp-warning border border-bp-warning">Pending</span>
-              <% when "awaiting_verification" %>
-                <span class="px-4 py-2 bg-bp-warning/20 text-bp-warning border border-bp-warning">Awaiting Verification</span>
-              <% when "approved" %>
-                <span class="px-4 py-2 bg-bp-success/20 text-bp-success border border-bp-success">Approved</span>
-              <% when "fufilled" %>
-                <span class="px-4 py-2 bg-bp-success/20 text-bp-success border border-bp-success">Fulfilled</span>
-              <% when "rejected" %>
-                <span class="px-4 py-2 bg-bp-danger/20 text-bp-danger border border-bp-danger">Rejected</span>
-              <% when "on_hold" %>
-                <span class="px-4 py-2 bg-bp-muted/20 text-bp-muted border border-bp-muted">On Hold</span>
+            <!-- Main content row -->
+            <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
+              <% if order.shop_item.image.attached? %>
+                <div class="w-40 h-32 md:w-48 md:h-36 flex-shrink-0 bg-bp-dark rounded overflow-hidden flex items-center justify-center">
+                  <%= image_tag order.shop_item.image, class: "max-h-full max-w-full object-contain" %>
+                </div>
               <% end %>
+
+              <div class="flex-grow flex flex-col space-y-3">
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                  <div>
+                    <h2 class="text-2xl font-medium"><%= order.shop_item.name %></h2>
+                    <p class="text-bp-muted mt-1"><%= order.shop_item.desc %></p>
+                  </div>
+
+                  <div class="flex flex-col items-start md:items-end gap-2">
+                    <% case order.state %>
+                    <% when "pending" %>
+                      <span class="px-4 py-1.5 bg-bp-warning/20 text-bp-warning border border-bp-warning rounded-full text-sm">Pending</span>
+                    <% when "awaiting_verification" %>
+                      <span class="px-4 py-1.5 bg-bp-warning/20 text-bp-warning border border-bp-warning rounded-full text-sm">Awaiting Verification</span>
+                    <% when "approved" %>
+                      <span class="px-4 py-1.5 bg-bp-success/20 text-bp-success border border-bp-success rounded-full text-sm">Approved</span>
+                    <% when "fufilled" %>
+                      <span class="px-4 py-1.5 bg-bp-success/20 text-bp-success border border-bp-success rounded-full text-sm">Fulfilled</span>
+                    <% when "rejected" %>
+                      <span class="px-4 py-1.5 bg-bp-danger/20 text-bp-danger border border-bp-danger rounded-full text-sm">Rejected</span>
+                    <% when "on_hold" %>
+                      <span class="px-4 py-1.5 bg-bp-muted/20 text-bp-muted border border-bp-muted rounded-full text-sm">On Hold</span>
+                    <% end %>
+                  </div>
+                </div>
+
+                <% if order.fufilled? %>
+                  <p class="text-sm text-bp-muted">
+                    We have ordered/shipped this item to you! This does not mean it has already reached you.
+                  </p>
+                  <% if order.tracking_number.present? %>
+                    <% if order.tracking_number.match?(/\Ahttps?:\/\//) %>
+                      <p class="text-sm text-bp-muted mt-1">
+                        You can track the package here
+                        <%= link_to "link", order.tracking_number, target: "_blank", rel: "noopener noreferrer", class: "underline hover:text-white" %>.
+                      </p>
+                    <% else %>
+                      <p class="text-sm text-bp-muted mt-1">
+                        Tracking:
+                        <span class="ml-1"><%= order.tracking_number %></span>
+                      </p>
+                    <% end %>
+                  <% end %>
+                <% elsif order.pending? %>
+                  <p class="text-sm text-bp-muted">
+                    Your order is pending fulfillment.
+                  </p>
+                <% end %>
+
+                <div class="mt-2 text-sm">
+                  <span class="text-bp-muted">Quantity:</span>
+                  <span class="ml-1"><%= order.quantity %></span>
+                </div>
+              </div>
             </div>
           </div>
         <% end %>
