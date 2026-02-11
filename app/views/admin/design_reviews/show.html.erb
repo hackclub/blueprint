@@ -183,13 +183,15 @@
         </div>
       <% end %>
       <div>
-        <details>
-          <summary>Show Entire Journal</summary>
-          <div class="mt-4 space-y-6 markdown">
-          <% base_url = Rails.application.routes.default_url_options[:host] || "localhost:3000" %>
-          <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: @project.generate_journal(true), base_url: "http://#{base_url}").render) %>
-          </div>
-        </details>
+        <div data-controller="journal-collapsible">
+          <details>
+            <summary>Show Entire Journal</summary>
+            <div class="mt-4 space-y-6 markdown">
+            <% base_url = Rails.application.routes.default_url_options[:host] || "localhost:3000" %>
+            <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: @project.generate_journal(true), base_url: "http://#{base_url}").render) %>
+            </div>
+          </details>
+        </div>
       </div>
     </div>
   <% end %>
