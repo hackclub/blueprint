@@ -31,7 +31,7 @@ irbrc_content = <<~RUBY
     PROMPT_I: "blueprint(\\e[33mdev→prod\\e[0m)> ",
     PROMPT_S: "blueprint(\\e[33mdev→prod\\e[0m)* ",
     PROMPT_C: "blueprint(\\e[33mdev→prod\\e[0m)* ",
-    RETURN: "=> %s\\n\\n\\e[31m⚠️  YOU ARE CONNECTED TO PRODUCTION ⚠️\\e[0m\\n"
+    RETURN: "=> %s\\n\\n\\e[31m⚠️  YOU ARE CONNECTED TO PRODUCTION DATABASE ⚠️\\e[0m\\n"
   }
   IRB.conf[:PROMPT_MODE] = :PROD
 RUBY

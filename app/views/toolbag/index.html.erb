@@ -32,7 +32,7 @@
             <div class="flex items-center justify-between mb-2">
               <span class="text-lg font-bold text-bp-warning"><%= pluralize(item.ticket_cost, "ticket") %></span>
             </div>
-            <% if current_user.tickets >= item.ticket_cost %>
+            <% if item.ticket_cost && current_user.tickets >= item.ticket_cost %>
               <%= link_to "Purchase", buy_item_path(item_id: item.id), class: "block w-full py-2 px-6 text-xl border-2 border-white hover:bg-white hover:text-black transition-colors text-center" %>
             <% else %>
               <button class="w-full py-2 px-6 text-xl border-2 cursor-not-allowed" style="background-color: var(--color-bp-darker); border-color: rgba(255, 255, 255, 0.3); color: rgba(255, 255, 255, 0.5);" disabled>You can't afford this</button>

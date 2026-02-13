@@ -75,6 +75,15 @@ class ShopItemViewConstraint
   end
 end
 
+class HcbIntegrationAdminConstraint
+  def self.matches?(request)
+    return false unless request.session[:user_id]
+
+    user = User.find_by(id: request.session[:user_id])
+    user&.admin? && user&.hcb_integration_enabled?
+  end
+end
+
 Rails.application.routes.draw do
   resources :shop_items, only: [ :new, :create ]
   resources :shop_orders, only: [ :index, :new, :create ]
@@ -115,6 +124,13 @@ Rails.application.routes.draw do
   get "idv_callback" => "auth#idv_callback", as: :idv_callback
   get "auth/age" => "auth#age", as: :age_verification
   post "auth/age" => "auth#submit_age"
+
+  # HCB OAuth (restricted to integration admin)
+  constraints HcbIntegrationAdminConstraint do
+    get "auth/hcb" => "hcb_oauth#start", as: :hcb_oauth
+    get "auth/hcb/callback" => "hcb_oauth#callback", as: :hcb_callback
+    delete "auth/hcb" => "hcb_oauth#disconnect", as: :hcb_disconnect
+  end
 
   get "/utm_source" => "landing#utm_source", as: :utm_source
   get "/utm_source=feedback-email" => "landing#utm_source", as: :utm_source_feedback_email

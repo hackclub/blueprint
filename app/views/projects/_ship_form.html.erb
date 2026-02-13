@@ -132,10 +132,11 @@
     </div>
 
     <% if @project.ysws == "hackpad" %>
-      <div>
+      <div data-controller="min-hours-validator" data-min-hours-validator-min-value="0.5">
         <%= f.label :approx_hour, "Approximately how many hours did you spend on this project?*", class: "block text-xl font-medium font-rc-full" %>
-        <p>This won't affect your review in any way, so please be honest!</p>
-        <%= f.number_field :approx_hour, step: 0.1, min: 0, required: true, inputmode: "decimal", class: "input px-3 w-full", placeholder: "e.g. 12.5", oninput: "this.value = this.value.replace(/^(\\d*(?:\\.\\d?)?).*$/, '$1')" %>
+        <p>This won't affect your review in any way, so please be honest! (One decimal place max)</p>
+        <%= f.number_field :approx_hour, step: 0.1, min: 0.5, max: 99.9, required: true, inputmode: "decimal", class: "input px-3 w-full", placeholder: "e.g. 12.5", data: { min_hours_validator_target: "input", action: "input->min-hours-validator#validate" } %>
+        <p class="hidden text-sm text-bp-danger mt-1" data-min-hours-validator-target="error">Please put in how much time you actually spent!</p>
       </div>
     <% end %>
 

@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find_by(id: params[:id])
     not_found unless @user
-    @projects = @user.projects.where(is_deleted: false).includes(:demo_picture_attachment).order(created_at: :desc)
+    @projects = @user.projects.where(is_deleted: false).includes(:demo_picture_attachment).preload(:latest_journal_entry).order(created_at: :desc)
 
     # Heatmap data
     @activity_start_date = Date.new(2025, 10, 1)

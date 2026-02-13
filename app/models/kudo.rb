@@ -21,7 +21,7 @@
 #
 class Kudo < ApplicationRecord
   belongs_to :user
-  belongs_to :project
+  belongs_to :project, counter_cache: true
 
   validates :content, presence: true
   validate :user_cannot_give_kudos_to_own_project

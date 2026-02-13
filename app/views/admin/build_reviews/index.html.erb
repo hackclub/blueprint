@@ -14,7 +14,7 @@
     <div class="grow flex gap-8">
       <% if @top_reviewers_week.present? && @top_reviewers_week.any? %>
         <div>
-          <h2 class="text-2xl">Top Reviewers (Last 7 Days)</h2>
+          <h2 class="text-2xl">Top Reviewers (This Week)</h2>
           <div class="grid grid-cols-6">
             <% @top_reviewers_week.each do |reviewer| %>
               <p class="col-span-5"><%= reviewer.display_name %></p>
@@ -72,6 +72,7 @@
 
     <!-- Rows -->
     <% if @projects.present? %>
+      <% now = Time.current %>
       <% @projects.each do |project| %>
         <%
           claimed_by_other = project.build_review_claimed_by.present? &&
@@ -116,23 +117,15 @@
             <%= project.tier || "–" %>
           </div>
           <div class="flex items-center col-span-2">
-            <%= project.hours_since_last_review.round(1) %>
+            <%= (project[:hours_since_last_review_seconds].to_f / 3600.0).round(1) %>
           </div>
           <div class="flex items-center col-span-2">
-            <%= project.entries_since_last_review_count %>
+            <%= project[:entries_since_last_review_count].to_i %>
           </div>
           <div class="flex items-center col-span-2">
-            <% 
-              start_time = nil
-              
-              if project.respond_to?(:versions)
-                events = attribute_updated_event(object: project, attribute: :review_status, after: "build_pending", all: true)
-                start_time = events.last[:timestamp] if events.present?
-              end
-            %>
-            
+            <% start_time = project[:waiting_since] %>
             <% if start_time %>
-              <% waiting_time = Time.current - start_time %>
+              <% waiting_time = now - start_time %>
               <% days = (waiting_time / 1.day).floor %>
               <% hours_remaining = ((waiting_time % 1.day) / 1.hour).floor %>
               <% if days > 0 %>

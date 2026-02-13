@@ -46,12 +46,12 @@ class SlackReviewNotificationJob < ApplicationJob
       }
     ]
 
-    if project.user&.slack_id.present?
+    if review.reviewer&.slack_id.present?
       blocks << {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "<@#{project.user.slack_id}>"
+          text: "<@#{review.reviewer.slack_id}>"
         }
       }
     end
@@ -59,7 +59,6 @@ class SlackReviewNotificationJob < ApplicationJob
     message_options = {
       channel: channel_id,
       thread_ts: thread_ts,
-      reply_broadcast: true,
       blocks: blocks
     }
 

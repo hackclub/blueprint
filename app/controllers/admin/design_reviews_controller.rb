@@ -7,30 +7,41 @@ class Admin::DesignReviewsController < Admin::ApplicationController
     released = Reviews::ClaimProject.release_all_for_reviewer!(reviewer: current_user, type: :design)
     flash.now[:notice] = "Review session ended." if released > 0
 
-    reviewed_ids = Project.joins(:design_reviews)
-                            .where(is_deleted: false, review_status: :design_pending)
-                            .where(design_reviews: { invalidated: false })
-                            .distinct
-                            .pluck(:id)
-
     waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'design_pending')"
 
     claim_cutoff = Reviews::ClaimProject::TTL.ago
 
-    pre_reviewed_sql = "CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN 0 ELSE 1 END"
+    # Use EXISTS/NOT EXISTS subqueries instead of interpolated IN (...) for better performance and NULL safety
+    pre_reviewed_exists_sql = "EXISTS (SELECT 1 FROM design_reviews WHERE design_reviews.project_id = projects.id AND design_reviews.invalidated = FALSE)"
+    not_reviewed_exists_sql = "NOT EXISTS (SELECT 1 FROM design_reviews WHERE design_reviews.project_id = projects.id AND design_reviews.invalidated = FALSE)"
 
     if current_user.admin?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
-                        .includes(:journal_entries, :design_review_claimed_by, user: :latest_locatable_visit)
-                        .select("projects.*, CASE WHEN projects.id IN (#{reviewed_ids.any? ? reviewed_ids.join(',') : 'NULL'}) THEN true ELSE false END AS pre_reviewed, #{waiting_since_sql} AS waiting_since")
-                        .order(Arel.sql("#{pre_reviewed_sql}, #{waiting_since_sql} ASC NULLS LAST"))
+                        .left_joins(:journal_entries)
+                        .includes(:design_review_claimed_by, :latest_journal_entry, :demo_picture_attachment, user: :latest_locatable_visit)
+                        .select(
+                          "projects.*",
+                          "(#{pre_reviewed_exists_sql}) AS pre_reviewed",
+                          "#{waiting_since_sql} AS waiting_since",
+                          "COALESCE(SUM(journal_entries.duration_seconds), 0) AS total_duration_seconds",
+                          "COUNT(journal_entries.id) AS journal_entries_count"
+                        )
+                        .group("projects.id")
+                        .order(Arel.sql("CASE WHEN (#{pre_reviewed_exists_sql}) THEN 0 ELSE 1 END, waiting_since ASC NULLS LAST"))
     elsif current_user.reviewer_perms?
       @projects = Project.where(is_deleted: false, review_status: :design_pending)
-                        .where.not(id: reviewed_ids)
+                        .where(not_reviewed_exists_sql)
                         .where("ysws IS NULL OR ysws != ?", "led")
-                        .includes(:journal_entries, :design_review_claimed_by, user: :latest_locatable_visit)
-                        .select("projects.*, #{waiting_since_sql} AS waiting_since")
-                        .order(Arel.sql("#{waiting_since_sql} ASC NULLS LAST"))
+                        .left_joins(:journal_entries)
+                        .includes(:design_review_claimed_by, :latest_journal_entry, :demo_picture_attachment, user: :latest_locatable_visit)
+                        .select(
+                          "projects.*",
+                          "#{waiting_since_sql} AS waiting_since",
+                          "COALESCE(SUM(journal_entries.duration_seconds), 0) AS total_duration_seconds",
+                          "COUNT(journal_entries.id) AS journal_entries_count"
+                        )
+                        .group("projects.id")
+                        .order(Arel.sql("waiting_since ASC NULLS LAST"))
     end
 
     @claim_cutoff = claim_cutoff
@@ -39,18 +50,21 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                                   .group("users.id")
                                   .select("users.*, COUNT(design_reviews.id) AS reviews_count")
                                   .order("reviews_count DESC")
+                                  .limit(10)
 
     @top_reviewers_week = User.joins(:design_reviews)
-                              .where("design_reviews.created_at >= ?", 7.days.ago)
+                              .where("design_reviews.created_at >= ?", Time.current.beginning_of_week)
                               .group("users.id")
                               .select("users.*, COUNT(design_reviews.id) AS reviews_count")
                               .order("reviews_count DESC")
+                              .limit(10)
 
     @top_reviewers_payouts = User.joins(:design_reviews)
                                  .where("design_reviews.created_at >= ?", Date.new(2026, 1, 24))
                                  .group("users.id")
                                  .select("users.*, COUNT(design_reviews.id) AS reviews_count")
                                  .order("reviews_count DESC")
+                                 .limit(10)
 
     @total_pending_hours = JournalEntry.joins(:project)
                                        .where(projects: { is_deleted: false, review_status: :design_pending })

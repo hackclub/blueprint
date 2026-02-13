@@ -27,16 +27,6 @@
           </div>
         <% end %>
       <% end %>
-      <%= render 'shared/card', class: 'py-0 col-span-1 md:col-span-2 border-bp-warning border-2 space-y-0 flex flex-row items-center' do %>
-          <%= image_tag "campfire_smore.png", alt: "Campfire Smore", class: "w-20 mr-4 -my-4" %>
-          <%= image_tag "campfire_banner.png", alt: "Campfire Banner", class: "h-20 mr-2 -my-4" %>
-          <div class="grow mr-4 py-4">
-            <p>Hack Club is running a hackathon with Open Sauce! Meet <a href="https://www.youtube.com/c/MichaelReeves" target="_blank" rel="noopener noreferrer" class="text-bp-warning font-semibold">Michael Reeves</a>, <a href="https://www.youtube.com/WilliamOsman" target="_blank" rel="noopener noreferrer" class="text-bp-warning font-semibold">Williams Osman</a>, and more! Get a ticket from the <a href="/toolbag" class="text-bp-warning font-semibold">Blueprint Shop</a> today</p>
-          </div>
-          <div class="whitespace-nowrap">
-            <%= render 'shared/button', text: "RSVP Now", url: "https://flagship.hackclub.com/?utm_source=c-blueprint" %>
-          </div>
-        <% end %>
       <% unless current_user.is_pro %>
         <%= render 'shared/card', class: 'col-span-1 md:col-span-2 flex flex-col motion-safe:transition-colors border-2 border-bp-warning border-solid' do %>
           <p class="text-2xl md:text-3xl font-rc-full mb-8">Build your first hardware project. Start with Hackpad!</p>
