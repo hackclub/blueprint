@@ -101,6 +101,7 @@ Either way, put them in the "production" folder
 <a name="readme"></a>
 
 ## Adding a README
+
 A README is essential to all open-source projects. It allows people to know more about you and your project without having to dig into every single file.
 
 The README is pretty flexible, but you MUST include the following parts:
