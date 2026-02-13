@@ -32,7 +32,7 @@ First, we're going to start with...
 
 For this guide we're going to be using [KiCad](https://www.kicad.org/), which is an open source PCB designer tool.
 
-To start, we're going to have to import the necessary footprints. For this guide, there's a KiCAD library made by Hack Club in the [resources](resources.md) section - it's called the care package!
+To start, we're going to have to import the necessary footprints. For this guide, there's a KiCAD library made by Hack Club in the [resources](/resources) section - it's called the care package!
 
 Once that's downloaded, you should end up with a file called [`kicad_care_package.zip`](https://github.com/hackclub/hackpad/tree/clean/extras/kicad_care_package) - unzip that and you'll end up with a bunch of files like this:
 
