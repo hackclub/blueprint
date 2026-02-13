@@ -97,7 +97,7 @@ Arduinos are fairly outdated by todays standards
 
 ### The Netherlands (Nederland)
 - Note that very soon the dutch government will be taxing every package that comes in to the NL from out of the EU. This tax will be €5.
-- I would personally source as much as possible from kiwielectronics, since I personally find the price-product ratio very good. It is also more trustable then BOL.com
+- Source as much as possible from kiwielectronics, the price-product ratio very good. It is also more trustable then BOL.com
   
 > confirmed more vendors? wanna add specific notes for your country? contribute [here](https://github.com/hackclub/blueprint/blob/main/docs/resources/parts-sourcing.md)!! You'd be helping a ton of people!
 
