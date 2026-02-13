@@ -24,7 +24,7 @@ This process is going to be broken into 3 parts, each with its own sub-parts:
 
 If anything is unclear, 9 times out of 10 you can usually google it; that being said, PLEASE send what you're stuck on in #hackpad!
 
-There's also [this](/resources) giant wall of resources to reference!
+There's also [this](/hackpad/resources) giant wall of resources to reference!
 
 First, we're going to start with...
 
@@ -32,7 +32,7 @@ First, we're going to start with...
 
 For this guide we're going to be using [KiCad](https://www.kicad.org/), which is an open source PCB designer tool.
 
-To start, we're going to have to import the necessary footprints. For this guide, there's a KiCAD library made by Hack Club in the [resources](/resources) section - it's called the care package!
+To start, we're going to have to import the necessary footprints. For this guide, there's a KiCAD library made by Hack Club in the [resources](/hackpad/resources) section - it's called the care package!
 
 Once that's downloaded, you should end up with a file called `kicad_care_package.zip` - unzip that and you'll end up with a bunch of files like this:
 
