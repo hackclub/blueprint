@@ -51,7 +51,7 @@ If a guide doesn't seem to work, try it again. If it *really* doesn't work, try 
 - There's 19.05mm gap between the center of each switch
 - This image shows general height measurements
 
-<img src="https://cdn.matt3o.com/uploads/2018/05/switch-case-diagram.webp" style="max-height: 200px" />
+<img src="/docs-assets/hackpad/switch-case-diagram.webp" style="max-height: 200px" />
 
 ## 3D models
 
