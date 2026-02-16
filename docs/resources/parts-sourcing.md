@@ -56,8 +56,8 @@ Arduinos are fairly outdated by todays standards
 
 - If you're in India, use [SEEED Studio's Fusion Service](https://www.seeedstudio.com/fusion_pcb.html). They take HCB cards and are by far the cheapest option
 - If you're from another country, use JLCPCB, they offer PCBs for under $6 shipped as long as its under 100x100mm
-- If you're from the US specifically, use PCBWAY. They're roughly half the cost of JLCPCB because they're able to avoid tariffs somehow
-  - Read here: [link](https://www.pcbway.com/blog/News/Impact_of_the_New_U_S_Tariff_Policy_on_Customs_Clearance_51dff4fd.html)
+- US customers should be aware that both PCBWAY and JLCPCB are now subject to significant tariffs (35-45%+ depending on product type) due to recent tariff policy changes. Compare pricing before ordering.
+  - PCBWay tariff information: [link](https://www.pcbway.com/blog/News/Impact_of_the_New_U_S_Tariff_Policy_on_Customs_Clearance_51dff4fd.html)
 - EING is not allowed unless you have golden fingers (on-PCB USB-C contacts etc. and this is also subject to a case by case approval, please also mention it to your reviewer).
 - Edge plating isn't allowed if it is only for the looks.
 - You should just choose the cheapest options that gives you a working pcb
