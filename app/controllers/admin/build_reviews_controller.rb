@@ -64,6 +64,13 @@ class Admin::BuildReviewsController < Admin::ApplicationController
 
     @claim_cutoff = claim_cutoff
 
+    # Count projects per ysws type for button labels
+    pending_scope = Project.where(is_deleted: false, review_status: :build_pending)
+    @ysws_total_counts = pending_scope.group(:ysws).count
+    @ysws_first_passed_counts = pending_scope
+      .where("EXISTS (SELECT 1 FROM build_reviews WHERE build_reviews.project_id = projects.id AND build_reviews.invalidated = FALSE)")
+      .group(:ysws).count
+
     @top_reviewers_all_time = User.joins(:build_reviews)
                                   .group("users.id")
                                   .select("users.*, COUNT(build_reviews.id) AS reviews_count")

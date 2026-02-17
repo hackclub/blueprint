@@ -38,14 +38,15 @@
   </div>
   <div class="flex items-center justify-between">
     <div class="flex flex-wrap items-center gap-2">
-      <%= render "shared/button", text: "Start Session", url: admin_next_build_review_path, class: "py-0" %>
-      <%= render "shared/button", text: "Hackpad", url: admin_next_build_review_path(ysws_type: "hackpad"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Squeak", url: admin_next_build_review_path(ysws_type: "squeak"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Devboard", url: admin_next_build_review_path(ysws_type: "devboard"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Midi", url: admin_next_build_review_path(ysws_type: "midi"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Splitkb", url: admin_next_build_review_path(ysws_type: "splitkb"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "LED", url: admin_next_build_review_path(ysws_type: "led"), variant: :outline, class: "py-0" %>
-      <%= render "shared/button", text: "Custom", url: admin_next_build_review_path(ysws_type: "custom"), variant: :outline, class: "py-0" %>
+      <% total_all = @ysws_total_counts.values.sum %>
+      <% first_passed_all = @ysws_first_passed_counts.values.sum %>
+      <%= render "shared/button", text: "Start Session (<span class='text-bp-warning'>#{first_passed_all}</span>/#{total_all})".html_safe, url: admin_next_build_review_path, class: "py-0" %>
+      <% %w[hackpad squeak devboard midi splitkb led custom].each do |type| %>
+        <% key = type == "custom" ? nil : type %>
+        <% total = @ysws_total_counts[key] || 0 %>
+        <% first_passed = @ysws_first_passed_counts[key] || 0 %>
+        <%= render "shared/button", text: "#{type.capitalize} (<span class='text-bp-warning'>#{first_passed}</span>/#{total})".html_safe, url: admin_next_build_review_path(ysws_type: type), variant: :outline, class: "py-0" %>
+      <% end %>
     </div>
     <%= form_with url: admin_projects_path, method: :get, local: true, class: "w-full max-w-2xl" do %>
       <div class="flex items-center gap-3">
