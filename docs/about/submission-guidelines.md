@@ -7,17 +7,35 @@
 
 Here's everything you need to know to get your project approved!
 
-The primary goal of Blueprint is to get you, yes *you* creating shipped projects! It's pretty much the only thing we check for - we try not to have any unnecessary / arbitrary requirements
+The goal of Blueprint is to get you, yes *you* creating **shipped** projects. It is the *only* thing we check for - we try not to have any unnecessary / arbitrary requirements.
 
-Below is a list of *hard* requirements from us. Keep in mind that these are a *minimum*, and you're encouraged to go above and beyond! Add a 3D render, custom logo, and more - you might just get something special :)
+**Shipping your project is the process of making it usable & understanding for other people.** It means that someone should be able to look at your README.md file and know *exactly* what they need to do to build & use your project from scratch.
 
-On top of these requirements, a good read is this page: [what is shipping?](/resources/shipping)
+This is really important! It makes sure that your project is actually real and exists in the world, and not just as a file on your computer.
+
+*A good read on this can be found here: [what is shipping?](/resources/shipping)*
+
+**The following is a list of hard requirements from us, missing any of these will automatically get your project returned**
+
+Keep in mind that these are a *minimum*, and you're encouraged to go above and beyond! Add a 3D render, custom logo, and more - you might just get something special :)
 
 *any questions? ask in [#blueprint!](https://hackclub.enterprise.slack.com/archives/C083S537USC)*
 
 ---
 
 #### **Requirements**
+
+##### YOUR README.md FILE CONTAINS THE FOLLOWING:
+**A DESCRIPTION/EXPLANATION OF YOUR PROJECT**
+- [x] A short description of what your project is
+- [x] **A couple sentences on how to use your project!**
+- [x] A couple sentences on *why* you made the project
+
+*PICTURES OF YOUR PROJECT*
+- [x] A screenshot of a full 3D model with your project
+- [x] A screenshot of your PCB, if you have one
+- [x] A wiring diagram, if you're doing any wiring that isn't on a PCB
+- [x] A BOM in table format at the end of the README, with links
 
 ##### YOUR PROJECT DESIGN IS FULLY COMPLETE:
 - [x] It is an original, customized design by you, and is not a direct copy of any guide!
@@ -33,17 +51,6 @@ On top of these requirements, a good read is this page: [what is shipping?](/res
 - [x] You have everything easily readable and organized into folders.
 
 *if you're missing a .STEP file with all of your electronics and CAD, your project will not be approved*
-
-##### YOUR README.md FILE CONTAINS THE FOLLOWING:
-- [x] A short description of what your project is
-- [x] A couple sentences on *why* you made the project
-- [x] A couple sentences on how to use your project!
-
-*PICTURES OF YOUR PROJECT*\
-- [x] A screenshot of a full 3D model with your project
-- [x] A screenshot of your PCB, if you have one
-- [x] A wiring diagram, if you're doing any wiring that isn't on a PCB
-- [x] A BOM in table format at the end of the README, with links
 
 ##### YOU *DO NOT* HAVE:
 - [ ] **AI Generated READMEs, Journal entries, or an image of your project**
