@@ -1,8 +1,8 @@
 <h1 class="text-4xl">Submit project</h1>
 <p class="text-xl">Finished designing? Right this way!</p>
 <% guidelines_url = @project.ysws == "hackpad" ? "/hackpad/submitting" : "/about/submission-guidelines" %>
-<p class="text-xl">Make sure you read the <a class="text-bp-warning font-bold underline"href="<%= guidelines_url %>" target="_blank" rel="noopener noreferrer">submission guidelines</a> before submitting and check off all the boxes!</p>
-<p class="text-xl">Most rejections happen because of missing requirements. Rejected projects waste time for you and for everyone. Please read carefully. We're here to help and ask in #blueprint if you need any help!</p>
+<p class="text-xl">Make sure you read the <a class="text-bp-warning font-bold underline"href="<%= guidelines_url %>" target="_blank" rel="noopener noreferrer">submission guidelines</a> before submitting and check off all the boxes.</p>
+<p class="text-xl">The #1 cause of project returns & long review times are from projects missing requirements in the guidelines. Unnecessary returns slow down the queue for you and everybody else, and also leads to reviewer burnout. Do your part & read carefully! Ask in #blueprint if you need any help.</p>
 
 <%= turbo_frame_tag "form_errors" do %>
   <% if @project.errors.any? %>
