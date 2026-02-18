@@ -22,11 +22,12 @@ Keep the note as short as possible. Perfect grammar is not needed, just make sur
 
 ### Repository structure
 
-- [ ] BOM file exists in CSV format in the root directory (does not have to be exactly named "bom.csv" but should be clearly identifiable)
-- [ ] BOM CSV contains purchase links for components that are not custom-made, 3D printed, or through PCBA.
+- [ ] BOM file exists in CSV format (does not have to be exactly named "bom.csv" but should be clearly identifiable and findable)
+- [ ] BOM CSV contains purchase links for components that are not custom-made, 3D printed, or through PCBA
 - [ ] .STEP file exists (3D CAD export of the full assembly)
 - [ ] CAD source file exists (.f3d, .FCStd, or public OnShape link in a markdown file)
 - [ ] PCB source files exist if applicable (.kicad_pro, .kicad_sch, gerbers.zip, etc.)
+- [ ] Has a wiring diagram somewhere and the diagram is clear and cohesive
 - [ ] Firmware/software source code is present (even if untested)
 - [ ] Files are organized into logical folders (not all dumped in root)
 
@@ -57,25 +58,7 @@ Respond with ONLY a JSON object (no markdown fences, no extra text):
   "guideline_score": "pass | partial | fail",
   "checks": {
     "readme_exists": { "status": "pass|warn|fail|n/a", "note": "brief evidence" },
-    "readme_description": { "status": "...", "note": "..." },
-    "readme_usage": { "status": "...", "note": "..." },
-    "readme_motivation": { "status": "...", "note": "..." },
-    "readme_3d_model_image": { "status": "...", "note": "..." },
-    "readme_pcb_image": { "status": "...", "note": "..." },
-    "readme_wiring_diagram": { "status": "...", "note": "..." },
-    "readme_bom_table": { "status": "...", "note": "..." },
-    "bom_csv_exists": { "status": "...", "note": "..." },
-    "bom_csv_has_links": { "status": "...", "note": "..." },
-    "step_file_exists": { "status": "...", "note": "..." },
-    "cad_source_exists": { "status": "...", "note": "..." },
-    "pcb_files_exist": { "status": "...", "note": "..." },
-    "firmware_exists": { "status": "...", "note": "..." },
-    "files_organized": { "status": "...", "note": "..." },
-    "journal_entries_exist": { "status": "...", "note": "..." },
-    "journal_describes_progress": { "status": "...", "note": "..." },
-    "journal_has_images": { "status": "...", "note": "..." },
-    "journal_durations_plausible": { "status": "...", "note": "..." },
-    "journal_spans_multiple_days": { "status": "...", "note": "..." }
+    "another check...": { "status": "...", "note": "..." }
   },
   "suggestions_for_reviewer": [
     "specific things the human reviewer should look at or verify"
