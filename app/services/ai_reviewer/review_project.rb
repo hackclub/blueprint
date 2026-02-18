@@ -1,6 +1,7 @@
 module AiReviewer
   class ReviewProject
-    MODEL = "gpt-5-nano"
+    MODEL = "openai/gpt-5-nano"
+    PROVIDER = :openrouter
 
     def initialize(project:, review_phase:)
       @project = project
@@ -19,7 +20,7 @@ module AiReviewer
       log "Created AiReview ##{ai_review.id}, status=running"
 
       log "Setting up chat with model=#{MODEL}, tools: GetJournal, GetRepoTree, GetFileContent"
-      chat = RubyLLM.chat(model: MODEL)
+      chat = RubyLLM.chat(model: MODEL, provider: PROVIDER)
         .with_tools(
           Tools::GetJournal.new(@project),
           Tools::GetRepoTree.new(@project),
