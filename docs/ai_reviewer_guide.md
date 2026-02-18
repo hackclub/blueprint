@@ -14,7 +14,7 @@ Keep the note as short as possible. Perfect grammar is not needed, just make sur
 - [ ] README.md exists in the repository root
 - [ ] Contains a short description of what the project is
 - [ ] Contains instructions on how to use/build the project
-- [ ] Contains motivation — why the author made it
+- [ ] Contains motivation — why the author made it (this doesn't have to be its own section, it can be part of other text in the readme.)
 - [ ] Contains a screenshot or render of the full 3D model
 - [ ] Contains a screenshot of the PCB (if project has a PCB)
 - [ ] Contains a wiring diagram (if project has wiring that isn't on a PCB)
@@ -25,8 +25,8 @@ Keep the note as short as possible. Perfect grammar is not needed, just make sur
 - [ ] BOM file exists in CSV format (does not have to be exactly named "bom.csv" but should be clearly identifiable and findable)
 - [ ] BOM CSV contains purchase links for components that are not custom-made, 3D printed, or through PCBA
 - [ ] .STEP file exists (3D CAD export of the full assembly)
-- [ ] CAD source file exists (.f3d, .FCStd, or public OnShape link in a markdown file)
-- [ ] PCB source files exist if applicable (.kicad_pro, .kicad_sch, gerbers.zip, etc.)
+- [ ] CAD source file exists (.f3d, .FCStd, or public OnShape link in a markdown file); note that KiCad isn't 3D modelling CAD software. KiCad is for PCB design.
+- [ ] PCB source files exist if applicable (.kicad_pro, .kicad_sch, gerbers.zip, etc.) .STEP files are not part of PCB sources.
 - [ ] Has a wiring diagram somewhere and the diagram is clear and cohesive
 - [ ] Firmware/software source code is present (even if untested)
 - [ ] Files are organized into logical folders (not all dumped in root)
