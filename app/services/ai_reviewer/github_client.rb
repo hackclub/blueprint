@@ -6,7 +6,11 @@ module AiReviewer
 
     def github_fetch(path)
       api_key = ENV.fetch("GH_PROXY_API_KEY", "")
-      Faraday.get("#{GH_PROXY_BASE}#{path}", nil, {
+      conn = Faraday.new do |f|
+        f.options.open_timeout = 10
+        f.options.timeout = 30
+      end
+      conn.get("#{GH_PROXY_BASE}#{path}", nil, {
         "X-API-Key" => api_key,
         "Accept" => "application/vnd.github+json"
       })

@@ -54,3 +54,8 @@ production:
     class: HcbTokenRefreshJob
     queue: background
     schedule: every hour at minute 42
+
+  ai_review_cleanup:
+    class: AiReviewCleanupJob
+    queue: background
+    schedule: every 5 minutes

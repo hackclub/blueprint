@@ -8,10 +8,17 @@ class AiReviewJob < ApplicationJob
       return
     end
 
-    if project.ai_reviews
-              .where(review_phase: review_phase, status: [ :running, :completed ])
-              .where("created_at > ?", 1.hour.ago)
-              .exists?
+    recent_completed = project.ai_reviews
+      .where(review_phase: review_phase, status: :completed)
+      .where("created_at > ?", 1.hour.ago)
+      .exists?
+
+    active_running = project.ai_reviews
+      .where(review_phase: review_phase, status: :running)
+      .where("started_at > ?", AiReview::STALE_THRESHOLD.ago)
+      .exists?
+
+    if recent_completed || active_running
       Rails.logger.info("[AiReviewer] Job skipped: project ##{project_id} already has a recent #{review_phase} review")
       return
     end

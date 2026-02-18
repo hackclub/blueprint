@@ -2,6 +2,7 @@ module AiReviewer
   class ReviewProject
     MODEL = "openai/gpt-5-nano"
     PROVIDER = :openrouter
+    LLM_TIMEOUT = 10.minutes
 
     def initialize(project:, review_phase:)
       @project = project
@@ -29,7 +30,9 @@ module AiReviewer
 
       chat.with_instructions(system_prompt)
       log "Sending prompt to #{MODEL}... (this may take a while)"
-      response = chat.ask(user_prompt)
+      response = Timeout.timeout(LLM_TIMEOUT, nil, "LLM call timed out after #{LLM_TIMEOUT.to_i}s") do
+        chat.ask(user_prompt)
+      end
       log "Got response (#{response.content.to_s.length} chars)"
 
       analysis = parse_json(response.content)
@@ -59,13 +62,17 @@ module AiReviewer
       log "Review complete for project ##{@project.id} (AiReview ##{ai_review.id})"
       ai_review
     rescue => e
-      ai_review&.update!(
-        status: :failed,
-        error_message: "#{e.class}: #{e.message}",
-        completed_at: Time.current
-      )
       log "FAILED for project ##{@project.id}: #{e.class}: #{e.message}", level: :error
       Sentry.capture_exception(e, extra: { project_id: @project.id, review_phase: @review_phase }) if defined?(Sentry)
+      begin
+        ai_review&.update!(
+          status: :failed,
+          error_message: "#{e.class}: #{e.message}".truncate(1000),
+          completed_at: Time.current
+        )
+      rescue => update_error
+        log "Failed to update AiReview ##{ai_review&.id} to failed status: #{update_error.message}", level: :error
+      end
       ai_review
     end
 
