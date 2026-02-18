@@ -150,6 +150,8 @@
     </div>
   <% end %>
 
+  <%= render "admin/shared/ai_review_panel", ai_review: @ai_review, project: @project, review_phase: "build" %>
+
   <% if @project.reviewer_note.present? %>
     <%= render "shared/card" do %>
       <p class="text-3xl pb-4 font-rc-full">Note from Author</p>
@@ -227,8 +229,6 @@
     <p class="text-3xl pb-4 font-rc-full">User Internal Notes</p>
     <%= render "admin/users/user_notes_form", user: @project.user %>
   <% end %>
-
-  <%= render "admin/shared/ai_review_panel", ai_review: @ai_review, project: @project, review_phase: "build" %>
 
   <%= render "shared/card" do %>
     <p class="text-3xl pb-4 font-rc-full">Submit Build Review</p>
