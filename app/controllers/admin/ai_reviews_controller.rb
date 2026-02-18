@@ -12,7 +12,7 @@ class Admin::AiReviewsController < Admin::ApplicationController
     end
 
     AiReviewJob.perform_later(project.id, phase)
-    redirect_back fallback_location: admin_root_path, notice: "AI analysis queued. Refresh in ~30 seconds."
+    redirect_back fallback_location: admin_root_path, notice: "AI analysis queued. Check back in ~5 minutes."
   end
 
   private
