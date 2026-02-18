@@ -23,7 +23,7 @@
         <p class="text-white/50 text-lg">AI analysis not yet available. Click "Re-analyze" to queue one.</p>
 
       <% elsif ai_review.status_running? %>
-        <p class="text-bp-warning text-lg animate-pulse">AI analysis in progress... Refresh in ~30 seconds.</p>
+        <p class="text-bp-warning text-lg animate-pulse">AI analysis in progress... Check back in ~5 minutes.</p>
 
       <% elsif ai_review.status_failed? %>
         <p class="text-bp-danger text-lg">AI analysis failed: <%= ai_review.error_message.to_s.truncate(200) %></p>
