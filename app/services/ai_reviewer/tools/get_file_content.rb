@@ -23,7 +23,8 @@ module AiReviewer
         parsed = @project.parse_repo
         return "No GitHub repo linked." unless parsed && parsed[:org].present? && parsed[:repo_name].present?
 
-        api_path = "/repos/#{parsed[:org]}/#{parsed[:repo_name]}/contents/#{path}"
+        encoded_path = path.split("/").map { |segment| ERB::Util.url_encode(segment) }.join("/")
+        api_path = "/repos/#{parsed[:org]}/#{parsed[:repo_name]}/contents/#{encoded_path}"
         response = github_fetch(api_path)
         unless response.status == 200
           Rails.logger.warn("[AiReviewer] [project:#{@project.id}] GetFileContent: #{path} not found (HTTP #{response.status})")
@@ -34,6 +35,11 @@ module AiReviewer
 
         if data["encoding"] == "base64" && data["content"].present?
           content = Base64.decode64(data["content"]).force_encoding("UTF-8")
+
+          unless content.valid_encoding?
+            Rails.logger.info("[AiReviewer] [project:#{@project.id}] GetFileContent: #{path} is binary (#{data['size']} bytes)")
+            return "Binary file: #{path} (#{data['size']} bytes). This file cannot be read as text."
+          end
 
           if start_line || end_line
             all_lines = content.lines

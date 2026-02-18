@@ -10,7 +10,7 @@ module AiReviewer
         super()
       end
 
-      def execute
+      def execute(**)
         Rails.logger.info("[AiReviewer] [project:#{@project.id}] Tool call: GetRepoTree")
         parsed = @project.parse_repo
         unless parsed && parsed[:org].present? && parsed[:repo_name].present?

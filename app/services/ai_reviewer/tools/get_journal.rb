@@ -8,7 +8,7 @@ module AiReviewer
         super()
       end
 
-      def execute
+      def execute(**)
         Rails.logger.info("[AiReviewer] [project:#{@project.id}] Tool call: GetJournal")
         entries = @project.journal_entries.order(created_at: :asc)
         if entries.empty?

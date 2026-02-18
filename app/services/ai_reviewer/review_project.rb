@@ -40,11 +40,19 @@ module AiReviewer
         log "Parsed analysis: score=#{score}, #{checks} checks"
       end
 
+      input_tokens = response.input_tokens.to_i
+      output_tokens = response.output_tokens.to_i
+      total = input_tokens + output_tokens
+      log "Tokens: #{input_tokens} in + #{output_tokens} out = #{total} total"
+
       ai_review.update!(
         status: :completed,
         analysis: analysis,
         raw_response: response.content,
         model_used: MODEL,
+        prompt_tokens: input_tokens,
+        completion_tokens: output_tokens,
+        total_tokens: total,
         completed_at: Time.current
       )
       log "Review complete for project ##{@project.id} (AiReview ##{ai_review.id})"
