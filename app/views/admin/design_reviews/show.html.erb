@@ -220,6 +220,8 @@
     <%= render "admin/users/user_notes_form", user: @project.user %>
   <% end %>
 
+  <%= render "admin/shared/ai_review_panel", ai_review: @ai_review, project: @project, review_phase: "design" %>
+
   <%= render "shared/card" do %>
     <p class="text-3xl pb-4 font-rc-full">Submit Design Review</p>
     <% if @claimed_by_other %>

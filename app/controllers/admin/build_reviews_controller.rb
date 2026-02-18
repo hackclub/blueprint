@@ -96,6 +96,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     flash.now[:notice] = "Review session started." if claimed && !had_any_claim
     @claimed_by_other = Reviews::ClaimProject.claimed_by_other?(project: @project, reviewer: current_user, type: :build)
     @build_review = @project.build_reviews.build
+    @ai_review = @project.latest_ai_review("build") if Flipper.enabled?(:ai_reviewer)
   end
 
   def show_next

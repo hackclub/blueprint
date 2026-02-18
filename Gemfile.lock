@@ -178,6 +178,7 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
+    event_stream_parser (1.0.0)
     faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -189,6 +190,8 @@ GEM
       multipart-post (~> 2.0)
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
+    faraday-retry (2.4.0)
+      faraday (~> 2.0)
     ferrum (0.17.1)
       addressable (~> 2.5)
       base64 (~> 0.2)
@@ -484,6 +487,17 @@ GEM
     ruby-vips (2.2.4)
       ffi (~> 1.12)
       logger
+    ruby_llm (1.12.0)
+      base64
+      event_stream_parser (~> 1)
+      faraday (>= 2.0)
+      faraday-multipart (>= 1)
+      faraday-net_http (>= 1)
+      faraday-retry (>= 2.0)
+      marcel (~> 1.0)
+      ruby_llm-schema (~> 0.2.1)
+      zeitwerk (~> 2)
+    ruby_llm-schema (0.2.5)
     rubyzip (3.2.0)
     safely_block (0.5.0)
     sanitize (7.0.0)
@@ -651,6 +665,7 @@ DEPENDENCIES
   redis (~> 5.0)
   rqrcode
   rubocop-rails-omakase
+  ruby_llm
   selenium-webdriver
   sentry-rails
   sentry-ruby

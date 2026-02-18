@@ -69,6 +69,7 @@ class Project < ApplicationRecord
   has_many :valid_build_reviews, -> { where(invalidated: false) }, class_name: "BuildReview"
   has_many :project_grants, dependent: :destroy
   has_many :kudos, dependent: :destroy
+  has_many :ai_reviews, dependent: :destroy
   has_many :packages, as: :trackable, dependent: :destroy
 
   def self.airtable_sync_table_id
@@ -241,6 +242,7 @@ class Project < ApplicationRecord
   after_update :approve_design!, if: -> { saved_change_to_review_status? && design_approved? }
   after_update :approve_build!, if: -> { saved_change_to_review_status? && build_approved? }
   after_update :dm_status!, if: -> { saved_change_to_review_status? }
+  after_update :enqueue_ai_review, if: -> { saved_change_to_review_status? && (design_pending? || build_pending?) && Flipper.enabled?(:ai_reviewer) }
 
   after_commit :sync_to_gorse, on: [ :create, :update ]
   after_commit :delete_from_gorse, on: :destroy
@@ -957,6 +959,10 @@ Any issues should go to @alexren."
     unreviewed_journal_entries
   end
 
+  def latest_ai_review(phase)
+    ai_reviews.where(review_phase: phase).order(created_at: :desc).first
+  end
+
   def hours_since_last_review
     unreviewed_journal_entries.sum(:duration_seconds) / 3600.0
   end
@@ -1035,6 +1041,11 @@ Any issues should go to @alexren."
     if max_cents > 0 && funding_needed_cents > max_cents
       errors.add(:funding_needed_cents, "cannot exceed tier maximum of $#{max_cents / 100.0}")
     end
+  end
+
+  def enqueue_ai_review
+    phase = design_pending? ? "design" : "build"
+    AiReviewJob.perform_later(id, phase)
   end
 
   def invalidate_design_reviews_on_resubmit

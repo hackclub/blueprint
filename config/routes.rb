@@ -266,6 +266,8 @@ Rails.application.routes.draw do
       get "build_reviews/:id", to: "build_reviews#show", as: :build_review
       post "build_reviews/:id", to: "build_reviews#create", as: :build_review_create
 
+      post "ai_reviews/:project_id", to: "ai_reviews#create", as: :ai_review_create
+
       resources :projects, only: [ :index, :show ]
       resources :users, only: [ :index, :show, :update ] do
         patch :update_internal_notes, on: :member

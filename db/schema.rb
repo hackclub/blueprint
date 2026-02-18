@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_05_150112) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_18_172856) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -85,6 +85,26 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_05_150112) do
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
     t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
+  end
+
+  create_table "ai_reviews", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.string "review_phase", null: false
+    t.string "status", default: "pending", null: false
+    t.jsonb "analysis", default: {}
+    t.text "raw_response"
+    t.text "error_message"
+    t.integer "prompt_tokens"
+    t.integer "completion_tokens"
+    t.integer "total_tokens"
+    t.string "model_used"
+    t.datetime "started_at"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "review_phase"], name: "index_ai_reviews_on_project_id_and_review_phase"
+    t.index ["project_id"], name: "index_ai_reviews_on_project_id"
+    t.index ["status"], name: "index_ai_reviews_on_status"
   end
 
   create_table "airtable_syncs", force: :cascade do |t|
@@ -684,6 +704,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_05_150112) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "ai_reviews", "projects"
   add_foreign_key "build_reviews", "projects"
   add_foreign_key "build_reviews", "users", column: "reviewer_id"
   add_foreign_key "design_reviews", "projects"

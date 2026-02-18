@@ -43,6 +43,8 @@ Rails.application.configure do
   config.active_storage.service = :local
   config.active_storage.routes_prefix = "/user-attachments"
   config.active_storage.service_urls_expire_in = 7.days
+  # Use proxy mode so missing files (e.g. from cloned prod DB) return 404 instead of redirect loops
+  config.active_storage.resolve_model_to_route = :rails_storage_proxy
 
   # Use custom Airtable delivery method for mailer
   # config.action_mailer.delivery_method = :airtable_delivery_method

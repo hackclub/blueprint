@@ -1,0 +1,119 @@
+<% if Flipper.enabled?(:ai_reviewer) %>
+  <%= render "shared/card" do %>
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <p class="text-3xl font-rc-full">AI Review Assistant</p>
+        <div class="flex items-center gap-3">
+          <% if ai_review&.status_completed? %>
+            <span class="text-xs text-white/50">
+              Analyzed <%= time_ago_in_words(ai_review.completed_at) %> ago
+              <% if ai_review.total_tokens.present? %>
+                (<%= ai_review.total_tokens %> tokens)
+              <% end %>
+            </span>
+          <% end %>
+          <%= button_to "Re-analyze",
+              admin_ai_review_create_path(project.id, review_phase: review_phase),
+              method: :post,
+              class: "btn btn-outline text-sm py-0 px-2" %>
+        </div>
+      </div>
+
+      <% if ai_review.nil? || ai_review.status_queued? %>
+        <p class="text-white/50 text-lg">AI analysis not yet available. Click "Re-analyze" to queue one.</p>
+
+      <% elsif ai_review.status_running? %>
+        <p class="text-bp-warning text-lg animate-pulse">AI analysis in progress... Refresh in ~30 seconds.</p>
+
+      <% elsif ai_review.status_failed? %>
+        <p class="text-bp-danger text-lg">AI analysis failed: <%= ai_review.error_message.to_s.truncate(200) %></p>
+
+      <% elsif ai_review.status_completed? %>
+        <% analysis = ai_review.analysis %>
+        <% checks = analysis["checks"] || {} %>
+        <% failed = checks.select { |_, c| c["status"] == "fail" } %>
+        <% warned = checks.select { |_, c| c["status"] == "warn" } %>
+        <% passed = checks.select { |_, c| c["status"] == "pass" } %>
+        <% na_checks = checks.select { |_, c| c["status"] == "n/a" } %>
+
+        <%# Overview %>
+        <p class="text-lg"><%= analysis["overall_assessment"] %></p>
+
+        <%# Suggestions for reviewer %>
+        <% if analysis["suggestions_for_reviewer"].present? && analysis["suggestions_for_reviewer"].any? %>
+          <div>
+            <p class="text-sm font-medium text-white/60 mb-1">Suggestions for reviewer:</p>
+            <ul class="list-disc list-inside text-sm space-y-1 text-white/80">
+              <% analysis["suggestions_for_reviewer"].each do |suggestion| %>
+                <li><%= suggestion %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <%# Score with colored counts %>
+        <% score = analysis["guideline_score"] %>
+        <p class="text-xl font-medium">
+          Result:
+          <% case score %>
+          <% when "pass" %>
+            <span class="text-bp-success">PASS</span>
+          <% when "partial" %>
+            <span class="text-bp-warning">PARTIAL</span>
+          <% else %>
+            <span class="text-bp-danger">FAIL</span>
+          <% end %>
+          <span class="text-sm font-normal">
+            (<span class="text-bp-danger"><%= failed.size %></span>/<span class="text-bp-warning"><%= warned.size %></span>/<span class="text-bp-success"><%= passed.size %></span>/<span class="text-white/40"><%= na_checks.size %></span>)
+          </span>
+        </p>
+
+        <div class="space-y-1">
+          <%# Failed checks %>
+          <% if failed.any? %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
+              <% failed.each do |key, check| %>
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="text-bp-danger shrink-0 font-mono">FAIL</span>
+                  <span><strong><%= key.humanize %>:</strong> <%= check["note"] %></span>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+          <%# Warn checks %>
+          <% if warned.any? %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
+              <% warned.each do |key, check| %>
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="text-bp-warning shrink-0 font-mono">WARN</span>
+                  <span><strong><%= key.humanize %>:</strong> <%= check["note"] %></span>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <%# Passed and skipped checks — collapsed %>
+        <% if passed.any? || na_checks.any? %>
+          <details>
+            <summary class="text-sm font-medium cursor-pointer text-white/60">Passed and skipped checks (<%= passed.size %>/<%= na_checks.size %>)</summary>
+            <div class="mt-1 grid grid-cols-1 md:grid-cols-2 gap-1">
+              <% passed.each do |key, check| %>
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="text-bp-success shrink-0 font-mono">PASS</span>
+                  <span><strong><%= key.humanize %>:</strong> <%= check["note"] %></span>
+                </div>
+              <% end %>
+              <% na_checks.each do |key, check| %>
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="text-white/40 shrink-0 font-mono">SKIP </span>
+                  <span><strong><%= key.humanize %>:</strong> <%= check["note"] %></span>
+                </div>
+              <% end %>
+            </div>
+          </details>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
