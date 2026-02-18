@@ -24,7 +24,8 @@ Keep the note as short as possible. Perfect grammar is not needed, just make sur
 
 - [ ] BOM file exists in CSV format (does not have to be exactly named "bom.csv" but should be clearly identifiable and findable)
 - [ ] BOM CSV contains purchase links for components that are not custom-made, 3D printed, or through PCBA
-- [ ] .STEP file exists (3D CAD export of the full assembly)
+- [ ] 3D modelled case exists if the project is a physical object that would require a case. E.g. keyboards need a case, dev boards do not.
+- [ ] .STEP file exists (3D CAD export of the full assembly) if the project has a 3D model; note that .STEP is not required for PCB-only projects
 - [ ] CAD source file exists (.f3d, .FCStd, or public OnShape link in a markdown file); note that KiCad isn't 3D modelling CAD software. KiCad is for PCB design.
 - [ ] PCB source files exist if applicable (.kicad_pro, .kicad_sch, gerbers.zip, etc.) .STEP files are not part of PCB sources.
 - [ ] Has a wiring diagram somewhere and the diagram is clear and cohesive
