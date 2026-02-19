@@ -46,6 +46,16 @@ class SlackReviewNotificationJob < ApplicationJob
       }
     ]
 
+    if review.reviewer&.slack_id.present?
+      blocks << {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "<@#{review.reviewer.slack_id}>"
+        }
+      }
+    end
+
     message_options = {
       channel: channel_id,
       thread_ts: thread_ts,
