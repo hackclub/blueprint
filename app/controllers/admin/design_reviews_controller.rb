@@ -72,7 +72,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
   end
 
   def show
-    @project = Project.includes(:design_review_claimed_by).find(params[:id])
+    @project = Project.includes(:design_review_claimed_by, design_reviews: :reviewer).find(params[:id])
     not_found unless @project
 
     had_any_claim = Reviews::ClaimProject.has_any_claim?(reviewer: current_user, type: :design)
