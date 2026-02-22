@@ -28,32 +28,32 @@
     </div>
   </div>
   <%= render "shared/card" do %>
-        <% if @project.display_banner %>
-        <div class="shrink-0">
-          <%= image_tag url_for(@project.display_banner), class: "w-full h-72 object-cover rounded-lg" %>
-        </div>
-      <% end %>
+    <% if @project.display_banner %>
+      <div class="shrink-0">
+        <%= image_tag url_for(@project.display_banner), class: "w-full h-72 object-cover rounded-lg" %>
+      </div>
+    <% end %>
     <div class="flex gap-6">
       <div class="flex flex-col justify-between space-y-1 flex-1">
         <h1 class="pb-2 text-4xl">Project #<%= @project.id %>, <%= link_to @project.title, admin_project_path(@project), class: "underline" %></h1>
         <div>
           <p>By <%= render "shared/user_inline", user: @project.user, admin_view: true %> on <%= @project.created_at.strftime("%B %d, %Y") %></p>
         </div>
-      <div class="flex justify-start text-xl mt-4">
-        <% if @project.tier.present? %>
-          <% tier_style = @project.tier == "1" ? "bg-bp-danger text-bp-darker" : (@project.tier == "2" ? "bg-bp-warning text-bp-darker" : (@project.tier == "3" ? "bg-bp-success text-bp-darker" : "bg-bp-dark text-white")) %>
-          <p>Tier: <span class="<%= tier_style %> p-1 px-3 "><%= @project.tier %></span></p>
-        <% end %>
-      </div>
-      <p class="text-xl">Requesting: $<%= sprintf("%.2f", @project.funding_needed_cents / 100.0) %></p>
-      <% hours = (@project.journal_entries.sum(:duration_seconds) / 3600.0).round(1) %>
-      <div class="flex flex-wrap gap-6 text-xl mt-2">
-        <p>Type: <span class="font-medium"><%= @project.ysws || "Custom" %></span></p>
-        <p>Hours: <span class="font-medium"><%= hours %>h</span></p>
-        <%# <p>CPH: <span class="font-medium"><%= hours > 0 ? sprintf("$%.2f", (@project.funding_needed_cents / 100.0) / hours) : "–" </span></p> %>
-        <% if @project.ysws == "hackpad" && @project.approx_hour.present? %>
-          <p>Self-reported: <span class="font-medium"><%= @project.approx_hour %>h</span></p>
-        <% end %>
+        <div class="flex justify-start text-xl mt-4">
+          <% if @project.tier.present? %>
+            <% tier_style = @project.tier == "1" ? "bg-bp-danger text-bp-darker" : (@project.tier == "2" ? "bg-bp-warning text-bp-darker" : (@project.tier == "3" ? "bg-bp-success text-bp-darker" : "bg-bp-dark text-white")) %>
+            <p>Tier: <span class="<%= tier_style %> p-1 px-3 "><%= @project.tier %></span></p>
+          <% end %>
+        </div>
+        <p class="text-xl">Requesting: $<%= sprintf("%.2f", @project.funding_needed_cents / 100.0) %></p>
+        <% hours = (@project.journal_entries.sum(:duration_seconds) / 3600.0).round(1) %>
+        <div class="flex flex-wrap gap-6 text-xl mt-2">
+          <p>Type: <span class="font-medium"><%= @project.ysws || "Custom" %></span></p>
+          <p>Hours: <span class="font-medium"><%= hours %>h</span></p>
+          <%# <p>CPH: <span class="font-medium"><%= hours > 0 ? sprintf("$%.2f", (@project.funding_needed_cents / 100.0) / hours) : "–" </span></p> %>
+          <% if @project.ysws == "hackpad" && @project.approx_hour.present? %>
+            <p>Self-reported: <span class="font-medium"><%= @project.approx_hour %>h</span></p>
+          <% end %>
         </div>
       </div>
     </div>
@@ -87,41 +87,116 @@
   <% end %>
   <%= render "shared/card" do %>
     <p class="text-3xl pb-4 font-rc-full">Previous Reviews</p>
-    <div class="flex flex-col divide-y-2">
+    <div class="flex flex-col divide-y-4 gap-8">
       <% @project.design_reviews.order(created_at: :desc).each do |review| %>
-        <div class="py-4 first:pt-0 last:pb-0 flex space-x-4">
+        <div class="
+          p-4
+          flex
+          flex-col
+
+          <% if review.result == "approved" %>
+            border-bp-success
+          <% elsif review.result == "returned" %>
+            border-bp-warning
+          <% elsif review.result == "rejected" %>
+            border-bp-danger
+          <% else %>
+            border-white/60
+          <% end %>
+
+          border-2
+          ">
           <div>
-            <% if review.invalidated? %>
-              <p class="text-bp-danger">OUTDATED</p>
+            <div class="grid grid-cols-6 grid-rows-1 gap-0">
+              <div class="col-span-2">
+                <% if review.invalidated? %>
+                  <span class="text-bp-danger text-3xl">OUTDATED</span>
+                <% end %>
+              </div>
+              <div class="col-span-2 col-start-3 flex justify-center">
+                <p>Reviewed by: <%= render "shared/user_inline", user: review.reviewer, admin_view: true %></p>
+              </div>
+              <div class="col-span-2 col-start-5 text-right">
+                <% if review.result == "approved" %>
+                  <p>Result: <span class="text-bp-success">Approved</span></p>
+                <% elsif review.result == "returned" %>
+                  <p>Result: <span class="text-bp-warning">Returned</span></p>
+                <% elsif review.result == "rejected" %>
+                  <p>Result: <span class="text-bp-danger">Permanently Rejected</span></p>
+                <% else %>
+                  <p>Result: <span>Unknown</span></p>
+                <% end %>
+                <% local_time = review.created_at.in_time_zone(current_user.timezone_raw || 'UTC') %>
+                <p class="text-sm text-white/60"><span title="<%= local_time.strftime("%B %d, %Y at %I:%M %p %Z") %>">Reviewed <%= c_time_ago_in_words(review.created_at) %> ago</span></p>
+              </div>
+            </div>
+
+            <% if review.hours_override %>
+              <p>Hours override: <%= review.hours_override %></p>
             <% end %>
-            <% if review.admin_review? %>
-              <p class="text-bp-warning">ADMIN</p>
+            <% if review.tier_override %>
+              <p>Tier override: <%= review.tier_override %></p>
             <% end %>
-            <p>Reviewed by: <%= render "shared/user_inline", user: User.find(review.reviewer_id), admin_view: true %></p>
-            <% if review.result == "approved" %>
-              <p>Result: <span class="text-bp-success">Approved</span></p>
-            <% elsif review.result == "returned" %>
-              <p>Result: <span class="text-bp-warning">Returned</span></p>
-            <% elsif review.result == "rejected" %>
-              <p>Result: <span class="text-bp-danger">Permanently Rejected</span></p>
-            <% else %>
-              <p>Result: <span>Unknown</span></p>
+            <% if review.grant_override_cents %>
+              <p>Grant override: $<%= sprintf("%.2f", review.grant_override_cents / 100.0) %></p>
             <% end %>
-            <p>Hours override: <%= review.hours_override || "N/A" %></p>
-            <p>Tier override: <%= review.tier_override || "N/A" %></p>
-            <p>Grant override: <%= review.grant_override_cents ? "$#{sprintf("%.2f", review.grant_override_cents / 100.0)}" : "N/A" %></p>
-            <p>Feedback: <%= review.feedback.present? ? review.feedback : "No feedback given" %></p>
-            <p>Reason: <%= review.reason.present? ? review.reason : "No reason given" %></p>
-            <p>Reviewed at: <%= review.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+            <div>
+              <p class="font-medium mb-2">Feedback:</p>
+              <% if review.feedback.present? %>
+                <div class="markdown markdown-sm space-y-2">
+                  <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: review.feedback, base_url: "http://localhost:3000").render) %>
+                </div>
+              <% else %>
+                <p class="text-white/60">No feedback given</p>
+              <% end %>
+            </div>
+            <div class="mt-3">
+              <p class="font-medium mb-2">Reason:</p>
+              <% if review.reason.present? %>
+                <div class="markdown markdown-sm space-y-2">
+                  <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: review.reason, base_url: "http://localhost:3000").render) %>
+                </div>
+              <% else %>
+                <p class="text-white/60">No reason given</p>
+              <% end %>
+            </div>
+
+
+            <details>
+              <div class="mt-3 grid grid-cols-7 grid-rows-1 gap-8">
+                <div class="col-span-5">
+                  <p class="font-medium mb-2 text-white/50">Note to reviewer:</p>
+                  <% if review.frozen_reviewer_note.present? %>
+                    <div class="markdown markdown-sm space-y-2 text-white/50!">
+                      <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: review.frozen_reviewer_note, base_url: "http://localhost:3000").render) %>
+                    </div>
+                  <% else %>
+                    <p class="text-white/60">No note given</p>
+                  <% end %>
+                </div>
+                <div class="col-span-2 grid grid-cols-4 grid-rows-2 gap-0 border-2 border-white/50">
+                  <div class="border-r-2 border-b-2 flex items-center justify-center p-2 border-white/50 text-white/50">Funding</div>
+                  <div class="border-r-2 border-b-2 flex items-center justify-center p-2 border-white/50 text-white/50">Tier</div>
+                  <div class="border-r-2 border-b-2 flex items-center justify-center p-2 border-white/50 text-white/50">Hours</div>
+                  <div class="border-b-2 flex items-center justify-center p-2 border-white/50 text-white/50">Journal entries</div>
+                  <div class="border-r-2 flex items-center justify-center p-2 border-white/50">
+                    <p class="text-green-500/50">$<%= review.frozen_funding_needed_cents.present? ? sprintf("%.2f", review.frozen_funding_needed_cents / 100.0) : "Unknown" %></p>
+                  </div>
+                  <div class="border-r-2 flex items-center justify-center p-2 border-white/50">
+                    <p class="text-white/50"><%= review.frozen_tier.present? ? review.frozen_tier : "Unknown" %></p>
+                  </div>
+                  <div class="border-r-2 flex items-center justify-center p-2 border-white/50">
+                    <p class="text-white/50"><%= review.frozen_duration_seconds.present? ? review.frozen_duration_seconds / 3600.0 : "Unknown" %>h</p>
+                  </div>
+                  <div class="flex items-center justify-center p-2 border-white/50">
+                    <p class="text-white/50"><%= review.frozen_entry_count.present? ? review.frozen_entry_count : "Unknown" %></p>
+                  </div>
+                </div>
+              </div>
+            </details>
+
           </div>
-          <div>
-            <p>Frozen data:</p>
-            <p>Funding: <%= review.frozen_funding_needed_cents.present? ? sprintf("%.2f", review.frozen_funding_needed_cents / 100.0) : "Unknown" %></p>
-            <p>Tier: <%= review.frozen_tier.present? ? review.frozen_tier : "Unknown" %></p>
-            <p>Hours: <%= review.frozen_duration_seconds.present? ? review.frozen_duration_seconds / 3600.0 : "Unknown" %></p>
-            <p>Journal entries: <%= review.frozen_entry_count.present? ? review.frozen_entry_count : "Unknown" %></p>
-            <p>Note to reviewer: <%= review.frozen_reviewer_note.present? ? review.frozen_reviewer_note : "None" %></p>
-          </div>
+
         </div>
       <% end %>
     </div>
@@ -131,7 +206,7 @@
 
   <% if @project.reviewer_note.present? %>
     <%= render "shared/card" do %>
-      <p class="text-3xl pb-4 font-rc-full">Note from Author</p>
+      <p class="text-3xl pb-4 font-rc-full">Note to reviewer</p>
       <p class="text-xl"><%= @project.reviewer_note %></p>
     <% end %>
   <% end %>
@@ -190,8 +265,8 @@
           <details>
             <summary>Show Entire Journal</summary>
             <div class="mt-4 space-y-6 markdown">
-            <% base_url = Rails.application.routes.default_url_options[:host] || "localhost:3000" %>
-            <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: @project.generate_journal(true), base_url: "http://#{base_url}").render) %>
+              <% base_url = Rails.application.routes.default_url_options[:host] || "localhost:3000" %>
+              <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: @project.generate_journal(true), base_url: "http://#{base_url}").render) %>
             </div>
           </details>
         </div>
@@ -201,7 +276,7 @@
   <%= render "shared/card" do %>
     <div>
       <p class="text-3xl pb-4 font-rc-full">Cart Screenshots</p>
-      <p class="text-xl">Requesting: $<%= sprintf("%.2f", @project.funding_needed_cents / 100.0) %></p>
+      <p class="text-xl">Requesting: <span class="text-green-500">$<%= sprintf("%.2f", @project.funding_needed_cents / 100.0) %></span></p>
     </div>
     <% if @project.cart_screenshots.attached? %>
       <div class="flex flex-wrap gap-3 my-4">
@@ -231,47 +306,47 @@
       </div>
     <% end %>
     <fieldset <%= "disabled" if @claimed_by_other %>>
-    <%= form_with model: @design_review, url: admin_design_review_create_path(@project), method: :post, html: { class: "space-y-6" } do |f| %>
-      <%= hidden_field_tag :ysws_type, params[:ysws_type] if params[:ysws_type].present? %>
-      <div>
-        <%= f.label :hours_override, "Hours Override", class: "block text-xl font-medium" %>
-        <%= f.number_field :hours_override, step: 0.01, placeholder: "Leave blank to use calculated hours (#{@project.journal_entries.sum(:duration_seconds) / 3600.0})", class: "input px-3 mt-1 block w-full" %>
-      </div>
-
-      <div>
-        <%= f.label :tier_override, "Tier Override", class: "block text-xl font-medium" %>
-        <%= f.select :tier_override, Project.tier_options, { include_blank: "Leave blank for default tier (#{@project.tier})" }, class: "input px-3 mt-1 block w-full" %>
-      </div>
-
-      <div>
-        <%= f.label :grant_override_cents, "Grant Override (cents)", class: "block text-xl font-medium" %>
-        <%= f.number_field :grant_override_cents, placeholder: "Leave blank for default (#{@project.funding_needed_cents})", class: "input px-3 mt-1 block w-full" %>
-      </div>
-
-      <% if current_user.admin? %>
+      <%= form_with model: @design_review, url: admin_design_review_create_path(@project), method: :post, html: { class: "space-y-6" } do |f| %>
+        <%= hidden_field_tag :ysws_type, params[:ysws_type] if params[:ysws_type].present? %>
         <div>
-          <%= f.label :ysws, "Guide Override", class: "block text-xl font-medium" %>
-          <%= f.select :ysws, Project.guide_options, { selected: @project.ysws || "none", include_blank: false }, class: "input px-3 mt-1 block w-full" %>
+          <%= f.label :hours_override, "Hours Override", class: "block text-xl font-medium" %>
+          <%= f.number_field :hours_override, step: 0.01, placeholder: "Leave blank to use calculated hours (#{@project.journal_entries.sum(:duration_seconds) / 3600.0})", class: "input px-3 mt-1 block w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :tier_override, "Tier Override", class: "block text-xl font-medium" %>
+          <%= f.select :tier_override, Project.tier_options, { include_blank: "Leave blank for default tier (#{@project.tier})" }, class: "input px-3 mt-1 block w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :grant_override_cents, "Grant Override (cents)", class: "block text-xl font-medium" %>
+          <%= f.number_field :grant_override_cents, placeholder: "Leave blank for default (#{@project.funding_needed_cents})", class: "input px-3 mt-1 block w-full" %>
+        </div>
+
+        <% if current_user.admin? %>
+          <div>
+            <%= f.label :ysws, "Guide Override", class: "block text-xl font-medium" %>
+            <%= f.select :ysws, Project.guide_options, { selected: @project.ysws || "none", include_blank: false }, class: "input px-3 mt-1 block w-full" %>
+          </div>
+        <% end %>
+
+        <div>
+          <%= f.label :reason, "Internal Justification", class: "block text-xl font-medium" %>
+          <%= f.text_area :reason, rows: 4, placeholder: "Justify your decision (why you approved/denied)", class: "input px-3 mt-1 block w-full", required: false %>
+        </div>
+
+        <div>
+          <%= f.label :feedback, "Feedback for author (MANDATORY)", class: "block text-xl font-medium" %>
+          <%= f.text_area :feedback, rows: 4, placeholder: "Give feedback for the author of the project!", class: "input px-3 mt-1 block w-full", required: true %>
+        </div>
+
+        <div class="flex gap-4">
+          <%= f.button "Approve", type: "submit", name: "design_review[result]", value: "approved", class: "btn btn-primary flex-1 bg-bp-success border-bp-success" %>
+          <%= f.button "Return", type: "submit", name: "design_review[result]", value: "returned", class: "btn btn-primary flex-1 bg-bp-warning border-bp-warning" %>
+          <%= f.button "Permanently Reject", type: "submit", name: "design_review[result]", value: "rejected", class: "btn btn-primary flex-1 bg-bp-danger border-bp-danger" %>
+          <%= link_to "Skip", admin_next_design_review_path(after: @project.id, ysws_type: params[:ysws_type]), class: "btn btn-outline flex-1" %>
         </div>
       <% end %>
-
-      <div>
-        <%= f.label :reason, "Internal Justification", class: "block text-xl font-medium" %>
-        <%= f.text_area :reason, rows: 4, placeholder: "Justify your decision (why you approved/denied)", class: "input px-3 mt-1 block w-full", required: false %>
-      </div>
-
-      <div>
-        <%= f.label :feedback, "Feedback for author (MANDATORY)", class: "block text-xl font-medium" %>
-        <%= f.text_area :feedback, rows: 4, placeholder: "Give feedback for the author of the project!", class: "input px-3 mt-1 block w-full", required: true %>
-      </div>
-
-      <div class="flex gap-4">
-        <%= f.button "Approve", type: "submit", name: "design_review[result]", value: "approved", class: "btn btn-primary flex-1 bg-bp-success border-bp-success" %>
-        <%= f.button "Return", type: "submit", name: "design_review[result]", value: "returned", class: "btn btn-primary flex-1 bg-bp-warning border-bp-warning" %>
-        <%= f.button "Permanently Reject", type: "submit", name: "design_review[result]", value: "rejected", class: "btn btn-primary flex-1 bg-bp-danger border-bp-danger" %>
-        <%= link_to "Skip", admin_next_design_review_path(after: @project.id, ysws_type: params[:ysws_type]), class: "btn btn-outline flex-1" %>
-      </div>
-    <% end %>
     </fieldset>
   <% end %>
 </section>

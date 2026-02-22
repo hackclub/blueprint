@@ -117,7 +117,7 @@ class Project < ApplicationRecord
   enum :project_type, {
     custom: "custom",
     led: "led"
-  }
+  }, prefix: true
 
   enum :review_status, {
     awaiting_idv: "awaiting_idv",
