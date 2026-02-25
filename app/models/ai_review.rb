@@ -1,3 +1,33 @@
+# == Schema Information
+#
+# Table name: ai_reviews
+#
+#  id                :bigint           not null, primary key
+#  analysis          :jsonb
+#  completed_at      :datetime
+#  completion_tokens :integer
+#  error_message     :text
+#  model_used        :string
+#  prompt_tokens     :integer
+#  raw_response      :text
+#  review_phase      :string           not null
+#  started_at        :datetime
+#  status            :string           default("queued"), not null
+#  total_tokens      :integer
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  project_id        :bigint           not null
+#
+# Indexes
+#
+#  index_ai_reviews_on_project_id                   (project_id)
+#  index_ai_reviews_on_project_id_and_review_phase  (project_id,review_phase)
+#  index_ai_reviews_on_status                       (status)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (project_id => projects.id)
+#
 class AiReview < ApplicationRecord
   belongs_to :project
 

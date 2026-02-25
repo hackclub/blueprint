@@ -90,7 +90,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_18_172856) do
   create_table "ai_reviews", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.string "review_phase", null: false
-    t.string "status", default: "pending", null: false
+    t.string "status", default: "queued", null: false
     t.jsonb "analysis", default: {}
     t.text "raw_response"
     t.text "error_message"

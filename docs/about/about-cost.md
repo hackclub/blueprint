@@ -1,6 +1,7 @@
 | title       | About cost                            |
 | ----------- | ------------------------------------- |
 | description | A quick not about Hack Club and cost. |
+| priority    | 4                                     |
 
 
 # The Relationship Between Hack Club and Cost

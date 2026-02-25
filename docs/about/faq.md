@@ -1,6 +1,7 @@
 | title       | FAQ                                        |
 | ----------- | ------------------------------------------ |
 | description | Frequently asked questions about Blueprint |
+| priority    | 5                                          |
 
 ##### FAQ
 
@@ -10,15 +11,20 @@
 
 Currently, the end-date of Blueprint is March 31st, 2026. You'll have time afterwards to spend your tickets.
 
-### What kind of projects can I make?
+## What are tickets? How do I earn them?
+
+Tickets reward you for the effort spent on building the project.
+
+<span class="text-bp-warning">If you requested a grant, you get 8 to 10 tickets per hour of hands-on work after you get your grant, depending on the tier. This could be assembling, fixing CAD, etc.<br>If you didn't request a grant, you get 8 to 10 tickets per hour of all the hands-on time you spent on your project, depending on the tier! *You must actually build the project for this to count*</span>
+
+Your building time must be accurately logged in your journal. And we may adjust your ticket amount based on the quality of your final build.
+
+You can spend tickets in the [tool bag](/toolbag) to get tools and parts for your next project. The more tickets you have, the better stuff you can get.
+
+
+## What kind of projects can I make?
 
 You can make anything related to hardware where you put majority of the work in making the hardware side of the project. This includes things like keyboards, 3D printers and custom pcbs. Projects like home servers where you are mainly working on the software aspect are not allowed for Blueprint. If you are ever unsure of what your project may be considered as, ask in #blueprint on the Hack Club slack
-
-## How can I earn tickets?
-
-Project grants are awarded on quality rather than hours spent. However, if you track your time building your project after getting your grant (or all the time if you don't need a grant), you will be awarded with tickets which can be redeemed at the [toolbag](/toolbag). If your project doesn't have a lot of in-person build time, you will have fewer tickets awarded. One way to get more tickets for example is to get PCB + Components and hand-solder rather than just getting PCBA.
-
-Tickets are rewarded based on the effort you spent BUILDING your project, not the time spent DESIGNING it!
 
 
 ## How long may reviews take?

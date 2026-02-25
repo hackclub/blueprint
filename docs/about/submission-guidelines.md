@@ -1,23 +1,15 @@
-| title       | Submission guidelines                              |
+| title       | Submit your project                         |
 | ----------- | -------------------------------------------------- |
 | description | Guidelines for submitting your project to the site |
-| priority    | 1                                                  |
+| priority    | 3                                                  |
 
-# Submission guidelines! 
+# Submission requirements!
 
-Here's everything you need to know to get your project approved!
+Here's everything you need to know to get your project approved! **Before going through this checklist, you should've read the [project guidelines](/about/project-guidelines)**
 
-The goal of Blueprint is to get you, yes *you* creating **shipped** projects. It is the *only* thing we check for - we try not to have any unnecessary / arbitrary requirements.
-
-**Shipping your project is the process of making it usable & understanding for other people.** It means that someone should be able to look at your README.md file and know *exactly* what they need to do to build & use your project from scratch.
-
-This is really important! It makes sure that your project is actually real and exists in the world, and not just as a file on your computer.
-
-*A good read on this can be found here: [what is shipping?](/resources/shipping)*
+The goal of Blueprint is to get you creating **shipped** projects. It is the *only* thing we check for - we try not to have any unnecessary / arbitrary requirements.
 
 **The following is a list of hard requirements from us, missing any of these will automatically get your project returned**
-
-Keep in mind that these are a *minimum*, and you're encouraged to go above and beyond! Add a 3D render, custom logo, and more - you might just get something special :)
 
 *any questions? ask in [#blueprint!](https://hackclub.enterprise.slack.com/archives/C083S537USC)*
 
