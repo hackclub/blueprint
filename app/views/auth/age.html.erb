@@ -47,8 +47,8 @@
             <p>19 and older? You can still join and refer a teen for a chance to win a GPU.</p>
           </div>
           
-          <%= form_with url: age_verification_path, method: :post, class: "w-full space-y-6" do |f| %>
-            <div class="space-y-2" data-controller="age-warning">
+          <%= form_with url: age_verification_path, method: :post, class: "w-full space-y-6", data: { controller: "age-warning", action: "submit->age-warning#preventSubmit" } do |f| %>
+            <div class="space-y-2">
               <label for="birthday" class="block text-lg font-medium text-center">When's your birthday?</label>
               <div class="relative w-full flex flex-col items-center">
                 <%= f.date_field :birthday, 

@@ -19,4 +19,10 @@ export default class extends Controller {
       this.warningTarget.classList.add("hidden")
     }
   }
+
+  preventSubmit(event) {
+    if (!this.warningTarget.classList.contains("hidden")) {
+      event.preventDefault()
+    }
+  }
 }
