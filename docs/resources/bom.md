@@ -2,7 +2,7 @@
 | ----------- | ---------------------------------- |
 | description | How to make a Bill of Materials |
 
-# Let's Design a Bill of Mareials!
+# Let's Design a Bill of Materials!
 ---
 > As you create hardware projects for Blueprint, you will be required to include a BOM, or Bill of Materials, in .csv format. If you have any questions or suggestions, reach out in #blueprint-support or DM @Tanishq Goyal!
 
