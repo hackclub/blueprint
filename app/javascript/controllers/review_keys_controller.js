@@ -81,6 +81,13 @@ export default class extends Controller {
     }
   }
 
+  toggleTheme() {
+    const current = this.element.dataset.srTheme || "dark"
+    const next = current === "dark" ? "light" : "dark"
+    this.element.dataset.srTheme = next
+    document.cookie = `sr_theme=${next}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`
+  }
+
   focusAtEnd(el) {
     el.focus()
     const len = el.value.length

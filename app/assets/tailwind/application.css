@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where([data-sr-theme=dark], [data-sr-theme=dark] *));
 
 @theme {
     --color-bp-lighter: #344b6a;
