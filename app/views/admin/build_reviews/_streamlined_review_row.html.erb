@@ -1,0 +1,76 @@
+<%# Locals: review, frozen_fields (hash), override_fields (hash) %>
+<div class="px-3 py-2.5 space-y-2">
+
+  <%# Header row: badges + reviewer + timestamp %>
+  <div class="flex items-center justify-between gap-2 flex-wrap">
+    <div class="flex items-center gap-1.5 flex-wrap">
+      <% case review.result
+        when "approved" %>
+        <span class="text-xs px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">Approved</span>
+      <% when "returned" %>
+        <span class="text-xs px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800">Return</span>
+      <% when "rejected" %>
+        <span class="text-xs px-1.5 py-0.5 rounded bg-red-950 text-red-400 border border-red-800">Rejected</span>
+      <% end %>
+      <% if review.invalidated? %>
+        <span class="text-xs px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-500 border border-zinc-700">Outdated</span>
+      <% end %>
+      <% if review.admin_review? %>
+        <span class="text-xs px-1.5 py-0.5 rounded bg-zinc-800 text-amber-500 border border-zinc-700">Admin</span>
+      <% end %>
+      <span class="text-xs text-zinc-400"><%= User.find(review.reviewer_id).display_name %></span>
+    </div>
+    <span class="text-xs text-zinc-600 shrink-0"><%= review.created_at.strftime("%b %-d, %-I:%M %p") %></span>
+  </div>
+
+  <%# Reason %>
+  <% if review.reason.present? %>
+    <div data-controller="text-expander">
+      <p class="text-xs text-zinc-500 mb-0.5">Reason</p>
+      <p class="text-sm text-zinc-300 leading-relaxed overflow-hidden"
+         style="max-height: 3rem"
+         data-text-expander-target="content"><%= review.reason %></p>
+      <button class="text-xs text-blue-400 hover:text-blue-300"
+              data-text-expander-target="toggle"
+              data-action="click->text-expander#toggle">more</button>
+    </div>
+  <% end %>
+
+  <%# Feedback %>
+  <% if review.feedback.present? %>
+    <div data-controller="text-expander">
+      <p class="text-xs text-zinc-500 mb-0.5">Feedback</p>
+      <p class="text-sm text-zinc-300 leading-relaxed overflow-hidden"
+         style="max-height: 3rem"
+         data-text-expander-target="content"><%= review.feedback %></p>
+      <button class="text-xs text-blue-400 hover:text-blue-300"
+              data-text-expander-target="toggle"
+              data-action="click->text-expander#toggle">more</button>
+    </div>
+  <% end %>
+
+  <%# Overrides (only show present values) %>
+  <% present_overrides = override_fields.select { |_, v| v.present? } %>
+  <% if present_overrides.any? %>
+    <p class="text-xs text-zinc-500">
+      <%= present_overrides.map { |k, v| "#{k}: #{v}" }.join(" | ") %>
+    </p>
+  <% end %>
+
+  <%# Frozen data %>
+  <% present_frozen = frozen_fields.select { |_, v| v.present? } %>
+  <% if present_frozen.any? %>
+    <p class="text-xs text-zinc-600">
+      <%= present_frozen.map { |k, v| "#{k}: #{v}" }.join(" | ") %>
+    </p>
+  <% end %>
+
+  <%# Note to reviewer (collapsible) %>
+  <% if review.frozen_reviewer_note.present? %>
+    <details class="text-xs">
+      <summary class="text-zinc-500 cursor-pointer hover:text-zinc-300 transition-colors">Note to reviewer</summary>
+      <p class="mt-1 text-zinc-400 leading-relaxed"><%= review.frozen_reviewer_note %></p>
+    </details>
+  <% end %>
+
+</div>

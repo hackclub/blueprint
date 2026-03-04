@@ -1,2 +1,3 @@
 shared:
   whitelist_emails: Whitelist emails for beta launch
+  streamlined_review_ui: Enable experimental streamlined build review interface for reviewers

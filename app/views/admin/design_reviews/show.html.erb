@@ -1,3 +1,7 @@
+<% if Flipper.enabled?(:streamlined_review_ui, current_user) %>
+  <%= render "streamlined_show", project: @project, design_review: @design_review,
+      ai_review: @ai_review, claimed_by_other: @claimed_by_other %>
+<% else %>
 <section class="space-y-6">
   <% if @claimed_by_other %>
     <div class="bg-bp-warning/20 border-2 border-bp-warning text-bp-warning p-4 rounded">
@@ -278,3 +282,4 @@
     </fieldset>
   <% end %>
 </section>
+<% end %>

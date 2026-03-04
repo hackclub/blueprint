@@ -108,6 +108,8 @@ class Admin::UsersController < Admin::ApplicationController
 
   def update_internal_notes
     @user = User.find(params[:id])
+    streamlined = params[:user][:streamlined].present?
+    notes_partial = streamlined ? "admin/users/user_notes_form_streamlined" : "admin/users/user_notes_form"
 
     frozen_notes = params[:user][:frozen_internal_notes].presence
     current_notes = @user.internal_notes.presence
@@ -132,7 +134,7 @@ class Admin::UsersController < Admin::ApplicationController
         format.html { redirect_to admin_user_path(@user), notice: "Internal notes updated successfully" }
         format.turbo_stream do
           flash.now[:notice] = "Internal notes updated successfully"
-          render turbo_stream: turbo_stream.replace("user_notes_#{@user.id}", partial: "admin/users/user_notes_form", locals: { user: @user })
+          render turbo_stream: turbo_stream.replace("user_notes_#{@user.id}", partial: notes_partial, locals: { user: @user })
         end
       end
     else
@@ -140,7 +142,7 @@ class Admin::UsersController < Admin::ApplicationController
         format.html { render :show, status: :unprocessable_entity }
         format.turbo_stream do
           flash.now[:alert] = "Failed to update internal notes"
-          render turbo_stream: turbo_stream.replace("user_notes_#{@user.id}", partial: "admin/users/user_notes_form", locals: { user: @user })
+          render turbo_stream: turbo_stream.replace("user_notes_#{@user.id}", partial: notes_partial, locals: { user: @user })
         end
       end
     end

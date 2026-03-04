@@ -1,0 +1,19 @@
+<%= turbo_frame_tag "user_notes_#{user.id}" do %>
+  <% if flash[:notice] %>
+    <div class="mb-1.5 px-2 py-1 rounded text-xs bg-emerald-950 border border-emerald-800 text-emerald-400"><%= flash[:notice] %></div>
+  <% end %>
+  <% if flash[:alert] %>
+    <div class="mb-1.5 px-2 py-1 rounded text-xs bg-red-950 border border-red-800 text-red-400"><%= flash[:alert] %></div>
+  <% end %>
+  <%= form_with model: user, url: update_internal_notes_admin_user_path(user), method: :patch, html: { class: "space-y-1.5" } do |f| %>
+    <%= f.hidden_field :frozen_internal_notes, value: user.internal_notes %>
+    <%= f.hidden_field :streamlined, value: "1" %>
+    <%= f.text_area :internal_notes,
+          rows: 2,
+          placeholder: "Internal notes about this user...",
+          value: user.internal_notes,
+          class: "w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-600 resize-y" %>
+    <%= f.submit "Save",
+          class: "px-2 py-1 rounded text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border border-zinc-700 transition-colors cursor-pointer" %>
+  <% end %>
+<% end %>

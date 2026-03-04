@@ -1,0 +1,422 @@
+<%# Streamlined reviewer UI — zinc/shadcn dark theme, independent of site design system %>
+<%# Flipper flag: streamlined_review_ui (per-user) %>
+
+<div class="flex flex-col bg-zinc-950 text-zinc-50" style="height: calc(100vh - 4rem); overflow: hidden;">
+
+  <%# ─── Sticky Navbar ─────────────────────────────────────────────── %>
+  <nav class="flex items-center justify-between px-4 py-2 bg-zinc-900 border-b border-zinc-800 shrink-0 gap-4">
+    <div class="flex items-center gap-2">
+      <%= link_to "End Session", admin_build_reviews_path,
+            class: "px-3 py-1.5 rounded text-sm font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-colors" %>
+      <%= link_to "Skip", admin_next_build_review_path(after: project.id, ysws_type: params[:ysws_type]),
+            class: "px-3 py-1.5 rounded text-sm font-medium hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors" %>
+    </div>
+
+    <div class="flex-1 text-center">
+      <%= link_to "#{project.title} (##{project.id})", project_path(project),
+            target: "_blank",
+            class: "text-sm font-medium text-zinc-200 hover:text-blue-400 transition-colors" %>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <%= link_to "See User", admin_user_path(project.user),
+            target: "_blank",
+            class: "px-3 py-1.5 rounded text-sm font-medium hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-700 transition-colors" %>
+      <%= link_to "HCB",
+            "https://hcb.hackclub.com/ysws-blueprint/card_grants/card_overview?q=#{ERB::Util.url_encode(project.user.email)}&event_id=ysws-blueprint",
+            target: "_blank",
+            class: "px-3 py-1.5 rounded text-sm font-medium hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-700 transition-colors" %>
+      <% if project.build_slack_message.present? %>
+        <%= link_to "Slack", project.build_slack_message,
+              target: "_blank",
+              class: "px-3 py-1.5 rounded text-sm font-medium hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-700 transition-colors" %>
+      <% end %>
+      <% if project.repo_link.present? %>
+        <%= link_to "Repo", project.repo_link,
+              target: "_blank",
+              class: "px-3 py-1.5 rounded text-sm font-medium hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-700 transition-colors" %>
+      <% end %>
+    </div>
+  </nav>
+
+  <%# ─── Two-column body ───────────────────────────────────────────── %>
+  <div class="flex flex-1 min-h-0 lg:flex-row flex-col">
+
+    <%# ── Left column: project info ─────────────────────────────────── %>
+    <div class="flex-1 overflow-y-auto p-4 space-y-3 border-r border-zinc-800">
+
+      <%# Project overview card %>
+      <div class="rounded-md border border-zinc-800 bg-zinc-900 overflow-hidden">
+        <div class="flex">
+          <%# Left: info %>
+          <div class="flex-1 flex flex-col divide-y divide-zinc-800 min-w-0">
+            <%# Title + description %>
+            <div class="p-3 space-y-1" data-controller="text-expander">
+              <h1 class="text-base font-semibold text-zinc-100 leading-snug">
+                <%= link_to project.title, admin_project_path(project), class: "hover:text-blue-400 transition-colors" %>
+              </h1>
+              <% if project.description.present? %>
+                <div class="relative">
+                  <p class="text-sm text-zinc-400 leading-relaxed overflow-hidden"
+                     style="max-height: 4.5rem"
+                     data-text-expander-target="content">
+                    <%= project.description %>
+                  </p>
+                  <button class="text-xs text-blue-400 hover:text-blue-300 mt-0.5"
+                          data-text-expander-target="toggle"
+                          data-action="click->text-expander#toggle">
+                    more
+                  </button>
+                </div>
+              <% end %>
+              <p class="text-xs text-zinc-500">
+                By
+                <span class="text-zinc-300"><%= project.user.display_name %></span>
+                &middot; <%= project.created_at.strftime("%b %d, %Y") %>
+                <% if project.ysws.present? %>
+                  &middot; <span class="text-zinc-300"><%= project.ysws %></span>
+                <% end %>
+              </p>
+            </div>
+
+            <%# Stats row: tier | funding | hours %>
+            <div class="grid grid-cols-3 divide-x divide-zinc-800">
+              <div class="px-3 py-2">
+                <p class="text-xs text-zinc-500 mb-0.5">Tier</p>
+                <% if project.tier.present? %>
+                  <% tier_color = case project.tier.to_s
+                    when "1" then "bg-red-950 text-red-400 border-red-800"
+                    when "2" then "bg-amber-950 text-amber-400 border-amber-800"
+                    when "3" then "bg-emerald-950 text-emerald-400 border-emerald-800"
+                    else "bg-zinc-800 text-zinc-400 border-zinc-700"
+                    end %>
+                  <span class="text-xs px-1.5 py-0.5 rounded border font-mono <%= tier_color %>">T<%= project.tier %></span>
+                <% else %>
+                  <span class="text-sm text-zinc-500">—</span>
+                <% end %>
+              </div>
+              <div class="px-3 py-2">
+                <p class="text-xs text-zinc-500 mb-0.5">Requesting</p>
+                <% if project.funding_needed_cents.present? && project.funding_needed_cents > 0 %>
+                  <p class="text-sm text-zinc-200 font-mono">$<%= sprintf("%.2f", project.funding_needed_cents / 100.0) %></p>
+                <% else %>
+                  <p class="text-sm text-zinc-500">—</p>
+                <% end %>
+              </div>
+              <div class="px-3 py-2">
+                <p class="text-xs text-zinc-500 mb-0.5">Hours</p>
+                <p class="text-sm text-zinc-200 font-mono"><%= project.hours_since_last_review.round(2) %>h</p>
+              </div>
+            </div>
+
+            <%# Links row (only if repo or demo present) %>
+            <% if project.repo_link.present? || project.demo_link.present? %>
+              <div class="<%= (project.repo_link.present? && project.demo_link.present?) ? 'grid grid-cols-2 divide-x divide-zinc-800' : 'px-3 py-2' %>">
+                <% if project.repo_link.present? %>
+                  <div class="px-3 py-2">
+                    <p class="text-xs text-zinc-500 mb-0.5">Repository</p>
+                    <%= link_to project.repo_link, project.repo_link, target: "_blank",
+                          class: "text-xs text-blue-400 hover:text-blue-300 truncate block transition-colors" %>
+                  </div>
+                <% end %>
+                <% if project.demo_link.present? %>
+                  <div class="px-3 py-2">
+                    <p class="text-xs text-zinc-500 mb-0.5">Demo</p>
+                    <%= link_to project.demo_link, project.demo_link, target: "_blank",
+                          class: "text-xs text-blue-400 hover:text-blue-300 truncate block transition-colors" %>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+
+          <%# Right: banner image %>
+          <% if project.display_banner %>
+            <div class="w-48 shrink-0 border-l border-zinc-800">
+              <%= image_tag url_for(project.display_banner),
+                    class: "w-full h-full object-contain bg-zinc-950" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%# Previous Reviews (collapsible) %>
+      <% design_reviews = project.design_reviews.order(created_at: :desc)
+         build_reviews_list = project.build_reviews.order(created_at: :desc)
+         review_count = design_reviews.count + build_reviews_list.count %>
+      <% if review_count > 0 %>
+        <details class="group rounded-md border border-zinc-800 bg-zinc-900">
+          <summary class="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-zinc-800 rounded-md transition-colors list-none">
+            <span class="text-sm text-zinc-300 font-medium">Previous Reviews (<%= review_count %>)</span>
+            <span class="text-zinc-500 group-open:rotate-90 transition-transform text-xs">▶</span>
+          </summary>
+          <div class="border-t border-zinc-800">
+            <% if design_reviews.any? %>
+              <div class="px-3 py-2 bg-zinc-950/50">
+                <p class="text-xs uppercase tracking-widest text-zinc-600 font-medium">Design Reviews</p>
+              </div>
+              <% design_reviews.each_with_index do |review, i| %>
+                <%= render "streamlined_review_row", review: review, frozen_fields: {
+                  "Funding" => review.frozen_funding_needed_cents.present? ? "$#{sprintf("%.2f", review.frozen_funding_needed_cents / 100.0)}" : nil,
+                  "Tier" => review.frozen_tier,
+                  "Hours" => review.frozen_duration_seconds.present? ? "#{(review.frozen_duration_seconds / 3600.0).round(2)}h" : nil,
+                  "Entries" => review.frozen_entry_count
+                }, override_fields: {
+                  "Grant override" => review.grant_override_cents.present? ? "$#{sprintf("%.2f", review.grant_override_cents / 100.0)}" : nil,
+                  "Hours override" => review.hours_override,
+                  "Tier override" => review.tier_override.present? ? "T#{review.tier_override}" : nil
+                } %>
+                <% unless i == design_reviews.count - 1 %>
+                  <hr class="border-zinc-800">
+                <% end %>
+              <% end %>
+            <% end %>
+            <% if design_reviews.any? && build_reviews_list.any? %>
+              <hr class="border-zinc-700">
+            <% end %>
+            <% if build_reviews_list.any? %>
+              <div class="px-3 py-2 bg-zinc-950/50">
+                <p class="text-xs uppercase tracking-widest text-zinc-600 font-medium">Build Reviews</p>
+              </div>
+              <% build_reviews_list.each_with_index do |review, i| %>
+                <%= render "streamlined_review_row", review: review, frozen_fields: {
+                  "Tier" => review.frozen_tier.present? ? "T#{review.frozen_tier}" : nil,
+                  "Hours" => review.frozen_duration_seconds.present? ? "#{(review.frozen_duration_seconds / 3600.0).round(2)}h" : nil,
+                  "Entries" => review.frozen_entry_count
+                }, override_fields: {
+                  "Hours override" => review.hours_override,
+                  "Tier override" => review.tier_override.present? ? "T#{review.tier_override}" : nil,
+                  "Multiplier" => review.ticket_multiplier,
+                  "Offset" => review.ticket_offset.present? && review.ticket_offset != 0 ? review.ticket_offset : nil
+                } %>
+                <% unless i == build_reviews_list.count - 1 %>
+                  <hr class="border-zinc-800">
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
+        </details>
+      <% end %>
+
+      <%# Note from Author %>
+      <% if project.reviewer_note.present? %>
+        <div class="rounded-md border border-zinc-800 bg-zinc-900 p-3" data-controller="text-expander">
+          <p class="text-xs uppercase tracking-widest text-zinc-600 font-medium mb-2">Note from Author</p>
+          <div class="relative">
+            <p class="text-sm text-zinc-300 leading-relaxed overflow-hidden"
+               style="max-height: 4.5rem"
+               data-text-expander-target="content">
+              <%= project.reviewer_note %>
+            </p>
+            <button class="text-xs text-blue-400 hover:text-blue-300 mt-0.5"
+                    data-text-expander-target="toggle"
+                    data-action="click->text-expander#toggle">
+              more
+            </button>
+          </div>
+        </div>
+      <% end %>
+
+      <%# Journal %>
+      <% entries = project.journal_entries_since_last_review
+         entry_count = entries.count
+         total_h = (entries.sum(:duration_seconds) / 3600.0).round(2)
+         avg_h = entry_count > 0 ? (entries.average(:duration_seconds).to_f / 3600.0).round(2) : 0
+         max_h = entry_count > 0 ? (entries.maximum(:duration_seconds).to_f / 3600.0).round(2) : 0
+         min_h = entry_count > 0 ? (entries.minimum(:duration_seconds).to_f / 3600.0).round(2) : 0 %>
+      <details class="group rounded-md border border-zinc-800 bg-zinc-900">
+        <summary class="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-zinc-800 rounded-md transition-colors list-none">
+          <span class="text-sm text-zinc-300">
+            Journal
+            <span class="text-zinc-500 font-normal">
+              &nbsp;|&nbsp;Count: <%= entry_count %>
+              &nbsp;|&nbsp;Total: <%= total_h %>h
+              <% if entry_count > 0 %>
+                &nbsp;|&nbsp;Avg: <%= avg_h %>h
+                &nbsp;|&nbsp;Range: <%= min_h %>h&nbsp;&ndash;&nbsp;<%= max_h %>h
+              <% end %>
+            </span>
+          </span>
+          <span class="text-zinc-500 group-open:rotate-90 transition-transform text-xs">▶</span>
+        </summary>
+        <div class="border-t border-zinc-800 p-3">
+          <div class="prose prose-sm prose-invert max-w-none markdown">
+            <% base_url = Rails.application.routes.default_url_options[:host] || "localhost:3000" %>
+            <%= sanitize_marksmith_html(Marksmith::Renderer.new(body: project.generate_journal(true), base_url: "http://#{base_url}").render) %>
+          </div>
+        </div>
+      </details>
+
+      <%# Cart Screenshots %>
+      <% if project.cart_screenshots.attached? %>
+        <details class="group rounded-md border border-zinc-800 bg-zinc-900">
+          <summary class="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-zinc-800 rounded-md transition-colors list-none">
+            <span class="text-sm text-zinc-300">
+              Cart Screenshots
+              <% if project.funding_needed_cents.present? && project.funding_needed_cents > 0 %>
+                <span class="text-zinc-500">&nbsp;|&nbsp;Requesting: $<%= sprintf("%.2f", project.funding_needed_cents / 100.0) %></span>
+              <% end %>
+            </span>
+            <span class="text-zinc-500 group-open:rotate-90 transition-transform text-xs">▶</span>
+          </summary>
+          <div class="border-t border-zinc-800 p-3 grid grid-cols-2 gap-3">
+            <% project.cart_screenshots.each do |screenshot| %>
+              <%= link_to url_for(screenshot), target: "_blank" do %>
+                <%= image_tag url_for(screenshot),
+                      class: "w-full rounded border border-zinc-800 object-contain bg-zinc-950" %>
+              <% end %>
+            <% end %>
+          </div>
+        </details>
+      <% end %>
+
+    </div>
+
+    <%# ── Right column: actions ─────────────────────────────────────── %>
+    <div class="lg:w-80 shrink-0 overflow-y-auto border-t lg:border-t-0 lg:border-l border-zinc-800 bg-zinc-950">
+
+      <%# Claimed warning %>
+      <% if claimed_by_other %>
+        <div class="m-3 p-3 rounded-md border border-amber-800 bg-amber-950/50 text-sm">
+          <p class="font-medium text-amber-400">Claimed by <%= project.build_review_claimed_by.display_name %></p>
+          <p class="text-amber-500/80 text-xs mt-0.5">Expires ~<%= distance_of_time_in_words(project.build_review_claimed_at + 20.minutes, Time.current) %>. Form disabled.</p>
+          <div class="mt-2">
+            <%= link_to "Skip to Next", admin_next_build_review_path(after: project.id),
+                  class: "text-xs px-2 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-colors" %>
+          </div>
+        </div>
+      <% end %>
+
+      <%# User notes %>
+      <div class="p-3 border-b border-zinc-800">
+        <p class="text-xs uppercase tracking-widest text-zinc-600 font-medium mb-2">User Notes</p>
+        <%= turbo_frame_tag "user_notes_#{project.user.id}" do %>
+          <%= form_with model: project.user, url: update_internal_notes_admin_user_path(project.user), method: :patch, html: { class: "space-y-2" } do |f| %>
+            <%= f.hidden_field :frozen_internal_notes, value: project.user.internal_notes %>
+            <%= f.text_area :internal_notes,
+                  rows: 3,
+                  placeholder: "Internal notes about this user...",
+                  value: project.user.internal_notes,
+                  class: "w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-600 resize-y" %>
+            <%= f.submit "Save Notes",
+                  class: "px-3 py-1.5 rounded text-sm font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-colors cursor-pointer" %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <%# Review form %>
+      <div class="p-3">
+        <p class="text-xs uppercase tracking-widest text-zinc-600 font-medium mb-3">Submit Review</p>
+        <fieldset <%= "disabled" if claimed_by_other %> class="space-y-3">
+          <%= form_with model: build_review,
+                url: admin_build_review_create_path(project),
+                method: :post,
+                html: {
+                  class: "space-y-3",
+                  data: {
+                    controller: "build-review-calculator",
+                    build_review_calculator_project_tier_value: project.tier || "null",
+                    build_review_calculator_hours_since_last_review_value: project.hours_since_last_review.round(2)
+                  }
+                } do |f| %>
+            <%= hidden_field_tag :ysws_type, params[:ysws_type] if params[:ysws_type].present? %>
+
+            <%# Overrides: 2-column grid %>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-zinc-500 mb-1">Tier Override</label>
+                <%= f.select :tier_override,
+                      BuildReview.tier_options_with_multipliers,
+                      { include_blank: "T#{project.tier} (default)" },
+                      class: "w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-zinc-600",
+                      data: { build_review_calculator_target: "tier", action: "change->build-review-calculator#tierChanged" } %>
+              </div>
+              <div>
+                <label class="block text-xs text-zinc-500 mb-1">Hours Override</label>
+                <%= f.number_field :hours_override,
+                      step: 0.01,
+                      placeholder: "#{project.hours_since_last_review.round(2)}h",
+                      class: "w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600",
+                      data: { build_review_calculator_target: "hoursOverride", action: "input->build-review-calculator#calculate" } %>
+              </div>
+              <div>
+                <label class="block text-xs text-zinc-500 mb-1">Multiplier</label>
+                <%= f.number_field :ticket_multiplier,
+                      step: 0.01,
+                      placeholder: "Auto",
+                      class: "w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600",
+                      data: { build_review_calculator_target: "multiplier", action: "input->build-review-calculator#calculate" } %>
+              </div>
+              <div>
+                <label class="block text-xs text-zinc-500 mb-1">Offset</label>
+                <%= f.number_field :ticket_offset,
+                      step: 1,
+                      placeholder: "0",
+                      class: "w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600",
+                      data: { build_review_calculator_target: "offset", action: "input->build-review-calculator#calculate" } %>
+              </div>
+            </div>
+
+            <%# Ticket preview %>
+            <div class="rounded border border-emerald-800 bg-emerald-950/30 px-3 py-2">
+              <p class="text-sm font-semibold text-emerald-400" data-build-review-calculator-target="preview">
+                <span data-build-review-calculator-target="tickets">0</span> tickets
+              </p>
+              <p class="text-xs text-zinc-500 mt-0.5">
+                (<span data-build-review-calculator-target="hours"><%= project.hours_since_last_review.round(2) %></span>h
+                &times; 10 &times;
+                <span data-build-review-calculator-target="displayMultiplier">?</span>)
+                + <span data-build-review-calculator-target="displayOffset">0</span>
+              </p>
+            </div>
+
+            <%# Internal reason %>
+            <div>
+              <label class="block text-xs text-zinc-500 mb-1">Internal Reason</label>
+              <%= f.text_area :reason,
+                    rows: 3,
+                    placeholder: "Notes / reason for decision",
+                    class: "w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600 resize-y" %>
+            </div>
+
+            <%# Feedback %>
+            <div>
+              <label class="block text-xs text-zinc-500 mb-1">
+                Feedback <span class="text-zinc-600">(shown to user)</span>
+              </label>
+              <%= f.text_area :feedback,
+                    rows: 3,
+                    placeholder: "Feedback shown to the user",
+                    class: "w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600 resize-y" %>
+            </div>
+
+            <%# Action buttons %>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <%= f.button "Approve",
+                    type: "submit",
+                    name: "build_review[result]",
+                    value: "approved",
+                    class: "px-3 py-2 rounded text-sm font-medium bg-emerald-900 hover:bg-emerald-800 text-emerald-100 border border-emerald-700 transition-colors",
+                    data: { turbo_confirm: "Approve #{project.title}?" } %>
+              <%= f.button "Return",
+                    type: "submit",
+                    name: "build_review[result]",
+                    value: "returned",
+                    class: "px-3 py-2 rounded text-sm font-medium bg-amber-900 hover:bg-amber-800 text-amber-100 border border-amber-700 transition-colors" %>
+              <%= f.button "Reject",
+                    type: "submit",
+                    name: "build_review[result]",
+                    value: "rejected",
+                    class: "px-3 py-2 rounded text-sm font-medium bg-red-900 hover:bg-red-800 text-red-100 border border-red-700 transition-colors",
+                    data: { turbo_confirm: "Permanently reject #{project.title}?" } %>
+              <%= link_to "Skip",
+                    admin_next_build_review_path(after: project.id, ysws_type: params[:ysws_type]),
+                    class: "px-3 py-2 rounded text-sm font-medium text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-colors" %>
+            </div>
+          <% end %>
+        </fieldset>
+      </div>
+
+    </div>
+  </div>
+</div>
