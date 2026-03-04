@@ -23,7 +23,7 @@
   .sr-journal a { color: #2563eb; }
   .sr-journal a:hover { color: #1d4ed8; }
   .sr-journal hr { border-color: #e4e4e7; margin: 0.5rem 0; }
-  .sr-journal img { max-width: 100%; border-radius: 0.2rem; }
+  .sr-journal img { max-width: 100%; max-height: 18rem; object-fit: contain; border-radius: 0.2rem; }
   /* Dark overrides for journal */
   [data-sr-theme=dark] .sr-journal { color: #a1a1aa; }
   [data-sr-theme=dark] .sr-journal h1,[data-sr-theme=dark] .sr-journal h2,[data-sr-theme=dark] .sr-journal h3,[data-sr-theme=dark] .sr-journal h4 { color: #d4d4d8; }
@@ -145,17 +145,31 @@
                     </button>
                   </div>
                 <% end %>
-                <p class="text-xs text-zinc-600 dark:text-zinc-400">
-                  By <img src="<%= project.user.avatar_url %>" alt="" class="inline-block size-4 rounded-sm align-middle mr-0.5">
-                  <span class="text-zinc-700 dark:text-zinc-300"><%= project.user.display_name %></span>
-                  &middot; <%= project.created_at.strftime("%b %d, %Y") %>
-                  <% if project.ysws.present? %>
-                    &middot; <span class="text-zinc-700 dark:text-zinc-300"><%= project.ysws %></span>
+                <div class="flex items-center justify-between gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+                  <span>
+                    By <img src="<%= project.user.avatar_url %>" alt="" class="inline-block size-4 rounded-sm align-middle mr-0.5">
+                    <span class="text-zinc-700 dark:text-zinc-300"><%= project.user.display_name %></span>
+                    &middot; <%= project.created_at.strftime("%b %d, %Y") %>
+                    <% if project.ysws.present? %>
+                      &middot; <span class="text-zinc-700 dark:text-zinc-300"><%= project.ysws %></span>
+                    <% end %>
+                    <% if project.ysws == "hackpad" && project.approx_hour.present? %>
+                      &middot; Self-reported: <span class="text-zinc-700 dark:text-zinc-300"><%= project.approx_hour %>h</span>
+                    <% end %>
+                  </span>
+                  <% if current_user.admin? %>
+                    <% u = project.user
+                       age = u.birthday.present? ? ((Date.current - u.birthday) / 365.25).to_i : nil
+                       location = u.us? ? u.latest_locatable_visit&.region : u.country %>
+                    <% if age || location.present? %>
+                      <span class="shrink-0 text-zinc-500">
+                        <% if age %><span>Age <%= age %></span><% end %>
+                        <% if age && location.present? %> &middot; <% end %>
+                        <% if location.present? %><span><%= location %></span><% end %>
+                      </span>
+                    <% end %>
                   <% end %>
-                  <% if project.ysws == "hackpad" && project.approx_hour.present? %>
-                    &middot; Self-reported: <span class="text-zinc-700 dark:text-zinc-300"><%= project.approx_hour %>h</span>
-                  <% end %>
-                </p>
+                </div>
               </div>
 
               <%# Stats row: tier | funding | hours %>
