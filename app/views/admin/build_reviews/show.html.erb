@@ -9,7 +9,10 @@
     </div>
   <% end %>
   <div class="flex items-center justify-between">
-    <%= render "shared/button", text: "Back", url: admin_build_reviews_path, class: "py-0" %>
+    <div class="flex items-center gap-2">
+      <%= render "shared/button", text: "Back", url: admin_build_reviews_path, class: "py-0" %>
+      <%= link_to "Skip", admin_next_build_review_path(after: @project.id, ysws_type: params[:ysws_type]), class: "btn btn-outline py-0" %>
+    </div>
     <div class="flex items-center gap-2">
       <%= render "shared/button", text: "HCB", url: "https://hcb.hackclub.com/ysws-blueprint/card_grants/card_overview?q=#{ERB::Util.url_encode(@project.user.email)}&event_id=ysws-blueprint", class: "py-0", variant: :outline %>
       <% if current_user&.admin? %>
@@ -284,9 +287,9 @@
       </div>
 
       <div class="flex gap-4">
-        <%= f.button "Approve", type: "submit", name: "build_review[result]", value: "approved", class: "btn btn-primary flex-1 bg-bp-success border-bp-success" %>
+        <%= f.button "Approve", type: "submit", name: "build_review[result]", value: "approved", class: "btn btn-primary flex-1 bg-bp-success border-bp-success", data: { turbo_confirm: "Are you sure you want to approve #{@project.title}?" } %>
         <%= f.button "Return", type: "submit", name: "build_review[result]", value: "returned", class: "btn btn-primary flex-1 bg-bp-warning border-bp-warning" %>
-        <%= f.button "Permanently Reject", type: "submit", name: "build_review[result]", value: "rejected", class: "btn btn-primary flex-1 bg-bp-danger border-bp-danger" %>
+        <%= f.button "Permanently Reject", type: "submit", name: "build_review[result]", value: "rejected", class: "btn btn-primary flex-1 bg-bp-danger border-bp-danger", data: { turbo_confirm: "Are you sure you want to permanently reject #{@project.title}?" } %>
         <%= link_to "Skip", admin_next_build_review_path(after: @project.id, ysws_type: params[:ysws_type]), class: "btn btn-outline flex-1" %>
       </div>
     <% end %>
