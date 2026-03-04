@@ -98,7 +98,7 @@ class Project < ApplicationRecord
       "Is Deleted" => :is_deleted,
       "Needs Funding" => :needs_funding,
       "Print Legion" => :print_legion,
-      "Readme Link" => :readme_link,
+      "Repo Link" => :repo_link,
       "Review Status" => :review_status,
       "Tier" => :tier,
       "Title" => :title,
