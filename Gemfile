@@ -92,6 +92,7 @@ gem "blazer"
 gem "ahoy_matey"
 
 gem "geocoder"
+gem "countries"
 
 gem "disco"
 
