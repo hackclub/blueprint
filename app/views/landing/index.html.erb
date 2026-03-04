@@ -35,7 +35,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0e305b">
     <meta name="darkreader-lock">
-    
+
     <meta property="og:title" content="Hack Club Blueprint">
     <meta property="og:description" content="Learn and build cool hardware projects and get funding to make them real! Ends March 31, 2026.">
     <meta property="og:image" content="<%= image_url("og.jpg") %>">
@@ -44,9 +44,9 @@
     <meta property="og:locale" content="en_US">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    
+
     <link rel="canonical" href="<%= request.original_url %>">
-    
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -76,10 +76,10 @@
         <feBlend in="SourceGraphic" mode="multiply"/>
       </filter>
     </svg>
-    
+
     <%= render "shared/notice" %>
-    
-    
+
+
     <main data-controller="landing" class="relative">
       <div class="fixed top-8 left-0 z-100">
         <a href="https://hackclub.com?utm_source=blueprint" target="_blank">
@@ -106,13 +106,13 @@
 
       <div class="absolute top-0 left-0 right-0 bg-bottom bg-no-repeat bg-cover pointer-events-none select-none -z-10" data-landing-target="heroOutline"
            style="background-image: url('<%= image_path('hero-outline.webp') %>'); mask-image: linear-gradient(170deg, rgba(0,0,0,0) 100%, rgba(0,0,0,1) 100%);">
-           <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0">
+        <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0">
       </div>
 
-    
+
       <div class="relative w-full">
         <img src="<%= image_path('hero.webp') %>" aria-hidden="true" class="top-0 left-0 right-0 min-h-screen opacity-0" fetchpriority="high" decoding="async">
-        
+
         <!-- Hero title -->
         <div class="absolute top-0 left-0 right-0 flex items-center justify-center min-h-screen" data-landing-target="heroContent">
           <div class="w-full max-w-7xl mx-auto px-6 md:px-4">
@@ -122,7 +122,7 @@
                 <div class="text-base md:text-2xl font-rc-full">Hack Club presents...</div>
                 <%= image_tag "blueprint_logo.webp", alt: "Blueprint", class: "mx-auto md:mx-0 w-48 md:w-[28rem] h-auto hidden md:block", fetchpriority: "high", decoding: "async" %>
                 <%= image_tag "blueprint_logo_centered.webp", alt: "Blueprint", class: "w-full max-w-xs mx-auto h-auto md:hidden", fetchpriority: "high", decoding: "async" %>
-                
+
                 <div class="space-y-1 md:space-y-0 text-sm md:text-2xl font-rc-full">
                   <h2 class="hidden md:block mb-2 md:text-3xl">Design a macropad - get it sent from Hack Club for free!</h2>
                   <h2 class="hidden md:block">Or any hardware project up to $400!</h2>
@@ -152,7 +152,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Floating scroll down arrow -->
         <div class="absolute left-0 right-0 bottom-12 flex justify-center z-100 h-20">
           <div class="float-arrow cursor-pointer" onclick="window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })">
@@ -231,7 +231,7 @@
           </div>
         </div>
       </div>
-      
+
       <style>
         @keyframes scroll {
           0% {
@@ -241,20 +241,20 @@
             transform: translateX(-50%);
           }
         }
-        
+
         .animate-scroll {
           animation: scroll 20s linear infinite;
         }
-        
+
         .animate-scroll:hover {
           animation-play-state: paused;
         }
-        
+
         /* Increase all text sizes globally */
         body {
           font-size: 1.125rem; /* 18px base instead of 16px */
         }
-        
+
         @media (min-width: 768px) {
           body {
             font-size: 1.25rem; /* 20px on larger screens */
@@ -289,27 +289,27 @@
           <%= render "shared/button", text: "Join Hack Club Community", url: "https://hackclub.com/slack", class: "px-8 py-3 text-lg md:text-xl" %>
         </div>
       </section>
-      
+
       <div class="text-center max-w-4xl mx-auto px-4 py-30">
         <h2 class="text-3xl md:text-5xl font-rc-full mb-4">Already a pro?</h2>
         <p class="text-lg md:text-xl mb-8">Blueprint is for everyone! Get up to $400 USD from Hack Club for *any* hardware project, ranging from mechanical keyboards to 3D printers.</p>
         <div class="flex flex-col items-center space-y-2 text-sm md:text-2xl">
 
-           <div class="space-y-12">
-        <div class="overflow-hidden">
-          <div class="flex h-64 space-x-8 space-y-8 carousel md:h-84">
-            <% @pro_projects.shuffle.each do |project| %>
-              <a href="<%= project[:url] %>" target="_blank" rel="noopener noreferrer" class="flex flex-col w-40 h-full md:w-72 shrink-0 bg-bp-darker" data-carousel-target="item">
-                <div class="h-20 bg-gray-200 bg-center bg-no-repeat bg-cover md:h-40" style="background-image: url('<%= image_path(project[:image]) %>')"></div>
-                <div class="flex flex-col p-2 space-y-2 md:p-4 grow">
-                  <p class="text-base font-bold md:text-xl"><%= project[:title] %> <span class="text-xs">by <%= project[:author] %></span></p>
-                  <p class="text-xs md:text-base"><%= project[:description] %></p>
-                </div>
-              </a>
-            <% end %>
+          <div class="space-y-12">
+            <div class="overflow-hidden">
+              <div class="flex h-64 space-x-8 space-y-8 carousel md:h-84">
+                <% @pro_projects.shuffle.each do |project| %>
+                  <a href="<%= project[:url] %>" target="_blank" rel="noopener noreferrer" class="flex flex-col w-40 h-full md:w-72 shrink-0 bg-bp-darker" data-carousel-target="item">
+                    <div class="h-20 bg-gray-200 bg-center bg-no-repeat bg-cover md:h-40" style="background-image: url('<%= image_path(project[:image]) %>')"></div>
+                    <div class="flex flex-col p-2 space-y-2 md:p-4 grow">
+                      <p class="text-base font-bold md:text-xl"><%= project[:title] %> <span class="text-xs">by <%= project[:author] %></span></p>
+                      <p class="text-xs md:text-base"><%= project[:description] %></p>
+                    </div>
+                  </a>
+                <% end %>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
           <p class="text-lg uppercase md:text-3xl font-rc-full mt-10">Get started</p>
           <div class="flex" data-controller="email-redirect" data-email-redirect-hca-signup-url-value="<%= hca_signup_url %>" data-email-redirect-client-id-value="<%= ENV['IDENTITY_VAULT_CLIENT_ID'] %>" data-email-redirect-callback-url-value="<%= hca_callback_url %>" data-email-redirect-scope-value="basic_info address">
             <input type="email" data-email-redirect-target="input" class="text-left md:py-1.5 py-1 px-2 md:px-4 appearance-none outline-0 border-2 border-r-0" placeholder="orpheus@hackclub.com" data-action="keydown->email-redirect#checkEnter" />
@@ -318,7 +318,6 @@
         </div>
       </div>
 
-      
 
       <!-- Divider Image -->
       <div class="relative z-[60] w-full py-8 md:py-16 overflow-hidden">
@@ -372,7 +371,9 @@
               Hack Club is a 501(c)(3) nonprofit and network of 60k+ technical high schoolers. We believe you learn best by building so we're creating community and providing grants so you can make awesome projects. In the past few years, we've
               <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://summer.hackclub.com/">partnered with GitHub to run Summer of Making</a>,
               <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://github.com/hackclub/the-hacker-zephyr">hosted the world's longest hackathon on land</a>, and
-              <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://www.youtube.com/watch?v=QvCoISXfcE8">ran Canada's largest high school hackathon</a>.<br><br>At Hack Club, students aren't just learning, they're shipping.
+              <a target="_blank" rel="noopener noreferrer" class="underline hover:text-bp-warning transition-colors" href="https://www.youtube.com/watch?v=QvCoISXfcE8">ran Canada's largest high school hackathon</a>.<br>
+              <br>
+              At Hack Club, students aren't just learning, they're shipping.
             </p>
             <div class="flex flex-wrap gap-x-16 gap-y-8">
               <div class="flex flex-col">
@@ -405,8 +406,8 @@
             </div>
           </div>
         </div>
-    <% end %>
+      <% end %>
     </footer>
-    </div>
-  </body>
+  </div>
+</body>
 </html>

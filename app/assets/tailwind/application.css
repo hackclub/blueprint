@@ -506,6 +506,17 @@
     }
 }
 
+.markdown-sm {
+    p {
+        @apply text-sm;
+        @apply my-2;
+    }
+    ul,
+    ol {
+        @apply text-sm;
+    }
+}
+
 /* Marksmith editor overrides to match app theme */
 @layer components {
     /* Increase specificity and force overrides against gem utilities */
