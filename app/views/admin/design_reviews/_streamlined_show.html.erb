@@ -472,7 +472,7 @@
             <%# Internal reason %>
             <div>
               <label class="block text-xs text-zinc-400 mb-1">
-                Justification (Internal) <kbd class="font-mono px-1 py-px rounded border border-zinc-700 bg-zinc-900 text-zinc-600" style="font-size:0.6rem">j</kbd>
+                Justification (Internal) <kbd class="font-mono px-1 py-px rounded border border-zinc-700 bg-zinc-900 text-zinc-600" style="font-size:0.6rem">⌘J</kbd>
               </label>
               <%= f.text_area :reason,
                     rows: 3,
@@ -486,7 +486,7 @@
               <label class="block text-xs text-zinc-400 mb-1">
                 Feedback <span class="text-red-500">*</span>
                 <span class="text-zinc-500">(shown to user)</span>
-                <kbd class="font-mono px-1 py-px rounded border border-zinc-700 bg-zinc-900 text-zinc-600" style="font-size:0.6rem">f</kbd>
+                <kbd class="font-mono px-1 py-px rounded border border-zinc-700 bg-zinc-900 text-zinc-600" style="font-size:0.6rem">⌘F</kbd>
               </label>
               <%= f.text_area :feedback,
                     rows: 3,
@@ -520,7 +520,7 @@
                     class: "px-3 py-2 rounded text-sm font-medium bg-red-900 hover:bg-red-800 text-red-100 border border-red-700 transition-colors flex items-center justify-center gap-1.5",
                     data: { "review-keys-target": "rejectBtn", "review-keys-action": "reject", action: "click->review-keys#buttonClicked" } do %>
                 <span data-review-keys-target="rejectLabelSpan">Perm Reject</span>
-                <kbd class="text-xs font-mono px-1 py-px rounded border border-red-700/40 bg-black/20 text-red-400/60">⌘M</kbd>
+                <kbd class="text-xs font-mono px-1 py-px rounded border border-red-700/40 bg-black/20 text-red-400/60">⌘K</kbd>
               <% end %>
               <%= link_to admin_next_design_review_path(after: project.id, ysws_type: params[:ysws_type]),
                     class: "px-3 py-2 rounded text-sm font-medium text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-colors flex items-center justify-center gap-1.5",

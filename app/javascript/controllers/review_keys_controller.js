@@ -4,13 +4,13 @@ import { Controller } from "@hotwired/stimulus"
 //
 // Single-key (only when not focused in a text field):
 //   r → open repo in new tab        s → open slack thread
-//   o → toggle journal              p → toggle previous reviews
-//   c → toggle cart screenshots     j → focus justification
-//   f → focus feedback              Esc → blur / cancel confirm
+//   o → toggle journal              w → toggle previous reviews
+//   c → toggle cart screenshots     Esc → blur / cancel confirm
 //
-// Cmd/Ctrl (only when not in a text field):
-//   ⌘A → approve (confirm required)     ⌘E → return (immediate)
+// Cmd/Ctrl (active even in text fields):
+//   ⌘P → approve (confirm required)     ⌘E → return (immediate)
 //   ⌘K → reject  (confirm required)     ⌘S → skip
+//   ⌘J → focus justification            ⌘F → focus feedback
 
 export default class extends Controller {
   static targets = [
@@ -57,13 +57,15 @@ export default class extends Controller {
       return
     }
 
-    // Cmd/Ctrl action combos — active even in text fields (preventDefault stops any typing/browser default)
+    // Cmd/Ctrl combos — active even in text fields
     if (e.metaKey || e.ctrlKey) {
       switch (e.key.toLowerCase()) {
         case "p": e.preventDefault(); this.triggerAction("approve"); return
         case "e": e.preventDefault(); this.triggerAction("return");  return
-        case "m": e.preventDefault(); this.triggerAction("reject");  return
+        case "k": e.preventDefault(); this.triggerAction("reject");  return
         case "s": e.preventDefault(); this.triggerAction("skip");    return
+        case "j": if (this.hasJustificationTarget) { e.preventDefault(); this.focusAtEnd(this.justificationTarget) } return
+        case "f": if (this.hasFeedbackTarget)       { e.preventDefault(); this.focusAtEnd(this.feedbackTarget) }      return
       }
       return
     }
@@ -76,8 +78,6 @@ export default class extends Controller {
       case "o": if (this.hasJournalDetailsTarget)     this.journalDetailsTarget.open     = !this.journalDetailsTarget.open;     break
       case "w": if (this.hasReviewsDetailsTarget)     this.reviewsDetailsTarget.open     = !this.reviewsDetailsTarget.open;     break
       case "c": if (this.hasScreenshotsDetailsTarget) this.screenshotsDetailsTarget.open = !this.screenshotsDetailsTarget.open; break
-      case "j": if (this.hasJustificationTarget) { e.preventDefault(); this.focusAtEnd(this.justificationTarget) } break
-      case "f": if (this.hasFeedbackTarget)       { e.preventDefault(); this.focusAtEnd(this.feedbackTarget) }      break
     }
   }
 
