@@ -581,6 +581,7 @@
                 <%= button_to "Move to Build Review",
                       switch_review_phase_admin_project_path(project),
                       method: :post,
+                      data: { turbo_confirm: "Move \"#{project.title}\" to build review? This will change its status from design_pending to build_pending." },
                       class: "w-full px-3 py-1.5 rounded text-xs font-medium text-zinc-600 hover:bg-zinc-100 border border-zinc-300 transition-colors dark:text-zinc-500 dark:hover:bg-zinc-800 dark:border-zinc-700" %>
               </div>
             <% end %>
