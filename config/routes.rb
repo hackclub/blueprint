@@ -102,6 +102,7 @@ Rails.application.routes.draw do
   root "landing#index"
   get "landing" => "landing#authed", as: :landing
 
+  get "countdown" => "countdown#index", as: :countdown
   get "sorry" => "sorry#index", as: :sorry
   get "adult" => "adult#index", as: :adult
 

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blueprint Countdown</title>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background-color: #0e305b;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 50px 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Phantom Sans', ui-sans-serif, system-ui, sans-serif;
+      }
+
+      .countdown-container {
+        text-align: center;
+        color: white;
+      }
+
+      .label {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 1rem;
+      }
+
+      .title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        color: white;
+        margin-bottom: 2.5rem;
+        line-height: 1.1;
+      }
+
+      .timer {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        min-width: 110px;
+        backdrop-filter: blur(4px);
+      }
+
+      .value {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 800;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.02em;
+      }
+
+      .name {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 0.5rem;
+      }
+
+      .ended {
+        font-size: 2rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.7);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="countdown-container">
+      <p class="label">Hack Club</p>
+      <h1 class="title">Blueprint Ends In</h1>
+      <div id="timer" class="timer">
+        <div class="unit">
+          <span class="value" id="days">--</span>
+          <span class="name">Days</span>
+        </div>
+        <div class="unit">
+          <span class="value" id="hours">--</span>
+          <span class="name">Hours</span>
+        </div>
+        <div class="unit">
+          <span class="value" id="minutes">--</span>
+          <span class="name">Minutes</span>
+        </div>
+        <div class="unit">
+          <span class="value" id="seconds">--</span>
+          <span class="name">Seconds</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const target = new Date('2026-03-31T00:00:00');
+
+      function pad(n) {
+        return String(n).padStart(2, '0');
+      }
+
+      function tick() {
+        const now = new Date();
+        const diff = target - now;
+
+        if (diff <= 0) {
+          document.getElementById('timer').innerHTML = '<p class="ended">Blueprint has ended.</p>';
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        document.getElementById('days').textContent = pad(days);
+        document.getElementById('hours').textContent = pad(hours);
+        document.getElementById('minutes').textContent = pad(minutes);
+        document.getElementById('seconds').textContent = pad(seconds);
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    </script>
+  </body>
+</html>
