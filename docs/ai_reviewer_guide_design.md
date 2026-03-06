@@ -12,6 +12,7 @@ This is the primary review phase — checking that the project design is solid b
 - [ ] Contains a screenshot of the PCB (if project has a PCB)
 - [ ] Contains a wiring diagram (if project has wiring that isn't on a PCB and no schematic covers it)
 - [ ] Contains a BOM table with component names, quantities, and purchase links where applicable
+- [ ] README is reasonably formatted — uses headings, sections, or clear structure. A single wall of text or large unbroken paragraph is not acceptable
 
 ## Repository structure
 
@@ -27,15 +28,16 @@ This is the primary review phase — checking that the project design is solid b
 
 ## Design integrity
 
-Use your judgment here. Consult the Oracle if you're genuinely unsure, but gather all context first.
+Use your judgment here. Use ResearchAssistant to look up specs when unsure, and gather all context first.
 
 - [ ] The design looks real and functional, not just cosmetic
 - [ ] PCBs are real circuits with actual components, not empty boards
 - [ ] Wiring makes sense electrically — a mess of wires is not OK
 - [ ] The case/enclosure actually secures components, not just loosely encloses them
 - [ ] The project has a plausible plan for being a real, working thing
+- [ ] The project is buildable as a whole — components, design files, and instructions fit together into something that can plausibly be assembled and work. Unless the project is very simple, the pieces should coherently come together
 
-**Important:** Check images and CAD files directly. Don't infer from filenames alone. Use GetImage, RenderStepFile, ViewKicadSchematic, and ViewKicadPcb to actually look at things. Don't assume — use web search, Oracle, and visual tools to verify when unsure.
+**Important:** Check images and CAD files directly. Don't infer from filenames alone. Use GetImage, RenderStepFile, ViewKicadSchematic, and ViewKicadPcb to actually look at things. Don't assume — use ResearchAssistant and visual tools to verify when unsure.
 
 ## BOM & parts sourcing
 
@@ -70,4 +72,4 @@ See an example of a good journal: https://github.com/qcoral/hardware-docs/blob/m
 
 Use these keys in the `checks` object of your JSON output:
 
-`readme_exists`, `readme_description`, `readme_build_instructions`, `readme_motivation`, `readme_3d_screenshot`, `readme_pcb_screenshot`, `readme_wiring_diagram`, `readme_bom_table`, `bom_csv_with_links`, `case_enclosure`, `step_file`, `cad_source`, `pcb_sources`, `wiring_diagram`, `firmware_present`, `files_organized`, `assembly_plan`, `design_integrity`, `bom_sourcing`, `journal_exists`, `journal_progress`, `journal_images`, `journal_plausible_times`, `journal_multiple_sessions`, `no_ai_content`, `original_design`
+`readme_exists`, `readme_description`, `readme_build_instructions`, `readme_motivation`, `readme_3d_screenshot`, `readme_pcb_screenshot`, `readme_wiring_diagram`, `readme_bom_table`, `readme_formatting`, `bom_csv_with_links`, `case_enclosure`, `step_file`, `cad_source`, `pcb_sources`, `wiring_diagram`, `firmware_present`, `files_organized`, `assembly_plan`, `design_integrity`, `project_buildable`, `bom_sourcing`, `journal_exists`, `journal_progress`, `journal_images`, `journal_plausible_times`, `journal_multiple_sessions`, `no_ai_content`, `original_design`

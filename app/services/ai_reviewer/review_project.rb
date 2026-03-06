@@ -2,7 +2,7 @@ module AiReviewer
   class ReviewProject
     include AiReviewer::GithubClient
 
-    MODEL = "google/gemini-2.5-flash"
+    MODEL = "anthropic/claude-4.5-haiku"
     PROVIDER = :openrouter
     LLM_TIMEOUT = 10.minutes
 
@@ -38,7 +38,7 @@ module AiReviewer
         file_content_tool,
         Tools::GetImage.new(@project, known_paths: known_paths, seen_resources: seen_resources),
         Tools::ResearchAssistant.new(@project),
-        Tools::Oracle.new(@project),
+        # Tools::Oracle.new(@project), # Disabled — kept for potential future use
         Tools::QueryBlueprintDocs.new(@project),
         Tools::QueryHardwareDocs.new(@project),
         Tools::ViewKicadSchematic.new(@project, seen_resources: seen_resources),
@@ -445,9 +445,9 @@ module AiReviewer
     end
 
     # Pricing per million tokens (USD)
-    # gemini-2.5-flash:  $0.30 input, $2.50 output
+    # claude-4.5-haiku:  $0.80 input, $4.00 output (main agent)
     # gpt-5-nano:        $0.05 input, $0.40 output (SubmitResearch, ResearchAssistant)
-    # claude-3.5-haiku:  $1.00 input, $5.00 output (Oracle)
+    # claude-3.5-haiku:  $1.00 input, $5.00 output (Oracle — currently disabled)
     # Bright Data SERP:  $1.50 per 1,000 requests
     def build_cost_breakdown(input_tokens, output_tokens, tools, sr = nil)
       oracle = tools.find { |t| t.is_a?(Tools::Oracle) }
@@ -456,8 +456,8 @@ module AiReviewer
 
       agents = []
 
-      # Main agent (gemini-2.5-flash)
-      main_ai_cost = (input_tokens * 0.30 + output_tokens * 2.50) / 1_000_000.0
+      # Main agent (claude-4.5-haiku)
+      main_ai_cost = (input_tokens * 0.80 + output_tokens * 4.00) / 1_000_000.0
       agents << { name: "main", model: MODEL, input_tokens: input_tokens, output_tokens: output_tokens, ai_cost: main_ai_cost, serp_cost: 0.0 }
 
       # ResearchAssistant calls (gpt-5-nano + SERP)

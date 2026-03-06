@@ -98,13 +98,18 @@ module AiReviewer
 
           ## What counts as sufficient research
 
-          The reviewer should have done MOST of these (not necessarily all):
-          - Read the README
-          - Looked at images (via GetImage), not just noted filenames
-          - Read at least some source code or firmware (via GetFileContent)
-          - Researched key components to understand what they are and whether they're compatible (via ResearchAssistant)
-          - Checked BOM purchase links are live (via CheckLinkValidity)
-          - Their summary shows specific understanding, not vague hand-waving
+          The reviewer MUST have done ALL of these (check the tool call history):
+          - Read the README (via GetFileContent for README.md) — this is mandatory, no exceptions
+          - Looked at at least one image (via GetImage) if images exist in the repo — filenames are not evidence
+          - Read at least one source code or firmware file (via GetFileContent) if the project has code
+          - Researched at least one key component (via ResearchAssistant) to understand what it is and whether it's appropriate
+          - Checked BOM purchase links (via CheckLinkValidity) if a BOM exists
+
+          The reviewer's summary should ALSO demonstrate:
+          - Specific understanding of the project, not vague hand-waving
+          - How key components fit together (voltages, protocols, physical connections) — not just a list of parts
+          - Whether the project is plausibly buildable as a whole, not just individual items checked off
+          - Whether the README is reasonably formatted and parseable (not a wall of text)
 
           ## Important: don't be pedantic
 
@@ -115,6 +120,7 @@ module AiReviewer
           - Don't require the reviewer to check BOM prices — that's for the human reviewer. But they should have used CheckLinkValidity to verify links are live.
           - The reviewer uses CheckLinkValidity for link validation (not ResearchAssistant) — look for CheckLinkValidity calls
           - The reviewer uses ResearchAssistant for web research (which delegates to WebSearch/WebFetch internally) — look for ResearchAssistant calls, not direct WebSearch/WebFetch calls
+          - For very simple projects (single PCB, no enclosure, minimal components), be more lenient on buildability analysis
 
           ## Response format
 
@@ -123,7 +129,7 @@ module AiReviewer
           [If APPROVED: one sentence confirming the research looks thorough]
           [If NEEDS MORE RESEARCH: 1-3 specific, actionable gaps. Only flag things that are genuinely missing and would change the review outcome.]
 
-          Approve if the reviewer has done a reasonable job investigating. Only reject if there are clear, significant gaps — like never reading the README, never looking at any images, or making claims about things they never checked.
+          Check the tool call history against the mandatory items above. If any mandatory item was skipped (and applies to this project), reject. Approve only when all applicable mandatory items were done and the summary demonstrates real understanding of how the project fits together.
         PROMPT
       end
     end
