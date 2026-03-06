@@ -1045,7 +1045,8 @@ Any issues should go to @alexren."
 
   def enqueue_ai_review
     phase = design_pending? ? "design" : "build"
-    AiReviewJob.perform_later(id, phase)
+    ai_review = AiReview.create!(project: self, review_phase: phase, status: :queued)
+    AiReviewJob.perform_later(id, phase, ai_review_id: ai_review.id)
   end
 
   def invalidate_design_reviews_on_resubmit

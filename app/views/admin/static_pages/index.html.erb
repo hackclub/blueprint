@@ -24,7 +24,7 @@
             <%= render "shared/button", variant: :outline, text: "Users (#{User.count.to_i})", url: admin_users_path %>
           <% end %>
           <% if current_user.reviewer_perms? %>
-            <%= render "shared/button", variant: :outline, text: "AI Reviews (#{AiReview.status_running.count.to_i})", url: admin_ai_reviews_path %>
+            <%= render "shared/button", variant: :outline, text: "AI Reviews (#{AiReview.where(status: [:queued, :running]).count.to_i})", url: admin_ai_reviews_path %>
           <% end %>
           <% if current_user.shopkeeper_perms? || current_user.fulfiller_perms? %>
             <%= render "shared/button", variant: :outline, text: "Shop Items (#{ShopItem.count.to_i})", url: admin_shop_items_path %>

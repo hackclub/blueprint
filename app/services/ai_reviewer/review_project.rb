@@ -8,21 +8,22 @@ module AiReviewer
 
     class CancelledError < StandardError; end
 
-    def initialize(project:, review_phase:)
+    def initialize(project:, review_phase:, ai_review: nil)
       @project = project
       @review_phase = review_phase
+      @ai_review = ai_review
     end
 
     def call
       log "Starting #{@review_phase} review for project ##{@project.id} (#{@project.title.truncate(50)})"
 
-      ai_review = AiReview.create!(
+      ai_review = @ai_review || AiReview.create!(
         project: @project,
         review_phase: @review_phase,
-        status: :running,
-        started_at: Time.current
+        status: :queued
       )
-      log "Created AiReview ##{ai_review.id}, status=running"
+      ai_review.update!(status: :running, started_at: Time.current)
+      log "AiReview ##{ai_review.id} now running"
 
       # Pre-fetch journal and repo tree
       journal_content = fetch_journal

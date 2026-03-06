@@ -55,7 +55,7 @@ The project journal and repository file tree have already been provided to you i
 
 Start by reading what's already provided (journal + file tree), then investigate:
 1. **GetFileContent** — read the README.md completely
-2. **GetFileContent** — read the BOM CSV, then **CheckLinkValidity** to verify purchase links are live
+2. **GetFileContent** — read the BOM CSV, then **CheckLinkValidity** to verify purchase links are live for applicable items.
 
 Then dig deeper based on what you find:
 - If the README references images, **use GetImage to actually look at them**. A filename is not evidence — you need to see the image.

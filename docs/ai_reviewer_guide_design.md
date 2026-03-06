@@ -11,11 +11,11 @@ This is the primary review phase — checking that the project design is solid b
 - [ ] Contains a screenshot or render of the full 3D model (if project has a 3D model)
 - [ ] Contains a screenshot of the PCB (if project has a PCB)
 - [ ] Contains a wiring diagram (if project has wiring that isn't on a PCB)
-- [ ] Contains a BOM table with component names, quantities, and purchase links
+- [ ] Contains a BOM table with component names, quantities, and purchase links where applicable
 
 ## Repository structure
 
-- [ ] BOM file exists in CSV format with purchase links for components that are not custom-made, 3D printed, or through PCBA
+- [ ] BOM file exists in CSV format with purchase links for components that are not custom-made, 3D printed, or through PCBA. Links are not required for: parts from well-known vendors where a part number suffices (LCSC, DigiKey, Mouser), parts already owned, or common/generic materials (screws, wire, popsicle sticks, etc.)
 - [ ] Case/enclosure exists if the project needs one (keyboards need a case, dev boards do not). The case must actually interface with the internals — a plain rectangle that doesn't secure anything doesn't count
 - [ ] .STEP file exists if the project has a 3D CAD model (not required for PCB-only projects)
 - [ ] CAD source file exists (.f3d, .FCStd, or public OnShape link). Note: KiCad is PCB design software, not 3D modelling CAD
@@ -39,7 +39,7 @@ Use your judgment here. Consult the Oracle if you're genuinely unsure, but gathe
 
 ## BOM & parts sourcing
 
-- [ ] BOM has realistic parts with real, working purchase links
+- [ ] BOM has realistic parts with real, working purchase links (where applicable — see note above about when links aren't required)
 - [ ] No tools or unrelated items in the BOM (no oscilloscopes, soldering irons, etc)
 - [ ] Parts are reasonably priced — no $40 Amazon modules when the same thing is $5 on AliExpress
 - [ ] Budget isn't being padded unnecessarily

@@ -43,8 +43,9 @@ class Admin::AiReviewsController < Admin::ApplicationController
       return
     end
 
-    AiReviewJob.perform_later(project.id, phase, force: true)
-    redirect_back fallback_location: admin_root_path, notice: "AI analysis queued. Check back in ~5 minutes."
+    ai_review = AiReview.create!(project: project, review_phase: phase, status: :queued)
+    AiReviewJob.perform_later(project.id, phase, force: true, ai_review_id: ai_review.id)
+    redirect_back fallback_location: admin_root_path, notice: "AI analysis queued (Review ##{ai_review.id}). Check back in ~5 minutes."
   end
 
   private
