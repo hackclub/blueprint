@@ -10,7 +10,7 @@ This is the primary review phase — checking that the project design is solid b
 - [ ] Contains motivation — why the author made it (doesn't need its own section, can be woven into other text)
 - [ ] Contains a screenshot or render of the full 3D model (if project has a 3D model)
 - [ ] Contains a screenshot of the PCB (if project has a PCB)
-- [ ] Contains a wiring diagram (if project has wiring that isn't on a PCB)
+- [ ] Contains a wiring diagram (if project has wiring that isn't on a PCB and no schematic covers it)
 - [ ] Contains a BOM table with component names, quantities, and purchase links where applicable
 
 ## Repository structure
@@ -20,10 +20,10 @@ This is the primary review phase — checking that the project design is solid b
 - [ ] .STEP file exists if the project has a 3D CAD model (not required for PCB-only projects)
 - [ ] CAD source file exists (.f3d, .FCStd, or public OnShape link). Note: KiCad is PCB design software, not 3D modelling CAD
 - [ ] PCB source files exist if applicable (.kicad_pro, .kicad_sch, gerbers, etc). .STEP files are not PCB sources
-- [ ] Wiring diagram exists and is clear enough that someone else could follow it
-- [ ] Firmware/software source code is present (even if untested)
+- [ ] Wiring diagram exists and is clear enough that someone else could follow it. Not required if a schematic already covers all connections
+- [ ] Firmware/software source code is present if the project requires custom code. Dev boards, passive electronics, and projects without microcontrollers don't need firmware. There is no need for a sample/demo firmware for projects like devboards which don't have specific logic.
 - [ ] Files are organized into logical folders (not all dumped in root)
-- [ ] Assembly plan is documented — how things connect (screws, glue, solder, tape, sewing, etc). Someone else needs to be able to replicate this
+- [ ] Assembly plan is documented — how things connect (screws, glue, solder, tape, sewing, etc). For simple projects where the full assembly is clearly visible from photos, renders, or CAD screenshots, a missing assembly plan is a **warn** not a fail. For complex projects with many parts where someone couldn't figure out assembly just by looking at it, this is a **fail**. The question: could someone look at what's provided and replicate the build?
 
 ## Design integrity
 
@@ -39,7 +39,7 @@ Use your judgment here. Consult the Oracle if you're genuinely unsure, but gathe
 
 ## BOM & parts sourcing
 
-- [ ] BOM has realistic parts with real, working purchase links (where applicable — see note above about when links aren't required)
+- [ ] BOM has realistic parts with real purchase links (where applicable — see note above about when links aren't required). Broken BOM links are a **warn**, not a fail — links go stale and this alone shouldn't block a project
 - [ ] No tools or unrelated items in the BOM (no oscilloscopes, soldering irons, etc)
 - [ ] Parts are reasonably priced — no $40 Amazon modules when the same thing is $5 on AliExpress
 - [ ] Budget isn't being padded unnecessarily
@@ -50,8 +50,10 @@ Use your judgment here. Consult the Oracle if you're genuinely unsure, but gathe
 Not every project needs everything. Apply judgment:
 
 - PCB-only projects don't need CAD source files or .STEP files — it doesn't make sense
-- Projects without a microcontroller don't need firmware
+- Projects without a microcontroller don't need firmware. Dev boards and passive electronics projects have no firmware to write
+- Projects that need custom application logic (robot cars, weather stations, game controllers, etc.) DO need firmware — a sample blink sketch doesn't satisfy this
 - Generic controller devices (devboards, 3D printer control boards, etc) don't need wiring diagrams or usage examples
+- A schematic covers wiring — if a project has a proper schematic showing all connections, a separate wiring diagram is redundant. Only require a wiring diagram when there's off-PCB wiring that isn't documented in a schematic
 - **Check the images before assuming** whether a CAD model or enclosure exists. Many projects may only have a PCB!
 
 ## Journal quality
@@ -60,7 +62,7 @@ See an example of a good journal: https://github.com/qcoral/hardware-docs/blob/m
 
 - [ ] Journal entries exist (minimum 3 expected for most projects)
 - [ ] Entries describe actual build progress (not filler, copy-paste, or unrelated content)
-- [ ] Entries contain images showing work in progress
+- [ ] Entries contain images showing work in progress. Broken/missing journal images are a **warn**, not a fail — they may be hosting issues rather than missing documentation
 - [ ] Time durations are plausible (not all identical, not suspiciously round)
 - [ ] Entries span multiple days/sessions (not all written in one sitting)
 

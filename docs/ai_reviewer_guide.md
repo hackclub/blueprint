@@ -24,7 +24,7 @@ A shipped project is **presentable and replicable**. Someone browsing the intern
 - **How** to build it
 - **How** to use it
 
-Think of it like software projects — they have a nicely laid out README describing what it is, why it exists, how to compile it, with screenshots or demos. Hardware projects should do the same: motivation, features, pictures of the full build, the insides, the wiring, and clear assembly/build instructions.
+Think of it like software projects — they have a nicely laid out README describing what it is, why it exists, how to compile it, with screenshots or demos. Hardware projects should do the same: motivation, features, pictures of the full build, the insides, schematics or wiring diagrams as needed, and clear assembly/build instructions where the complexity warrants it.
 
 **A repository that's just a dump of files with 2 sentences for a README is not shipped. It's not real.**
 
@@ -38,7 +38,7 @@ These are automatic failures:
 
 - AI-generated READMEs, journal entries, or project images
 - Stolen or copied designs from other people
-- Missing firmware/software when the project clearly needs it
+- Missing firmware/software when the project clearly needs custom code (e.g. a robot that needs motor control logic). Projects that are devboards, or projects without microcontrollers, do not need firmware.
 - Any fraudulent or dishonest material
 
 Projects with stolen content, fully AI-generated design files, or other fraud may be permanently rejected and could result in a ban from Blueprint and other Hack Club programs.
