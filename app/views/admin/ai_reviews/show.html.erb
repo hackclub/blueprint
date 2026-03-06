@@ -242,8 +242,8 @@
       </div>
 
       <%
-        steps = (@ai_review.steps || []).reject { |s| s["type"] == "research_summary" }
-        # Group: pair each tool_call with its matching tool_result, keep messages standalone
+        steps = (@ai_review.steps || []).reject { |s| s["type"].in?(%w[research_summary cost_breakdown]) }
+        # Group: pair each tool_call with its matching tool_result, keep messages and gate steps standalone
         grouped = []
         steps.each do |step|
           if step["type"] == "tool_call"
@@ -252,6 +252,8 @@
             grouped.last[:result] = step
           elsif step["type"] == "message"
             grouped << { message: step }
+          elsif step["type"] == "research_gate"
+            grouped << { gate: step }
           end
         end
         grouped.reverse!
@@ -261,7 +263,28 @@
       <% else %>
         <div class="font-mono text-sm space-y-3">
           <% grouped.each do |entry| %>
-            <% if entry[:message] %>
+            <% if entry[:gate] %>
+              <%
+                gate = entry[:gate]
+                approved = gate["result"].to_s.include?("APPROVED")
+              %>
+              <div class="p-3 border <%= approved ? 'border-bp-success/40 bg-bp-success/5' : 'border-bp-warning/40 bg-bp-warning/5' %>">
+                <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium <%= approved ? 'text-bp-success' : 'text-bp-warning' %>">
+                      Research Gate — Attempt <%= gate["attempt"] %>
+                    </span>
+                    <span class="text-xs px-1.5 py-0.5 rounded <%= approved ? 'bg-bp-success/20 text-bp-success' : 'bg-bp-warning/20 text-bp-warning' %>">
+                      <%= approved ? "APPROVED" : "NEEDS MORE RESEARCH" %>
+                    </span>
+                  </div>
+                  <span class="text-white/30 shrink-0 ml-4">
+                    <%= Time.parse(gate["timestamp"]).strftime("%H:%M:%S") rescue "" %>
+                  </span>
+                </div>
+                <div class="text-sm text-white/60 whitespace-pre-wrap"><%= gate["result"].to_s.truncate(1500) %></div>
+              </div>
+            <% elsif entry[:message] %>
               <div class="flex items-start justify-between">
                 <div class="text-white/70 italic">
                   <span class="text-white/30">💭</span>
