@@ -7,7 +7,7 @@ module AiReviewer
       MAX_SEARCH_REQUESTS = 10
       MAX_FETCH_REQUESTS = 5
 
-      description "Delegate web research to a research assistant for technical questions. Use this to look up component specs, datasheets, compatibility, protocols, or firmware questions. The assistant will search and browse the web, then return a concise summary of findings. Be specific about what you need."
+      description "Delegate web research to a research assistant ONLY when you genuinely need external information you don't already know. Good uses: looking up obscure component datasheets, verifying specific product listings (e.g. AliExpress links), checking compatibility between specific parts you're unfamiliar with. Do NOT use this for basic questions you can answer from your training knowledge (e.g. 'what is an ESP32', 'what voltage does USB-C provide', 'what is I2C'). The assistant will search and browse the web, then return a concise summary. Be specific about what you need."
 
       params do
         string :task, description: "What to research — be specific about what you need to know and why. Include URLs, part numbers, or search terms as needed."
