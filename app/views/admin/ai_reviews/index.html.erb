@@ -1,0 +1,135 @@
+<div class="mb-10">
+  <%= render "shared/button", text: "Back", url: admin_root_path, class: "py-0" %>
+</div>
+
+<section class="space-y-6">
+  <h1 class="pb-2 text-4xl font-rc-full">AI Reviews</h1>
+
+  <%# Stats cards %>
+  <div class="grid grid-cols-4 gap-4">
+    <%= link_to admin_ai_reviews_path(status: "queued", phase: @phase_filter, q: @q) do %>
+      <%= render "shared/card" do %>
+        <p class="text-sm text-white/60">Queued</p>
+        <p class="text-3xl font-rc-full"><%= @counts[:queued] %></p>
+      <% end %>
+    <% end %>
+
+    <%= link_to admin_ai_reviews_path(status: "running", phase: @phase_filter, q: @q) do %>
+      <%= render "shared/card" do %>
+        <p class="text-sm text-white/60">Running</p>
+        <p class="text-3xl font-rc-full text-bp-warning"><%= @counts[:running] %></p>
+      <% end %>
+    <% end %>
+
+    <%= link_to admin_ai_reviews_path(status: "completed", phase: @phase_filter, q: @q) do %>
+      <%= render "shared/card" do %>
+        <p class="text-sm text-white/60">Completed</p>
+        <p class="text-3xl font-rc-full text-bp-success"><%= @counts[:completed] %></p>
+      <% end %>
+    <% end %>
+
+    <%= link_to admin_ai_reviews_path(status: "failed", phase: @phase_filter, q: @q) do %>
+      <%= render "shared/card" do %>
+        <p class="text-sm text-white/60">Failed</p>
+        <p class="text-3xl font-rc-full text-bp-danger"><%= @counts[:failed] %></p>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# Search + Filter row %>
+  <div class="flex items-center gap-4">
+    <%= form_with url: admin_ai_reviews_path, method: :get, local: true, class: "flex items-center gap-3" do %>
+      <input type="hidden" name="status" value="<%= @status_filter %>" />
+      <input type="hidden" name="phase" value="<%= @phase_filter %>" />
+      <input type="text" name="q" value="<%= h(@q) %>" placeholder="Search by project ID" class="text-white border-white rounded-none input bg-bp-darker placeholder-white/60" />
+      <button type="submit" class="text-lg rounded-none btn btn-primary">Search</button>
+    <% end %>
+
+    <%# Status filter buttons %>
+    <div class="flex items-center gap-2">
+      <%= render "shared/button", text: "All", url: admin_ai_reviews_path(phase: @phase_filter, q: @q), variant: @status_filter.blank? ? :primary : :outline, class: "text-sm py-0 px-2" %>
+      <%= render "shared/button", text: "Queued", url: admin_ai_reviews_path(status: "queued", phase: @phase_filter, q: @q), variant: @status_filter == "queued" ? :primary : :outline, class: "text-sm py-0 px-2" %>
+      <%= render "shared/button", text: "Running", url: admin_ai_reviews_path(status: "running", phase: @phase_filter, q: @q), variant: @status_filter == "running" ? :primary : :outline, class: "text-sm py-0 px-2" %>
+      <%= render "shared/button", text: "Completed", url: admin_ai_reviews_path(status: "completed", phase: @phase_filter, q: @q), variant: @status_filter == "completed" ? :primary : :outline, class: "text-sm py-0 px-2" %>
+      <%= render "shared/button", text: "Failed", url: admin_ai_reviews_path(status: "failed", phase: @phase_filter, q: @q), variant: @status_filter == "failed" ? :primary : :outline, class: "text-sm py-0 px-2" %>
+    </div>
+
+    <%# Phase filter buttons %>
+    <div class="flex items-center gap-2">
+      <%= render "shared/button", text: "All", url: admin_ai_reviews_path(status: @status_filter, q: @q), variant: @phase_filter.blank? ? :primary : :outline, class: "text-sm py-0 px-2" %>
+      <%= render "shared/button", text: "Design", url: admin_ai_reviews_path(status: @status_filter, phase: "design", q: @q), variant: @phase_filter == "design" ? :primary : :outline, class: "text-sm py-0 px-2" %>
+      <%= render "shared/button", text: "Build", url: admin_ai_reviews_path(status: @status_filter, phase: "build", q: @q), variant: @phase_filter == "build" ? :primary : :outline, class: "text-sm py-0 px-2" %>
+    </div>
+  </div>
+
+  <%# Table %>
+  <div class="border-2 border-white rounded-none">
+    <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white">
+      <div class="col-span-1">ID</div>
+      <div class="col-span-3">Project</div>
+      <div class="col-span-1">Phase</div>
+      <div class="col-span-2">Status</div>
+      <div class="col-span-1">Score</div>
+      <div class="col-span-1">Cost</div>
+      <div class="col-span-1">Duration</div>
+      <div class="col-span-2">Created</div>
+    </div>
+
+    <% @ai_reviews.each do |review| %>
+      <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0">
+        <div class="flex items-center col-span-1 py-2"><%= review.id %></div>
+        <div class="flex items-center col-span-3">
+          <%= link_to (review.project&.title.presence || "Project ##{review.project_id}").truncate(40), admin_ai_review_path(review), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
+        </div>
+        <div class="flex items-center col-span-1">
+          <%= review.review_phase.capitalize %>
+        </div>
+        <div class="flex items-center col-span-2">
+          <% status_class = case review.status
+            when "queued" then "text-white/50"
+            when "running" then "text-bp-warning animate-pulse"
+            when "completed" then "text-bp-success"
+            when "failed" then "text-bp-danger"
+            else "text-white"
+          end %>
+          <span class="<%= status_class %>"><%= review.status.capitalize %></span>
+        </div>
+        <div class="flex items-center col-span-1">
+          <% if review.status_completed? && review.analysis.present? %>
+            <% score = review.analysis["guideline_score"] %>
+            <span class="<%= score == 'pass' ? 'text-bp-success' : score == 'partial' ? 'text-bp-warning' : 'text-bp-danger' %>">
+              <%= score&.upcase || "—" %>
+            </span>
+          <% else %>
+            <span class="text-white/30">—</span>
+          <% end %>
+        </div>
+        <div class="flex items-center col-span-1">
+          <% if review.estimated_cost_cents.present? && review.estimated_cost_cents > 0 %>
+            $<%= "%.2f" % (review.estimated_cost_cents / 100.0) %>
+          <% else %>
+            <span class="text-white/30">—</span>
+          <% end %>
+        </div>
+        <div class="flex items-center col-span-1">
+          <% if review.completed_at && review.started_at %>
+            <%= "#{(review.completed_at - review.started_at).round(0)}s" %>
+          <% else %>
+            <span class="text-white/30">—</span>
+          <% end %>
+        </div>
+        <div class="flex items-center col-span-2">
+          <%= time_ago_in_words(review.created_at) %> ago
+        </div>
+      </div>
+    <% end %>
+
+    <% if @ai_reviews.empty? %>
+      <div class="px-4 py-6 text-center text-white/70">No AI reviews found.</div>
+    <% end %>
+  </div>
+
+  <div class="flex items-center justify-end text-lg">
+    <%== pagy_nav(@pagy) if @pagy.present? && @pagy.pages > 1 %>
+  </div>
+</section>

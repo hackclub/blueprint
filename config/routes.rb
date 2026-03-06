@@ -267,6 +267,8 @@ Rails.application.routes.draw do
       get "build_reviews/:id", to: "build_reviews#show", as: :build_review
       post "build_reviews/:id", to: "build_reviews#create", as: :build_review_create
 
+      get "ai_reviews", to: "ai_reviews#index", as: :ai_reviews
+      get "ai_reviews/:id", to: "ai_reviews#show", as: :ai_review
       post "ai_reviews/:project_id", to: "ai_reviews#create", as: :ai_review_create
 
       resources :projects, only: [ :index, :show ]

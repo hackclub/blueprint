@@ -11,7 +11,7 @@ default: &default
       threads: 6
       processes: <%= ENV.fetch("JOB_CONCURRENCY", 2) %>
     - queues: [ai_reviewer]
-      threads: 12
+      threads: 6
       processes: <%= ENV.fetch("JOB_CONCURRENCY", 4) %>
     - queues: [active_storage]
       threads: 2

@@ -1,0 +1,363 @@
+<% if @ai_review.status_running? %>
+  <meta name="turbo-refresh-scroll" content="preserve">
+  <script>
+    (function() {
+      const timer = setTimeout(function() { Turbo.visit(window.location.href, { action: "replace" }); }, 5000);
+      document.addEventListener("turbo:before-visit", function() { clearTimeout(timer); }, { once: true });
+    })();
+  </script>
+<% end %>
+
+<div class="mb-10">
+  <%= render "shared/button", text: "Back", url: admin_ai_reviews_path, class: "py-0" %>
+</div>
+
+<section class="space-y-6">
+
+  <%# === HEADER CARD === %>
+  <%= render "shared/card" do %>
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <p class="text-3xl font-rc-full">AI Review #<%= @ai_review.id %></p>
+        <div class="flex items-center gap-3">
+          <% if @ai_review.status_completed? %>
+            <span class="text-xs text-white/50">
+              Analyzed <%= time_ago_in_words(@ai_review.completed_at) %> ago
+              <% if @ai_review.total_tokens.present? %>
+                (<%= @ai_review.total_tokens %> tokens)
+              <% end %>
+            </span>
+          <% end %>
+          <%= button_to "Re-analyze",
+              admin_ai_review_create_path(@project.id, review_phase: @ai_review.review_phase),
+              method: :post,
+              class: "btn btn-outline text-sm py-0 px-2" %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="text-white/50">Project:</span>
+          <%= link_to @project.title.truncate(60), admin_project_path(@project), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
+          <span class="text-white/40">(#<%= @project.id %>)</span>
+        </div>
+        <div>
+          <span class="text-white/50">Phase:</span>
+          <%= @ai_review.review_phase.capitalize %>
+        </div>
+        <div>
+          <span class="text-white/50">Status:</span>
+          <% status_class = case @ai_review.status
+            when "queued" then "text-white/50"
+            when "running" then "text-bp-warning animate-pulse"
+            when "completed" then "text-bp-success"
+            when "failed" then "text-bp-danger"
+            else "text-white"
+          end %>
+          <span class="<%= status_class %>"><%= @ai_review.status.capitalize %></span>
+        </div>
+        <%
+          cost_step = (@ai_review.steps || []).find { |s| s["type"] == "cost_breakdown" }
+          breakdown = cost_step&.dig("breakdown")
+        %>
+        <% if breakdown %>
+          <div class="col-span-2">
+            <details>
+              <summary class="cursor-pointer">
+                <span class="text-white/50">Cost:</span>
+                <% totals = breakdown["totals"] %>
+                $<%= "%.4f" % totals["all_cost"] %>
+                <span class="text-white/40">
+                  (ai: $<%= "%.4f" % totals["ai_cost"] %><% if totals["serp_cost"] > 0 %> / serp: $<%= "%.4f" % totals["serp_cost"] %><% end %>)
+                </span>
+                <span class="text-white/30 ml-2">
+                  <%= totals["input_tokens"] %> in / <%= totals["output_tokens"] %> out
+                </span>
+              </summary>
+              <div class="mt-2 font-mono text-xs space-y-0.5 text-white/60">
+                <% breakdown["agents"].each do |agent| %>
+                  <div class="flex items-center gap-4">
+                    <span class="w-28 text-white/40"><%= agent["name"] %></span>
+                    <span class="w-40"><%= agent["input_tokens"] %> in / <%= agent["output_tokens"] %> out</span>
+                    <span class="w-24">$<%= "%.4f" % agent["ai_cost"] %></span>
+                    <% if agent["serp_cost"] > 0 %>
+                      <span class="text-white/40">+ $<%= "%.4f" % agent["serp_cost"] %> serp</span>
+                    <% end %>
+                    <span class="text-white/30"><%= agent["model"] %></span>
+                  </div>
+                <% end %>
+              </div>
+            </details>
+          </div>
+        <% else %>
+          <div>
+            <span class="text-white/50">Tokens:</span>
+            <%= @ai_review.prompt_tokens || 0 %> in / <%= @ai_review.completion_tokens || 0 %> out / <%= @ai_review.total_tokens || 0 %> total
+          </div>
+          <div>
+            <span class="text-white/50">Est. Cost:</span>
+            <% if @ai_review.estimated_cost_cents.present? && @ai_review.estimated_cost_cents > 0 %>
+              $<%= "%.2f" % (@ai_review.estimated_cost_cents / 100.0) %>
+            <% else %>
+              —
+            <% end %>
+          </div>
+        <% end %>
+        <div>
+          <span class="text-white/50">Duration:</span>
+          <% if @ai_review.completed_at && @ai_review.started_at %>
+            <%= (@ai_review.completed_at - @ai_review.started_at).round(1) %>s
+          <% elsif @ai_review.started_at %>
+            Started <%= time_ago_in_words(@ai_review.started_at) %> ago (in progress)
+          <% else %>
+            —
+          <% end %>
+        </div>
+      </div>
+
+      <% if @ai_review.status_failed? && @ai_review.error_message.present? %>
+        <div class="p-3 border border-bp-danger/50 bg-bp-danger/10">
+          <p class="text-sm text-bp-danger"><%= @ai_review.error_message %></p>
+        </div>
+      <% end %>
+
+      <% if @ai_review.status_running? %>
+        <p class="text-bp-warning animate-pulse">Analysis in progress... This page refreshes automatically.</p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%# === ANALYSIS SECTION (completed only) === %>
+  <% if @ai_review.status_completed? && @ai_review.analysis.present? %>
+    <%= render "shared/card" do %>
+      <div class="space-y-4">
+        <p class="text-2xl font-rc-full">Analysis</p>
+
+        <% analysis = @ai_review.analysis %>
+        <% checks = analysis["checks"] || {} %>
+        <% failed = checks.select { |_, c| c["status"] == "fail" } %>
+        <% warned = checks.select { |_, c| c["status"] == "warn" } %>
+        <% passed = checks.select { |_, c| c["status"] == "pass" } %>
+        <% na_checks = checks.select { |_, c| c["status"] == "n/a" } %>
+
+        <p class="text-lg"><%= analysis["overall_assessment"] %></p>
+
+        <% if analysis["suggestions_for_reviewer"].present? && analysis["suggestions_for_reviewer"].any? %>
+          <div>
+            <p class="text-sm font-medium text-white/60 mb-1">Suggestions for reviewer:</p>
+            <ul class="list-disc list-inside text-sm space-y-1 text-white/80">
+              <% analysis["suggestions_for_reviewer"].each do |suggestion| %>
+                <li><%= suggestion %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <% score = analysis["guideline_score"] %>
+        <p class="text-xl font-medium">
+          Result:
+          <% case score %>
+          <% when "pass" %>
+            <span class="text-bp-success">PASS</span>
+          <% when "partial" %>
+            <span class="text-bp-warning">PARTIAL</span>
+          <% else %>
+            <span class="text-bp-danger">FAIL</span>
+          <% end %>
+          <span class="text-sm font-normal">
+            (<span class="text-bp-danger"><%= failed.size %></span>/<span class="text-bp-warning"><%= warned.size %></span>/<span class="text-bp-success"><%= passed.size %></span>/<span class="text-white/40"><%= na_checks.size %></span>)
+          </span>
+        </p>
+
+        <div class="space-y-1">
+          <% if failed.any? %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
+              <% failed.each do |key, check| %>
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="text-bp-danger shrink-0 font-mono">FAIL</span>
+                  <span><strong><%= key.humanize %>:</strong> <%= check["note"] %></span>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+          <% if warned.any? %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
+              <% warned.each do |key, check| %>
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="text-bp-warning shrink-0 font-mono">WARN</span>
+                  <span><strong><%= key.humanize %>:</strong> <%= check["note"] %></span>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <% if passed.any? || na_checks.any? %>
+          <details>
+            <summary class="text-sm font-medium cursor-pointer text-white/60">Passed and skipped checks (<%= passed.size %>/<%= na_checks.size %>)</summary>
+            <div class="mt-1 grid grid-cols-1 md:grid-cols-2 gap-1">
+              <% passed.each do |key, check| %>
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="text-bp-success shrink-0 font-mono">PASS</span>
+                  <span><strong><%= key.humanize %>:</strong> <%= check["note"] %></span>
+                </div>
+              <% end %>
+              <% na_checks.each do |key, check| %>
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="text-white/40 shrink-0 font-mono">SKIP </span>
+                  <span><strong><%= key.humanize %>:</strong> <%= check["note"] %></span>
+                </div>
+              <% end %>
+            </div>
+          </details>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%# === RESEARCH SUMMARY === %>
+  <% research_step = (@ai_review.steps || []).find { |s| s["type"] == "research_summary" } %>
+  <% if research_step %>
+    <%= render "shared/card" do %>
+      <div class="space-y-4">
+        <div class="flex items-center gap-3">
+          <p class="text-2xl font-rc-full">Project Understanding</p>
+          <span class="text-xs text-white/40">
+            <%= Time.parse(research_step["timestamp"]).strftime("%H:%M:%S") rescue "" %>
+          </span>
+        </div>
+        <div class="prose prose-invert prose-sm max-w-none text-white/80 [&_pre]:whitespace-pre-wrap [&_pre]:break-all [&_pre]:overflow-x-auto">
+          <%= sanitize_marksmith_html(render_markdown(research_step["summary"].to_s)) %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%# === STEPS LOG === %>
+  <%= render "shared/card" do %>
+    <div class="space-y-4">
+      <div>
+        <p class="text-2xl font-rc-full">Activity Log</p>
+        <p class="text-sm text-white/40">Tool calls &middot; Latest is up top</p>
+      </div>
+
+      <%
+        steps = (@ai_review.steps || []).reject { |s| s["type"] == "research_summary" }
+        # Group: pair each tool_call with its matching tool_result, keep messages standalone
+        grouped = []
+        steps.each do |step|
+          if step["type"] == "tool_call"
+            grouped << { call: step, result: nil }
+          elsif step["type"] == "tool_result" && grouped.last && grouped.last[:call] && grouped.last[:result].nil?
+            grouped.last[:result] = step
+          elsif step["type"] == "message"
+            grouped << { message: step }
+          end
+        end
+        grouped.reverse!
+      %>
+      <% if grouped.empty? %>
+        <p class="text-white/50">No steps recorded yet.</p>
+      <% else %>
+        <div class="font-mono text-sm space-y-3">
+          <% grouped.each do |entry| %>
+            <% if entry[:message] %>
+              <div class="flex items-start justify-between">
+                <div class="text-white/70 italic">
+                  <span class="text-white/30">💭</span>
+                  <%= entry[:message]["content"].to_s.truncate(500) %>
+                </div>
+                <span class="text-white/30 shrink-0 ml-4">
+                  <%= Time.parse(entry[:message]["timestamp"]).strftime("%H:%M:%S") rescue entry[:message]["timestamp"] %>
+                </span>
+              </div>
+            <% else %>
+              <div class="flex items-start justify-between">
+                <div>
+                  <span class="text-white/50">#<%= entry[:call]["n"] %></span>
+                  <span class="text-white font-medium"><%= entry[:call]["tool"] %></span>
+                  <% args = entry[:call]["args"] || {} %>
+                  <% if args.empty? %>
+                    <span class="text-white/40">()</span>
+                  <% else %>
+                    <span class="text-white/60">(<%= args.map { |k, v| "#{k}: #{v.to_s.truncate(80)}" }.join(", ") %>)</span>
+                  <% end %>
+                </div>
+                <span class="text-white/30 shrink-0 ml-4">
+                  <%= Time.parse(entry[:call]["timestamp"]).strftime("%H:%M:%S") rescue entry[:call]["timestamp"] %>
+                </span>
+              </div>
+              <%# Nested steps (from ResearchAssistant sub-agent) %>
+              <% if entry[:call]["nested_steps"].present? %>
+                <div class="pl-8 border-l border-white/10 ml-4 space-y-1 mt-1">
+                  <%
+                    nested_grouped = []
+                    entry[:call]["nested_steps"].each do |ns|
+                      if ns["type"] == "tool_call"
+                        nested_grouped << { call: ns, result: nil }
+                      elsif ns["type"] == "tool_result" && nested_grouped.last && nested_grouped.last[:result].nil?
+                        nested_grouped.last[:result] = ns
+                      end
+                    end
+                    nested_grouped.reverse!
+                  %>
+                  <% nested_grouped.each_with_index do |ne, ni| %>
+                    <div class="flex items-start justify-between text-white/40">
+                      <div>
+                        <span class="text-white/30">&boxv; #<%= nested_grouped.size - ni %></span>
+                        <span class="text-white/60"><%= ne[:call]["tool"] %></span>
+                        <span class="text-white/40">(<%= (ne[:call]["args"] || {}).map { |k, v| "#{k}: #{v.to_s.truncate(60)}" }.join(", ") %>)</span>
+                      </div>
+                      <span class="text-white/20 shrink-0 ml-4">
+                        <%= Time.parse(ne[:call]["timestamp"]).strftime("%H:%M:%S") rescue "" %>
+                      </span>
+                    </div>
+                    <% if ne[:result] %>
+                      <div class="flex items-start justify-between pl-6 text-white/30">
+                        <div>&rarr; <%= ne[:result]["result"].to_s.truncate(150) %></div>
+                        <span class="text-white/20 shrink-0 ml-4">
+                          <%= Time.parse(ne[:result]["timestamp"]).strftime("%H:%M:%S") rescue "" %>
+                        </span>
+                      </div>
+                    <% end %>
+                  <% end %>
+                </div>
+              <% end %>
+              <% if entry[:result] %>
+                <div class="flex items-start justify-between pl-6">
+                  <div class="text-white/50">
+                    <span class="text-white/30">&rarr;</span>
+                    <%= entry[:result]["result"].to_s.truncate(200) %>
+                  </div>
+                  <span class="text-white/30 shrink-0 ml-4">
+                    <%= Time.parse(entry[:result]["timestamp"]).strftime("%H:%M:%S") rescue entry[:result]["timestamp"] %>
+                  </span>
+                </div>
+                <% if entry[:result]["images"].present? %>
+                  <div class="flex flex-wrap gap-2 pl-6 mt-1">
+                    <% entry[:result]["images"].each do |b64| %>
+                      <img src="data:image/jpeg;base64,<%= b64 %>" class="max-h-32 rounded border border-white/10" />
+                    <% end %>
+                  </div>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%# === RAW RESPONSE (markdown rendered) === %>
+  <% if @ai_review.raw_response.present? %>
+    <%= render "shared/card" do %>
+      <div class="space-y-4">
+        <p class="text-2xl font-rc-full">Full Response</p>
+        <div class="prose prose-invert prose-sm max-w-none text-white/80 [&_pre]:whitespace-pre-wrap [&_pre]:break-all [&_pre]:overflow-x-auto">
+          <%= sanitize_marksmith_html(render_markdown(@ai_review.raw_response.to_s)) %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+</section>

@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STEP Renderer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overflow: hidden;
+        background: #f0f0f0;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/occt-import-js.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script type="module">
+      import * as THREE from "three";
+
+      const canvas = document.getElementById("canvas");
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Renderer
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setClearColor(0xf0f0f0);
+
+      // Scene
+      const scene = new THREE.Scene();
+
+      // Lights — strong ambient + 3-point setup for clear visibility
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+      scene.add(ambientLight);
+
+      const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight1.position.set(1, 2, 3);
+      scene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.6);
+      dirLight2.position.set(-2, 1, -1);
+      scene.add(dirLight2);
+
+      const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.4);
+      dirLight3.position.set(0, -1, 2);
+      scene.add(dirLight3);
+
+      // Camera
+      const camera = new THREE.PerspectiveCamera(
+        45,
+        width / height,
+        0.01,
+        10000,
+      );
+
+      window.loadAndRender = async function () {
+        try {
+          const base64 = window.stepFileBase64;
+          const angle = window.cameraAngle || "isometric";
+
+          if (!base64) {
+            console.error("No STEP file data provided");
+            return;
+          }
+
+          // Decode base64 to ArrayBuffer
+          const binaryString = atob(base64);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+
+          // Initialize occt-import-js (explicit WASM path for reliability across page protocols)
+          const occt = await occtimportjs({
+            locateFile: (file) =>
+              `https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/${file}`,
+          });
+
+          // Parse the STEP file (ReadStepFile expects Uint8Array, not ArrayBuffer)
+          const result = occt.ReadStepFile(bytes, null);
+          if (!result || !result.meshes || !result.meshes.length) {
+            throw new Error(
+              `STEP parse returned no meshes (success: ${result?.success})`,
+            );
+          }
+
+          // Material
+          const defaultMaterial = new THREE.MeshPhongMaterial({
+            color: 0x8faab5,
+            specular: 0x222222,
+            shininess: 40,
+            side: THREE.DoubleSide,
+          });
+
+          const group = new THREE.Group();
+
+          // Build meshes from result
+          for (const resultMesh of result.meshes) {
+            const geometry = new THREE.BufferGeometry();
+
+            geometry.setAttribute(
+              "position",
+              new THREE.Float32BufferAttribute(
+                new Float32Array(resultMesh.attributes.position.array),
+                3,
+              ),
+            );
+
+            if (resultMesh.attributes.normal) {
+              geometry.setAttribute(
+                "normal",
+                new THREE.Float32BufferAttribute(
+                  new Float32Array(resultMesh.attributes.normal.array),
+                  3,
+                ),
+              );
+            }
+
+            if (resultMesh.index) {
+              geometry.setIndex(
+                new THREE.BufferAttribute(
+                  new Uint32Array(resultMesh.index.array),
+                  1,
+                ),
+              );
+            }
+
+            let material = defaultMaterial;
+            if (resultMesh.color) {
+              let r = resultMesh.color[0] / 255;
+              let g = resultMesh.color[1] / 255;
+              let b = resultMesh.color[2] / 255;
+              // Override near-black colors — they're invisible in renders
+              const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+              if (luminance < 0.15) {
+                r = 0.56;
+                g = 0.67;
+                b = 0.71; // default steel blue
+              }
+              material = new THREE.MeshPhongMaterial({
+                color: new THREE.Color(r, g, b),
+                specular: 0x333333,
+                shininess: 50,
+                side: THREE.DoubleSide,
+              });
+            }
+
+            if (!resultMesh.attributes.normal) {
+              geometry.computeVertexNormals();
+            }
+
+            const mesh = new THREE.Mesh(geometry, material);
+            group.add(mesh);
+
+            // Edge wireframe for definition
+            const edges = new THREE.EdgesGeometry(geometry, 10);
+            const line = new THREE.LineSegments(
+              edges,
+              new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 }),
+            );
+            group.add(line);
+          }
+
+          scene.add(group);
+
+          // Compute bounding box and position camera
+          const box = new THREE.Box3().setFromObject(group);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          const sphere = box.getBoundingSphere(new THREE.Sphere());
+          const radius = sphere.radius;
+          const distance = radius * 2.5;
+
+          // Camera direction based on angle
+          let direction;
+          switch (angle) {
+            case "front":
+              direction = new THREE.Vector3(0, 0, 1);
+              break;
+            case "top":
+              direction = new THREE.Vector3(0, 1, 0.001);
+              break;
+            case "right":
+              direction = new THREE.Vector3(1, 0, 0);
+              break;
+            case "isometric":
+            default:
+              direction = new THREE.Vector3(1, 1, 1).normalize();
+              break;
+          }
+
+          camera.position.copy(center).addScaledVector(direction, distance);
+          camera.lookAt(center);
+          camera.near = distance * 0.01;
+          camera.far = distance * 10;
+          camera.updateProjectionMatrix();
+
+          // Render one frame
+          renderer.render(scene, camera);
+
+          window._renderError = null;
+          console.log("STEP render complete");
+        } catch (err) {
+          window._renderError = err.message || String(err);
+          console.error("STEP render error:", err);
+        }
+      };
+    </script>
+  </body>
+</html>

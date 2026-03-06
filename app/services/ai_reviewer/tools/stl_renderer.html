@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STL Renderer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overflow: hidden;
+        background: #f0f0f0;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script type="module">
+      import * as THREE from "three";
+      import { STLLoader } from "three/addons/loaders/STLLoader.js";
+
+      const canvas = document.getElementById("canvas");
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Renderer
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setClearColor(0xf0f0f0);
+
+      // Scene
+      const scene = new THREE.Scene();
+
+      // Lights — strong ambient + 3-point setup for clear visibility
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+      scene.add(ambientLight);
+
+      const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight1.position.set(1, 2, 3);
+      scene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.6);
+      dirLight2.position.set(-2, 1, -1);
+      scene.add(dirLight2);
+
+      const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.4);
+      dirLight3.position.set(0, -1, 2);
+      scene.add(dirLight3);
+
+      // Camera
+      const camera = new THREE.PerspectiveCamera(
+        45,
+        width / height,
+        0.01,
+        10000,
+      );
+
+      window.loadAndRender = async function () {
+        try {
+          const base64 = window.stlFileBase64;
+          const angle = window.cameraAngle || "isometric";
+
+          if (!base64) {
+            console.error("No STL file data provided");
+            return;
+          }
+
+          // Decode base64 to ArrayBuffer
+          const binaryString = atob(base64);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+
+          // Parse STL
+          const loader = new STLLoader();
+          const geometry = loader.parse(bytes.buffer);
+          geometry.computeVertexNormals();
+
+          const material = new THREE.MeshPhongMaterial({
+            color: 0x8faab5,
+            specular: 0x333333,
+            shininess: 50,
+            side: THREE.DoubleSide,
+          });
+
+          const mesh = new THREE.Mesh(geometry, material);
+          scene.add(mesh);
+
+          // Edge wireframe for definition
+          const edges = new THREE.EdgesGeometry(geometry, 10);
+          const line = new THREE.LineSegments(
+            edges,
+            new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 }),
+          );
+          scene.add(line);
+
+          // Compute bounding box and position camera
+          const box = new THREE.Box3().setFromObject(mesh);
+          const center = box.getCenter(new THREE.Vector3());
+          const sphere = box.getBoundingSphere(new THREE.Sphere());
+          const radius = sphere.radius;
+          const distance = radius * 2.5;
+
+          // Camera direction based on angle
+          let direction;
+          switch (angle) {
+            case "front":
+              direction = new THREE.Vector3(0, 0, 1);
+              break;
+            case "top":
+              direction = new THREE.Vector3(0, 1, 0.001);
+              break;
+            case "right":
+              direction = new THREE.Vector3(1, 0, 0);
+              break;
+            case "isometric":
+            default:
+              direction = new THREE.Vector3(1, 1, 1).normalize();
+              break;
+          }
+
+          camera.position.copy(center).addScaledVector(direction, distance);
+          camera.lookAt(center);
+          camera.near = distance * 0.01;
+          camera.far = distance * 10;
+          camera.updateProjectionMatrix();
+
+          // Render one frame
+          renderer.render(scene, camera);
+
+          console.log("STL render complete");
+        } catch (err) {
+          console.error("STL render error:", err);
+        }
+      };
+    </script>
+  </body>
+</html>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_18_172856) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_06_025748) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -90,7 +90,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_18_172856) do
   create_table "ai_reviews", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.string "review_phase", null: false
-    t.string "status", default: "queued", null: false
+    t.string "status", default: "pending", null: false
     t.jsonb "analysis", default: {}
     t.text "raw_response"
     t.text "error_message"
@@ -102,6 +102,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_18_172856) do
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "steps", default: [], null: false
+    t.integer "estimated_cost_cents"
     t.index ["project_id", "review_phase"], name: "index_ai_reviews_on_project_id_and_review_phase"
     t.index ["project_id"], name: "index_ai_reviews_on_project_id"
     t.index ["status"], name: "index_ai_reviews_on_status"

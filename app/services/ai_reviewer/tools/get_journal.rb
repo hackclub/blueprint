@@ -5,11 +5,17 @@ module AiReviewer
 
       def initialize(project)
         @project = project
+        @called = false
         super()
       end
 
       def execute(**)
         Rails.logger.info("[AiReviewer] [project:#{@project.id}] Tool call: GetJournal")
+
+        if @called
+          return "You already retrieved the journal earlier in this review. Refer to the journal content you received previously — do not call this tool again."
+        end
+        @called = true
         entries = @project.journal_entries.order(created_at: :asc)
         if entries.empty?
           Rails.logger.info("[AiReviewer] [project:#{@project.id}] GetJournal: no entries found")

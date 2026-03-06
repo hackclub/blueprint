@@ -13,3 +13,10 @@ Ahoy.api = false
 # see https://github.com/ankane/ahoy#geocoding
 Ahoy.geocode = true
 Ahoy.job_queue = :background
+
+# Disable tracking in development
+if Rails.env.development?
+  class Ahoy::Store
+    def exclude? = true
+  end
+end

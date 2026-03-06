@@ -2,22 +2,23 @@
 #
 # Table name: ai_reviews
 #
-#  id                :bigint           not null, primary key
-#  analysis          :jsonb
-#  steps             :jsonb            default([]), not null
-#  completed_at      :datetime
-#  completion_tokens :integer
-#  error_message     :text
-#  model_used        :string
-#  prompt_tokens     :integer
-#  raw_response      :text
-#  review_phase      :string           not null
-#  started_at        :datetime
-#  status            :string           default("queued"), not null
-#  total_tokens      :integer
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  project_id        :bigint           not null
+#  id                   :bigint           not null, primary key
+#  analysis             :jsonb
+#  completed_at         :datetime
+#  completion_tokens    :integer
+#  error_message        :text
+#  estimated_cost_cents :integer
+#  model_used           :string
+#  prompt_tokens        :integer
+#  raw_response         :text
+#  review_phase         :string           not null
+#  started_at           :datetime
+#  status               :string           default(NULL), not null
+#  steps                :jsonb            not null
+#  total_tokens         :integer
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  project_id           :bigint           not null
 #
 # Indexes
 #
@@ -38,7 +39,7 @@ class AiReview < ApplicationRecord
   validates :review_phase, presence: true
   validates :status, presence: true
 
-  STALE_THRESHOLD = 15.minutes
+  STALE_THRESHOLD = 30.minutes
 
   scope :latest_for, ->(project_id, phase) {
     where(project_id: project_id, review_phase: phase)
