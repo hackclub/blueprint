@@ -61,7 +61,7 @@ module AiReviewer
 
         result = response.content.to_s.truncate(5000)
 
-        if result.include?("APPROVED")
+        if result.match?(/Status:\s*APPROVED/i) && !result.match?(/Status:\s*NEEDS MORE RESEARCH/i)
           @approved_summary = project_info
         end
 

@@ -271,6 +271,14 @@ module AiReviewer
           error_message: "#{e.class}: #{e.message}".truncate(1000),
           completed_at: Time.current
         )
+
+        # Auto-retry once on failure
+        if ai_review && ai_review.retry_count < 1
+          ai_review.increment!(:retry_count)
+          log "Auto-retrying (attempt #{ai_review.retry_count}) for project ##{@project.id}"
+          new_review = AiReview.create!(project: @project, review_phase: @review_phase, status: :queued, retry_count: ai_review.retry_count)
+          AiReviewJob.perform_later(@project.id, @review_phase, force: true, ai_review_id: new_review.id)
+        end
       rescue => update_error
         log "Failed to update AiReview ##{ai_review&.id} to failed status: #{update_error.message}", level: :error
       end

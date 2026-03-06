@@ -11,6 +11,7 @@
 #  model_used           :string
 #  prompt_tokens        :integer
 #  raw_response         :text
+#  retry_count          :integer          default(0), not null
 #  review_phase         :string           not null
 #  started_at           :datetime
 #  status               :string           default(NULL), not null
