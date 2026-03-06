@@ -1,5 +1,5 @@
 class AiReviewJob < ApplicationJob
-  queue_as :background
+  queue_as :ai_reviewer
 
   def perform(project_id, review_phase)
     project = Project.find_by(id: project_id)
