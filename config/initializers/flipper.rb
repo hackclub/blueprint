@@ -11,6 +11,11 @@ Rails.application.configure do
   ## For more info, see https://www.flippercloud.io/docs/optimization#preloading
   config.flipper.preload = true
 
+  ## Skip Flipper middleware for Active Storage requests
+  config.flipper.middleware_skip_paths = ->(request) {
+    request.path.start_with?("/user-attachments")
+  }
+
   ## Warn or raise an error if an unknown feature is checked
   ## Can be set to `:warn`, `:raise`, or `false`
   # config.flipper.strict = Rails.env.development? && :warn
