@@ -24,7 +24,7 @@
             <%= render "shared/button", variant: :outline, text: "Users (#{User.count.to_i})", url: admin_users_path %>
           <% end %>
           <% if current_user.reviewer_perms? %>
-            <% pending_in_queue = SolidQueue::Job.where(queue_name: "ai_reviewer").where.not(id: SolidQueue::ClaimedExecution.select(:job_id)).count %>
+            <% pending_in_queue = SolidQueue::ReadyExecution.joins(:job).where(solid_queue_jobs: { queue_name: "ai_reviewer" }).count %>
             <%= render "shared/button", variant: :outline, text: "AI Reviews (#{pending_in_queue + AiReview.status_running.count} active)", url: admin_ai_reviews_path %>
           <% end %>
           <% if current_user.shopkeeper_perms? || current_user.fulfiller_perms? %>
