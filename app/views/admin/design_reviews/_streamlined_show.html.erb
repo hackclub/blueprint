@@ -534,14 +534,66 @@
             </details>
 
           <% elsif ai_review.present? && ai_review.status_running? %>
-            <div class="rounded-md border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-md border border-amber-200 bg-white px-3 py-2 flex items-center justify-between dark:border-amber-900 dark:bg-zinc-900">
               <span class="text-sm text-amber-600 dark:text-amber-400 animate-pulse">AI review in progress...</span>
+              <%= link_to "View", admin_ai_review_path(ai_review),
+                    target: "_blank",
+                    class: "text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300" %>
             </div>
 
           <% elsif ai_review.present? && ai_review.status_failed? %>
-            <div class="rounded-md border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
-              <span class="text-sm text-red-500 dark:text-red-400">AI review failed: <%= ai_review.error_message.to_s.truncate(100) %></span>
-            </div>
+            <details class="group rounded-md border border-red-200 bg-white dark:border-red-900 dark:bg-zinc-900">
+              <summary class="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-zinc-50 rounded-md transition-colors list-none dark:hover:bg-zinc-800">
+                <span class="flex items-center gap-2 text-sm text-red-500 dark:text-red-400">
+                  AI Review
+                  <span class="text-xs px-1.5 py-0.5 rounded border bg-red-50 text-red-600 border-red-300 dark:bg-red-950 dark:text-red-400 dark:border-red-800">FAILED</span>
+                  <% if ai_review.retry_count > 0 %>
+                    <span class="text-xs text-zinc-400 dark:text-zinc-600">(retry <%= ai_review.retry_count %>)</span>
+                  <% end %>
+                </span>
+                <span class="flex items-center gap-1 shrink-0">
+                  <span class="text-xs text-zinc-400 dark:text-zinc-600"><%= time_ago_in_words(ai_review.completed_at || ai_review.updated_at) %> ago</span>
+                  <span class="text-zinc-500 group-open:rotate-90 transition-transform text-xs">&#9654;</span>
+                </span>
+              </summary>
+              <div class="border-t border-red-200 p-3 space-y-2 dark:border-red-900">
+                <p class="text-xs text-red-500 dark:text-red-400"><%= ai_review.error_message.to_s.truncate(300) %></p>
+
+                <% if ai_review.analysis.present? %>
+                  <% analysis = ai_review.analysis %>
+                  <% if analysis["overall_assessment"].present? %>
+                    <p class="text-sm text-zinc-700 leading-relaxed dark:text-zinc-300"><%= analysis["overall_assessment"] %></p>
+                  <% end %>
+
+                  <% checks = analysis["checks"] || {} %>
+                  <% failed_checks = checks.select { |_, c| c["status"] == "fail" } %>
+                  <% warned_checks = checks.select { |_, c| c["status"] == "warn" } %>
+                  <% if failed_checks.any? || warned_checks.any? %>
+                    <div>
+                      <p class="text-xs text-zinc-500 font-medium mb-1">Partial issues (<%= failed_checks.size + warned_checks.size %>)</p>
+                      <div class="space-y-1">
+                        <% failed_checks.each do |key, check| %>
+                          <div class="flex items-start gap-1.5 text-xs">
+                            <span class="shrink-0 font-mono text-red-500 dark:text-red-400">&#10007;</span>
+                            <span class="text-zinc-700 dark:text-zinc-300"><strong><%= key.humanize %></strong> &mdash; <%= check["note"] %></span>
+                          </div>
+                        <% end %>
+                        <% warned_checks.each do |key, check| %>
+                          <div class="flex items-start gap-1.5 text-xs">
+                            <span class="shrink-0 font-mono text-amber-500 dark:text-amber-400">&#9888;</span>
+                            <span class="text-zinc-700 dark:text-zinc-300"><strong><%= key.humanize %></strong> &mdash; <%= check["note"] %></span>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+                <% end %>
+
+                <%= link_to "View full AI review", admin_ai_review_path(ai_review),
+                      target: "_blank",
+                      class: "text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300" %>
+              </div>
+            </details>
           <% end %>
         <% end %>
 

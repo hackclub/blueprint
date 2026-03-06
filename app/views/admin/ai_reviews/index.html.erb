@@ -93,6 +93,9 @@
             else "text-white"
           end %>
           <span class="<%= status_class %>"><%= review.status.capitalize %></span>
+          <% if review.retry_count > 0 %>
+            <span class="text-white/40 text-sm ml-1">(retry <%= review.retry_count %>)</span>
+          <% end %>
         </div>
         <div class="flex items-center col-span-1">
           <% if review.status_completed? && review.analysis.present? %>

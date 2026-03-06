@@ -55,6 +55,9 @@
             else "text-white"
           end %>
           <span class="<%= status_class %>"><%= @ai_review.status.capitalize %></span>
+          <% if @ai_review.retry_count > 0 %>
+            <span class="text-white/40">(retry <%= @ai_review.retry_count %>)</span>
+          <% end %>
         </div>
         <%
           cost_step = (@ai_review.steps || []).find { |s| s["type"] == "cost_breakdown" }
