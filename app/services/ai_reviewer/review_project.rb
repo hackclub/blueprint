@@ -21,19 +21,48 @@ module AiReviewer
       log "Created AiReview ##{ai_review.id}, status=running"
 
       log "Setting up chat with model=#{MODEL}, tools: GetJournal, GetRepoTree, GetFileContent"
+      tool_call_count = 0
+
       chat = RubyLLM.chat(model: MODEL, provider: PROVIDER)
         .with_tools(
           Tools::GetJournal.new(@project),
           Tools::GetRepoTree.new(@project),
           Tools::GetFileContent.new(@project)
         )
+        .on_tool_call do |tool_call|
+          tool_call_count += 1
+          step = {
+            type: "tool_call",
+            n: tool_call_count,
+            tool: tool_call.name,
+            args: tool_call.arguments,
+            timestamp: Time.current.iso8601
+          }
+          log "Tool call ##{tool_call_count}: #{tool_call.name}(#{tool_call.arguments.to_json.truncate(200)})"
+          ai_review.with_lock do
+            ai_review.update_columns(steps: ai_review.steps + [step])
+          end
+        end
+        .on_tool_result do |result|
+          result_preview = result.to_s.truncate(500)
+          step = {
+            type: "tool_result",
+            n: tool_call_count,
+            result: result_preview,
+            timestamp: Time.current.iso8601
+          }
+          log "Tool result ##{tool_call_count}: #{result_preview.truncate(200)}"
+          ai_review.with_lock do
+            ai_review.update_columns(steps: ai_review.steps + [step])
+          end
+        end
 
       chat.with_instructions(system_prompt)
       log "Sending prompt to #{MODEL}... (this may take a while)"
       response = Timeout.timeout(LLM_TIMEOUT, nil, "LLM call timed out after #{LLM_TIMEOUT.to_i}s") do
         chat.ask(user_prompt)
       end
-      log "Got response (#{response.content.to_s.length} chars)"
+      log "Got response after #{tool_call_count} tool calls (#{response.content.to_s.length} chars)"
 
       analysis = parse_json(response.content)
       if analysis["parse_error"]

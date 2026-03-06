@@ -4,6 +4,7 @@
 #
 #  id                :bigint           not null, primary key
 #  analysis          :jsonb
+#  steps             :jsonb            default([]), not null
 #  completed_at      :datetime
 #  completion_tokens :integer
 #  error_message     :text
