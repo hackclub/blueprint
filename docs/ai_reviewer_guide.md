@@ -78,17 +78,19 @@ By the end of Phase 1, you should be able to explain:
 - Whether the components are appropriate and compatible with each other
 - Whether the design is real and functional
 
-### Research Gate — SubmitResearch (MANDATORY, NO EXCEPTIONS)
+### Research Gate (Automatic)
 
-Before writing your final review, you MUST call the **SubmitResearch** tool with your project summary. A second reviewer will validate whether your research is thorough enough. **There is no way to skip this step.** If your research is not approved, the entire review will fail.
+After you finish researching, your findings will be **automatically validated** by a second reviewer. You do not need to call any tool for this — it happens in the background.
 
-- If it returns **APPROVED**, proceed to Phase 2.
-- If it returns **NEEDS MORE RESEARCH**, carefully read the feedback, do the additional research it asks for, then call SubmitResearch again with an updated summary. You may need to call it multiple times.
-- **Do NOT write your final review until SubmitResearch returns APPROVED.** Any review written without approval will be discarded.
+- If your research is **approved**, you'll be asked to write your final review.
+- If your research is **insufficient**, you'll receive feedback on what's missing. Investigate the gaps using the available tools and provide an updated summary. This may happen multiple times.
+- If your research fails validation after multiple attempts, the review will be marked as failed.
+
+**Your job in Phase 1 is to research thoroughly.** When you're done investigating, write a comprehensive summary of everything you've learned. Do NOT write a review verdict during the research phase.
 
 ### Phase 2: Judgment — Pass or Fail
 
-Only after your research is approved, evaluate the project against the phase-specific checklist. Your response MUST start with a "Project Understanding" section summarizing what you learned, followed by the review and JSON checklist.
+You will be explicitly told when to write your review. Only then, evaluate the project against the phase-specific checklist. Your response MUST start with a "Project Understanding" section summarizing what you learned, followed by the review and JSON checklist.
 
 ---
 
@@ -141,11 +143,6 @@ The project journal and repository file tree are provided in your prompt — you
 
 - **ViewKicadSchematic** / **ViewKicadPcb** — Render a KiCad schematic (.kicad_sch) or PCB layout (.kicad_pcb) file as an image. **ONLY use when no existing screenshots are in the repo.** Check the README first. This is expensive.
   - `path` (string, required): Path to the .kicad_sch or .kicad_pcb file.
-
-### Research Gate
-
-- **SubmitResearch** — **REQUIRED before your final verdict.** Submit your project understanding for validation. A second reviewer checks whether your research covers the key areas: README read, images viewed, code inspected (if applicable), component research done, and BOM links checked. If it says you need more research, follow its instructions before proceeding.
-  - `project_info` (string, required): A detailed list of everything you've learned about the project — what it is, how it works, every key component and what it does, how they connect (voltages, protocols, pins), the build approach, and any concerns. Be specific — cite part numbers and file paths.
 
 ---
 

@@ -45,16 +45,16 @@ module AiReviewer
         Tools::ViewKicadPcb.new(@project, seen_resources: seen_resources),
         Tools::RenderStepFile.new(@project, seen_resources: seen_resources),
         Tools::RenderStlFile.new(@project, seen_resources: seen_resources),
-        Tools::CheckLinkValidity.new(@project),
-        Tools::SubmitResearch.new(@project)
+        Tools::CheckLinkValidity.new(@project)
       ]
+      # SubmitResearch is NOT a tool — it runs automatically in code after the research phase
+      submit_research = Tools::SubmitResearch.new(@project)
       tool_names = all_tools.map { |t| t.class.name.demodulize }.join(", ")
       log "Setting up chat with model=#{MODEL}, tools: #{tool_names}"
       tool_call_count = 0
       cumulative_input_tokens = 0
       cumulative_output_tokens = 0
 
-      submit_research = all_tools.find { |t| t.is_a?(Tools::SubmitResearch) }
       research_assistant = all_tools.find { |t| t.is_a?(Tools::ResearchAssistant) }
 
       # Live-stream nested steps from ResearchAssistant to the DB
@@ -90,8 +90,8 @@ module AiReviewer
           }
           log "##{current_n} #{tool_call.name}(#{tool_call.arguments.to_json.truncate(200)})"
 
-          # Feed tool call history to SubmitResearch (excluding SubmitResearch itself)
-          submit_research&.record_tool_call(tool_call.name, tool_call.arguments) unless tool_call.name == "submit_research"
+          # Feed tool call history to SubmitResearch validator
+          submit_research.record_tool_call(tool_call.name, tool_call.arguments)
 
           ai_review.with_lock do
             steps = ai_review.steps.dup
@@ -130,32 +130,57 @@ module AiReviewer
         end
 
       chat.with_instructions(system_prompt)
-      log "Sending prompt to #{MODEL}... (this may take a while)"
+
+      # Phase 1: Research — model investigates the project using tools
+      log "Phase 1: Research — sending prompt to #{MODEL}..."
       response = Timeout.timeout(LLM_TIMEOUT, nil, "LLM call timed out after #{LLM_TIMEOUT.to_i}s") do
         chat.ask(user_prompt(journal_content, repo_tree_content))
       end
-      log "Got response after #{tool_call_count} tool calls (#{response.content.to_s.length} chars)"
+      log "Research phase done: #{tool_call_count} tool calls, response #{response.content.to_s.length} chars"
       check_cancelled!(ai_review)
 
-      # Enforce SubmitResearch gate: the model must get APPROVED from SubmitResearch before
-      # writing its final review. If it didn't, or if it got NEEDS MORE RESEARCH and forgot
-      # to resubmit, nudge it up to 3 times. If it still can't pass, fail the review.
-      nudge_messages = [
-        "Your research has NOT been approved yet. You must call the SubmitResearch tool with a thorough, updated project summary that includes everything you've learned so far. Do not write your review until SubmitResearch returns APPROVED. Call SubmitResearch now.",
-        "SubmitResearch has still not returned APPROVED. Read the feedback it gave you, address the gaps, and call SubmitResearch again with your complete, updated project summary.",
-        "This is your final attempt. Call SubmitResearch now with a comprehensive summary covering: what the project is, all key components and how they connect, images you viewed, code you read, BOM links you checked, and any concerns. If this doesn't get approved, the review will fail."
-      ]
+      # Research gate: automatically validate research quality in code.
+      # The model cannot skip this — it runs regardless of what the model did.
+      max_gate_attempts = 3
+      gate_attempt = 0
+      research_summary = response.content.to_s
 
-      nudge_messages.each_with_index do |msg, i|
+      while gate_attempt < max_gate_attempts
+        gate_attempt += 1
+        log "Research gate: validating attempt #{gate_attempt}/#{max_gate_attempts}"
+
+        validation_result = submit_research.execute(project_info: research_summary)
+        log "Research gate result: #{validation_result.truncate(200)}"
+
+        # Log the validation as a step
+        ai_review.with_lock do
+          steps = ai_review.steps.dup
+          steps << { type: "research_gate", attempt: gate_attempt, result: validation_result.truncate(2000), timestamp: Time.current.iso8601 }
+          ai_review.update_columns(steps: steps)
+        end
+
         break if submit_research.approved_summary.present?
-        log "SubmitResearch not approved — nudge #{i + 1}/#{nudge_messages.size}"
-        response = Timeout.timeout(LLM_TIMEOUT, nil, "LLM call timed out after #{LLM_TIMEOUT.to_i}s") do
-          chat.ask(msg)
+
+        if gate_attempt < max_gate_attempts
+          # Send the validation feedback back to the model so it can do more research
+          log "Research gate: not approved, sending feedback to model for more research"
+          response = Timeout.timeout(LLM_TIMEOUT, nil, "LLM call timed out after #{LLM_TIMEOUT.to_i}s") do
+            chat.ask("Your research was reviewed and found insufficient. Here is the feedback:\n\n#{validation_result}\n\nAddress the gaps above using the available tools, then provide an updated comprehensive summary of everything you've learned. Do NOT write a review yet — just summarize your research findings.")
+          end
+          check_cancelled!(ai_review)
+          research_summary = response.content.to_s
         end
       end
 
       if submit_research.approved_summary.nil?
-        raise "SubmitResearch gate never approved after #{nudge_messages.size} nudges — research was insufficient"
+        raise "Research gate failed after #{max_gate_attempts} attempts — research was insufficient"
+      end
+      log "Research gate: APPROVED on attempt #{gate_attempt}"
+
+      # Phase 2: Judgment — ask the model to write the final review
+      log "Phase 2: Judgment — requesting final review..."
+      response = Timeout.timeout(LLM_TIMEOUT, nil, "LLM call timed out after #{LLM_TIMEOUT.to_i}s") do
+        chat.ask("Your research has been validated and approved. Now write your final review. Evaluate the project against the checklist. Your response MUST include: Project Understanding, Review Summary with Result: PASS or FAIL, Feedback, and the JSON checklist.")
       end
 
       # Detect Gemini tool_code bug: model outputs Python-style function calls as text
@@ -210,7 +235,7 @@ module AiReviewer
       total = cumulative_input_tokens + cumulative_output_tokens
       log "Tokens: #{cumulative_input_tokens} in + #{cumulative_output_tokens} out = #{total} total (across all turns)"
 
-      breakdown = build_cost_breakdown(cumulative_input_tokens, cumulative_output_tokens, all_tools)
+      breakdown = build_cost_breakdown(cumulative_input_tokens, cumulative_output_tokens, all_tools, submit_research)
       estimated_cost_cents = breakdown[:total_cost_cents]
       log "Estimated cost: $#{'%.4f' % (estimated_cost_cents / 100.0)} (#{estimated_cost_cents} cents)"
 
@@ -404,7 +429,9 @@ module AiReviewer
       lines << ""
       lines << repo_tree_content
       lines << ""
-      lines << "Begin your analysis. The journal and file tree are above — start by reading the README and BOM with GetFileContent."
+      lines << "Begin your research. The journal and file tree are above — start by reading the README and BOM with GetFileContent."
+      lines << ""
+      lines << "**IMPORTANT:** This is the research phase only. Investigate the project thoroughly using the tools available. When you've finished researching, write a comprehensive summary of everything you've learned — what the project is, how it works, all key components, how they connect, images you viewed, code you read, BOM links checked, and any concerns. Do NOT write a review verdict yet — your research will be validated first."
 
       lines.join("\n")
     end
@@ -414,9 +441,9 @@ module AiReviewer
     # gpt-5-nano:        $0.05 input, $0.40 output (SubmitResearch, ResearchAssistant)
     # claude-3.5-haiku:  $1.00 input, $5.00 output (Oracle)
     # Bright Data SERP:  $1.50 per 1,000 requests
-    def build_cost_breakdown(input_tokens, output_tokens, tools)
+    def build_cost_breakdown(input_tokens, output_tokens, tools, sr = nil)
       oracle = tools.find { |t| t.is_a?(Tools::Oracle) }
-      sr = tools.find { |t| t.is_a?(Tools::SubmitResearch) }
+      sr ||= tools.find { |t| t.is_a?(Tools::SubmitResearch) }
       ra = tools.find { |t| t.is_a?(Tools::ResearchAssistant) }
 
       agents = []
