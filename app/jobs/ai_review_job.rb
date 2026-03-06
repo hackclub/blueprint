@@ -9,6 +9,11 @@ class AiReviewJob < ApplicationJob
     end
 
     unless force
+      if %w[hackpad led].include?(project.ysws)
+        Rails.logger.info("[AiReviewer] Job skipped: project ##{project_id} is #{project.ysws} (not supported)")
+        return
+      end
+
       recent_completed = project.ai_reviews
         .where(review_phase: review_phase, status: :completed)
         .where("created_at > ?", 1.hour.ago)
