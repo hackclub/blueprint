@@ -6,7 +6,7 @@ class Admin::AiReviewsController < Admin::ApplicationController
 
   def index
     @counts = {
-      queued: AiReview.status_queued.count,
+      queued: SolidQueue::Job.where(queue_name: "ai_reviewer").where.not(id: SolidQueue::ClaimedExecution.select(:job_id)).count,
       running: AiReview.status_running.count,
       completed: AiReview.status_completed.count,
       failed: AiReview.status_failed.count
