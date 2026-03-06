@@ -139,26 +139,23 @@ module AiReviewer
 
       # Enforce SubmitResearch gate: the model must get APPROVED from SubmitResearch before
       # writing its final review. If it didn't, or if it got NEEDS MORE RESEARCH and forgot
-      # to resubmit, nudge it.
-      if submit_research.approved_summary.nil?
-        log "SubmitResearch not approved — re-prompting model"
+      # to resubmit, nudge it up to 3 times. If it still can't pass, fail the review.
+      nudge_messages = [
+        "Your research has NOT been approved yet. You must call the SubmitResearch tool with a thorough, updated project summary that includes everything you've learned so far. Do not write your review until SubmitResearch returns APPROVED. Call SubmitResearch now.",
+        "SubmitResearch has still not returned APPROVED. Read the feedback it gave you, address the gaps, and call SubmitResearch again with your complete, updated project summary.",
+        "This is your final attempt. Call SubmitResearch now with a comprehensive summary covering: what the project is, all key components and how they connect, images you viewed, code you read, BOM links you checked, and any concerns. If this doesn't get approved, the review will fail."
+      ]
+
+      nudge_messages.each_with_index do |msg, i|
+        break if submit_research.approved_summary.present?
+        log "SubmitResearch not approved — nudge #{i + 1}/#{nudge_messages.size}"
         response = Timeout.timeout(LLM_TIMEOUT, nil, "LLM call timed out after #{LLM_TIMEOUT.to_i}s") do
-          chat.ask("Your research has NOT been approved yet. You must call the SubmitResearch tool with a thorough, updated project summary that includes everything you've learned so far. Do not write your review until SubmitResearch returns APPROVED. Call SubmitResearch now.")
+          chat.ask(msg)
         end
+      end
 
-        if submit_research.approved_summary.nil?
-          log "SubmitResearch still not approved after first nudge — trying once more"
-          response = Timeout.timeout(LLM_TIMEOUT, nil, "LLM call timed out after #{LLM_TIMEOUT.to_i}s") do
-            chat.ask("SubmitResearch has still not returned APPROVED. Call SubmitResearch now with your complete project summary, then write your final review.")
-          end
-        end
-
-        if submit_research.approved_summary.nil?
-          log "SubmitResearch gate failed after 2 nudges — bypassing and requesting final review", level: :warn
-          response = Timeout.timeout(LLM_TIMEOUT, nil, "LLM call timed out after #{LLM_TIMEOUT.to_i}s") do
-            chat.ask("The research validation step is unavailable. Skip it and write your final review now based on what you've already learned. Include Project Understanding, Review Summary with Result: PASS or FAIL, Feedback, and the JSON checklist.")
-          end
-        end
+      if submit_research.approved_summary.nil?
+        raise "SubmitResearch gate never approved after #{nudge_messages.size} nudges — research was insufficient"
       end
 
       # Detect Gemini tool_code bug: model outputs Python-style function calls as text

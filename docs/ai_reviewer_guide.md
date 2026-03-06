@@ -78,12 +78,13 @@ By the end of Phase 1, you should be able to explain:
 - Whether the components are appropriate and compatible with each other
 - Whether the design is real and functional
 
-### Research Gate — SubmitResearch (REQUIRED)
+### Research Gate — SubmitResearch (MANDATORY, NO EXCEPTIONS)
 
-Before writing your final review, you MUST call the **SubmitResearch** tool with your project summary. A second reviewer will validate whether your research is thorough enough.
+Before writing your final review, you MUST call the **SubmitResearch** tool with your project summary. A second reviewer will validate whether your research is thorough enough. **There is no way to skip this step.** If your research is not approved, the entire review will fail.
 
 - If it returns **APPROVED**, proceed to Phase 2.
-- If it returns **NEEDS MORE RESEARCH**, follow its instructions and investigate what's missing, then call SubmitResearch again.
+- If it returns **NEEDS MORE RESEARCH**, carefully read the feedback, do the additional research it asks for, then call SubmitResearch again with an updated summary. You may need to call it multiple times.
+- **Do NOT write your final review until SubmitResearch returns APPROVED.** Any review written without approval will be discarded.
 
 ### Phase 2: Judgment — Pass or Fail
 
