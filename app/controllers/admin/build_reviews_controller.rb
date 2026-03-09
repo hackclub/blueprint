@@ -8,6 +8,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     flash.now[:notice] = "Review session ended." if released > 0
 
     waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'build_pending')"
+    first_waiting_since_sql = "(SELECT MIN(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'build_pending')"
 
     claim_cutoff = Reviews::ClaimProject::TTL.ago
 
@@ -39,6 +40,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
                           "projects.*",
                           "(#{pre_reviewed_exists_sql}) AS pre_reviewed",
                           "#{waiting_since_sql} AS waiting_since",
+                          "#{first_waiting_since_sql} AS first_waiting_since",
                           "#{last_review_entry_at_sql} AS last_review_entry_at",
                           "COALESCE(SUM(CASE WHEN journal_entries.id IS NOT NULL AND (journal_entries.created_at > #{last_review_entry_at_sql} OR #{last_review_entry_at_sql} IS NULL) THEN journal_entries.duration_seconds ELSE 0 END), 0) AS hours_since_last_review_seconds",
                           "COUNT(CASE WHEN journal_entries.id IS NOT NULL AND (journal_entries.created_at > #{last_review_entry_at_sql} OR #{last_review_entry_at_sql} IS NULL) THEN 1 END) AS entries_since_last_review_count"
@@ -54,6 +56,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
                         .select(
                           "projects.*",
                           "#{waiting_since_sql} AS waiting_since",
+                          "#{first_waiting_since_sql} AS first_waiting_since",
                           "#{last_review_entry_at_sql} AS last_review_entry_at",
                           "COALESCE(SUM(CASE WHEN journal_entries.id IS NOT NULL AND (journal_entries.created_at > #{last_review_entry_at_sql} OR #{last_review_entry_at_sql} IS NULL) THEN journal_entries.duration_seconds ELSE 0 END), 0) AS hours_since_last_review_seconds",
                           "COUNT(CASE WHEN journal_entries.id IS NOT NULL AND (journal_entries.created_at > #{last_review_entry_at_sql} OR #{last_review_entry_at_sql} IS NULL) THEN 1 END) AS entries_since_last_review_count"

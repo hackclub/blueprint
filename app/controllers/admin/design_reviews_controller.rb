@@ -8,6 +8,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
     flash.now[:notice] = "Review session ended." if released > 0
 
     waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'design_pending')"
+    first_waiting_since_sql = "(SELECT MIN(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'design_pending')"
 
     claim_cutoff = Reviews::ClaimProject::TTL.ago
 
@@ -23,6 +24,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                           "projects.*",
                           "(#{pre_reviewed_exists_sql}) AS pre_reviewed",
                           "#{waiting_since_sql} AS waiting_since",
+                          "#{first_waiting_since_sql} AS first_waiting_since",
                           "COALESCE(SUM(journal_entries.duration_seconds), 0) AS total_duration_seconds",
                           "COUNT(journal_entries.id) AS journal_entries_count"
                         )
@@ -37,6 +39,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
                         .select(
                           "projects.*",
                           "#{waiting_since_sql} AS waiting_since",
+                          "#{first_waiting_since_sql} AS first_waiting_since",
                           "COALESCE(SUM(journal_entries.duration_seconds), 0) AS total_duration_seconds",
                           "COUNT(journal_entries.id) AS journal_entries_count"
                         )

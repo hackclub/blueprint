@@ -124,15 +124,18 @@
             <%= project[:entries_since_last_review_count].to_i %>
           </div>
           <div class="flex items-center col-span-2">
-            <% start_time = project[:waiting_since] %>
-            <% if start_time %>
-              <% waiting_time = now - start_time %>
-              <% days = (waiting_time / 1.day).floor %>
-              <% hours_remaining = ((waiting_time % 1.day) / 1.hour).floor %>
-              <% if days > 0 %>
-                <%= "#{days}d #{hours_remaining}h" %>
+            <% last_time = project[:waiting_since] %>
+            <% first_time = project[:first_waiting_since] %>
+            <% if last_time %>
+              <%
+                fmt = ->(t) { secs = now - t; secs < 1.hour ? "<1h" : secs < 1.day ? "#{(secs / 1.hour).floor}h" : "#{(secs / 1.day).floor}d" }
+                last_str = fmt.call(last_time)
+                first_str = first_time ? fmt.call(first_time) : last_str
+              %>
+              <% if last_str == first_str %>
+                <%= last_str %>
               <% else %>
-                <%= "#{hours_remaining}h" %>
+                <%= "#{last_str} / #{first_str}" %>
               <% end %>
             <% else %>
               –
