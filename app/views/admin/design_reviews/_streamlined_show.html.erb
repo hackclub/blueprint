@@ -48,7 +48,7 @@
     <div class="flex items-center gap-2">
       <%= link_to "End Session", admin_design_reviews_path,
             class: "px-3 py-1.5 rounded text-sm font-medium bg-zinc-200 hover:bg-zinc-300 text-zinc-700 border border-zinc-300 transition-colors dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 dark:border-zinc-700" %>
-      <%= link_to "Skip", admin_next_design_review_path(after: project.id, ysws_type: params[:ysws_type]),
+      <%= link_to "Skip", admin_next_design_review_path(skipped: accumulated_skipped(project), ysws_type: params[:ysws_type]),
             class: "px-3 py-1.5 rounded text-sm font-medium hover:bg-zinc-100 text-zinc-500 hover:text-zinc-800 transition-colors dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200" %>
     </div>
 
@@ -115,7 +115,7 @@
                   Lock expires ~<%= distance_of_time_in_words(project.design_review_claimed_at + 20.minutes, Time.current) %>. The review form is disabled.
                 </p>
               </div>
-              <%= link_to "Skip to Next", admin_next_design_review_path(after: project.id),
+              <%= link_to "Skip to Next", admin_next_design_review_path(skipped: accumulated_skipped(project)),
                     class: "shrink-0 text-xs px-2.5 py-1.5 rounded bg-amber-100 hover:bg-amber-200 text-amber-700 border border-amber-300 transition-colors dark:bg-amber-900/40 dark:hover:bg-amber-900/70 dark:text-amber-300 dark:border-amber-700" %>
             </div>
           </div>
@@ -639,6 +639,7 @@
                 method: :post,
                 html: { class: "space-y-2" } do |f| %>
             <%= hidden_field_tag :ysws_type, params[:ysws_type] if params[:ysws_type].present? %>
+            <%= hidden_field_tag :skipped, params[:skipped] if params[:skipped].present? %>
 
             <%# Overrides: Hours + Grant | Tier + Guide %>
             <div class="grid grid-cols-2 gap-2">
@@ -728,7 +729,7 @@
                 <span data-review-keys-target="rejectLabelSpan">Perm Reject</span>
                 <kbd class="text-xs font-mono px-1 py-px rounded border border-red-300 bg-red-100 text-red-400 dark:border-red-700/40 dark:bg-black/20 dark:text-red-400/60">⌘K</kbd>
               <% end %>
-              <%= link_to admin_next_design_review_path(after: project.id, ysws_type: params[:ysws_type]),
+              <%= link_to admin_next_design_review_path(skipped: accumulated_skipped(project), ysws_type: params[:ysws_type]),
                     class: "px-3 py-2 rounded text-sm font-medium text-center bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-300 transition-colors flex items-center justify-center gap-1.5 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 dark:border-zinc-700",
                     data: { "review-keys-target": "skipBtn" } do %>
                 Skip

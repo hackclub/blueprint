@@ -100,10 +100,12 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   end
 
   def show_next
-    project_id = next_project_in_queue(:build, after_project_id: params[:after])
+    exclude_ids = params[:skipped].to_s.split(",").map(&:to_i).reject(&:zero?)
+    project_id = next_project_in_queue(:build, exclude_ids: exclude_ids)
 
     if project_id
       redirect_params = {}
+      redirect_params[:skipped] = params[:skipped] if params[:skipped].present?
       redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
       redirect_to admin_build_review_path(project_id, redirect_params)
     else
@@ -122,7 +124,8 @@ class Admin::BuildReviewsController < Admin::ApplicationController
       Reviews::ClaimProject.release!(project: @project, reviewer: current_user, type: :build)
       update_project_review_status(@project, @build_review)
 
-      redirect_params = { after: @project.id }
+      redirect_params = {}
+      redirect_params[:skipped] = params[:skipped] if params[:skipped].present?
       redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
       redirect_to admin_next_build_review_path(redirect_params), notice: "Build review submitted successfully."
     else
@@ -134,11 +137,11 @@ class Admin::BuildReviewsController < Admin::ApplicationController
 
   private
 
-  def next_project_in_queue(type, after_project_id: nil)
+  def next_project_in_queue(type, exclude_ids: [])
     claim_cutoff = Reviews::ClaimProject::TTL.ago
     waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'build_pending')"
 
-    # Get reviewed project IDs (for non-admin filtering)
+    # Get reviewed project IDs (for non-admin filtering and admin prioritization)
     reviewed_ids = Project.joins(:build_reviews)
                           .where(is_deleted: false, review_status: :build_pending)
                           .where(build_reviews: { invalidated: false })
@@ -157,19 +160,8 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     # Apply ysws filter
     base = apply_ysws_filter(base)
 
-    # If after_project_id is provided, only show projects waiting less time (came after in queue)
-    if after_project_id.present?
-      after_project = Project.find_by(id: after_project_id)
-      if after_project
-        after_waiting_since = Project.where(id: after_project_id)
-                                     .select(waiting_since_sql)
-                                     .take
-                                     &.attributes&.values&.first
-        if after_waiting_since
-          base = base.where("#{waiting_since_sql} > ?", after_waiting_since)
-        end
-      end
-    end
+    # Exclude specifically skipped projects
+    base = base.where.not(id: exclude_ids) if exclude_ids.any?
 
     # For admins, prioritize pre-reviewed projects first, then by waiting time
     if current_user.admin?
@@ -186,6 +178,11 @@ class Admin::BuildReviewsController < Admin::ApplicationController
           .pick(:id)
     end
   end
+
+  def accumulated_skipped(project)
+    [params[:skipped], project.id].compact_blank.join(",")
+  end
+  helper_method :accumulated_skipped
 
   def build_review_params
     params.require(:build_review).permit(:reason, :feedback, :result, :ticket_multiplier, :ticket_offset, :tier_override, :hours_override)

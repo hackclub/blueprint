@@ -8,14 +8,14 @@
       <p class="font-bold text-xl">⚠️ This project is currently being reviewed by <%= @project.design_review_claimed_by.display_name %></p>
       <p class="mt-2">Their claim will expire in approximately <%= distance_of_time_in_words(@project.design_review_claimed_at + 20.minutes, Time.current) %>. You can still view the project, but the review form is disabled.</p>
       <div class="mt-4">
-        <%= render "shared/button", text: "Skip to Next Project", url: admin_next_design_review_path(after: @project.id), class: "py-1" %>
+        <%= render "shared/button", text: "Skip to Next Project", url: admin_next_design_review_path(skipped: accumulated_skipped(@project)), class: "py-1" %>
       </div>
     </div>
   <% end %>
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <%= render "shared/button", text: "Back", url: admin_design_reviews_path, class: "py-0" %>
-      <%= link_to "Skip", admin_next_design_review_path(after: @project.id, ysws_type: params[:ysws_type]), class: "btn btn-outline py-0" %>
+      <%= link_to "Skip", admin_next_design_review_path(skipped: accumulated_skipped(@project), ysws_type: params[:ysws_type]), class: "btn btn-outline py-0" %>
     </div>
     <div class="flex items-center gap-2">
       <%= render "shared/button", text: "HCB", url: "https://hcb.hackclub.com/ysws-blueprint/card_grants/card_overview?q=#{ERB::Util.url_encode(@project.user.email)}&event_id=ysws-blueprint", class: "py-0", variant: :outline %>
@@ -240,6 +240,7 @@
     <fieldset <%= "disabled" if @claimed_by_other %>>
     <%= form_with model: @design_review, url: admin_design_review_create_path(@project), method: :post, html: { class: "space-y-6" } do |f| %>
       <%= hidden_field_tag :ysws_type, params[:ysws_type] if params[:ysws_type].present? %>
+      <%= hidden_field_tag :skipped, params[:skipped] if params[:skipped].present? %>
       <div>
         <%= f.label :hours_override, "Hours Override", class: "block text-xl font-medium" %>
         <%= f.number_field :hours_override, step: 0.01, placeholder: "Leave blank to use calculated hours (#{@project.journal_entries.sum(:duration_seconds) / 3600.0})", class: "input px-3 mt-1 block w-full" %>
@@ -276,7 +277,7 @@
         <%= f.button "Approve", type: "submit", name: "design_review[result]", value: "approved", class: "btn btn-primary flex-1 bg-bp-success border-bp-success", data: { turbo_confirm: "Are you sure you want to approve #{@project.title}?" } %>
         <%= f.button "Return", type: "submit", name: "design_review[result]", value: "returned", class: "btn btn-primary flex-1 bg-bp-warning border-bp-warning" %>
         <%= f.button "Permanently Reject", type: "submit", name: "design_review[result]", value: "rejected", class: "btn btn-primary flex-1 bg-bp-danger border-bp-danger", data: { turbo_confirm: "Are you sure you want to permanently reject #{@project.title}?" } %>
-        <%= link_to "Skip", admin_next_design_review_path(after: @project.id, ysws_type: params[:ysws_type]), class: "btn btn-outline flex-1" %>
+        <%= link_to "Skip", admin_next_design_review_path(skipped: accumulated_skipped(@project), ysws_type: params[:ysws_type]), class: "btn btn-outline flex-1" %>
       </div>
     <% end %>
     </fieldset>

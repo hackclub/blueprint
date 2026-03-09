@@ -86,10 +86,12 @@ class Admin::DesignReviewsController < Admin::ApplicationController
   end
 
   def show_next
-    project_id = next_project_in_queue(:design, after_project_id: params[:after])
+    exclude_ids = params[:skipped].to_s.split(",").map(&:to_i).reject(&:zero?)
+    project_id = next_project_in_queue(:design, exclude_ids: exclude_ids)
 
     if project_id
       redirect_params = {}
+      redirect_params[:skipped] = params[:skipped] if params[:skipped].present?
       redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
       redirect_to admin_design_review_path(project_id, redirect_params)
     else
@@ -112,7 +114,8 @@ class Admin::DesignReviewsController < Admin::ApplicationController
       end
       update_project_review_status(@project, @design_review)
 
-      redirect_params = { after: @project.id }
+      redirect_params = {}
+      redirect_params[:skipped] = params[:skipped] if params[:skipped].present?
       redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
       redirect_to admin_next_design_review_path(redirect_params), notice: "Design review submitted successfully."
     else
@@ -124,11 +127,11 @@ class Admin::DesignReviewsController < Admin::ApplicationController
 
   private
 
-  def next_project_in_queue(type, after_project_id: nil)
+  def next_project_in_queue(type, exclude_ids: [])
     claim_cutoff = Reviews::ClaimProject::TTL.ago
     waiting_since_sql = "(SELECT MAX(versions.created_at) FROM versions WHERE versions.item_type = 'Project' AND versions.item_id = projects.id AND versions.event = 'update' AND jsonb_exists(versions.object_changes, 'review_status') AND versions.object_changes->'review_status'->>1 = 'design_pending')"
 
-    # Get reviewed project IDs (for non-admin filtering)
+    # Get reviewed project IDs (for non-admin filtering and admin prioritization)
     reviewed_ids = Project.joins(:design_reviews)
                           .where(is_deleted: false, review_status: :design_pending)
                           .where(design_reviews: { invalidated: false })
@@ -147,19 +150,8 @@ class Admin::DesignReviewsController < Admin::ApplicationController
     # Apply ysws filter
     base = apply_ysws_filter(base)
 
-    # If after_project_id is provided, only show projects waiting less time (came after in queue)
-    if after_project_id.present?
-      after_project = Project.find_by(id: after_project_id)
-      if after_project
-        after_waiting_since = Project.where(id: after_project_id)
-                                     .select(waiting_since_sql)
-                                     .take
-                                     &.attributes&.values&.first
-        if after_waiting_since
-          base = base.where("#{waiting_since_sql} > ?", after_waiting_since)
-        end
-      end
-    end
+    # Exclude specifically skipped projects
+    base = base.where.not(id: exclude_ids) if exclude_ids.any?
 
     # For admins, prioritize pre-reviewed projects first, then by waiting time
     if current_user.admin?
@@ -176,6 +168,11 @@ class Admin::DesignReviewsController < Admin::ApplicationController
           .pick(:id)
     end
   end
+
+  def accumulated_skipped(project)
+    [params[:skipped], project.id].compact_blank.join(",")
+  end
+  helper_method :accumulated_skipped
 
   def design_review_params
     params.require(:design_review).permit(:hours_override, :reason, :grant_override_cents, :result, :feedback, :tier_override)

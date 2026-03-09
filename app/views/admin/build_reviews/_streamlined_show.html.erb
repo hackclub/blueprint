@@ -8,7 +8,7 @@
     <div class="flex items-center gap-2">
       <%= link_to "End Session", admin_build_reviews_path,
             class: "px-3 py-1.5 rounded text-sm font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-colors" %>
-      <%= link_to "Skip", admin_next_build_review_path(after: project.id, ysws_type: params[:ysws_type]),
+      <%= link_to "Skip", admin_next_build_review_path(skipped: accumulated_skipped(project), ysws_type: params[:ysws_type]),
             class: "px-3 py-1.5 rounded text-sm font-medium hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors" %>
     </div>
 
@@ -281,7 +281,7 @@
           <p class="font-medium text-amber-400">Claimed by <%= project.build_review_claimed_by.display_name %></p>
           <p class="text-amber-500/80 text-xs mt-0.5">Expires ~<%= distance_of_time_in_words(project.build_review_claimed_at + 20.minutes, Time.current) %>. Form disabled.</p>
           <div class="mt-2">
-            <%= link_to "Skip to Next", admin_next_build_review_path(after: project.id),
+            <%= link_to "Skip to Next", admin_next_build_review_path(skipped: accumulated_skipped(project)),
                   class: "text-xs px-2 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-colors" %>
           </div>
         </div>
@@ -320,6 +320,7 @@
                   }
                 } do |f| %>
             <%= hidden_field_tag :ysws_type, params[:ysws_type] if params[:ysws_type].present? %>
+            <%= hidden_field_tag :skipped, params[:skipped] if params[:skipped].present? %>
 
             <%# Overrides: 2-column grid %>
             <div class="grid grid-cols-2 gap-2">
@@ -410,7 +411,7 @@
                     class: "px-3 py-2 rounded text-sm font-medium bg-red-900 hover:bg-red-800 text-red-100 border border-red-700 transition-colors",
                     data: { turbo_confirm: "Permanently reject #{project.title}?" } %>
               <%= link_to "Skip",
-                    admin_next_build_review_path(after: project.id, ysws_type: params[:ysws_type]),
+                    admin_next_build_review_path(skipped: accumulated_skipped(project), ysws_type: params[:ysws_type]),
                     class: "px-3 py-2 rounded text-sm font-medium text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-colors" %>
             </div>
           <% end %>
