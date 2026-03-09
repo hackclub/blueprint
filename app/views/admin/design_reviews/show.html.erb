@@ -44,7 +44,20 @@
       <div class="flex flex-col justify-between space-y-1 flex-1">
         <h1 class="pb-2 text-4xl">Project #<%= @project.id %>, <%= link_to @project.title, admin_project_path(@project), class: "underline" %></h1>
         <div>
-          <p>By <%= render "shared/user_inline", user: @project.user, admin_view: true %> on <%= @project.created_at.strftime("%B %d, %Y") %></p>
+          <p>By <%= render "shared/user_inline", user: @project.user, admin_view: true %> on <%= @project.created_at.strftime("%B %d, %Y") %>
+          <% if @waiting_since %>
+            <%
+              now = Time.current
+              fmt = ->(t) { secs = now - t; secs < 1.hour ? "<1h" : secs < 1.day ? "#{(secs / 1.hour).floor}h" : "#{(secs / 1.day).floor}d" }
+              last_str = fmt.call(@waiting_since)
+              first_str = @first_waiting_since ? fmt.call(@first_waiting_since) : last_str
+            %>
+            &middot; Waiting <%= last_str %>
+            <% if last_str != first_str %>
+              (<%= first_str %> total)
+            <% end %>
+          <% end %>
+          </p>
         </div>
       <div class="flex justify-start text-xl mt-4">
         <% if @project.tier.present? %>

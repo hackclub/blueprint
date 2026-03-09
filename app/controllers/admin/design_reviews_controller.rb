@@ -86,6 +86,13 @@ class Admin::DesignReviewsController < Admin::ApplicationController
     @claimed_by_other = Reviews::ClaimProject.claimed_by_other?(project: @project, reviewer: current_user, type: :design)
     @design_review = @project.design_reviews.build
     @ai_review = @project.latest_ai_review("design") if Flipper.enabled?(:ai_reviewer)
+
+    # Waiting time: last and first time project entered design_pending
+    pending_versions = PaperTrail::Version.where(item_type: "Project", item_id: @project.id, event: "update")
+                        .where("jsonb_exists(object_changes, 'review_status')")
+                        .where("object_changes->'review_status'->>1 = ?", "design_pending")
+    @waiting_since = pending_versions.maximum(:created_at)
+    @first_waiting_since = pending_versions.minimum(:created_at)
   end
 
   def show_next

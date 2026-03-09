@@ -156,6 +156,18 @@
                     <% if project.ysws == "hackpad" && project.approx_hour.present? %>
                       &middot; Self-reported: <span class="text-zinc-700 dark:text-zinc-300"><%= project.approx_hour %>h</span>
                     <% end %>
+                    <% if @waiting_since %>
+                      <%
+                        now = Time.current
+                        fmt = ->(t) { secs = now - t; secs < 1.hour ? "<1h" : secs < 1.day ? "#{(secs / 1.hour).floor}h" : "#{(secs / 1.day).floor}d" }
+                        last_str = fmt.call(@waiting_since)
+                        first_str = @first_waiting_since ? fmt.call(@first_waiting_since) : last_str
+                      %>
+                      &middot; Waiting <span class="text-zinc-700 dark:text-zinc-300"><%= last_str %></span>
+                      <% if last_str != first_str %>
+                        (<span class="text-zinc-700 dark:text-zinc-300"><%= first_str %></span> total)
+                      <% end %>
+                    <% end %>
                   </span>
                   <% if current_user.admin? %>
                     <% u = project.user
