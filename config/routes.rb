@@ -163,6 +163,8 @@ Rails.application.routes.draw do
   get "explore" => "projects#explore", as: :explore
   get "leaderboard" => "leaderboards#index", as: :leaderboard
 
+  get "guilds" => "guilds#index", as: :guilds
+
   get "toolbag" => "toolbag#index", as: :toolbag
 
   get "users/me", to: "users#me", as: :me
