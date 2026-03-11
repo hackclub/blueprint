@@ -1,4 +1,193 @@
-<div>
-  <h1 class="font-bold text-4xl">Guilds</h1>
-  <p class="mt-4">Under construction...</p>
-</div>
+<section class="flex justify-center">
+  <div class="w-full max-w-6xl space-y-4">
+
+    <div class="py-2 md:py-4 space-y-1">
+      <h1 class="text-3xl md:text-5xl font-bold">Build Guilds!</h1>
+      <p class="text-lg md:text-xl text-white/90 leading-relaxed">
+        Guilds are local hardware meetups happening in cities around the world at the end of Blueprint!
+        <br>Guilds will take place <strong>April 6th-12th</strong>
+      </p>
+      <div class="w-full h-48 bg-bp-dark rounded-sm shadow-md flex items-center justify-center mt-4">
+        <span class="text-white/50">[artwork here]</span>
+      </div>
+    </div>
+
+    <%= render 'shared/card', class: 'flex flex-col md:flex-row gap-4 md:gap-8 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
+      <div class="flex-1 space-y-4">
+        <h2 class="text-2xl md:text-3xl font-semibold text-white">Overview</h2>
+
+        <div class="space-y-3">
+          <h3 class="text-xl font-semibold text-bp-warning">What Are Guilds?</h3>
+          <p class="text-white/90 leading-relaxed">
+            Build guilds are Hack Club hardware meetups. Each guild is different, some focus on workshops, some on project demos, and others just on building projects together and hanging out.
+          </p>
+
+          <h3 class="text-xl font-semibold text-bp-warning">Where Will Guilds Take Place?</h3>
+          <p class="text-white/90 leading-relaxed">
+            Guilds are hosted in cities around the world at safe, hardware-friendly venues such as community spaces, makerspaces, or schools. Organizers will select the location and communicate with the venue.
+          </p>
+
+          <h3 class="text-xl font-semibold text-bp-warning">When Will Guilds Take Place?</h3>
+          <p class="text-white/90 leading-relaxed">
+            All guilds will happen during the week of <strong>April 6th-12th</strong>, around a week after Blueprint has ended.
+          </p>
+
+          <h3 class="text-xl font-semibold text-bp-warning">Why Participate?</h3>
+          <p class="text-white/90 leading-relaxed">
+            Meet other Blueprint participants IRL from your local area, learn new skills, show off your hardware projects, and have fun!
+          </p>
+
+          <h3 class="text-xl font-semibold text-bp-warning">Who Can Join?</h3>
+          <p class="text-white/90 leading-relaxed">
+            Any Hack Club member with an approved Blueprint project can participate in or organize a guild.
+          </p>
+
+          <h3 class="text-xl font-semibold text-bp-warning">How To Join</h3>
+          <p class="text-white/90 leading-relaxed">
+            Fill out the sign-up form below. You can register as an organizer or attendee. 
+            If you'd like to organize, tell us a bit about some ideas you have for what you'd like to run at your guild; this doesn't have to be final! We'll be in touch soon.
+          </p>
+        </div>
+      </div>
+
+      <figure class="flex flex-col items-center w-full md:w-72 space-y-2">
+        <div class="h-40 w-full bg-bp-dark rounded-sm shadow-md flex items-center justify-center">
+          <span class="text-white/50">[Mystic Tavern image]</span>
+        </div>
+        <figcaption class="text-sm text-white/60 text-center">
+          Hack Clubbers at Mystic Tavern - a global meetup that happened at the end of High Seas
+        </figcaption>
+
+        <div class="h-40 w-full bg-bp-dark rounded-sm shadow-md flex items-center justify-center mt-4">
+          <span class="text-white/50">[image 2]</span>
+        </div>
+        <figcaption class="text-sm text-white/60 text-center">
+          caption 2
+        </figcaption>
+
+        <div class="h-40 w-full bg-bp-dark rounded-sm shadow-md flex items-center justify-center mt-4">
+          <span class="text-white/50">[image 3]</span>
+        </div>
+        <figcaption class="text-sm text-white/60 text-center">
+          caption 3
+        </figcaption>
+      </figure>
+    <% end %>
+
+    <%= render 'shared/card', class: 'flex flex-col space-y-6 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
+      <h2 class="text-2xl md:text-3xl font-semibold text-white">Information for Organizers</h2>
+
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <h3 class="text-xl font-semibold text-bp-warning">Who Can Organize a Guild?</h3>
+          <p class="text-white/90 leading-relaxed">
+            Anyone with an approved Blueprint project can organize a guild. There are no extra requirements – 
+            you don't have to be really good at coding or have organized events before, just be excited to run a meetup and be able to commit time to organizing and running it.
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <h3 class="text-xl font-semibold text-bp-warning">What Can You Do at a Guild?</h3>
+          <p class="text-white/90 leading-relaxed">
+            Guilds are very flexible! You can host workshops, show off projects, or run any wacky activities, provided they are safe and cost-effective. Here are some ideas:
+          </p>
+          <ul class="list-disc list-inside space-y-1 text-white/90">
+            <li>SMD soldering workshop</li>
+            <li>Blueprint project demos</li>
+            <li>Group build sessions</li>
+            <li>Lightning talks from attendees or invited speakers</li>
+            <li>Soldering Speed Olympics</li>
+            <li>LED hat decorating</li>
+          </ul>
+        </div>
+
+        <div class="space-y-2">
+          <h3 class="text-xl font-semibold text-bp-warning">What Do Organizers Do?</h3>
+          <ul class="list-disc list-inside space-y-1 text-white/90">
+            <li>Choose a day between April 6th-12th to run your guild</li>
+            <li>Find a space for your guild and get permission to bring the hardware and run the activities you want</li>
+            <li>Manage logistics like food and materials</li>
+            <li>Manage sign-ups and communications</li>
+            <li>Make it magical for people!</li>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+
+    <%= render 'shared/card', class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
+      <h2 class="text-2xl md:text-3xl font-semibold text-white">Sign Up!</h2>
+      <p class="text-white/90 leading-relaxed">
+        Fill out the form below to register as an organizer or attendee for a guild in your city between April 6th–12th.
+      </p>
+
+      <form action="#" method="post" class="flex flex-col gap-4 max-w-xl w-full">
+        <div class="flex gap-4">
+          <button type="button" id="organizer-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-sm py-3"
+                  onclick="selectRole('organizer')">Organizer</button>
+          <button type="button" id="attendee-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-sm py-3"
+                  onclick="selectRole('attendee')">Attendee</button>
+        </div>
+
+        <input type="hidden" name="role" id="role-field" value="">
+
+        <input
+          type="text"
+          name="name"
+          placeholder="Your full name"
+          class="w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white"
+          required
+        >
+        <input
+          type="email"
+          name="email"
+          placeholder="Your email"
+          class="w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white"
+          required
+        >
+        <input
+          type="text"
+          name="location"
+          placeholder="City / location"
+          class="w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white"
+          required
+        >
+
+        <textarea
+          name="ideas"
+          id="organizer-ideas"
+          rows="4"
+          placeholder="Some ideas for what would you like to run at your guild"
+          class="w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white hidden"
+        ></textarea>
+
+        <button class="btn btn-primary bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-sm hover:bg-bp-warning-darker">
+          Sign Up!
+        </button>
+      </form>
+
+      <p class="text-sm text-white/60">
+        We'll be in touch soon!
+      </p>
+
+      <script>
+        function selectRole(role) {
+          document.getElementById('role-field').value = role;
+          const ideasField = document.getElementById('organizer-ideas');
+          const organizerBtn = document.getElementById('organizer-btn');
+          const attendeeBtn = document.getElementById('attendee-btn');
+
+          if (role === 'organizer') {
+            ideasField.classList.remove('hidden');
+            organizerBtn.classList.add('bg-bp-warning');
+            attendeeBtn.classList.remove('bg-bp-warning');
+          } else {
+            ideasField.classList.add('hidden');
+            attendeeBtn.classList.add('bg-bp-warning');
+            organizerBtn.classList.remove('bg-bp-warning');
+          }
+        }
+      </script>
+    <% end %>
+
+  </div>
+</section>
