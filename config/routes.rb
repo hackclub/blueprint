@@ -85,6 +85,12 @@ class HcbIntegrationAdminConstraint
 end
 
 Rails.application.routes.draw do
+  post "/slack/commands", to: "slack_commands#handle"
+  get "slack_commands/guild_stats"
+  get "guild_signups/new"
+  get "guild_signups/create"
+  resources :guild_signups, only: [ :new, :create ]
+
   resources :shop_items, only: [ :new, :create ]
   resources :shop_orders, only: [ :index, :new, :create ]
   get "buy/:item_id", to: "shop_orders#new", as: :buy_item

@@ -82,12 +82,12 @@
           <h3 class="text-xl font-semibold text-bp-warning">Who Can Organize a Guild?</h3>
           <p class="text-white/90 leading-relaxed">
             Anyone with an approved Blueprint project can organize a guild. There are no extra requirements – 
-            you don't have to be really good at coding or have organized events before, just be excited to run a meetup and be able to commit time to organizing and running it.
+            you don't have to be really good at coding or have organized events before, just be excited to run a meetup and be able to commit time to making it happen.
           </p>
         </div>
 
         <div class="space-y-2">
-          <h3 class="text-xl font-semibold text-bp-warning">What Can You Do at a Guild?</h3>
+          <h3 class="text-xl font-semibold text-bp-warning">What Can You Run at a Guild?</h3>
           <p class="text-white/90 leading-relaxed">
             Guilds are very flexible! You can host workshops, show off projects, or run any wacky activities, provided they are safe and cost-effective. Here are some ideas:
           </p>
@@ -104,10 +104,10 @@
         <div class="space-y-2">
           <h3 class="text-xl font-semibold text-bp-warning">What Do Organizers Do?</h3>
           <ul class="list-disc list-inside space-y-1 text-white/90">
-            <li>Choose a day between April 6th-12th to run your guild</li>
-            <li>Find a space for your guild and get permission to bring the hardware and run the activities you want</li>
-            <li>Manage logistics like food and materials</li>
+            <li>Choose a day between April 6th-12th to run the guild</li>
+            <li>Find a space for the guild and get the venue's permission to bring hardware and run activities you want to do (e.g. soldering)</li>
             <li>Manage sign-ups and communications</li>
+            <li>Manage logistics like food and materials</li>
             <li>Make it magical for people!</li>
           </ul>
         </div>
@@ -116,11 +116,21 @@
 
     <%= render 'shared/card', class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
       <h2 class="text-2xl md:text-3xl font-semibold text-white">Sign Up!</h2>
-      <p class="text-white/90 leading-relaxed">
-        Fill out the form below to register as an organizer or attendee for a guild in your city between April 6th–12th.
-      </p>
 
-      <form action="#" method="post" class="flex flex-col gap-4 max-w-xl w-full">
+      <% if @signup.errors.any? %>
+        <div class="bg-red-500/20 border border-red-500 rounded-sm p-4 text-white">
+          <h2 class="font-bold">ERROR:</h2>
+          <ul class="list-disc list-inside">
+            <% @signup.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= form_with model: @signup, url: guild_signups_path, local: true, class: "flex flex-col gap-4 max-w-xl w-full" do |f| %>
+        <%= f.hidden_field :role, id: "role-field", value: "" %>
+
         <div class="flex gap-4">
           <button type="button" id="organizer-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-sm py-3"
                   onclick="selectRole('organizer')">Organizer</button>
@@ -128,42 +138,30 @@
                   onclick="selectRole('attendee')">Attendee</button>
         </div>
 
-        <input type="hidden" name="role" id="role-field" value="">
+        <%= f.text_field :name,
+              placeholder: "Your full name",
+              class: "w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white",
+              required: true %>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Your full name"
-          class="w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white"
-          required
-        >
-        <input
-          type="email"
-          name="email"
-          placeholder="Your email"
-          class="w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white"
-          required
-        >
-        <input
-          type="text"
-          name="location"
-          placeholder="City / location"
-          class="w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white"
-          required
-        >
+        <%= f.email_field :email,
+              value: current_user.email,
+              class: "w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white",
+              required: true %>
 
-        <textarea
-          name="ideas"
-          id="organizer-ideas"
-          rows="4"
-          placeholder="Some ideas for what would you like to run at your guild"
-          class="w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white hidden"
-        ></textarea>
+        <%= f.text_field :city,
+              placeholder: "City / location",
+              class: "w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white",
+              required: true %>
 
-        <button class="btn btn-primary bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-sm hover:bg-bp-warning-darker">
-          Sign Up!
-        </button>
-      </form>
+        <%= f.text_area :ideas,
+              id: "organizer-ideas",
+              rows: 4,
+              placeholder: "Some ideas for what you'd like to run at your guild",
+              class: "w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white hidden" %>
+
+        <%= f.submit "Submit!",
+              class: "btn bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-sm hover:bg-bp-warning-darker cursor-pointer" %>
+      <% end %>
 
       <p class="text-sm text-white/60">
         We'll be in touch soon!
@@ -172,9 +170,10 @@
       <script>
         function selectRole(role) {
           document.getElementById('role-field').value = role;
-          const ideasField = document.getElementById('organizer-ideas');
+
           const organizerBtn = document.getElementById('organizer-btn');
           const attendeeBtn = document.getElementById('attendee-btn');
+          const ideasField = document.getElementById('organizer-ideas');
 
           if (role === 'organizer') {
             ideasField.classList.remove('hidden');
