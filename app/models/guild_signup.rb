@@ -2,16 +2,18 @@
 #
 # Table name: guild_signups
 #
-#  id           :bigint           not null, primary key
-#  email        :string
-#  ideas        :text
-#  name         :string
-#  project_link :string
-#  role         :integer          default(0)
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  guild_id     :bigint           not null
-#  user_id      :bigint           not null
+#  id                  :bigint           not null, primary key
+#  attendee_activities :text
+#  country             :string
+#  email               :string
+#  ideas               :text
+#  name                :string
+#  project_link        :string
+#  role                :integer
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  guild_id            :bigint           not null
+#  user_id             :bigint           not null
 #
 # Indexes
 #
@@ -32,16 +34,17 @@ class GuildSignup < ApplicationRecord
 
   after_commit :enqueue_processing_job, on: :create
 
-  validates :name, :email, presence: true
+  validates :name, :email, :role, :country, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
-  validate :user_must_have_approved_project
+  validates :ideas, presence: true, if: :organizer?
+  validate :user_must_have_approved_project, if: :organizer?
   validates :user_id, uniqueness: { scope: :guild_id, message: "You have already signed up for this guild" }
 
   after_destroy :update_guild_topic, if: :organizer?
 
   def user_must_have_approved_project
     unless user&.has_approved_project?
-      errors.add(:base, "You need an approved Blueprint project to join or organize a guild.")
+      errors.add(:base, "You need an approved Blueprint project to organize a guild.")
     end
   end
 

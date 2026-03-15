@@ -10,7 +10,64 @@
       <div class="w-full h-48 bg-bp-dark rounded-sm shadow-md flex items-center justify-center mt-4">
         <span class="text-white/50">[artwork here]</span>
       </div>
+      <div class="mt-4 flex justify-center">
+        <%= render "shared/button", text: "Sign up now!", url: "#signup-form", variant: :warning %>
+      </div>
     </div>
+
+    <!-- Stats & Map Widget -->
+    <div class="my-8 bg-bp-darker/50 p-6 rounded-sm border-2 border-bp-darker">
+      <div class="flex flex-col md:flex-row gap-6 items-center">
+        <!-- Stats card -->
+        <div class="bg-bp-dark p-6 rounded-sm border border-white/25 w-full md:w-64 text-center">
+          <p class="text-4xl font-bold text-white" id="total-signups">0</p>
+          <p class="text-white/80 text-sm uppercase tracking-wide">Signups</p>
+          <div class="h-px bg-white/20 my-4"></div>
+          <p class="text-4xl font-bold text-white" id="total-guilds">0</p>
+          <p class="text-white/80 text-sm uppercase tracking-wide">Guilds</p>
+        </div>
+
+        <!-- Map container -->
+        <div id="guilds-map" class="w-full h-96 md:h-80 bg-bp-dark rounded-sm border border-white/25"></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Initialize map
+        const map = L.map('guilds-map').setView([20, 0], 2); // world view
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Geocoding by <a href="https://locationiq.com/" target="_blank">LocationIQ</a>'
+        }).addTo(map);
+
+        // Fetch guild data
+        fetch('/guilds/map_data')
+          .then(response => response.json())
+          .then(guilds => {
+            let totalSignups = 0;
+            guilds.forEach(g => {
+              totalSignups += g.signup_count;
+              if (g.lat && g.lng) {
+                const marker = L.circleMarker([g.lat, g.lng], {
+                  radius: 8,
+                  fillColor: "#f4c542",
+                  color: "#fff",
+                  weight: 1,
+                  opacity: 1,
+                  fillOpacity: 0.8
+                }).addTo(map);
+                marker.bindPopup(`<b>${g.name}</b><br>Signups: ${g.signup_count}`);
+              }
+            });
+
+            // Update stats
+            document.getElementById('total-guilds').textContent = guilds.length;
+            document.getElementById('total-signups').textContent = totalSignups;
+          })
+          .catch(err => console.error('Error loading map data:', err));
+      });
+    </script>
 
     <%= render 'shared/card', class: 'flex flex-col md:flex-row gap-4 md:gap-8 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
       <div class="flex-1 space-y-4">
@@ -39,7 +96,7 @@
 
           <h3 class="text-xl font-semibold text-bp-warning">Who Can Join?</h3>
           <p class="text-white/90 leading-relaxed">
-            Any Hack Club member with an approved Blueprint project can participate in or organize a guild.
+            <strong>Anyone</strong> from Hack Club can attend a guild! You don't need to have any hardware experience. If you'd like to organize one, you'll need an approved Blueprint project.
           </p>
 
           <h3 class="text-xl font-semibold text-bp-warning">How To Join</h3>
@@ -114,12 +171,12 @@
       </div>
     <% end %>
 
-    <%= render 'shared/card', class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
+    <%= render 'shared/card', html_options: { id: 'signup-form' }, class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
       <h2 class="text-2xl md:text-3xl font-semibold text-white">Sign Up!</h2>
 
       <% if @signup.errors.any? %>
-        <div class="bg-red-500/20 border border-red-500 rounded-sm p-4 text-white">
-          <h2 class="font-bold">ERROR:</h2>
+        <div class="bg-red-500/20 border border-red-500 rounded-sm p-4 text-white mb-4">
+          <h2 class="font-bold">Please fix the following errors:</h2>
           <ul class="list-disc list-inside">
             <% @signup.errors.full_messages.each do |msg| %>
               <li><%= msg %></li>
@@ -128,36 +185,93 @@
         </div>
       <% end %>
 
-      <%= form_with model: @signup, url: guild_signups_path, local: true, class: "flex flex-col gap-4 max-w-xl w-full" do |f| %>
-        <%= f.hidden_field :role, id: "role-field", value: "" %>
+      <%= form_with model: @signup, url: guild_signups_path, local: true, class: "flex flex-col gap-4 max-w-xl w-full", id: "signup-form" do |f| %>
+        <%= f.hidden_field :role, id: "role-field", value: @signup.role %>
 
-        <div class="flex gap-4">
-          <button type="button" id="organizer-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-sm py-3"
-                  onclick="selectRole('organizer')">Organizer</button>
-          <button type="button" id="attendee-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-sm py-3"
-                  onclick="selectRole('attendee')">Attendee</button>
+        <div class="mb-2">
+          <label class="block text-white font-medium mb-1">I want to join as:</label>
+          <div class="flex gap-4">
+            <button type="button" id="attendee-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-sm py-3 <%= 'bg-bp-warning' if @signup.attendee? %>"
+                    onclick="selectRole('attendee')">Attendee</button>
+            <button type="button" id="organizer-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-sm py-3 <%= 'bg-bp-warning' if @signup.organizer? %>"
+                    onclick="selectRole('organizer')">Organizer</button>
+          </div>
+          <% if @signup.errors[:role].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:role].join(', ') %></p>
+          <% end %>
         </div>
 
-        <%= f.text_field :name,
-              placeholder: "Your full name",
-              class: "w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white",
-              required: true %>
+        <div class="mb-4">
+          <label class="block text-white font-medium mb-1">Full Name</label>
+          <%= f.text_field :name,
+                placeholder: "e.g. Orpheus",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:name].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:name].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:name].join(', ') %></p>
+          <% end %>
+        </div>
 
-        <%= f.email_field :email,
-              value: current_user.email,
-              class: "w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white",
-              required: true %>
+        <div class="mb-4">
+          <label class="block text-white font-medium mb-1">Email address</label>
+          <p class="text-sm text-white/60 mb-1">We'll use this to contact you about your guild.</p>
+          <%= f.email_field :email,
+                value: current_user&.email,
+                placeholder: "e.g. orpheus@hackclub.com",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:email].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:email].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:email].join(', ') %></p>
+          <% end %>
+        </div>
 
-        <%= f.text_field :city,
-              placeholder: "City / location",
-              class: "w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white",
-              required: true %>
+        <div class="mb-4">
+          <label class="block text-white font-medium mb-1">City / location</label>
+          <p class="text-sm text-white/60 mb-1">Enter your full city name.</p>
+          <%= text_field_tag 'guild_signup[city]', @city || params.dig(:guild_signup, :city),
+                placeholder: "e.g. New York City, not NYC",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:city].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:city].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:city].join(', ') %></p>
+          <% end %>
+        </div>  
 
-        <%= f.text_area :ideas,
-              id: "organizer-ideas",
-              rows: 4,
-              placeholder: "Some ideas for what you'd like to run at your guild",
-              class: "w-full p-3 bg-bp-dark border border-white/25 rounded-sm text-white hidden" %>
+        <div class="mb-4" data-controller="searchable-select">
+          <label class="block text-white font-medium mb-1">Country</label>
+          <p class="text-sm text-white/60 mb-1">Select your country.</p>
+          <%= f.select :country,
+                options_for_select(country_options, @signup.country),
+                { include_blank: "Choose a country" },
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:country].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white",
+                data: { searchable_select_target: "select" } %>
+          <% if @signup.errors[:country].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:country].join(', ') %></p>
+          <% end %>
+        </div>
+
+        <div id="organizer-ideas-container" class="mb-4 <%= 'hidden' unless @signup.organizer? %>">
+          <label class="block text-white font-medium mb-1">What would you like to run?</label>
+          <p class="text-sm text-white/60 mb-1">Tell us a bit about any ideas you have – this doesn't have to be final!</p>
+          <%= f.text_area :ideas,
+                value: @signup.ideas,
+                required: true,
+                rows: 4,
+                placeholder: "e.g. soldering workshop, project demos, lightning talks etc",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:ideas].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:ideas].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:ideas].join(', ') %></p>
+          <% end %>
+        </div>
+
+        <div id="attendee-activities-container" class="mb-4 <%= 'hidden' unless @signup.attendee? %>">
+          <label class="block text-white font-medium mb-1">What would you like to do at your guild? (Optional)</label>
+          <%= f.text_area :attendee_activities,
+                value: @signup.attendee_activities,
+                rows: 3,
+                placeholder: "e.g. learn to solder, show off my blueprint project, just hang out...",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:attendee_activities].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:attendee_activities].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:attendee_activities].join(', ') %></p>
+          <% end %>
+        </div>
 
         <%= f.submit "Submit!",
               class: "btn bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-sm hover:bg-bp-warning-darker cursor-pointer" %>
@@ -171,20 +285,43 @@
         function selectRole(role) {
           document.getElementById('role-field').value = role;
 
-          const organizerBtn = document.getElementById('organizer-btn');
           const attendeeBtn = document.getElementById('attendee-btn');
-          const ideasField = document.getElementById('organizer-ideas');
+          const organizerBtn = document.getElementById('organizer-btn');
+          const ideasContainer = document.getElementById('organizer-ideas-container');
+          const activitiesContainer = document.getElementById('attendee-activities-container');
 
           if (role === 'organizer') {
-            ideasField.classList.remove('hidden');
+            ideasContainer.classList.remove('hidden');
+            activitiesContainer.classList.add('hidden');
             organizerBtn.classList.add('bg-bp-warning');
             attendeeBtn.classList.remove('bg-bp-warning');
-          } else {
-            ideasField.classList.add('hidden');
+          } else if (role === 'attendee') {
+            ideasContainer.classList.add('hidden');
+            activitiesContainer.classList.remove('hidden');
             attendeeBtn.classList.add('bg-bp-warning');
             organizerBtn.classList.remove('bg-bp-warning');
           }
         }
+
+        (function() {
+          const roleField = document.getElementById('role-field');
+          if (roleField && roleField.value === 'organizer') {
+            selectRole('organizer');
+          } else if (roleField && roleField.value === 'attendee') {
+            selectRole('attendee');
+          }
+        })();
+      </script>
+    <% end %>
+
+    <% if @signup&.errors&.any? %>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const form = document.getElementById('signup-form');
+          if (form) {
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
       </script>
     <% end %>
 

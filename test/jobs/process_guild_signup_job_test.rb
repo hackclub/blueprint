@@ -1,10 +1,6 @@
 require "test_helper"
 
 class ProcessGuildSignupJobTest < ActiveJob::TestCase
-  # we don't want the global `fixtures :all` in test_helper since some of
-  # the yml files (e.g. airtable_syncs) are out-of-date and raise errors when
-  # loaded.  telling Rails to load an empty list of fixtures prevents it from
-  # touching any of them.
   fixtures []
 
   setup do
@@ -12,10 +8,9 @@ class ProcessGuildSignupJobTest < ActiveJob::TestCase
   end
 
   test "third organizer is demoted to attendee and persisted" do
-    # create two existing organizers
     org1 = User.create!(email: "org1@example.com", is_banned: false)
     org2 = User.create!(email: "org2@example.com", is_banned: false)
-    [org1, org2].each do |u|
+    [ org1, org2 ].each do |u|
       u.stub :has_approved_project?, true do
         GuildSignup.create!(user: u, guild: @guild, name: "Foo", email: "foo@example.com", role: :organizer)
       end

@@ -8,11 +8,15 @@ class ProcessGuildSignupJob < ApplicationJob
     guild = signup.guild
     user = signup.user
 
-    admin_channel = ENV["SLACK_ADMIN_CHANNEL"]
-    organizers_channel = ENV["SLACK_ORGANIZERS_CHANNEL"]
-    contact_slack_id = ENV["GUILD_CONTACT_SLACK_ID"]
+    if guild.needs_review?
+      Rails.logger.info "Guild #{guild.id} flagged for review – skipping Slack actions for signup #{signup.id}."
+      return
+    end
 
-    # Organizer threshold: if too many organizers, convert to attendee
+    admin_channel = ENV["GUILDS_ADMIN_CHANNEL"]
+    organizers_channel = ENV["GUILDS_ORGANIZERS_CHANNEL"]
+    contact_slack_id = ENV["GUILDS_CONTACT_ID"]
+
     converted = false
     if signup.organizer?
       existing = guild.guild_signups
@@ -34,14 +38,11 @@ class ProcessGuildSignupJob < ApplicationJob
 
     signup.reload
 
-    # Ensure the Slack channel exists for the city
     if guild.slack_channel_id.blank?
       channel_name = "build-guild-#{guild.city.parameterize}"
       begin
         response = slack_client.conversations_create(name: channel_name)
         guild.update!(slack_channel_id: response["channel"]["id"])
-
-        # Notify log channel
         if admin_channel.present?
           slack_client.chat_postMessage(
             channel: admin_channel,
@@ -60,7 +61,6 @@ class ProcessGuildSignupJob < ApplicationJob
       end
     end
 
-    # Invite user to the city channel if they have a Slack ID
     if user.slack_id.present? && guild.slack_channel_id.present?
       begin
         slack_client.conversations_invite(
@@ -93,12 +93,10 @@ class ProcessGuildSignupJob < ApplicationJob
       end
     end
 
-    # Update Slack channel topic with current organizers
     if guild.slack_channel_id.present?
       guild.update_slack_topic
     end
 
-    # Mark guild as active if this is the first organizer
     puts ">>> Checking active status: organizer?=#{signup.organizer?}, pending?=#{guild.pending?}, organizer_count=#{guild.guild_signups.where(role: :organizer).count}"
     if signup.organizer? && guild.pending? && guild.guild_signups.where(role: :organizer).count == 1
       guild.update(status: :active)
@@ -111,7 +109,6 @@ class ProcessGuildSignupJob < ApplicationJob
       end
     end
 
-    # If the user is an organizer, also invite them to the central organizers channel
     if signup.organizer? && user.slack_id.present? && organizers_channel.present?
       begin
         slack_client.conversations_invite(
@@ -138,11 +135,10 @@ class ProcessGuildSignupJob < ApplicationJob
     elsif signup.organizer? && user.slack_id.blank? && admin_channel.present?
       slack_client.chat_postMessage(
         channel: admin_channel,
-        text: "User #{user.display_name} (email: #{user.email}) has no Slack ID – cannot invite to organizers channel"
+        text: "User #{user.display_name} (email: #{user.email}) has no Slack ID - cannot invite to organizers channel"
       )
     end
 
-    # Send a welcome message in the guild channel
     if guild.slack_channel_id.present? && user.slack_id.present?
       begin
         if signup.organizer?
@@ -156,7 +152,6 @@ class ProcessGuildSignupJob < ApplicationJob
       end
     end
 
-
     if !signup.organizer? && guild.slack_channel_id.present? && guild.guild_signups.where(role: :organizer).count == 0
       if contact_slack_id.present?
         begin
@@ -166,7 +161,7 @@ class ProcessGuildSignupJob < ApplicationJob
           Rails.logger.error "Failed to post no-organizers message to #{guild.slack_channel_id}: #{e.message}"
         end
       else
-        Rails.logger.warn "GUILD_CONTACT_SLACK_ID not set, skipping no-organizers message for guild #{guild.id}"
+        Rails.logger.warn "GUILDS_CONTACT_ID not set, skipping no-organizers message for guild #{guild.id}"
       end
     end
 
@@ -203,6 +198,6 @@ class ProcessGuildSignupJob < ApplicationJob
   private
 
   def slack_client
-    @slack_client ||= Slack::Web::Client.new(token: ENV["SLACK_BOT_TOKEN"])
+    @slack_client ||= Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
   end
 end

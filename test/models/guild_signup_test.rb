@@ -2,16 +2,18 @@
 #
 # Table name: guild_signups
 #
-#  id           :bigint           not null, primary key
-#  email        :string
-#  ideas        :text
-#  name         :string
-#  project_link :string
-#  role         :integer          default(0)
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  guild_id     :bigint           not null
-#  user_id      :bigint           not null
+#  id                  :bigint           not null, primary key
+#  attendee_activities :text
+#  country             :string
+#  email               :string
+#  ideas               :text
+#  name                :string
+#  project_link        :string
+#  role                :integer
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  guild_id            :bigint           not null
+#  user_id             :bigint           not null
 #
 # Indexes
 #

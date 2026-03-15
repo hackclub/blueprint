@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_11_114230) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_14_210604) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -275,16 +275,28 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_114230) do
     t.index ["user_id"], name: "index_follows_on_user_id"
   end
 
+  create_table "guild_airtable_syncs", force: :cascade do |t|
+    t.string "airtable_id"
+    t.string "record_identifier"
+    t.datetime "last_synced_at"
+    t.string "synced_attributes_hash"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["record_identifier"], name: "index_guild_airtable_syncs_on_record_identifier", unique: true
+  end
+
   create_table "guild_signups", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "guild_id", null: false
-    t.integer "role", default: 0
+    t.integer "role"
     t.string "name"
     t.string "email"
     t.string "project_link"
     t.text "ideas"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "country"
+    t.text "attendee_activities"
     t.index ["guild_id"], name: "index_guild_signups_on_guild_id"
     t.index ["user_id", "guild_id"], name: "index_guild_signups_on_user_id_and_guild_id", unique: true
     t.index ["user_id"], name: "index_guild_signups_on_user_id"
@@ -298,6 +310,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_114230) do
     t.string "city"
     t.string "slack_channel_id"
     t.integer "status"
+    t.float "latitude"
+    t.float "longitude"
+    t.string "country"
+    t.boolean "needs_review"
   end
 
   create_table "hcb_grants", force: :cascade do |t|

@@ -115,6 +115,9 @@ Rails.application.routes.draw do
   # Referral system
   get "r/:id" => "referral#show", as: :referral
 
+  # map data for guilds
+  get "guilds/map_data", to: "guilds#map_data"
+
   # Authentication
   get "auth/login" => "auth#index", as: :login
   get "auth/slack" => "auth#new", as: :slack_login

@@ -2,11 +2,18 @@
 #
 # Table name: guilds
 #
-#  id          :bigint           not null, primary key
-#  description :text
-#  name        :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id               :bigint           not null, primary key
+#  city             :string
+#  country          :string
+#  description      :text
+#  latitude         :float
+#  longitude        :float
+#  name             :string
+#  needs_review     :boolean
+#  status           :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  slack_channel_id :string
 #
 require "test_helper"
 

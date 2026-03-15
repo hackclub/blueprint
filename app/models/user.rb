@@ -373,7 +373,7 @@ class User < ApplicationRecord
   end
 
   def self.fetch_slack_user_info_from_email(email)
-    client = Slack::Web::Client.new(token: ENV.fetch("SLACK_BOT_TOKEN", nil))
+    client = Slack::Web::Client.new(token: ENV.fetch("GUILDS_BOT_TOKEN", nil))
 
     r = 0
     begin
@@ -393,7 +393,7 @@ class User < ApplicationRecord
   end
 
   def self.fetch_slack_user_info(slack_id)
-    client = Slack::Web::Client.new(token: ENV.fetch("SLACK_BOT_TOKEN", nil))
+    client = Slack::Web::Client.new(token: ENV.fetch("GUILDS_BOT_TOKEN", nil))
 
     r = 0
     begin
