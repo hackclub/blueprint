@@ -14,6 +14,3 @@ application.register("list-continuation", ListContinuationController);
 // Manual registrations for custom controllers with non-standard names
 import DemoPicturePreviewController from "controllers/demo_picture_preview_controller";
 application.register("demo-picture-preview", DemoPicturePreviewController);
-
-import SearchableSelectController from "./searchable_select_controller";
-application.register("searchable-select", SearchableSelectController);

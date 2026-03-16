@@ -69,9 +69,6 @@ class User < ApplicationRecord
   has_one :privileged_session_expiry, dependent: :destroy
   has_many :packages, as: :trackable, dependent: :destroy
 
-  has_many :guild_signups, dependent: :destroy
-  has_many :guilds, through: :guild_signups
-
   has_many :ahoy_visits, class_name: "Ahoy::Visit"
   has_many :ahoy_events, class_name: "Ahoy::Event"
   has_one :latest_locatable_visit, -> { where.not(country: [ nil, "" ]).order(started_at: :desc) }, class_name: "Ahoy::Visit"
@@ -283,8 +280,6 @@ class User < ApplicationRecord
       user_info = fetch_slack_user_info_from_email(email)
     rescue Slack::Web::Api::Errors::UsersNotFound,
            Slack::Web::Api::Errors::TooManyRequestsError,
-           Slack::Web::Api::Errors::NotAuthed,
-           Slack::Web::Api::Errors::MissingScope,
            Faraday::ConnectionFailed,
            Faraday::TimeoutError,
            SocketError => e
@@ -373,7 +368,7 @@ class User < ApplicationRecord
   end
 
   def self.fetch_slack_user_info_from_email(email)
-    client = Slack::Web::Client.new(token: ENV.fetch("GUILDS_BOT_TOKEN", nil))
+    client = Slack::Web::Client.new(token: ENV.fetch("SLACK_BOT_TOKEN", nil))
 
     r = 0
     begin
@@ -393,7 +388,7 @@ class User < ApplicationRecord
   end
 
   def self.fetch_slack_user_info(slack_id)
-    client = Slack::Web::Client.new(token: ENV.fetch("GUILDS_BOT_TOKEN", nil))
+    client = Slack::Web::Client.new(token: ENV.fetch("SLACK_BOT_TOKEN", nil))
 
     r = 0
     begin
@@ -1015,10 +1010,6 @@ class User < ApplicationRecord
         Sentry.capture_exception(e)
       end
     end
-  end
-
-  def has_approved_project?
-    projects.where(review_status: "build_approved").exists?
   end
 
   def reviewer_perms?
