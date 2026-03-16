@@ -1,8 +1,6 @@
 class AddFieldsToGuilds < ActiveRecord::Migration[8.0]
   def change
-    add_column :guilds, :city, :string
-    add_column :guilds, :slack_channel_id, :string
-    add_column :guilds, :status, :integer, default: 0
-    add_index :guilds, :city, unique: true
+    # These columns were already added in CreateGuilds migration.
+    # This migration is kept as a no-op to preserve migration history.
   end
 end

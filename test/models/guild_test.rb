@@ -15,6 +15,10 @@
 #  updated_at       :datetime         not null
 #  slack_channel_id :string
 #
+# Indexes
+#
+#  index_guilds_on_city_and_country  (city,country) UNIQUE
+#
 require "test_helper"
 
 class GuildTest < ActiveSupport::TestCase

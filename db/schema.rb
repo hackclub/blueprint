@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_14_210604) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_16_122440) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -314,6 +314,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_14_210604) do
     t.float "longitude"
     t.string "country"
     t.boolean "needs_review"
+    t.index ["city", "country"], name: "index_guilds_on_city_and_country", unique: true
   end
 
   create_table "hcb_grants", force: :cascade do |t|

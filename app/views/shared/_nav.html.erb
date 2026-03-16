@@ -18,7 +18,7 @@
   } %>
 <% end %>
 
-<% pro_only_links = ["Custom Projects", "Guided Projects", "Design Resources", "Leaderboard", "Shop", "Guilds"] %>
+<% pro_only_links = ["Custom Projects", "Guided Projects", "Design Resources", "Leaderboard", "Shop"] %>
 <% active_projects_count = user_logged_in? ? Rails.cache.fetch([current_user.id, "active_projects_count", current_user.projects.maximum(:updated_at)]) { current_user.projects.where(is_deleted: false).count } : 0 %>
 <% if active_projects_count > 5 %>
   <% nav_links = nav_links.to_a.insert(2, ["My Projects", projects_path]).to_h %>
@@ -109,12 +109,12 @@
             </div>
           <% end %>
         <% else %>
-          <button type="button" data-controller="modal" data-modal-target-id-value="toggle-pro-modal" data-action="click->modal#show" class="text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer">
+          <%= button_to toggle_pro_users_path, method: :post, class: "text-white bg-bp-dark p-2 px-4 flex justify-between items-center w-full cursor-pointer", data: { turbo: false } do %>
             <p>Expert Mode</p>
             <div class="h-5 rounded-full w-10 bg-bp-darker flex items-center">
               <div class="size-4 rounded-full bg-white mx-0.5"></div>
             </div>
-          </button>
+          <% end %>
         <% end %>
       <% end %>
     <% end %>

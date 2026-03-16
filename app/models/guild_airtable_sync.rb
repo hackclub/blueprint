@@ -27,11 +27,17 @@ class GuildAirtableSync < ApplicationRecord
     table_id = klass.airtable_sync_table_id
     mappings = klass.airtable_sync_field_mappings
 
+    if table_id.blank? || ENV["AIRTABLE_GUILDS_BASE_ID"].blank? || ENV["AIRTABLE_API_KEY"].blank?
+      Rails.logger.warn "Airtable sync skipped for #{klass.name}: missing configuration"
+      return
+    end
+
     records.each do |record|
-      airtable_id = find_by(record_identifier: record_identifier(record))&.airtable_id
+      existing_sync = find_by(record_identifier: record_identifier(record))
+      airtable_id = existing_sync&.airtable_id
       fields = build_airtable_fields(record, mappings)
       new_id = upload_or_create!(table_id, fields, airtable_id)
-      upsert_sync_state(record, new_id)
+      upsert_sync_state(record, new_id) if new_id.present?
     end
   end
 
@@ -49,8 +55,7 @@ class GuildAirtableSync < ApplicationRecord
     end
 
     unless response.success?
-      Rails.logger.error "Airtable sync failed: #{response.body}"
-      return nil
+      raise "Airtable sync failed (#{response.status}): #{response.body}"
     end
 
     JSON.parse(response.body)["id"]

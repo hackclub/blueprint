@@ -33,19 +33,56 @@ class GuildSignup < ApplicationRecord
   enum :role, { organizer: 0, attendee: 1 }
 
   after_commit :enqueue_processing_job, on: :create
+  after_commit :sync_to_airtable, on: [ :create, :update ]
 
   validates :name, :email, :role, :country, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   validates :ideas, presence: true, if: :organizer?
   validate :user_must_have_approved_project, if: :organizer?
   validates :user_id, uniqueness: { scope: :guild_id, message: "You have already signed up for this guild" }
+  validate :user_must_have_slack_id
+  validate :one_organizer_signup_only, if: :organizer?
 
   after_destroy :update_guild_topic, if: :organizer?
+
+  def one_organizer_signup_only
+    existing = GuildSignup.where(user_id: user_id, role: :organizer)
+    existing = existing.where.not(id: id) if persisted?
+    if existing.exists?
+      errors.add(:base, "You can only organize one guild. You're already organizing another guild.")
+    end
+  end
+
+  def user_must_have_slack_id
+    unless user&.slack_id.present?
+      errors.add(:base, "You must be in the Hack Club Slack to join a guild. Log in with Slack or link your Slack account first.")
+    end
+  end
 
   def user_must_have_approved_project
     unless user&.has_approved_project?
       errors.add(:base, "You need an approved Blueprint project to organize a guild.")
     end
+  end
+
+  def self.airtable_sync_table_id
+    ENV["AIRTABLE_SIGNUPS_TABLE_ID"]
+  end
+
+  def self.airtable_sync_field_mappings
+    {
+      "signup_id" => :id,
+      "guild_id" => :guild_id,
+      "user_id" => :user_id,
+      "slack_id" => ->(r) { r.user&.slack_id },
+      "name" => :name,
+      "email" => :email,
+      "role" => :role,
+      "country" => :country,
+      "ideas" => :ideas,
+      "attendee_activities" => :attendee_activities,
+      "created_at" => ->(r) { r.created_at&.iso8601 }
+    }
   end
 
   private
@@ -54,13 +91,11 @@ class GuildSignup < ApplicationRecord
     ProcessGuildSignupJob.perform_later(id)
   end
 
+  def sync_to_airtable
+    GuildSignupAirtableSyncJob.perform_later(id)
+  end
+
   def update_guild_topic
-    puts ">>> update_guild_topic called for signup #{id}"
-    if guild.present?
-      puts ">>> guild present, calling update_slack_topic"
-      guild.update_slack_topic
-    else
-      puts ">>> guild is nil"
-    end
+    guild.update_slack_topic if guild.present?
   end
 end
