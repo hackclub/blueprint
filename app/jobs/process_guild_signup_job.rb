@@ -53,9 +53,6 @@ class ProcessGuildSignupJob < ApplicationJob
     post_no_organizers_message(guild, signup, contact_slack_id)
     send_dm(guild, user, signup, converted, organizers_channel)
 
-    # Send confirmation email last
-    SendGuildEmailJob.perform_later(signup.id)
-
   rescue => e
     Rails.logger.error "ProcessGuildSignupJob failed: #{e.message}"
     notify_admin(admin_channel, "ProcessGuildSignupJob failed for signup #{signup_id}: #{e.message}")

@@ -33,6 +33,7 @@ class GuildSignup < ApplicationRecord
   enum :role, { organizer: 0, attendee: 1 }
 
   after_commit :enqueue_processing_job, on: :create
+  after_commit :send_confirmation_email, on: :create
   after_commit :sync_to_airtable, on: [ :create, :update ]
 
   validates :name, :email, :role, :country, presence: true
@@ -90,6 +91,10 @@ class GuildSignup < ApplicationRecord
 
   def enqueue_processing_job
     ProcessGuildSignupJob.perform_later(id)
+  end
+
+  def send_confirmation_email
+    SendGuildEmailJob.perform_later(id)
   end
 
   def sync_to_airtable
