@@ -12,9 +12,14 @@ class GuildSignupsController < ApplicationController
     @signup.guild = @guild
 
     if @signup.save
+      notify_admin_channel(@pending_admin_message) if @pending_admin_message.present?
       SendGuildEmailJob.perform_later(@signup.id)
       redirect_to guilds_path, notice: "Thanks for signing up! We'll be in touch soon."
     else
+      # Clean up the guild if it was just created for this signup and has no other signups
+      if @guild&.persisted? && @guild.guild_signups.count == 0
+        @guild.destroy
+      end
       @guilds_page = true
       render "guilds/index", status: :unprocessable_entity
     end
@@ -51,7 +56,7 @@ class GuildSignupsController < ApplicationController
           name: "#{raw_city} Guild",
           needs_review: true
         )
-        notify_admin_channel("Guild '#{raw_city}' created but needs review (geocoding failed).")
+        @pending_admin_message = "Guild '#{raw_city}' created but needs review (geocoding failed)."
       end
     else
       canonical_city = geocoded.city || raw_city
@@ -84,7 +89,7 @@ class GuildSignupsController < ApplicationController
           else
             "geocoder returned no city"
           end
-          notify_admin_channel("Guild '#{raw_city}' created but needs review (#{reason}).")
+          @pending_admin_message = "Guild '#{raw_city}' created but needs review (#{reason})."
         end
       else
         # Match by coordinates (within ~10km) to catch spelling variants of the same city
