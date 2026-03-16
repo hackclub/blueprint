@@ -42,7 +42,7 @@ class GuildSignupsController < ApplicationController
 
     if geocoded.nil?
       # Try to match an existing guild by case-insensitive city + country before creating
-      @guild = Guild.where("LOWER(city) = ?", raw_city.downcase)
+      @guild = Guild.open.where("LOWER(city) = ?", raw_city.downcase)
                     .where("LOWER(country) = ?", country_code.downcase).first
       unless @guild
         @guild = Guild.create!(
@@ -68,7 +68,7 @@ class GuildSignupsController < ApplicationController
                       !normalize.call(geocoded.city).include?(normalize.call(raw_city)) &&
                       !normalize.call(raw_city).include?(normalize.call(geocoded.city))
       if geocoded.city.blank? || country_mismatch || city_mismatch
-        @guild = Guild.where("LOWER(city) = ?", raw_city.downcase)
+        @guild = Guild.open.where("LOWER(city) = ?", raw_city.downcase)
                       .where("LOWER(country) = ?", country_code.downcase).first
         unless @guild
           @guild = Guild.create!(
@@ -88,11 +88,11 @@ class GuildSignupsController < ApplicationController
         end
       else
         # Match by coordinates (within ~10km) to catch spelling variants of the same city
-        @guild = Guild.near([ geocoded.latitude, geocoded.longitude ], 10, units: :km).first
+        @guild = Guild.open.near([ geocoded.latitude, geocoded.longitude ], 10, units: :km).first
 
         # Fall back to case-insensitive city + country match
         unless @guild
-          @guild = Guild.where("LOWER(city) = ?", canonical_city.downcase)
+          @guild = Guild.open.where("LOWER(city) = ?", canonical_city.downcase)
                         .where("LOWER(country) = ?", canonical_country.downcase)
                         .first
         end

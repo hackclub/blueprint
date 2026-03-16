@@ -26,7 +26,8 @@ class Guild < ApplicationRecord
   has_many :guild_signups, dependent: :destroy
   has_many :users, through: :guild_signups
 
-  enum :status, { pending: 0, active: 1, full: 2 }, default: :pending, validate: true
+  enum :status, { pending: 0, active: 1, closed: 2 }, default: :pending, validate: true
+  scope :open, -> { where.not(status: :closed) }
   geocoded_by :full_location
 
   def full_location
@@ -75,6 +76,7 @@ class Guild < ApplicationRecord
   end
 
   after_commit :sync_to_airtable, on: [ :create, :update ]
+  before_destroy :delete_from_airtable
 
   def airtable_record_id
     GuildAirtableSync.find_by(record_identifier: "Guild##{id}")&.airtable_id
@@ -82,5 +84,11 @@ class Guild < ApplicationRecord
 
   def sync_to_airtable
     GuildAirtableSyncJob.perform_later(id)
+  end
+
+  def delete_from_airtable
+    GuildAirtableSync.delete_record!(Guild, id)
+  rescue => e
+    Rails.logger.error "Failed to delete Guild##{id} from Airtable: #{e.message}"
   end
 end

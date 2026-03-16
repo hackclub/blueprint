@@ -5,6 +5,7 @@ class SlackCommandsController < ApplicationController
 
   ADMIN_COMMANDS = %w[
     /guild-approve
+    /guild-delete
     /guild-merge
     /guild-change-role
     /guild-status
@@ -30,6 +31,8 @@ class SlackCommandsController < ApplicationController
       render json: { response_type: "ephemeral", text: guild_status_message(params[:text]) }
     when "/guild-approve"
       render json: { response_type: "in_channel", text: guild_approve_message(params[:text]) }
+    when "/guild-delete"
+      render json: { response_type: "in_channel", text: guild_delete_message(params[:text]) }
     when "/guild-merge"
       render json: { response_type: "in_channel", text: guild_merge_message(params[:text]) }
     when "/guild-change-role"
@@ -174,6 +177,32 @@ class SlackCommandsController < ApplicationController
     "Approved *#{guild.name}*. Processing #{guild.guild_signups.count} pending signup(s) now."
   end
 
+  def guild_delete_message(text)
+    city = text.to_s.strip
+    return "Usage: `/guild-delete <city>`" if city.blank?
+
+    guild = find_guild(city)
+    return "No guild found for \"#{city}\"." unless guild
+    return "#{guild.name} is already closed." if guild.closed?
+
+    guild_name = guild.name
+    had_channel = guild.slack_channel_id.present?
+
+    # Archive the Slack channel if one exists
+    if had_channel
+      begin
+        slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+        slack_client.conversations_archive(channel: guild.slack_channel_id)
+      rescue => e
+        Rails.logger.error "Failed to archive channel for #{guild_name}: #{e.message}"
+      end
+    end
+
+    guild.update!(status: :closed)
+
+    "Closed *#{guild_name}*.#{had_channel ? ' Channel archived.' : ''}"
+  end
+
   def guild_merge_message(text)
     cities = text.to_s.split(">>").map(&:strip)
     return "Usage: `/guild-merge <source city> >> <target city>`" unless cities.length == 2
@@ -197,13 +226,9 @@ class SlackCommandsController < ApplicationController
       end
     end
 
-    source.reload
-    if source.guild_signups.empty?
-      source.destroy!
-      "Merged *#{source.name}* into *#{target.name}*. Moved #{moved} signup(s), removed #{skipped} duplicate(s). Source guild deleted."
-    else
-      "Merged *#{source.name}* into *#{target.name}*. Moved #{moved} signup(s), removed #{skipped} duplicate(s). Source guild still has #{source.guild_signups.count} signup(s) remaining."
-    end
+    source.update!(status: :closed)
+
+    "Merged *#{source.name}* into *#{target.name}*. Moved #{moved} signup(s), removed #{skipped} duplicate(s). Source guild marked as closed."
   end
 
   def guild_change_role_message(text)

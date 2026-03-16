@@ -75,6 +75,29 @@ class GuildAirtableSync < ApplicationRecord
     "#{record.class.name}##{record.id}"
   end
 
+  def self.delete_record!(klass, record_id)
+    table_id = klass.airtable_sync_table_id
+
+    if table_id.blank? || ENV["AIRTABLE_GUILDS_BASE_ID"].blank? || ENV["AIRTABLE_API_KEY"].blank?
+      Rails.logger.warn "Airtable delete skipped for #{klass.name}##{record_id}: missing configuration"
+      return
+    end
+
+    identifier = "#{klass.name}##{record_id}"
+    sync = find_by(record_identifier: identifier)
+    return unless sync&.airtable_id.present?
+
+    response = Faraday.delete("https://api.airtable.com/v0/#{ENV['AIRTABLE_GUILDS_BASE_ID']}/#{table_id}/#{sync.airtable_id}") do |req|
+      req.headers = { "Authorization" => "Bearer #{ENV['AIRTABLE_API_KEY']}" }
+    end
+
+    unless response.success?
+      raise "Airtable delete failed (#{response.status}): #{response.body}"
+    end
+
+    sync.destroy!
+  end
+
   def self.upsert_sync_state(record, airtable_id)
     find_or_initialize_by(record_identifier: record_identifier(record)).tap do |sync|
       sync.airtable_id = airtable_id

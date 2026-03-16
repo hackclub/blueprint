@@ -43,6 +43,7 @@ class GuildSignup < ApplicationRecord
   validate :user_must_have_slack_id
   validate :one_organizer_signup_only, if: :organizer?
 
+  before_destroy :delete_from_airtable
   after_destroy :update_guild_topic, if: :organizer?
 
   def one_organizer_signup_only
@@ -97,5 +98,11 @@ class GuildSignup < ApplicationRecord
 
   def update_guild_topic
     guild.update_slack_topic if guild.present?
+  end
+
+  def delete_from_airtable
+    GuildAirtableSync.delete_record!(GuildSignup, id)
+  rescue => e
+    Rails.logger.error "Failed to delete GuildSignup##{id} from Airtable: #{e.message}"
   end
 end

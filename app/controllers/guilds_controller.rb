@@ -10,6 +10,7 @@ class GuildsController < ApplicationController
     @guilds = Guild.includes(:guild_signups)
                    .where.not(latitude: nil, longitude: nil)
                    .where(needs_review: [false, nil])
+                   .where.not(status: :closed)
     render json: @guilds.map { |g|
       {
         id: g.id,
