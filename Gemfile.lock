@@ -84,6 +84,13 @@ GEM
       activesupport (>= 7.1)
       device_detector (>= 1)
       safely_block (>= 0.4)
+    airrecord (1.0.12)
+      faraday (>= 1.0, < 3.0)
+      faraday-net_http_persistent
+      net-http-persistent
+    airtable_sync (1.4.2)
+      airrecord (~> 1.0.12)
+      rails (>= 6.0)
     annotaterb (4.19.0)
       activerecord (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -192,6 +199,9 @@ GEM
       multipart-post (~> 2.0)
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
+    faraday-net_http_persistent (2.3.1)
+      faraday (~> 2.5)
+      net-http-persistent (>= 4.0.4, < 5)
     faraday-retry (2.4.0)
       faraday (~> 2.0)
     ferrum (0.17.1)
@@ -311,6 +321,8 @@ GEM
     multipart-post (2.4.1)
     net-http (0.6.0)
       uri
+    net-http-persistent (4.0.8)
+      connection_pool (>= 2.2.4, < 4)
     net-imap (0.5.10)
       date
       net-protocol
@@ -624,6 +636,7 @@ PLATFORMS
 DEPENDENCIES
   active_storage_validations
   ahoy_matey
+  airtable_sync
   annotaterb
   aws-sdk-s3
   blazer

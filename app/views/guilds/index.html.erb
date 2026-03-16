@@ -1,0 +1,363 @@
+<section class="flex justify-center">
+  <div class="w-full max-w-6xl space-y-4">
+
+    <div class="py-4 md:py-8 text-center space-y-4">
+      <h1 class="text-4xl md:text-6xl font-bold">Build Guilds!</h1>
+      <p class="text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl mx-auto">
+        Hardware meetups happening in cities around the world.
+        <br>Join an existing guild or start one in your city - <strong>April 13th-19th</strong>.
+      </p>
+      <div class="pt-2">
+        <a href="#signup-form" class="inline-block bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-3 px-10 rounded-sm transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30">
+          Sign up for a guild
+        </a>
+      </div>
+    </div>
+
+    <div class="my-8 bg-bp-darker/50 p-6 rounded-sm border-2 border-bp-darker">
+      <div class="flex flex-col md:flex-row gap-6 items-stretch">
+        <div class="bg-bp-dark p-8 rounded-sm border border-white/25 w-full md:w-72 flex flex-col items-center justify-center text-center">
+          <p class="text-5xl md:text-6xl font-bold text-white tabular-nums" id="total-signups">-</p>
+          <p class="text-white/80 text-base uppercase tracking-wide mt-1">Signups</p>
+          <div class="h-px bg-white/20 my-5 w-full"></div>
+          <p class="text-5xl md:text-6xl font-bold text-white tabular-nums" id="total-guilds">-</p>
+          <p class="text-white/80 text-base uppercase tracking-wide mt-1">Cities</p>
+        </div>
+
+        <div id="guilds-map" class="w-full h-[28rem] md:h-[24rem] bg-bp-dark rounded-sm border border-white/25 flex-1"></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const map = L.map('guilds-map', { scrollWheelZoom: true }).setView([20, 0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Geocoding by <a href="https://locationiq.com/" target="_blank">LocationIQ</a>'
+        }).addTo(map);
+
+        fetch('/guilds/map_data')
+          .then(response => response.json())
+          .then(guilds => {
+            let totalSignups = 0;
+            const bounds = [];
+
+            guilds.forEach(g => {
+              totalSignups += g.signup_count;
+              if (g.lat && g.lng) {
+                bounds.push([g.lat, g.lng]);
+                const radius = Math.max(6, Math.min(20, 6 + g.signup_count * 1.5));
+                const marker = L.circleMarker([g.lat, g.lng], {
+                  radius: radius,
+                  fillColor: "#f4c542",
+                  color: "#fff",
+                  weight: 1.5,
+                  opacity: 1,
+                  fillOpacity: 0.85
+                }).addTo(map);
+                var popupEl = document.createElement('div');
+                var cityText = document.createTextNode(g.city);
+                var b = document.createElement('b');
+                b.appendChild(cityText);
+                popupEl.appendChild(b);
+                popupEl.appendChild(document.createElement('br'));
+                popupEl.appendChild(document.createTextNode(g.signup_count + ' signup' + (g.signup_count === 1 ? '' : 's')));
+                popupEl.appendChild(document.createElement('br'));
+                var link = document.createElement('a');
+                link.href = '#signup-form';
+                link.style.color = '#f4c542';
+                link.textContent = 'Join this guild';
+                link.dataset.city = g.city;
+                link.dataset.country = g.country || '';
+                link.addEventListener('click', function(e) {
+                  prefillGuild(this.dataset.city, this.dataset.country);
+                });
+                popupEl.appendChild(link);
+                marker.bindPopup(popupEl);
+              }
+            });
+
+            // Keep default world view - don't auto-zoom to guilds
+
+            animateCount('total-guilds', guilds.length);
+            animateCount('total-signups', totalSignups);
+          })
+          .catch(err => console.error('Error loading map data:', err));
+
+        function animateCount(id, target) {
+          const el = document.getElementById(id);
+          if (target === 0) { el.textContent = '0'; return; }
+          const duration = 600;
+          const start = performance.now();
+          function step(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            el.textContent = Math.round(progress * target);
+            if (progress < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }
+      });
+    </script>
+
+    <%= render 'shared/card', class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
+      <h2 class="text-2xl md:text-3xl font-semibold text-white">Overview</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <div>
+          <h3 class="text-xl font-semibold text-bp-warning">What Are Build Guilds?</h3>
+          <p class="text-white/90 leading-relaxed mt-1">
+            Build guilds are Hack Club hardware meetups. Organizers and attendees have a lot of freedom to decide what they want their guild to look like, some might focus on workshops, some on project demos, and others just on building projects together and hanging out.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-semibold text-bp-warning">Where Will Build Guilds Take Place?</h3>
+          <p class="text-white/90 leading-relaxed mt-1">
+            Build guilds are hosted in cities around the world at safe, hardware-friendly venues such as community spaces, makerspaces, or schools. Organizers will select the location and communicate with the venue.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-semibold text-bp-warning">When Will Build Guilds Take Place?</h3>
+          <p class="text-white/90 leading-relaxed mt-1">
+            All build guilds will happen during the week of <strong>April 13th-19th</strong>, around a week after Blueprint has ended.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-semibold text-bp-warning">Why Participate?</h3>
+          <p class="text-white/90 leading-relaxed mt-1">
+            Meet other Blueprint participants IRL from your local area, learn new skills, show off your hardware projects, and have fun!
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-semibold text-bp-warning">Who Can Join?</h3>
+          <p class="text-white/90 leading-relaxed mt-1">
+            <strong>Anyone</strong> from Hack Club can attend a guild! You don't need any hardware experience, so if you've ever been slightly curious about hardware projects, this is a great way to get started. If you'd like to organize one, you'll need an approved Blueprint project.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-semibold text-bp-warning">How To Join</h3>
+          <p class="text-white/90 leading-relaxed mt-1">
+            Fill out the sign-up form below as an organizer or attendee. Just enter your city - if there's already a guild there you'll be added to it, otherwise we'll create a new one.
+            If you'd like to organize, tell us about some ideas for what you'd like to run - this doesn't have to be final!
+          </p>
+        </div>
+      </div>
+    <% end %>
+
+    <figure class="rounded-sm overflow-hidden border-2 border-bp-darker">
+      <%= image_tag "undercity.png", alt: "Hack Clubbers at Undercity", class: "w-full h-56 md:h-72 object-cover" %>
+      <figcaption class="bg-bp-darker/50 px-4 py-2 text-sm text-white/60 text-center">
+        Hack Clubbers at Undercity, a 72 hour hardware hackathon at GitHub HQ!
+      </figcaption>
+    </figure>
+
+    <%= render 'shared/card', class: 'flex flex-col space-y-6 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
+      <h2 class="text-2xl md:text-3xl font-semibold text-white">Information for Organizers</h2>
+
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <h3 class="text-xl font-semibold text-bp-warning">Who Can Organize a Guild?</h3>
+          <p class="text-white/90 leading-relaxed">
+            Anyone with an approved Blueprint project can organize a guild. There are no extra requirements –
+            you don't have to be really good at coding or have organized events before, just be excited to run a meetup and be able to commit time to making it happen.
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <h3 class="text-xl font-semibold text-bp-warning">What Can You Run at a Guild?</h3>
+          <p class="text-white/90 leading-relaxed">
+            Guilds are very flexible! You can host workshops, show off projects, or run any wacky activities, provided they are safe and cost-effective. Here are some ideas:
+          </p>
+          <ul class="list-disc list-inside space-y-1 text-white/90">
+            <li>SMD soldering workshop</li>
+            <li>Blueprint project demos</li>
+            <li>Group build sessions</li>
+            <li>Lightning talks from attendees or invited speakers</li>
+            <li>Soldering Speed Olympics</li>
+            <li>LED hat decorating</li>
+          </ul>
+        </div>
+
+        <div class="space-y-2">
+          <h3 class="text-xl font-semibold text-bp-warning">What Do Organizers Do?</h3>
+          <ul class="list-disc list-inside space-y-1 text-white/90">
+            <li>Choose a day between April 13th-19th to run the guild</li>
+            <li>Find a space for the guild and get the venue's permission to bring hardware and run activities you want to do (e.g. soldering)</li>
+            <li>Finalize and run activities for your guild meetup</li>
+            <li>Sort out logistics like food and materials</li>
+            <li>Manage sign-ups and communications with attendees</li>
+            <li>Make it magical for people!</li>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+
+    <%= render 'shared/card', html_options: { id: 'signup-form' }, class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-sm' do %>
+      <h2 class="text-2xl md:text-3xl font-semibold text-white text-center">Sign Up!</h2>
+
+      <% if @signup.errors.any? %>
+        <div class="bg-red-500/20 border border-red-500 rounded-sm p-4 text-white mb-4 max-w-xl mx-auto">
+          <h2 class="font-bold">Please fix the following errors:</h2>
+          <ul class="list-disc list-inside">
+            <% @signup.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= form_with model: @signup, url: guild_signups_path, local: true, class: "flex flex-col gap-4 max-w-xl w-full mx-auto", id: "guild-signup-form" do |f| %>
+        <%= f.hidden_field :role, id: "role-field", value: @signup.role || "attendee" %>
+
+        <div class="mb-2">
+          <label class="block text-white font-medium mb-1">I want to join as:</label>
+          <div class="flex gap-4">
+            <button type="button" id="attendee-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-sm py-3 transition-colors"
+                    onclick="selectRole('attendee')">Attendee</button>
+            <button type="button" id="organizer-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-sm py-3 transition-colors"
+                    onclick="selectRole('organizer')">Organizer</button>
+          </div>
+          <% if @signup.errors[:role].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:role].join(', ') %></p>
+          <% end %>
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-1">Full Name</label>
+          <%= f.text_field :name,
+                placeholder: "e.g. Orpheus",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:name].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:name].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:name].join(', ') %></p>
+          <% end %>
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-1">Email address</label>
+          <p class="text-sm text-white/60 mb-1">We'll use this to contact you about your guild.</p>
+          <%= f.email_field :email,
+                value: @signup.email.presence || current_user&.email,
+                placeholder: "e.g. orpheus@hackclub.com",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:email].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:email].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:email].join(', ') %></p>
+          <% end %>
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-1">City / location</label>
+          <p class="text-sm text-white/60 mb-1">Enter your full city name.</p>
+          <%= text_field_tag 'guild_signup[city]', @city || params.dig(:guild_signup, :city),
+                id: "guild-city-field",
+                placeholder: "e.g. New York City, not NYC",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:city].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:city].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:city].join(', ') %></p>
+          <% end %>
+        </div>
+
+        <div data-controller="searchable-select">
+          <label class="block text-white font-medium mb-1">Country</label>
+          <%= f.select :country,
+                options_for_select(country_options, @signup.country),
+                { include_blank: "Choose a country" },
+                id: "guild-country-field",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:country].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white",
+                data: { searchable_select_target: "select" } %>
+          <% if @signup.errors[:country].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:country].join(', ') %></p>
+          <% end %>
+        </div>
+
+        <div id="organizer-ideas-container" class="<%= 'hidden' unless @signup.organizer? %>">
+          <label class="block text-white font-medium mb-1">What would you like to run?</label>
+          <p class="text-sm text-white/60 mb-1">Tell us a bit about any ideas you have – this doesn't have to be final!</p>
+          <%= f.text_area :ideas,
+                value: @signup.ideas,
+                rows: 4,
+                placeholder: "e.g. soldering workshop, project demos, lightning talks etc",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:ideas].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:ideas].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:ideas].join(', ') %></p>
+          <% end %>
+        </div>
+
+        <div id="attendee-activities-container" class="<%= 'hidden' if @signup.organizer? %>">
+          <label class="block text-white font-medium mb-1">What would you like to do at your guild? (Optional)</label>
+          <%= f.text_area :attendee_activities,
+                value: @signup.attendee_activities,
+                rows: 3,
+                placeholder: "e.g. learn to solder, show off my blueprint project, just hang out...",
+                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:attendee_activities].any? ? 'border-red-500' : 'border-white/25'} rounded-sm text-white" %>
+          <% if @signup.errors[:attendee_activities].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:attendee_activities].join(', ') %></p>
+          <% end %>
+        </div>
+
+        <%= f.submit "Submit!",
+              class: "btn bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-sm hover:bg-bp-warning-darker cursor-pointer",
+              data: { turbo_submits_with: "Submitting..." } %>
+      <% end %>
+
+      <p class="text-sm text-white/60 text-center">
+        We'll be in touch soon!
+      </p>
+
+      <script>
+        function selectRole(role) {
+          document.getElementById('role-field').value = role;
+
+          const attendeeBtn = document.getElementById('attendee-btn');
+          const organizerBtn = document.getElementById('organizer-btn');
+          const ideasContainer = document.getElementById('organizer-ideas-container');
+          const activitiesContainer = document.getElementById('attendee-activities-container');
+
+          if (role === 'organizer') {
+            ideasContainer.classList.remove('hidden');
+            activitiesContainer.classList.add('hidden');
+            organizerBtn.classList.add('bg-bp-warning');
+            attendeeBtn.classList.remove('bg-bp-warning');
+          } else {
+            ideasContainer.classList.add('hidden');
+            activitiesContainer.classList.remove('hidden');
+            attendeeBtn.classList.add('bg-bp-warning');
+            organizerBtn.classList.remove('bg-bp-warning');
+          }
+        }
+
+        selectRole(document.getElementById('role-field').value || 'attendee');
+
+        function prefillGuild(city, country) {
+          var cityField = document.getElementById('guild-city-field');
+          var countryField = document.getElementById('guild-country-field');
+          if (cityField) cityField.value = city;
+          if (countryField) {
+            // Match country code to select option value (case-insensitive)
+            var options = countryField.options;
+            for (var i = 0; i < options.length; i++) {
+              if (options[i].value.toLowerCase() === country.toLowerCase()) {
+                countryField.value = options[i].value;
+                break;
+              }
+            }
+          }
+          document.getElementById('signup-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      </script>
+    <% end %>
+
+    <% if @signup&.errors&.any? %>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var form = document.getElementById('signup-form');
+          if (form) form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      </script>
+    <% end %>
+
+  </div>
+</section>

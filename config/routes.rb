@@ -85,6 +85,10 @@ class HcbIntegrationAdminConstraint
 end
 
 Rails.application.routes.draw do
+  post "/slack/commands", to: "slack_commands#handle"
+  get "slack_commands/guild_stats"
+  resources :guild_signups, only: [ :new, :create ]
+
   resources :shop_items, only: [ :new, :create ]
   resources :shop_orders, only: [ :index, :new, :create ]
   get "buy/:item_id", to: "shop_orders#new", as: :buy_item
@@ -108,6 +112,9 @@ Rails.application.routes.draw do
 
   # Referral system
   get "r/:id" => "referral#show", as: :referral
+
+  # map data for guilds
+  get "guilds/map_data", to: "guilds#map_data"
 
   # Authentication
   get "auth/login" => "auth#index", as: :login
@@ -162,6 +169,8 @@ Rails.application.routes.draw do
   end
   get "explore" => "projects#explore", as: :explore
   get "leaderboard" => "leaderboards#index", as: :leaderboard
+
+  get "guilds" => "guilds#index", as: :guilds
 
   get "toolbag" => "toolbag#index", as: :toolbag
 

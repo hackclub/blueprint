@@ -56,7 +56,11 @@
             <% end %>
             <div class="w-full">
               <%= turbo_frame_tag "login_form" do %>
-                <%= render partial: "email_form" %>
+                <% if params[:otp_sent] %>
+                  <%= render partial: "otp_form", locals: { email: params[:email] } %>
+                <% else %>
+                  <%= render partial: "email_form" %>
+                <% end %>
               <% end %>
             </div>
           </div>
