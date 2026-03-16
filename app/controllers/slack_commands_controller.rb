@@ -216,19 +216,39 @@ class SlackCommandsController < ApplicationController
 
     moved = 0
     skipped = 0
+    moved_user_ids = []
     source.guild_signups.to_a.each do |signup|
       if target.guild_signups.exists?(user_id: signup.user_id)
         signup.destroy!
         skipped += 1
       else
         signup.update!(guild_id: target.id)
+        moved_user_ids << signup.user_id
         moved += 1
       end
     end
 
     source.update!(status: :closed)
 
-    "Merged *#{source.name}* into *#{target.name}*. Moved #{moved} signup(s), removed #{skipped} duplicate(s). Source guild marked as closed."
+    # Invite moved users to the target guild's Slack channel
+    invite_failures = 0
+    if target.slack_channel_id.present? && moved_user_ids.any?
+      slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+      User.where(id: moved_user_ids).where.not(slack_id: [nil, ""]).each do |user|
+        begin
+          slack_client.conversations_invite(channel: target.slack_channel_id, users: user.slack_id)
+        rescue Slack::Web::Api::Errors::AlreadyInChannel
+          # already there
+        rescue Slack::Web::Api::Errors::SlackError => e
+          Rails.logger.error "Failed to invite user #{user.id} to merged channel: #{e.message}"
+          invite_failures += 1
+        end
+      end
+    end
+
+    result = "Merged *#{source.name}* into *#{target.name}*. Moved #{moved} signup(s), removed #{skipped} duplicate(s). Source guild marked as closed."
+    result += " #{invite_failures} user(s) could not be invited to <##{target.slack_channel_id}>." if invite_failures > 0
+    result
   end
 
   def guild_change_role_message(text)

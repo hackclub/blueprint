@@ -38,6 +38,7 @@ class ProcessGuildSignupJob < ApplicationJob
     guild.reload
 
     invite_to_guild_channel(guild, user, signup, admin_channel)
+    invite_to_main_channel(user)
 
     guild.update_slack_topic if guild.slack_channel_id.present?
 
@@ -51,6 +52,9 @@ class ProcessGuildSignupJob < ApplicationJob
     post_welcome_message(guild, user, signup)
     post_no_organizers_message(guild, signup, contact_slack_id)
     send_dm(guild, user, signup, converted, organizers_channel)
+
+    # Send confirmation email last
+    SendGuildEmailJob.perform_later(signup.id)
 
   rescue => e
     Rails.logger.error "ProcessGuildSignupJob failed: #{e.message}"
@@ -126,6 +130,16 @@ class ProcessGuildSignupJob < ApplicationJob
     else
       notify_admin(admin_channel, "User #{user.display_name} (email: #{user.email}) has no Slack ID - cannot invite to organizers channel")
     end
+  end
+
+  def invite_to_main_channel(user)
+    return unless user.slack_id.present?
+
+    slack_client.conversations_invite(channel: "C0ALXK2FSTU", users: user.slack_id)
+  rescue Slack::Web::Api::Errors::AlreadyInChannel
+    # already there
+  rescue Slack::Web::Api::Errors::SlackError => e
+    Rails.logger.error "Failed to invite user #{user.id} to #build-guilds: #{e.message}"
   end
 
   def post_welcome_message(guild, user, signup)

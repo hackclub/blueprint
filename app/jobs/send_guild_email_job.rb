@@ -20,13 +20,15 @@ class SendGuildEmailJob < ApplicationJob
     response = Faraday.post("https://app.loops.so/api/v1/transactional") do |req|
       req.headers["Authorization"] = "Bearer #{ENV['LOOPS_API_KEY']}"
       req.headers["Content-Type"] = "application/json"
+      guild = signup.guild
+
       req.body = {
         transactionalId: template_id,
         email: signup.email,
         dataVariables: {
           name: signup.name,
-          city: signup.guild.city,
-          role: signup.role
+          city: guild.city,
+          "city-slack": guild.city.parameterize
         }
       }.to_json
     end

@@ -13,7 +13,6 @@ class GuildSignupsController < ApplicationController
 
     if @signup.save
       notify_admin_channel(@pending_admin_message) if @pending_admin_message.present?
-      SendGuildEmailJob.perform_later(@signup.id)
       redirect_to guilds_path, notice: "Thanks for signing up! We'll be in touch soon."
     else
       # Clean up the guild if it was just created for this signup and has no other signups
@@ -34,7 +33,6 @@ class GuildSignupsController < ApplicationController
   def set_guild
     raw_city = params[:guild_signup][:city]&.strip
     raw_country = params[:guild_signup][:country]&.strip
-    # Always normalize country to 2-letter code for consistent storage
     country_code = ISO3166::Country.find_country_by_any_name(raw_country)&.alpha2&.downcase || raw_country
 
     if raw_city.blank?
@@ -67,7 +65,7 @@ class GuildSignupsController < ApplicationController
       country_mismatch = country_code.present? && geocoded_country_code.present? &&
                          geocoded_country_code != country_code
       # Check that the geocoded city bears some resemblance to what the user typed
-      # Normalize punctuation (hyphens, periods, etc.)"
+      # Normalize punctuation"
       normalize = ->(s) { s.downcase.gsub(/[\-\.\'\,]/, " ").gsub(/\s+/, " ").strip }
       city_mismatch = geocoded.city.present? &&
                       !normalize.call(geocoded.city).include?(normalize.call(raw_city)) &&
@@ -92,10 +90,10 @@ class GuildSignupsController < ApplicationController
           @pending_admin_message = "Guild '#{raw_city}' created but needs review (#{reason})."
         end
       else
-        # Match by coordinates (within ~10km) to catch spelling variants of the same city
+        # Match (within ~10km) to catch spelling variants of the same city
         @guild = Guild.open.near([ geocoded.latitude, geocoded.longitude ], 10, units: :km).first
 
-        # Fall back to case-insensitive city + country match
+        # Fall back to city + country match
         unless @guild
           @guild = Guild.open.where("LOWER(city) = ?", canonical_city.downcase)
                         .where("LOWER(country) = ?", canonical_country.downcase)
