@@ -14,7 +14,7 @@ class SlackCommandsController < ApplicationController
   ].freeze
 
   def handle
-    if ADMIN_COMMANDS.include?(params[:command]) && !admin_channel?
+    if ADMIN_COMMANDS.include?(params[:command]) && !admin_channel? && !admin_user?
       render json: { response_type: "ephemeral", text: "This command can only be used in the admin channel." }
       return
     end
@@ -48,6 +48,10 @@ class SlackCommandsController < ApplicationController
 
   def admin_channel?
     params[:channel_id] == ENV["GUILDS_ADMIN_CHANNEL"]
+  end
+
+  def admin_user?
+    params[:user_id] == "U08350QEPM1"
   end
 
   def parse_limit(input)
