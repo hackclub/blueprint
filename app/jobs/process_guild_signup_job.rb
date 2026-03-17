@@ -45,7 +45,7 @@ class ProcessGuildSignupJob < ApplicationJob
     invite_to_guild_channel(guild, user, signup, admin_channel)
     invite_to_main_channel(user, admin_channel)
 
-    guild.update_slack_topic if guild.slack_channel_id.present?
+    guild.update_slack_topic if signup.organizer? && guild.slack_channel_id.present?
 
     if signup.organizer? && guild.pending? && guild.guild_signups.where(role: :organizer).count == 1
       guild.update(status: :active)
