@@ -15,7 +15,7 @@ class ProcessGuildSignupJob < ApplicationJob
       return
     end
 
-    notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], ":new: New #{signup.role} signup: *#{user.display_name}* (#{user.email}) for *#{guild.city}*")
+    notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New #{signup.role} signup: *#{user.display_name}* (#{user.email}) for *#{guild.city}*")
 
     admin_channel = ENV["GUILDS_ADMIN_CHANNEL"]
     organizers_channel = ENV["GUILDS_ORGANIZERS_CHANNEL"]

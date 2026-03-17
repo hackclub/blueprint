@@ -314,7 +314,7 @@ class SlackCommandsController < ApplicationController
     Rails.logger.info "[SlackBot] /guild-change-role signup_id=#{signup.id} guild_id=#{guild.id} #{old_role} -> #{new_role} by user=#{params[:user_id]}"
 
     # Update without callbacks to avoid synchronous Airtable sync (which would timeout Slack)
-    signup.update_column(:role, GuildSignup.roles[new_role])
+    signup.update_columns(role: GuildSignup.roles[new_role], updated_at: Time.current)
 
     # Defer Airtable sync and Slack topic update to background
     AirtableSyncClassJob.perform_later("GuildSignup")
