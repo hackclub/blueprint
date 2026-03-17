@@ -316,6 +316,13 @@ class SlackCommandsController < ApplicationController
     # Update without callbacks to avoid synchronous Airtable sync (which would timeout Slack)
     signup.update_columns(role: GuildSignup.roles[new_role], updated_at: Time.current)
 
+    result = "Changed #{signup.name} from #{old_role} to #{new_role} for *#{guild.city}*."
+
+    if new_role == "organizer" && guild.pending?
+      guild.update!(status: :active)
+      result += " Guild is now active."
+    end
+
     # Defer Airtable sync and Slack topic update to background
     AirtableSyncClassJob.perform_later("GuildSignup")
     Thread.new do
@@ -324,7 +331,7 @@ class SlackCommandsController < ApplicationController
       Rails.logger.error "[SlackBot] Failed to update Slack topic for guild #{guild.id}: #{e.message}"
     end
 
-    "Changed #{signup.name} from #{old_role} to #{new_role} for *#{guild.city}*."
+    result
   end
 
 
