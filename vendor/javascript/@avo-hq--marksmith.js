@@ -3019,8 +3019,11 @@ class marksmith_controller extends Controller {
     e.type = "file";
     e.multiple = true;
     e.accept = "image/*,.pdf,.doc,.docx,.txt";
+    e.style.display = "none";
+    document.body.appendChild(e);
     e.addEventListener("change", (t) => {
       this.#e(t.target.files);
+      document.body.removeChild(e);
     });
     e.click();
   }
@@ -3127,7 +3130,7 @@ class marksmith_controller extends Controller {
     return `${r}[${t}](${e})\n`;
   }
   #o(t) {
-    return ["image/jpeg", "image/gif", "image/png"].includes(t);
+    return ["image/jpeg", "image/gif", "image/png", "image/webp"].includes(t);
   }
 }
 class list_continuation_controller extends Controller {

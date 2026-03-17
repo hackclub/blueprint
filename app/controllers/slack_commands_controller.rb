@@ -400,8 +400,19 @@ class SlackCommandsController < ApplicationController
   end
 
   def find_guild(city)
-    Guild.where("LOWER(city) = ?", city.downcase).first ||
-      Guild.where("LOWER(name) = ?", city.downcase).first
+    guild = Guild.where("LOWER(city) = ?", city.downcase).first ||
+            Guild.where("LOWER(name) = ?", city.downcase).first
+    return guild if guild
+
+    # Fall back to accent-insensitive match
+    normalized = city.unicode_normalize(:nfkd).gsub(/\p{M}/, "").downcase
+    Guild.find_each do |g|
+      return g if g.city&.unicode_normalize(:nfkd)&.gsub(/\p{M}/, "")&.downcase == normalized
+    end
+    Guild.find_each do |g|
+      return g if g.name&.unicode_normalize(:nfkd)&.gsub(/\p{M}/, "")&.downcase == normalized
+    end
+    nil
   end
 
   def notify_admin_channel(message)
