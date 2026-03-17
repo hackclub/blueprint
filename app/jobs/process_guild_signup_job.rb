@@ -132,7 +132,7 @@ class ProcessGuildSignupJob < ApplicationJob
   def invite_to_main_channel(user)
     return unless user.slack_id.present?
 
-    slack_client.conversations_invite(channel: C0ALTV3HBGB, users: user.slack_id)
+    slack_client.conversations_invite(channel: "C0ALTV3HBGB", users: user.slack_id)
   rescue Slack::Web::Api::Errors::AlreadyInChannel
     # already there
   rescue Slack::Web::Api::Errors::SlackError => e
