@@ -8,6 +8,7 @@ class SlackCommandsController < ApplicationController
     /guild-delete
     /guild-merge
     /guild-change-role
+    /guild-relocate
     /guild-status
     /guild-list
     /guild-no-organizers
@@ -39,6 +40,8 @@ class SlackCommandsController < ApplicationController
       { response_type: "in_channel", text: guild_merge_message(params[:text]) }
     when "/guild-change-role"
       { response_type: "in_channel", text: guild_change_role_message(params[:text]) }
+    when "/guild-relocate"
+      { response_type: "in_channel", text: guild_relocate_message(params[:text]) }
     when "/guild-list"
       { response_type: "ephemeral", text: guild_list_message }
     else
@@ -334,6 +337,52 @@ class SlackCommandsController < ApplicationController
     result
   end
 
+
+  def guild_relocate_message(text)
+    parts = text.to_s.split(">>").map(&:strip)
+    return "Usage: `/guild-relocate <current city> >> <new city>, <new country>`" unless parts.length == 2
+
+    guild = find_guild(parts[0])
+    return "No guild found for \"#{parts[0]}\"." unless guild
+
+    new_location = parts[1]
+    geocoded = Geocoder.search(new_location).first
+
+    if geocoded.nil?
+      return "Could not geocode \"#{new_location}\". Try being more specific (e.g. `Saint-Leu, Reunion`)."
+    end
+
+    new_city = geocoded.city || new_location.split(",").first.strip
+    new_country = geocoded.country_code&.downcase
+
+    old_city = guild.city
+    old_country = guild.country
+
+    guild.update!(
+      city: new_city,
+      country: new_country,
+      name: "#{new_city} Guild",
+      latitude: geocoded.latitude,
+      longitude: geocoded.longitude
+    )
+
+    # Rename Slack channel if one exists
+    if guild.slack_channel_id.present?
+      new_channel_name = "build-guild-#{new_city.parameterize}"
+      begin
+        slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+        slack_client.conversations_rename(channel: guild.slack_channel_id, name: new_channel_name)
+      rescue => e
+        Rails.logger.error "[SlackBot] Failed to rename channel for guild #{guild.id}: #{e.message}"
+      end
+    end
+
+    guild.update_slack_topic if guild.slack_channel_id.present?
+
+    Rails.logger.info "[SlackBot] /guild-relocate guild_id=#{guild.id} from #{old_city} (#{old_country}) to #{new_city} (#{new_country}) by user=#{params[:user_id]}"
+
+    "Relocated *#{old_city}* to *#{new_city}* (#{new_country}). Coordinates: #{geocoded.latitude}, #{geocoded.longitude}.#{guild.slack_channel_id.present? ? " Channel renamed." : ""}"
+  end
 
   def find_slack_user(input)
     # Handle Slack mention format: <@U12345678> or <@U12345678|display_name>
