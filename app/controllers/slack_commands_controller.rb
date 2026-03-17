@@ -165,16 +165,14 @@ class SlackCommandsController < ApplicationController
 
     guild = find_guild(city)
     return "No guild found for \"#{city}\"." unless guild
-    return "#{guild.name} is not flagged for review." unless guild.needs_review?
 
-    guild.update!(needs_review: false)
+    guild.update!(needs_review: false) if guild.needs_review?
 
-    # Process any signups that were skipped due to needs_review
     guild.guild_signups.find_each do |signup|
       ProcessGuildSignupJob.perform_later(signup.id)
     end
 
-    "Approved *#{guild.name}*. Processing #{guild.guild_signups.count} pending signup(s) now."
+    "Approved *#{guild.name}*. Processing #{guild.guild_signups.count} signup(s) now."
   end
 
   def guild_delete_message(text)
