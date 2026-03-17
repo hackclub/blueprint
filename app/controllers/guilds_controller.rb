@@ -19,7 +19,7 @@ class GuildsController < ApplicationController
         country: g.country,
         lat: g.latitude,
         lng: g.longitude,
-        signup_count: g.guild_signups.count
+        signup_count: g.guild_signups.size
       }
     }
   end
