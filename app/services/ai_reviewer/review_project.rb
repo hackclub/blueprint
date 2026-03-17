@@ -2,7 +2,7 @@ module AiReviewer
   class ReviewProject
     include AiReviewer::GithubClient
 
-    MODEL = "openai/gpt-5-nano"
+    MODEL = "google/gemini-2.5-pro"
     PROVIDER = :openrouter
     LLM_TIMEOUT = 10.minutes
 

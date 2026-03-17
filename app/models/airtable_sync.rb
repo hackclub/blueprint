@@ -50,7 +50,7 @@ class AirtableSync < ApplicationRecord
     sync_with_records!(klass, records, no_upload:, log_prefix: "Airtable sync")
   end
 
-  def self.batch_sync!(table_id, records, sync_id, mappings, no_upload: false, batch_index: nil)
+  def self.batch_sync!(table_id, records, sync_id, mappings, no_upload: false, batch_index: nil, base_id: nil)
     total = records.size
     Rails.logger.info("Airtable batch sync: Building CSV for #{total} records...")
 
@@ -75,7 +75,7 @@ class AirtableSync < ApplicationRecord
       return filepath
     end
 
-    response = Faraday.post("https://api.airtable.com/v0/#{ENV['AIRTABLE_BASE_ID']}/#{table_id}/sync/#{sync_id}") do |req|
+    response = Faraday.post("https://api.airtable.com/v0/#{base_id || ENV['AIRTABLE_BASE_ID']}/#{table_id}/sync/#{sync_id}") do |req|
       req.headers = {
         "Authorization" => "Bearer #{ENV['AIRTABLE_PAT']}",
         "Content-Type" => "text/csv"
@@ -89,20 +89,21 @@ class AirtableSync < ApplicationRecord
     end
   end
 
-  def self.individual_sync!(table_id, record, mappings, old_airtable_id)
+  def self.individual_sync!(table_id, record, mappings, old_airtable_id, base_id: nil)
     fields = build_airtable_fields(record, mappings)
-    upload_or_create!(table_id, record, fields)
+    upload_or_create!(table_id, record, fields, base_id: base_id)
   end
 
-  def self.upload_or_create!(table_id, object, fields)
+  def self.upload_or_create!(table_id, object, fields, base_id: nil)
+    base_id ||= ENV["AIRTABLE_BASE_ID"]
     old_airtable_id = find_by(record_identifier: build_identifier(object))&.airtable_id
 
     if old_airtable_id.present?
       method = :patch
-      url = "https://api.airtable.com/v0/#{ENV['AIRTABLE_BASE_ID']}/#{table_id}/#{old_airtable_id}"
+      url = "https://api.airtable.com/v0/#{base_id}/#{table_id}/#{old_airtable_id}"
     else
       method = :post
-      url = "https://api.airtable.com/v0/#{ENV['AIRTABLE_BASE_ID']}/#{table_id}"
+      url = "https://api.airtable.com/v0/#{base_id}/#{table_id}"
     end
 
     response = Faraday.send(method, url) do |req|
@@ -122,6 +123,14 @@ class AirtableSync < ApplicationRecord
   end
 
   private
+
+  def self.base_id_for(klass)
+    if klass.respond_to?(:airtable_sync_base_id)
+      klass.airtable_sync_base_id
+    else
+      ENV["AIRTABLE_BASE_ID"]
+    end
+  end
 
   def self.resolve_class(classname)
     classname.is_a?(String) ? classname.constantize : classname
@@ -143,6 +152,7 @@ class AirtableSync < ApplicationRecord
 
     {
       klass:,
+      base_id: base_id_for(klass),
       table_id: klass.airtable_sync_table_id,
       mappings: klass.airtable_sync_field_mappings,
       sync_id: (klass.airtable_sync_sync_id if klass.respond_to?(:airtable_sync_sync_id)),
@@ -188,10 +198,10 @@ class AirtableSync < ApplicationRecord
       batches = build_equal_batches(records, batch_size)
       batches.each_with_index do |batch_records, index|
         Rails.logger.info("#{log_prefix}: #{klass.name} batch #{index + 1}/#{batches.size} (#{batch_records.size} records)")
-        batch_sync!(ctx[:table_id], batch_records, ctx[:sync_id], ctx[:mappings], no_upload:, batch_index: index + 1)
+        batch_sync!(ctx[:table_id], batch_records, ctx[:sync_id], ctx[:mappings], no_upload:, batch_index: index + 1, base_id: ctx[:base_id])
       end
     else
-      batch_sync!(ctx[:table_id], records, ctx[:sync_id], ctx[:mappings], no_upload:)
+      batch_sync!(ctx[:table_id], records, ctx[:sync_id], ctx[:mappings], no_upload:, base_id: ctx[:base_id])
     end
   end
 
@@ -203,7 +213,7 @@ class AirtableSync < ApplicationRecord
       if (index + 1) % 100 == 0 || index + 1 == total
         Rails.logger.info("#{log_prefix}: Processing #{ctx[:klass].name} (#{index + 1}/#{total})")
       end
-      airtable_ids << individual_sync!(ctx[:table_id], record, ctx[:mappings], nil)
+      airtable_ids << individual_sync!(ctx[:table_id], record, ctx[:mappings], nil, base_id: ctx[:base_id])
     end
 
     airtable_ids
