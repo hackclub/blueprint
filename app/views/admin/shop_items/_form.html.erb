@@ -75,7 +75,7 @@
 
       <div>
         <%= f.label :image, class: "block text-xl font-medium" %>
-        <% if @shop_item.image.attached? %>
+        <% if @shop_item.image.attached? && @shop_item.image.blob&.persisted? %>
           <div class="mb-2">
             <p class="text-sm text-white/60 mb-1">Current image:</p>
             <%= image_tag @shop_item.image.variant(resize_to_limit: [200, 200]),
