@@ -6,9 +6,15 @@ if defined?(Geocoder::Request::GEOCODER_CANDIDATE_HEADERS)
 end
 
 Geocoder.configure(
-  timeout: 2,
+  timeout: 5,
+  units: :mi,
   ip_lookup: :hack_club,
   hack_club: {
     api_key: ENV["GEOCODER_API_KEY"]
-  }
+  },
+  lookup: :hack_club_geocode,
+  hack_club_geocode: {
+    api_key: ENV["GEOCODER_API_KEY"]
+  },
+  use_https: true
 )

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_06_145047) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_16_122440) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -273,6 +273,38 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_145047) do
     t.index ["project_id"], name: "index_follows_on_project_id"
     t.index ["user_id", "project_id"], name: "index_follows_on_user_id_and_project_id", unique: true
     t.index ["user_id"], name: "index_follows_on_user_id"
+  end
+
+  create_table "guild_signups", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "guild_id", null: false
+    t.integer "role"
+    t.string "name"
+    t.string "email"
+    t.string "project_link"
+    t.text "ideas"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "country"
+    t.text "attendee_activities"
+    t.index ["guild_id"], name: "index_guild_signups_on_guild_id"
+    t.index ["user_id", "guild_id"], name: "index_guild_signups_on_user_id_and_guild_id", unique: true
+    t.index ["user_id"], name: "index_guild_signups_on_user_id"
+  end
+
+  create_table "guilds", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "city"
+    t.string "slack_channel_id"
+    t.integer "status"
+    t.float "latitude"
+    t.float "longitude"
+    t.string "country"
+    t.boolean "needs_review"
+    t.index ["city", "country"], name: "index_guilds_on_city_and_country", unique: true
   end
 
   create_table "hcb_grants", force: :cascade do |t|
@@ -714,6 +746,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_145047) do
   add_foreign_key "design_reviews", "users", column: "reviewer_id"
   add_foreign_key "follows", "projects"
   add_foreign_key "follows", "users"
+  add_foreign_key "guild_signups", "guilds"
+  add_foreign_key "guild_signups", "users"
   add_foreign_key "hcb_transactions", "hcb_grants"
   add_foreign_key "journal_entries", "projects"
   add_foreign_key "journal_entries", "users"

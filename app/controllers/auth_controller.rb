@@ -52,6 +52,7 @@ class AuthController < ApplicationController
             )
           ]
         end
+        format.html { redirect_to login_path, alert: "Invalid email address." }
       end
       return
     end
@@ -68,6 +69,7 @@ class AuthController < ApplicationController
               )
             ]
           end
+          format.html { redirect_to login_path, alert: "You do not have access." }
         end
         return
       end
@@ -91,6 +93,7 @@ class AuthController < ApplicationController
                 )
               ]
             end
+            format.html { redirect_to login_path, alert: "Email login is disabled for this account. Please use HCA to login." }
           end
           return
         end
@@ -116,6 +119,7 @@ class AuthController < ApplicationController
               )
             ]
           end
+          format.html { redirect_to login_path, alert: "Invalid OTP. Please try again." }
         end
       end
       return
@@ -136,6 +140,7 @@ class AuthController < ApplicationController
             )
           ]
         end
+        format.html { redirect_to login_path, alert: "You do not have access." }
       end
       return
     end
@@ -150,6 +155,9 @@ class AuthController < ApplicationController
             partial: "auth/otp_form",
             locals: { email: email }
           )
+        end
+        format.html do
+          redirect_to login_path(email: email, otp_sent: true)
         end
       end
     else
@@ -167,6 +175,7 @@ class AuthController < ApplicationController
             )
           ]
         end
+        format.html { redirect_to login_path, alert: "Failed to send OTP. Please try again." }
       end
     end
   end

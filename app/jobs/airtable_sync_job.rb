@@ -1,7 +1,7 @@
 class AirtableSyncJob < ApplicationJob
   queue_as :background
 
-  CLASSES_TO_SYNC = %w[User Project ShopOrder DesignReview BuildReview].freeze
+  CLASSES_TO_SYNC = %w[User Project ShopOrder DesignReview BuildReview Guild GuildSignup].freeze
 
   def perform(*args)
     CLASSES_TO_SYNC.each do |classname|
