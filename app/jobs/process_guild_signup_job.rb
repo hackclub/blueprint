@@ -23,15 +23,17 @@ class ProcessGuildSignupJob < ApplicationJob
 
     converted = false
     if signup.organizer?
-      existing = guild.guild_signups
-                     .where(role: :organizer)
-                     .where.not(id: signup.id)
-                     .count
-      if existing >= MAX_ORGANIZERS
-        signup.update!(role: :attendee)
-        converted = true
-        Rails.logger.info "Converted signup #{signup.id} to attendee (exceeded max organizers)"
-        notify_admin(admin_channel, "User #{user.display_name} signed up as organizer for #{guild.city} but max organizers (#{MAX_ORGANIZERS}) exceeded. Converted to attendee.")
+      guild.with_lock do
+        existing = guild.guild_signups
+                       .where(role: :organizer)
+                       .where.not(id: signup.id)
+                       .count
+        if existing >= MAX_ORGANIZERS
+          signup.update!(role: :attendee)
+          converted = true
+          Rails.logger.info "Converted signup #{signup.id} to attendee (exceeded max organizers)"
+          notify_admin(admin_channel, "User #{user.display_name} signed up as organizer for #{guild.city} but max organizers (#{MAX_ORGANIZERS}) exceeded. Converted to attendee.")
+        end
       end
     end
 

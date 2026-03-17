@@ -188,9 +188,7 @@ class SlackCommandsController < ApplicationController
 
     guild.update!(needs_review: false) if guild.needs_review?
 
-    guild.guild_signups.find_each do |signup|
-      ProcessGuildSignupJob.perform_later(signup.id)
-    end
+    ProcessGuildApprovalJob.perform_later(guild.id)
 
     "Approved *#{guild.name}*. Processing #{guild.guild_signups.count} signup(s) now."
   end
@@ -314,8 +312,12 @@ class SlackCommandsController < ApplicationController
     end
 
     Rails.logger.info "[SlackBot] /guild-change-role signup_id=#{signup.id} guild_id=#{guild.id} #{old_role} -> #{new_role} by user=#{params[:user_id]}"
-    signup.update!(role: new_role)
 
+    # Update without callbacks to avoid synchronous Airtable sync (which would timeout Slack)
+    signup.update_column(:role, GuildSignup.roles[new_role])
+
+    # Defer Airtable sync and Slack topic update to background
+    AirtableSyncClassJob.perform_later("GuildSignup")
     Thread.new do
       guild.update_slack_topic
     rescue => e

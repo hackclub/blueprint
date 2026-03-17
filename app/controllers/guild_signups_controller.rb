@@ -78,7 +78,14 @@ class GuildSignupsController < ApplicationController
                       !normalize.call(geocoded.city).include?(normalize.call(raw_city)) &&
                       !normalize.call(raw_city).include?(normalize.call(geocoded.city))
 
-      if geocoded.city.blank? || country_mismatch || city_mismatch
+      # Check if geocoder actually resolved to a city (locality), not a region/country
+      raw_response = geocoded.data&.dig("raw_backend_response")
+      has_locality = raw_response&.dig("results")&.any? { |r|
+        r["address_components"]&.any? { |c| c["types"]&.include?("locality") }
+      }
+      not_a_city = raw_response.present? && !has_locality
+
+      if geocoded.city.blank? || country_mismatch || city_mismatch || not_a_city
         guild = Guild.open.where("LOWER(city) = ?", raw_city.downcase)
                      .where("LOWER(country) = ?", country_code.downcase).first
         unless guild
@@ -86,6 +93,8 @@ class GuildSignupsController < ApplicationController
             "country mismatch: expected #{raw_country}, got #{geocoded.country_code}"
           elsif city_mismatch
             "city mismatch: typed '#{raw_city}', geocoded to '#{geocoded.city}'"
+          elsif not_a_city
+            "not a city: '#{raw_city}' resolved to a region/country"
           else
             "geocoder returned no city"
           end
