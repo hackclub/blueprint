@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_16_122440) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_17_013712) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -293,17 +293,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_122440) do
   end
 
   create_table "guilds", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "city"
+    t.string "city", null: false
     t.string "slack_channel_id"
-    t.integer "status"
+    t.integer "status", default: 0
     t.float "latitude"
     t.float "longitude"
-    t.string "country"
-    t.boolean "needs_review"
+    t.string "country", null: false
+    t.boolean "needs_review", default: false
     t.index ["city", "country"], name: "index_guilds_on_city_and_country", unique: true
   end
 
