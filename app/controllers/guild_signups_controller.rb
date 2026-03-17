@@ -35,8 +35,8 @@ class GuildSignupsController < ApplicationController
       redirect_to guilds_path, notice: "Thanks for signing up! We'll be in touch soon."
     else
       errors = @signup&.errors&.full_messages&.join(", ")
-      guild_note = @guild_is_new ? " (new guild creation for #{raw_city} was rolled back — not in DB or Airtable)" : " (existing guild: #{@guild&.city})"
-      notify_admin_channel(":x: Failed signup by *#{current_user.display_name}* (#{current_user.email}) for *#{raw_city}*#{guild_note}: #{errors}")
+      guild_note = @guild_is_new ? " (new guild creation for #{raw_city} was rolled back)" : " (existing guild: #{@guild&.city})"
+      notify_admin_channel("Failed signup by *#{current_user.display_name}* for *#{raw_city}*#{guild_note}: #{errors}")
       @guilds_page = true
       render "guilds/index", status: :unprocessable_entity
     end

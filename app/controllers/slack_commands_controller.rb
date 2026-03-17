@@ -46,12 +46,16 @@ class SlackCommandsController < ApplicationController
       { response_type: "ephemeral", text: "Unknown command." }
     end
 
-    # Log all admin command results to the admin channel
-    if ADMIN_COMMANDS.include?(params[:command])
-      notify_admin_channel(":hammer_and_wrench: <@#{params[:user_id]}> ran `#{params[:command]} #{params[:text]}`:\n#{result[:text]}")
-    end
-
     render json: result
+
+    # Log admin command results to the admin channel after responding to Slack
+    if ADMIN_COMMANDS.include?(params[:command])
+      Thread.new do
+        notify_admin_channel("<@#{params[:user_id]}> ran `#{params[:command]} #{params[:text]}`:\n#{result[:text]}")
+      rescue => e
+        Rails.logger.error "[SlackBot] Failed to log admin command to admin channel: #{e.message}"
+      end
+    end
   end
 
   private
@@ -254,7 +258,7 @@ class SlackCommandsController < ApplicationController
     invite_failures = 0
     if target.slack_channel_id.present? && moved_user_ids.any?
       slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
-      User.where(id: moved_user_ids).where.not(slack_id: [nil, ""]).each do |user|
+      User.where(id: moved_user_ids).where.not(slack_id: [ nil, "" ]).each do |user|
         begin
           slack_client.conversations_invite(channel: target.slack_channel_id, users: user.slack_id)
           Rails.logger.info "[SlackBot] Invited user=#{user.id} (slack=#{user.slack_id}) to channel=#{target.slack_channel_id}"
@@ -311,7 +315,12 @@ class SlackCommandsController < ApplicationController
 
     Rails.logger.info "[SlackBot] /guild-change-role signup_id=#{signup.id} guild_id=#{guild.id} #{old_role} -> #{new_role} by user=#{params[:user_id]}"
     signup.update!(role: new_role)
-    guild.update_slack_topic
+
+    Thread.new do
+      guild.update_slack_topic
+    rescue => e
+      Rails.logger.error "[SlackBot] Failed to update Slack topic for guild #{guild.id}: #{e.message}"
+    end
 
     "Changed #{signup.name} from #{old_role} to #{new_role} for *#{guild.city}*."
   end
