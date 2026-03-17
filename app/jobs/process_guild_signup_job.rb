@@ -11,8 +11,11 @@ class ProcessGuildSignupJob < ApplicationJob
 
     if guild.needs_review?
       Rails.logger.info "Guild #{guild.id} flagged for review – skipping Slack actions for signup #{signup.id}."
+      notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], ":eyes: New signup held: *#{user.display_name}* (#{signup.role}) for *#{guild.city}*. Guild needs review.")
       return
     end
+
+    notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], ":new: New #{signup.role} signup: *#{user.display_name}* (#{user.email}) for *#{guild.city}*")
 
     admin_channel = ENV["GUILDS_ADMIN_CHANNEL"]
     organizers_channel = ENV["GUILDS_ORGANIZERS_CHANNEL"]
@@ -38,7 +41,7 @@ class ProcessGuildSignupJob < ApplicationJob
     guild.reload
 
     invite_to_guild_channel(guild, user, signup, admin_channel)
-    invite_to_main_channel(user)
+    invite_to_main_channel(user, admin_channel)
 
     guild.update_slack_topic if guild.slack_channel_id.present?
 
@@ -49,9 +52,9 @@ class ProcessGuildSignupJob < ApplicationJob
     end
 
     invite_to_organizers_channel(guild, user, signup, organizers_channel, admin_channel)
-    post_welcome_message(guild, user, signup)
+    post_welcome_message(guild, user, signup, admin_channel)
     post_no_organizers_message(guild, signup, contact_slack_id)
-    send_dm(guild, user, signup, converted, organizers_channel)
+    send_dm(guild, user, signup, converted, organizers_channel, admin_channel)
 
   rescue => e
     Rails.logger.error "ProcessGuildSignupJob failed: #{e.message}"
@@ -83,6 +86,7 @@ class ProcessGuildSignupJob < ApplicationJob
       if existing
         guild.update!(slack_channel_id: existing["id"])
         Rails.logger.info "Found existing Slack channel #{channel_name} for guild #{guild.id}"
+        notify_admin(admin_channel, ":recycle: Reused existing Slack channel <##{existing["id"]}> for #{guild.city} (channel already existed)")
       else
         Rails.logger.error "Channel name '#{channel_name}' taken but not found in channel list for guild #{guild.id}"
         notify_admin(admin_channel, "Channel name '#{channel_name}' is taken but couldn't be found — needs manual investigation.")
@@ -129,7 +133,7 @@ class ProcessGuildSignupJob < ApplicationJob
     end
   end
 
-  def invite_to_main_channel(user)
+  def invite_to_main_channel(user, admin_channel)
     return unless user.slack_id.present?
 
     slack_client.conversations_invite(channel: "C0ALTV3HBGB", users: user.slack_id)
@@ -137,9 +141,10 @@ class ProcessGuildSignupJob < ApplicationJob
     # already there
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Failed to invite user #{user.id} to #build-guilds: #{e.message}"
+    notify_admin(admin_channel, ":warning: Failed to invite <@#{user.slack_id}> to #build-guilds: #{e.message}")
   end
 
-  def post_welcome_message(guild, user, signup)
+  def post_welcome_message(guild, user, signup, admin_channel)
     return unless guild.slack_channel_id.present? && user.slack_id.present?
 
     role_text = signup.organizer? ? "an organizer" : "an attendee"
@@ -147,6 +152,7 @@ class ProcessGuildSignupJob < ApplicationJob
     slack_client.chat_postMessage(channel: guild.slack_channel_id, text: message)
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Failed to post welcome message to #{guild.slack_channel_id}: #{e.message}"
+    notify_admin(admin_channel, ":warning: Failed to post welcome message to <##{guild.slack_channel_id}> for <@#{user.slack_id}>: #{e.message}")
   end
 
   def post_no_organizers_message(guild, signup, contact_slack_id)
@@ -164,7 +170,7 @@ class ProcessGuildSignupJob < ApplicationJob
     Rails.logger.error "Failed to post no-organizers message to #{guild.slack_channel_id}: #{e.message}"
   end
 
-  def send_dm(guild, user, signup, converted, organizers_channel)
+  def send_dm(guild, user, signup, converted, organizers_channel, admin_channel)
     return unless user.slack_id.present?
 
     dm_response = slack_client.conversations_open(users: user.slack_id)
@@ -181,6 +187,7 @@ class ProcessGuildSignupJob < ApplicationJob
     slack_client.chat_postMessage(channel: dm_channel, text: dm_text)
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Failed to send DM to user #{user.id}: #{e.message}"
+    notify_admin(admin_channel, ":warning: Failed to send DM to <@#{user.slack_id}> for #{guild.city} signup: #{e.message}")
   end
 
   def notify_admin(channel, message)
