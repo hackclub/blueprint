@@ -10,6 +10,6 @@ class CreateGuilds < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :guilds, :city, unique: true
+    # Unique index on (city, country) is added in a later migration (20260316122440)
   end
 end
