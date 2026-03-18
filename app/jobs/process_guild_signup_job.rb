@@ -11,11 +11,11 @@ class ProcessGuildSignupJob < ApplicationJob
 
     if guild.needs_review?
       Rails.logger.info "Guild #{guild.id} flagged for review – skipping Slack actions for signup #{signup.id}."
-      notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], ":eyes: New signup held: *#{user.display_name}* (#{signup.role}) for *#{guild.city}*. Guild needs review.")
+      notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New signup held: *#{user.display_name}* (#{signup.role}) for *#{guild.city}*. Guild needs review.")
       return
     end
 
-    notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New #{signup.role} signup: *#{user.display_name}* (#{user.email}) for *#{guild.city}*")
+    notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New #{signup.role} signup: *#{user.display_name}* for *#{guild.city}*")
 
     admin_channel = ENV["GUILDS_ADMIN_CHANNEL"]
     organizers_channel = ENV["GUILDS_ORGANIZERS_CHANNEL"]
@@ -75,7 +75,7 @@ class ProcessGuildSignupJob < ApplicationJob
       guild.update!(slack_channel_id: response["channel"]["id"])
       notify_admin(admin_channel, "New guild channel created: <##{guild.slack_channel_id}> for #{guild.city} (triggered by #{signup.role}: #{user.display_name})")
     rescue Slack::Web::Api::Errors::NameTaken
-      # Channel already exists (job retry or race condition) — paginate through all channels to find it
+      # Channel already exists, try to find it
       existing = nil
       cursor = nil
       loop do
@@ -88,10 +88,10 @@ class ProcessGuildSignupJob < ApplicationJob
       if existing
         guild.update!(slack_channel_id: existing["id"])
         Rails.logger.info "Found existing Slack channel #{channel_name} for guild #{guild.id}"
-        notify_admin(admin_channel, ":recycle: Reused existing Slack channel <##{existing["id"]}> for #{guild.city} (channel already existed)")
+        notify_admin(admin_channel, "Reused existing Slack channel <##{existing["id"]}> for #{guild.city} (channel already existed)")
       else
         Rails.logger.error "Channel name '#{channel_name}' taken but not found in channel list for guild #{guild.id}"
-        notify_admin(admin_channel, "Channel name '#{channel_name}' is taken but couldn't be found — needs manual investigation.")
+        notify_admin(admin_channel, "Channel name '#{channel_name}' is taken but couldn't be found")
       end
     rescue Slack::Web::Api::Errors::SlackError => e
       Rails.logger.error "Failed to create Slack channel for guild #{guild.id}: #{e.message}"
@@ -113,7 +113,7 @@ class ProcessGuildSignupJob < ApplicationJob
         notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to <##{guild.slack_channel_id}> (role: #{signup.role}): #{e.message}")
       end
     else
-      notify_admin(admin_channel, "User #{user.display_name} (email: #{user.email}) has no Slack ID – cannot invite to <##{guild.slack_channel_id}> (role: #{signup.role})")
+      notify_admin(admin_channel, "User #{user.display_name} has no Slack ID – cannot invite to <##{guild.slack_channel_id}> (role: #{signup.role})")
     end
   end
 
@@ -131,7 +131,7 @@ class ProcessGuildSignupJob < ApplicationJob
         notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to <##{organizers_channel}>: #{e.message}")
       end
     else
-      notify_admin(admin_channel, "User #{user.display_name} (email: #{user.email}) has no Slack ID - cannot invite to organizers channel")
+      notify_admin(admin_channel, "User #{user.display_name} has no Slack ID - cannot invite to organizers channel")
     end
   end
 
@@ -143,7 +143,7 @@ class ProcessGuildSignupJob < ApplicationJob
     # already there
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Failed to invite user #{user.id} to #build-guilds: #{e.message}"
-    notify_admin(admin_channel, ":warning: Failed to invite <@#{user.slack_id}> to #build-guilds: #{e.message}")
+    notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to #build-guilds: #{e.message}")
   end
 
   def post_welcome_message(guild, user, signup, admin_channel)
@@ -154,7 +154,7 @@ class ProcessGuildSignupJob < ApplicationJob
     slack_client.chat_postMessage(channel: guild.slack_channel_id, text: message)
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Failed to post welcome message to #{guild.slack_channel_id}: #{e.message}"
-    notify_admin(admin_channel, ":warning: Failed to post welcome message to <##{guild.slack_channel_id}> for <@#{user.slack_id}>: #{e.message}")
+    notify_admin(admin_channel, "Failed to post welcome message to <##{guild.slack_channel_id}> for <@#{user.slack_id}>: #{e.message}")
   end
 
   def post_no_organizers_message(guild, signup, contact_slack_id)
@@ -189,7 +189,7 @@ class ProcessGuildSignupJob < ApplicationJob
     slack_client.chat_postMessage(channel: dm_channel, text: dm_text)
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Failed to send DM to user #{user.id}: #{e.message}"
-    notify_admin(admin_channel, ":warning: Failed to send DM to <@#{user.slack_id}> for #{guild.city} signup: #{e.message}")
+    notify_admin(admin_channel, "Failed to send DM to <@#{user.slack_id}> for #{guild.city} signup: #{e.message}")
   end
 
   def notify_admin(channel, message)
