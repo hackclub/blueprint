@@ -1,3 +1,8 @@
+<% content_for :head_assets do %>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<% end %>
+
 <section class="flex justify-center">
   <div class="w-full max-w-6xl space-y-4">
 
@@ -63,6 +68,15 @@
                 popupEl.appendChild(b);
                 popupEl.appendChild(document.createElement('br'));
                 popupEl.appendChild(document.createTextNode(g.signup_count + ' signup' + (g.signup_count === 1 ? '' : 's')));
+                if (g.slack_channel_id) {
+                  popupEl.appendChild(document.createElement('br'));
+                  var slackLink = document.createElement('a');
+                  slackLink.href = 'https://hackclub.slack.com/archives/' + g.slack_channel_id;
+                  slackLink.target = '_blank';
+                  slackLink.style.color = '#f4c542';
+                  slackLink.textContent = '#build-guild-' + g.city.toLowerCase().replace(/\s+/g, '-');
+                  popupEl.appendChild(slackLink);
+                }
                 popupEl.appendChild(document.createElement('br'));
                 var link = document.createElement('a');
                 link.href = '#signup-form';

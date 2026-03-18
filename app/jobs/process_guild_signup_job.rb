@@ -42,6 +42,8 @@ class ProcessGuildSignupJob < ApplicationJob
     ensure_guild_channel!(guild, signup, user, admin_channel)
     guild.reload
 
+    Guild.update_main_channel_description if guild.slack_channel_id.present?
+
     invite_to_guild_channel(guild, user, signup, admin_channel)
     invite_to_main_channel(user, admin_channel)
 
@@ -138,7 +140,7 @@ class ProcessGuildSignupJob < ApplicationJob
   def invite_to_main_channel(user, admin_channel)
     return unless user.slack_id.present?
 
-    slack_client.conversations_invite(channel: "C0ALTV3HBGB", users: user.slack_id)
+    slack_client.conversations_invite(channel: Guild::MAIN_CHANNEL_ID, users: user.slack_id)
   rescue Slack::Web::Api::Errors::AlreadyInChannel
     # already there
   rescue Slack::Web::Api::Errors::SlackError => e

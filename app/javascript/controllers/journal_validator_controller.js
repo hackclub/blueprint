@@ -135,9 +135,9 @@ export default class extends Controller {
     }
  
     // Optionally add classes to the counters
-    this.toggleStateClass(this.charCountTarget, okChars);
-    this.toggleStateClass(this.imageCountTarget, okImages);
-    this.toggleStateClass(this.summaryCountTarget, okSummary);
+    if (this.hasCharCountTarget) this.toggleStateClass(this.charCountTarget, okChars);
+    if (this.hasImageCountTarget) this.toggleStateClass(this.imageCountTarget, okImages);
+    if (this.hasSummaryCountTarget) this.toggleStateClass(this.summaryCountTarget, okSummary);
   }
 
   toggleStateClass(el, ok) {

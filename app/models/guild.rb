@@ -89,4 +89,19 @@ class Guild < ApplicationRecord
   def airtable_record_id
     AirtableSync.find_by(record_identifier: "Guild##{id}")&.airtable_id
   end
+
+  MAIN_CHANNEL_ID = "C0ALTV3HBGB"
+
+  def self.update_main_channel_description
+    guilds_with_channels = Guild.where.not(slack_channel_id: nil).where.not(status: :closed).order(:city)
+    return if guilds_with_channels.empty?
+
+    channel_list = guilds_with_channels.map { |g| "<##{g.slack_channel_id}>" }.join(", ")
+    description = "The central hub for Build Guilds! Current guild channels: #{channel_list}"
+
+    slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+    slack_client.conversations_setPurpose(channel: MAIN_CHANNEL_ID, purpose: description)
+  rescue => e
+    Rails.logger.error "Failed to update #blueprint-build-guilds description: #{e.message}"
+  end
 end

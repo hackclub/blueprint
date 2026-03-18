@@ -12,6 +12,7 @@ export default class extends Controller {
   }
 
   updateVisual() {
+    if (!this.hasCheckboxTarget || !this.hasVisualTarget) return
     if (this.checkboxTarget.checked) {
       this.visualTarget.classList.add("checked")
     } else {
