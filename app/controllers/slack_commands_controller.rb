@@ -381,10 +381,10 @@ class SlackCommandsController < ApplicationController
 
   def guild_update_channels_message
     result = Guild.update_main_channel_description
-    if result[:canvas_id]
-      "Updated <##{Guild::MAIN_CHANNEL_ID}> canvas with #{result[:total]} guild channel(s) and current organizers."
+    if result[:updated]
+      "Updated pinned message in <##{Guild::MAIN_CHANNEL_ID}> with #{result[:total]} guild channel(s)."
     else
-      "Created canvas on <##{Guild::MAIN_CHANNEL_ID}> with #{result[:total]} guild channel(s)."
+      "Posted and pinned guild channel list in <##{Guild::MAIN_CHANNEL_ID}> with #{result[:total]} guild channel(s)."
     end
   rescue => e
     "Failed to update channel canvas: #{e.message}"
