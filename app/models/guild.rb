@@ -109,7 +109,7 @@ class Guild < ApplicationRecord
       new_guilds = guilds_with_channels.reject { |g| existing_text.include?(g.slack_channel_id) }
 
       if new_guilds.any?
-        new_lines = new_guilds.map { |g| "- <##{g.slack_channel_id}>" }
+        new_lines = new_guilds.map { |g| "- <##{g.slack_channel_id}|build-guild-#{g.city.parameterize}>" }
         slack_client.canvases_edit(
           canvas_id: canvas_id,
           changes: [ { operation: "insert_at_end", document_content: { type: "markdown", markdown: new_lines.join("\n") } } ].to_json
@@ -118,7 +118,7 @@ class Guild < ApplicationRecord
 
       { canvas_id: canvas_id, new_count: new_guilds.count, total: guilds_with_channels.count }
     else
-      lines = guilds_with_channels.map { |g| "- <##{g.slack_channel_id}>" }
+      lines = guilds_with_channels.map { |g| "- <##{g.slack_channel_id}|build-guild-#{g.city.parameterize}>" }
       markdown = "# Build Guild Channels\n\n"
       markdown += lines.any? ? lines.join("\n") : "No active guild channels yet."
 
