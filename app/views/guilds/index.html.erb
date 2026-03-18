@@ -71,7 +71,7 @@
               totalSignups += g.signup_count;
               if (g.lat && g.lng) {
                 bounds.push([g.lat, g.lng]);
-                const radius = Math.max(7, Math.min(12, 7 + g.signup_count * 0.5));
+                const radius = Math.max(7, Math.min(11, 7 + g.signup_count * 0.4));
                 const marker = L.circleMarker([g.lat, g.lng], {
                   radius: radius,
                   fillColor: "#f4c542",
@@ -361,7 +361,7 @@
       <% end %>
 
       <p class="text-sm text-white/60 text-center">
-        We'll be in touch soon!
+        You'll be added to your guild's Slack channel.
       </p>
 
       <script>
