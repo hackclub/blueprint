@@ -1,6 +1,6 @@
 <% content_for :head_assets do %>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onload="typeof initGuildsMap === 'function' && initGuildsMap()"></script>
 <% end %>
 
 <section class="flex justify-center">
@@ -35,10 +35,9 @@
     </div>
 
     <script>
-      document.addEventListener('turbo:load', function() {
+      function initGuildsMap() {
         const mapEl = document.getElementById('guilds-map');
-        if (!mapEl) return;
-        if (mapEl._leaflet_id) return;
+        if (!mapEl || mapEl._leaflet_id || typeof L === 'undefined') return;
 
         const map = L.map('guilds-map', { scrollWheelZoom: true }).setView([20, 0], 2);
 
@@ -116,7 +115,9 @@
           }
           requestAnimationFrame(step);
         }
-      });
+      }
+
+      document.addEventListener('turbo:load', initGuildsMap);
     </script>
 
     <%= render 'shared/card', class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-none' do %>
