@@ -15,5 +15,5 @@ application.register("list-continuation", ListContinuationController);
 import DemoPicturePreviewController from "controllers/demo_picture_preview_controller";
 application.register("demo-picture-preview", DemoPicturePreviewController);
 
-import SearchableSelectController from "./searchable_select_controller";
+import SearchableSelectController from "controllers/searchable_select_controller";
 application.register("searchable-select", SearchableSelectController);
