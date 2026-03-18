@@ -282,11 +282,14 @@ class SlackCommandsController < ApplicationController
       merge_message = "<!channel> This guild has been merged into #{target_channel_mention}. " \
         "If you need help covering travel to the new guild, https://gas.hackclub.com/ can help!"
       begin
-        slack_client.chat_postMessage(channel: source.slack_channel_id, text: merge_message)
+        slack_client.chat_postMessage(channel: source.slack_channel_id, text: merge_message, link_names: true)
       rescue Slack::Web::Api::Errors::SlackError => e
         Rails.logger.error "[SlackBot] Failed to notify source channel=#{source.slack_channel_id} about merge: #{e.message}"
       end
     end
+
+    # Update the target channel's topic with the new organizer list
+    target.update_slack_topic
 
     result = "Merged *#{source.name}* into *#{target.name}*. Moved #{moved} signup(s), removed #{skipped} duplicate(s). Source guild marked as closed."
     result += " #{invite_failures} user(s) could not be invited to <##{target.slack_channel_id}>." if invite_failures > 0

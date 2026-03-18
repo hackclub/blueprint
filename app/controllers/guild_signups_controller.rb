@@ -56,6 +56,7 @@ class GuildSignupsController < ApplicationController
     if geocoded.nil?
       guild = Guild.open.where("LOWER(city) = ?", raw_city.downcase)
                    .where("LOWER(country) = ?", country_code.downcase).first
+      guild ||= find_merge_target(raw_city, country_code)
       unless guild
         begin
           guild = Guild.create!(
@@ -93,6 +94,7 @@ class GuildSignupsController < ApplicationController
       if geocoded.city.blank? || country_mismatch || city_mismatch || not_a_city
         guild = Guild.open.where("LOWER(city) = ?", raw_city.downcase)
                      .where("LOWER(country) = ?", country_code.downcase).first
+        guild ||= find_merge_target(raw_city, country_code)
         unless guild
           reason = if country_mismatch
             "country mismatch: expected #{raw_country}, got #{geocoded.country_code}"
@@ -121,6 +123,7 @@ class GuildSignupsController < ApplicationController
         guild = Guild.open.near([ geocoded.latitude, geocoded.longitude ], 10, units: :km).first
         guild ||= Guild.open.where("LOWER(city) = ?", canonical_city.downcase)
                        .where("LOWER(country) = ?", canonical_country.downcase).first
+        guild ||= find_merge_target(canonical_city, canonical_country)
         guild ||= begin
           @guild_is_new = true
           Guild.create!(
@@ -139,6 +142,21 @@ class GuildSignupsController < ApplicationController
     end
 
     guild
+  end
+
+  def find_merge_target(city, country_code)
+    closed = Guild.where(status: :closed)
+                  .where("LOWER(city) = ?", city.downcase)
+                  .where("LOWER(country) = ?", country_code.downcase)
+                  .first
+    return nil unless closed
+
+    target_id = GuildSignup.where(user_id: closed.users.select(:id))
+                           .joins(:guild)
+                           .where.not(guild_id: closed.id)
+                           .merge(Guild.open)
+                           .pick(:guild_id)
+    Guild.open.find_by(id: target_id)
   end
 
   def notify_admin_channel(message)
