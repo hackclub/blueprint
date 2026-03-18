@@ -39,7 +39,7 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "marksmith", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <%= safe_importmap_tags %>
     <%= Sentry.get_trace_propagation_meta.html_safe %>
     <script defer data-domain="blueprint.hackclub.com" src="https://plausible.io/js/script.file-downloads.outbound-links.pageview-props.tagged-events.js"></script>
   </head>

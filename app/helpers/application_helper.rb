@@ -11,6 +11,11 @@ module ApplicationHelper
     Tailwind.merge(*classes)
   end
 
+  # Prevent Cloudflare Rocket Loader from rewriting importmap/module script tags
+  def safe_importmap_tags
+    javascript_importmap_tags.gsub("<script", '<script data-cfasync="false"').html_safe
+  end
+
   def safe_path(url)
     return nil if url.blank?
     uri = URI.parse(url)
