@@ -293,17 +293,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_013712) do
   end
 
   create_table "guilds", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "name"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "city", null: false
+    t.string "city"
     t.string "slack_channel_id"
-    t.integer "status", default: 0
+    t.integer "status"
     t.float "latitude"
     t.float "longitude"
-    t.string "country", null: false
-    t.boolean "needs_review", default: false
+    t.string "country"
+    t.boolean "needs_review"
     t.index ["city", "country"], name: "index_guilds_on_city_and_country", unique: true
   end
 

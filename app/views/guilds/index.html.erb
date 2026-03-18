@@ -20,18 +20,32 @@
     </div>
 
     <div class="my-8 bg-bp-darker/50 p-6 rounded-none border-2 border-bp-darker">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <span class="relative flex h-4 w-4">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-bp-warning opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-4 w-4 bg-bp-warning"></span>
+          </span>
+          <span class="text-lg font-semibold text-bp-warning">Live - Guilds are forming now!</span>
+        </div>
+        <span class="text-lg font-semibold text-bp-warning tabular-nums" id="event-countdown"></span>
+      </div>
+
       <div class="flex flex-col md:flex-row gap-6 items-stretch">
-        <div class="bg-bp-dark p-8 rounded-none border border-white/25 w-full md:w-72 flex flex-col items-center justify-center text-center">
-          <p class="text-5xl md:text-6xl font-bold text-white tabular-nums" id="total-signups">-</p>
-          <p class="text-white/80 text-base uppercase tracking-wide mt-1">Signups</p>
-          <div class="h-px bg-white/20 my-5 w-full"></div>
-          <p class="text-5xl md:text-6xl font-bold text-white tabular-nums" id="total-guilds">-</p>
-          <p class="text-white/80 text-base uppercase tracking-wide mt-1">Guilds</p>
+        <div class="bg-bp-dark p-8 rounded-none border border-white/25 w-full md:w-72 flex flex-col items-center justify-center text-center gap-6">
+          <div>
+            <p class="text-7xl md:text-8xl font-bold text-white tabular-nums" id="total-guilds">-</p>
+            <p class="text-white/80 text-lg uppercase tracking-wide mt-2">Guilds</p>
+          </div>
+          <div class="border-t border-white/10 pt-6 w-full">
+            <p class="text-white/90 text-base leading-relaxed">Don't see your city on the map?</p>
+            <p class="text-white/60 text-sm leading-relaxed mt-1">Sign up anyway - your signup helps others in your area find each other. Once enough interest builds up, an organizer will come along.</p>
+            <a href="#signup-form" class="inline-block mt-3 text-base font-semibold text-bp-warning hover:underline">Be one of the first →</a>
+          </div>
         </div>
 
-        <div id="guilds-map" class="w-full h-[28rem] md:h-[24rem] md:flex-1 bg-bp-dark rounded-none border border-white/25"></div>
+        <div id="guilds-map" class="w-full min-h-[24rem] md:flex-1 bg-bp-dark rounded-none border border-white/25"></div>
       </div>
-      <p class="text-xs text-white/50 mt-2 text-center">Click a guild on the map to join or view details!</p>
     </div>
 
     <script>
@@ -57,7 +71,7 @@
               totalSignups += g.signup_count;
               if (g.lat && g.lng) {
                 bounds.push([g.lat, g.lng]);
-                const radius = Math.max(6, Math.min(20, 6 + g.signup_count * 1.5));
+                const radius = Math.max(7, Math.min(12, 7 + g.signup_count * 0.5));
                 const marker = L.circleMarker([g.lat, g.lng], {
                   radius: radius,
                   fillColor: "#f4c542",
@@ -68,12 +82,9 @@
                 }).addTo(map);
                 var popupEl = document.createElement('div');
                 popupEl.style.color = '#1a1a2e';
-                var cityText = document.createTextNode(g.city);
                 var b = document.createElement('b');
-                b.appendChild(cityText);
+                b.appendChild(document.createTextNode(g.city));
                 popupEl.appendChild(b);
-                popupEl.appendChild(document.createElement('br'));
-                popupEl.appendChild(document.createTextNode(g.signup_count + ' signup' + (g.signup_count === 1 ? '' : 's')));
                 popupEl.appendChild(document.createElement('br'));
                 var link = document.createElement('a');
                 link.href = '#signup-form';
@@ -101,7 +112,6 @@
             // Keep default world view - don't auto-zoom to guilds
 
             animateCount('total-guilds', guilds.length);
-            animateCount('total-signups', totalSignups);
           })
           .catch(err => console.error('Error loading map data:', err));
 
@@ -120,6 +130,38 @@
       }
 
       document.addEventListener('turbo:load', initGuildsMap);
+
+      function updateCountdown() {
+        const el = document.getElementById('event-countdown');
+        if (!el) return;
+        const eventStart = new Date('2026-04-13T00:00:00');
+        const eventEnd = new Date('2026-04-19T23:59:59');
+        const now = new Date();
+        if (now >= eventStart && now <= eventEnd) {
+          el.textContent = 'Active - Guilds are running now!';
+        } else if (now > eventEnd) {
+          el.textContent = '';
+        } else {
+          const diff = eventStart - now;
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const secs = Math.floor((diff % (1000 * 60)) / 1000);
+          el.textContent = days + 'd ' + hours + 'h ' + mins + 'm ' + secs + 's';
+        }
+      }
+
+      let countdownInterval;
+      document.addEventListener('turbo:load', function() {
+        clearInterval(countdownInterval);
+        updateCountdown();
+        countdownInterval = setInterval(updateCountdown, 1000);
+      });
+      document.addEventListener('turbo:before-cache', function() {
+        clearInterval(countdownInterval);
+        const el = document.getElementById('event-countdown');
+        if (el) el.textContent = '';
+      });
     </script>
 
     <%= render 'shared/card', class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-none' do %>
