@@ -62,6 +62,7 @@
                   fillOpacity: 0.85
                 }).addTo(map);
                 var popupEl = document.createElement('div');
+                popupEl.style.color = '#1a1a2e';
                 var cityText = document.createTextNode(g.city);
                 var b = document.createElement('b');
                 b.appendChild(cityText);
@@ -71,7 +72,7 @@
                 popupEl.appendChild(document.createElement('br'));
                 var link = document.createElement('a');
                 link.href = '#signup-form';
-                link.style.color = '#f4c542';
+                link.style.cssText = 'color: #b8860b; font-weight: bold;';
                 link.textContent = 'Join this guild';
                 link.dataset.city = g.city;
                 link.dataset.country = g.country || '';
@@ -84,7 +85,7 @@
                   var slackLink = document.createElement('a');
                   slackLink.href = 'https://hackclub.slack.com/archives/' + g.slack_channel_id;
                   slackLink.target = '_blank';
-                  slackLink.style.cssText = 'color: #f4c542; font-size: 0.75em; opacity: 0.6;';
+                  slackLink.style.cssText = 'color: #888; font-size: 0.75em;';
                   slackLink.textContent = '(#build-guild-' + g.city.toLowerCase().replace(/\s+/g, '-') + ')';
                   popupEl.appendChild(slackLink);
                 }

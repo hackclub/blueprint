@@ -388,11 +388,18 @@ class SlackCommandsController < ApplicationController
   end
 
   def guild_update_channels_message
-    Guild.update_main_channel_description
-    guilds = Guild.where.not(slack_channel_id: nil).where.not(status: :closed).order(:city)
-    "Updated <##{Guild::MAIN_CHANNEL_ID}> description with #{guilds.count} guild channel(s)."
+    result = Guild.update_main_channel_description
+    if result[:canvas_id]
+      if result[:new_count] > 0
+        "Added #{result[:new_count]} new guild(s) to <##{Guild::MAIN_CHANNEL_ID}> canvas (#{result[:total]} total)."
+      else
+        "Canvas is up to date — no new guilds to add (#{result[:total]} listed)."
+      end
+    else
+      "Created canvas on <##{Guild::MAIN_CHANNEL_ID}> with #{result[:total]} guild channel(s)."
+    end
   rescue => e
-    "Failed to update channel description: #{e.message}"
+    "Failed to update channel canvas: #{e.message}"
   end
 
   def find_slack_user(input)
