@@ -342,12 +342,16 @@
           var cityField = document.getElementById('guild-city-field');
           var countryField = document.getElementById('guild-country-field');
           if (cityField) cityField.value = city;
-          if (countryField) {
-            // Match country code to select option value (case-insensitive)
+          if (countryField && country) {
             var options = countryField.options;
             for (var i = 0; i < options.length; i++) {
               if (options[i].value.toLowerCase() === country.toLowerCase()) {
                 countryField.value = options[i].value;
+                var wrapper = countryField.closest('[data-controller="searchable-select"]');
+                if (wrapper) {
+                  var searchInput = wrapper.querySelector('input[type="text"]');
+                  if (searchInput) searchInput.value = options[i].text;
+                }
                 break;
               }
             }
