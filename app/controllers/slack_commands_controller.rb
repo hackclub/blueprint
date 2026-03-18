@@ -12,6 +12,7 @@ class SlackCommandsController < ApplicationController
     /guild-status
     /guild-list
     /guild-no-organizers
+    /guild-update-channels
   ].freeze
 
   def handle
@@ -44,6 +45,8 @@ class SlackCommandsController < ApplicationController
       { response_type: "in_channel", text: guild_relocate_message(params[:text]) }
     when "/guild-list"
       { response_type: "ephemeral", text: guild_list_message }
+    when "/guild-update-channels"
+      { response_type: "in_channel", text: guild_update_channels_message }
     else
       Rails.logger.warn "[SlackBot] Unknown command: #{params[:command].inspect}"
       { response_type: "ephemeral", text: "Unknown command." }
@@ -382,6 +385,14 @@ class SlackCommandsController < ApplicationController
     Rails.logger.info "[SlackBot] /guild-relocate guild_id=#{guild.id} from #{old_city} (#{old_country}) to #{new_city} (#{new_country}) by user=#{params[:user_id]}"
 
     "Relocated *#{old_city}* to *#{new_city}* (#{new_country}). Coordinates: #{geocoded.latitude}, #{geocoded.longitude}.#{guild.slack_channel_id.present? ? " Channel renamed." : ""}"
+  end
+
+  def guild_update_channels_message
+    Guild.update_main_channel_description
+    guilds = Guild.where.not(slack_channel_id: nil).where.not(status: :closed).order(:city)
+    "Updated <##{Guild::MAIN_CHANNEL_ID}> description with #{guilds.count} guild channel(s)."
+  rescue => e
+    "Failed to update channel description: #{e.message}"
   end
 
   def find_slack_user(input)

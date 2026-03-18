@@ -42,8 +42,6 @@ class ProcessGuildSignupJob < ApplicationJob
     ensure_guild_channel!(guild, signup, user, admin_channel)
     guild.reload
 
-    Guild.update_main_channel_description if guild.slack_channel_id.present?
-
     invite_to_guild_channel(guild, user, signup, admin_channel)
     invite_to_main_channel(user, admin_channel)
 

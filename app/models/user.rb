@@ -1018,7 +1018,7 @@ class User < ApplicationRecord
   end
 
   def has_approved_project?
-    projects.where(review_status: "build_approved").exists?
+    projects.where(review_status: %w[design_approved build_approved]).exists?
   end
 
   def reviewer_perms?
