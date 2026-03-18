@@ -13,7 +13,7 @@
       "Explore" => explore_path,
       "Leaderboard" => leaderboard_path,
       "Shop" => toolbag_path,
-      "Guilds" => user_logged_in? ? guilds_path : nil,
+      "Guilds" => guilds_path,
       "Admin" => current_user&.special_perms? ? admin_root_path : nil
   } %>
 <% end %>
