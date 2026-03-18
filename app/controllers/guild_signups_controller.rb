@@ -57,14 +57,19 @@ class GuildSignupsController < ApplicationController
       guild = Guild.open.where("LOWER(city) = ?", raw_city.downcase)
                    .where("LOWER(country) = ?", country_code.downcase).first
       unless guild
-        guild = Guild.create!(
-          city: raw_city,
-          country: country_code,
-          name: "#{raw_city} Guild",
-          needs_review: true
-        )
-        @guild_is_new = true
-        @pending_admin_message = "Guild '#{raw_city}' created but needs review (geocoding failed)."
+        begin
+          guild = Guild.create!(
+            city: raw_city,
+            country: country_code,
+            name: "#{raw_city} Guild",
+            needs_review: true
+          )
+          @guild_is_new = true
+          @pending_admin_message = "Guild '#{raw_city}' created but needs review (geocoding failed)."
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+          guild = Guild.open.where("LOWER(city) = ?", raw_city.downcase)
+                       .where("LOWER(country) = ?", country_code.downcase).first
+        end
       end
     else
       canonical_city = geocoded.city || raw_city
@@ -98,14 +103,19 @@ class GuildSignupsController < ApplicationController
           else
             "geocoder returned no city"
           end
-          guild = Guild.create!(
-            city: raw_city,
-            country: country_code,
-            name: "#{raw_city} Guild",
-            needs_review: true
-          )
-          @guild_is_new = true
-          @pending_admin_message = "Guild '#{raw_city}' created but needs review (#{reason})."
+          begin
+            guild = Guild.create!(
+              city: raw_city,
+              country: country_code,
+              name: "#{raw_city} Guild",
+              needs_review: true
+            )
+            @guild_is_new = true
+            @pending_admin_message = "Guild '#{raw_city}' created but needs review (#{reason})."
+          rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+            guild = Guild.open.where("LOWER(city) = ?", raw_city.downcase)
+                         .where("LOWER(country) = ?", country_code.downcase).first
+          end
         end
       else
         guild = Guild.open.near([ geocoded.latitude, geocoded.longitude ], 10, units: :km).first
@@ -120,6 +130,10 @@ class GuildSignupsController < ApplicationController
             latitude: geocoded.latitude,
             longitude: geocoded.longitude
           )
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+          @guild_is_new = false
+          Guild.open.where("LOWER(city) = ?", canonical_city.downcase)
+                    .where("LOWER(country) = ?", canonical_country.downcase).first
         end
       end
     end

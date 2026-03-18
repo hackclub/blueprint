@@ -12,6 +12,8 @@ class ProcessGuildApprovalJob < ApplicationJob
 
     signups.each do |signup|
       ProcessGuildSignupJob.perform_now(signup.id)
+    rescue => e
+      Rails.logger.error "ProcessGuildApprovalJob: failed to process signup #{signup.id} for guild #{guild_id}: #{e.message}"
     end
   end
 end

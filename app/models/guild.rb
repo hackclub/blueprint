@@ -98,7 +98,7 @@ class Guild < ApplicationRecord
 
     lines = guilds_with_channels.map do |g|
       organizers = g.guild_signups.select(&:organizer?).map(&:user).select { |u| u.slack_id.present? }
-      organizer_text = organizers.any? ? " — #{organizers.map { |u| "<@#{u.slack_id}>" }.join(", ")}" : ""
+      organizer_text = organizers.any? ? ": #{organizers.map { |u| "<@#{u.slack_id}>" }.join(", ")}" : ""
       "• <##{g.slack_channel_id}>#{organizer_text}"
     end
 
