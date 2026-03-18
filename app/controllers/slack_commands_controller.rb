@@ -309,14 +309,6 @@ class SlackCommandsController < ApplicationController
       return "#{signup.name} is already #{new_role} for #{guild.city}."
     end
 
-    if new_role == "organizer"
-      existing = guild.guild_signups.where(role: :organizer).count
-      if existing >= ProcessGuildSignupJob::MAX_ORGANIZERS
-        Rails.logger.warn "[SlackBot] /guild-change-role blocked: guild_id=#{guild.id} already has #{existing} organizer(s)"
-        return "Cannot promote #{signup.name} — #{guild.city} already has #{existing} organizer(s) (max #{ProcessGuildSignupJob::MAX_ORGANIZERS})."
-      end
-    end
-
     Rails.logger.info "[SlackBot] /guild-change-role signup_id=#{signup.id} guild_id=#{guild.id} #{old_role} -> #{new_role} by user=#{params[:user_id]}"
 
     # Update without callbacks to avoid synchronous Airtable sync (which would timeout Slack)
@@ -390,11 +382,7 @@ class SlackCommandsController < ApplicationController
   def guild_update_channels_message
     result = Guild.update_main_channel_description
     if result[:canvas_id]
-      if result[:new_count] > 0
-        "Added #{result[:new_count]} new guild(s) to <##{Guild::MAIN_CHANNEL_ID}> canvas (#{result[:total]} total)."
-      else
-        "Canvas is up to date — no new guilds to add (#{result[:total]} listed)."
-      end
+      "Updated <##{Guild::MAIN_CHANNEL_ID}> canvas with #{result[:total]} guild channel(s) and current organizers."
     else
       "Created canvas on <##{Guild::MAIN_CHANNEL_ID}> with #{result[:total]} guild channel(s)."
     end
