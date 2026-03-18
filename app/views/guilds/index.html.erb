@@ -68,15 +68,6 @@
                 popupEl.appendChild(b);
                 popupEl.appendChild(document.createElement('br'));
                 popupEl.appendChild(document.createTextNode(g.signup_count + ' signup' + (g.signup_count === 1 ? '' : 's')));
-                if (g.slack_channel_id) {
-                  popupEl.appendChild(document.createElement('br'));
-                  var slackLink = document.createElement('a');
-                  slackLink.href = 'https://hackclub.slack.com/archives/' + g.slack_channel_id;
-                  slackLink.target = '_blank';
-                  slackLink.style.color = '#f4c542';
-                  slackLink.textContent = '#build-guild-' + g.city.toLowerCase().replace(/\s+/g, '-');
-                  popupEl.appendChild(slackLink);
-                }
                 popupEl.appendChild(document.createElement('br'));
                 var link = document.createElement('a');
                 link.href = '#signup-form';
@@ -88,6 +79,15 @@
                   prefillGuild(this.dataset.city, this.dataset.country);
                 });
                 popupEl.appendChild(link);
+                if (g.slack_channel_id) {
+                  popupEl.appendChild(document.createElement('br'));
+                  var slackLink = document.createElement('a');
+                  slackLink.href = 'https://hackclub.slack.com/archives/' + g.slack_channel_id;
+                  slackLink.target = '_blank';
+                  slackLink.style.cssText = 'color: #f4c542; font-size: 0.75em; opacity: 0.6;';
+                  slackLink.textContent = '(#build-guild-' + g.city.toLowerCase().replace(/\s+/g, '-') + ')';
+                  popupEl.appendChild(slackLink);
+                }
                 marker.bindPopup(popupEl);
               }
             });
