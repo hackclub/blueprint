@@ -42,7 +42,7 @@
         const map = L.map('guilds-map', { scrollWheelZoom: true }).setView([20, 0], 2);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Geocoding by <a href="https://locationiq.com/" target="_blank">LocationIQ</a>'
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
         fetch('/guilds/map_data')
