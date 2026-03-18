@@ -96,43 +96,68 @@ class Guild < ApplicationRecord
     slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
     guilds_with_channels = Guild.where.not(slack_channel_id: nil).where.not(status: :closed).includes(guild_signups: :user).order(:city)
 
-    lines = guilds_with_channels.map do |g|
-      organizer_handles = g.guild_signups
-                           .select(&:organizer?)
-                           .map(&:user)
-                           .select { |u| u.slack_id.present? }
-                           .map { |u| "<@#{u.slack_id}>" }
-      organizer_text = organizer_handles.any? ? " — #{organizer_handles.join(', ')}" : ""
-      "- <##{g.slack_channel_id}|build-guild-#{g.city.parameterize}>#{organizer_text}"
-    end
-
-    markdown = "# Build Guild Channels\n\n"
-    markdown += lines.any? ? lines.join("\n") : "No active guild channels yet."
+    document_content = build_guilds_canvas_content(guilds_with_channels)
 
     channel_info = slack_client.conversations_info(channel: MAIN_CHANNEL_ID)
     canvas_id = channel_info.dig("channel", "properties", "canvas", "file_id")
 
     if canvas_id
-      # Rebuild all sections so organizer info stays current
       sections_response = slack_client.canvases_sections_lookup(
         canvas_id: canvas_id,
-        criteria: { section_types: [ "any_header", "any_text" ] }.to_json
+        criteria: { section_types: [ "any_header", "any_text", "rich_text" ] }.to_json
       )
       section_ids = sections_response["sections"]&.map { |s| s["id"] } || []
 
       changes = section_ids.map { |sid| { operation: "delete", section_id: sid } }
-      changes << { operation: "insert_at_start", document_content: { type: "markdown", markdown: markdown } }
+      changes << { operation: "insert_at_start", document_content: document_content }
 
       slack_client.canvases_edit(canvas_id: canvas_id, changes: changes.to_json)
 
-      { canvas_id: canvas_id, new_count: nil, total: guilds_with_channels.count }
+      { canvas_id: canvas_id, total: guilds_with_channels.count }
     else
       slack_client.conversations_canvases_create(
         channel_id: MAIN_CHANNEL_ID,
-        document_content: { type: "markdown", markdown: markdown }.to_json
+        document_content: document_content.to_json
       )
 
-      { canvas_id: nil, new_count: guilds_with_channels.count, total: guilds_with_channels.count }
+      { canvas_id: nil, total: guilds_with_channels.count }
     end
+  end
+
+  def self.build_guilds_canvas_content(guilds)
+    guild_list_elements = guilds.map do |g|
+      organizers = g.guild_signups.select(&:organizer?).map(&:user).select { |u| u.slack_id.present? }
+
+      elements = [ { type: "channel", channel_id: g.slack_channel_id } ]
+
+      if organizers.any?
+        elements << { type: "text", text: " — " }
+        organizers.each_with_index do |u, i|
+          elements << { type: "user", user_id: u.slack_id }
+          elements << { type: "text", text: ", " } if i < organizers.length - 1
+        end
+      end
+
+      { type: "rich_text_section", elements: elements }
+    end
+
+    if guild_list_elements.empty?
+      guild_list_elements = [ { type: "rich_text_section", elements: [ { type: "text", text: "No active guild channels yet." } ] } ]
+    end
+
+    {
+      type: "rich_text",
+      elements: [
+        {
+          type: "rich_text_section",
+          elements: [ { type: "text", text: "Build Guild Channels", style: { bold: true } } ]
+        },
+        {
+          type: "rich_text_list",
+          style: "bullet",
+          elements: guild_list_elements
+        }
+      ]
+    }
   end
 end
