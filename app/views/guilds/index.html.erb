@@ -35,7 +35,11 @@
     </div>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('turbo:load', function() {
+        const mapEl = document.getElementById('guilds-map');
+        if (!mapEl) return;
+        if (mapEl._leaflet_id) return;
+
         const map = L.map('guilds-map', { scrollWheelZoom: true }).setView([20, 0], 2);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -364,7 +368,7 @@
 
     <% if @signup&.errors&.any? %>
       <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('turbo:load', function() {
           var form = document.getElementById('signup-form');
           if (form) form.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
