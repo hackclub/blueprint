@@ -29,7 +29,7 @@
           <p class="text-white/80 text-base uppercase tracking-wide mt-1">Guilds</p>
         </div>
 
-        <div id="guilds-map" class="w-full h-[28rem] md:h-[24rem] bg-bp-dark rounded-none border border-white/25 flex-1"></div>
+        <div id="guilds-map" class="w-full h-[28rem] md:h-[24rem] md:flex-1 bg-bp-dark rounded-none border border-white/25"></div>
       </div>
       <p class="text-xs text-white/50 mt-2 text-center">Click a guild on the map to join or view details!</p>
     </div>
@@ -44,6 +44,8 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
+
+        setTimeout(() => map.invalidateSize(), 100);
 
         fetch('/guilds/map_data')
           .then(response => response.json())
