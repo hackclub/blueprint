@@ -48,7 +48,7 @@ class SlackCommandsController < ApplicationController
     when "/guild-update-channels"
       { response_type: "in_channel", text: guild_update_channels_message }
     when "/guild-invite"
-      { response_type: "ephemeral", text: guild_invite_message(params[:text], params[:user_id], params[:channel_id]) }
+      { response_type: "in_channel", text: guild_invite_message(params[:text], params[:user_id], params[:channel_id]) }
     else
       Rails.logger.warn "[SlackBot] Unknown command: #{params[:command].inspect}"
       { response_type: "ephemeral", text: "Unknown command." }
@@ -281,7 +281,7 @@ class SlackCommandsController < ApplicationController
     if source.slack_channel_id.present?
       slack_client ||= Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
       target_channel_mention = target.slack_channel_id.present? ? "<##{target.slack_channel_id}>" : "*#{target.name}*"
-      merge_message = "<!channel> This guild has been merged into #{target_channel_mention}. " \
+      merge_message = "This guild has been merged into #{target_channel_mention}. " \
         "If you need help covering travel to the new guild, https://gas.hackclub.com/ can help!"
       begin
         slack_client.chat_postMessage(channel: source.slack_channel_id, text: merge_message, link_names: true)
