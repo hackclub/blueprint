@@ -47,6 +47,8 @@ class SlackCommandsController < ApplicationController
       { response_type: "ephemeral", text: guild_list_message }
     when "/guild-update-channels"
       { response_type: "in_channel", text: guild_update_channels_message }
+    when "/guild-invite"
+      { response_type: "ephemeral", text: guild_invite_message(params[:text], params[:user_id], params[:channel_id]) }
     else
       Rails.logger.warn "[SlackBot] Unknown command: #{params[:command].inspect}"
       { response_type: "ephemeral", text: "Unknown command." }
@@ -406,10 +408,25 @@ class SlackCommandsController < ApplicationController
     "Failed to update channel canvas: #{e.message}"
   end
 
+  def guild_invite_message(text, invoker_slack_id, channel_id)
+    guild = Guild.find_by(slack_channel_id: channel_id)
+    return "This command must be used in a guild channel." unless guild
+    return "This guild is closed." if guild.closed?
+
+    # Verify the user is a member of this guild
+    invoker = User.find_by(slack_id: invoker_slack_id)
+    unless invoker && guild.guild_signups.exists?(user: invoker)
+      return "You must be a member of this guild to generate an invite link."
+    end
+
+    token = GuildInvitesController.generate_token(guild.id)
+    invite_url = "https://blueprint.hackclub.com/guilds/invite/#{token}"
+
+    "Here's an invite link for *#{guild.name}*:\n#{invite_url}\n\nShare this with anyone you'd like to invite."
+  end
+
   def find_slack_user(input)
-    # Handle Slack mention format: <@U12345678> or <@U12345678|display_name>
     slack_id = input.gsub(/\A<@/, "").gsub(/(\|.*)?>?\z/, "")
-    # Strip leading @ if someone typed @username
     slack_id = slack_id.gsub(/\A@/, "")
 
     # Try exact Slack ID match first

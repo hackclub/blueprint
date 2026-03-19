@@ -170,6 +170,8 @@ Rails.application.routes.draw do
   get "leaderboard" => "leaderboards#index", as: :leaderboard
 
   get "guilds" => "guilds#index", as: :guilds
+  get "guilds/invite/:token", to: "guild_invites#show", as: :guild_invite
+  post "guilds/invite/:token/accept", to: "guild_invites#accept", as: :accept_guild_invite
 
   get "toolbag" => "toolbag#index", as: :toolbag
 

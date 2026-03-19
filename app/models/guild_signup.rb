@@ -30,6 +30,8 @@ class GuildSignup < ApplicationRecord
   belongs_to :user
   belongs_to :guild
 
+  attr_accessor :skip_slack_validation
+
   enum :role, { organizer: 0, attendee: 1 }
 
   after_commit :enqueue_processing_job, on: :create
@@ -41,7 +43,7 @@ class GuildSignup < ApplicationRecord
   validates :ideas, presence: true, if: :organizer?
   validate :user_must_have_approved_project, if: :organizer?
   validates :user_id, uniqueness: { scope: :guild_id, message: "You have already signed up for this guild" }
-  validate :user_must_have_slack_id
+  validate :user_must_have_slack_id, unless: :skip_slack_validation
   validate :one_organizer_signup_only, if: :organizer?
 
   after_destroy :update_guild_topic, if: :organizer?
