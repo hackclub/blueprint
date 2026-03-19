@@ -1,0 +1,99 @@
+<section class="space-y-6">
+  <%= render "shared/button", text: "Back", url: admin_root_path, class: "py-0" %>
+  <div class="flex items-center justify-between">
+    <h1 class="pb-2 text-4xl">All Guilds</h1>
+    <%= form_with url: admin_guilds_path, method: :get, local: true, class: "w-full max-w-2xl" do %>
+      <div class="flex items-center gap-3">
+        <input type="text" name="q" value="<%= h(@q) %>" placeholder="Search by city, country, or name" class="w-full text-white border-white rounded-none input bg-bp-darker placeholder-white/60" />
+        <button type="submit" class="text-lg rounded-none btn btn-primary">Search</button>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-4 gap-4 text-center">
+    <div class="p-4 border-2 border-white rounded-none">
+      <p class="text-3xl font-bold"><%= Guild.count %></p>
+      <p class="text-white/70">Total Guilds</p>
+    </div>
+    <div class="p-4 border-2 border-white rounded-none">
+      <p class="text-3xl font-bold"><%= Guild.active.count %></p>
+      <p class="text-white/70">Active</p>
+    </div>
+    <div class="p-4 border-2 border-white rounded-none">
+      <p class="text-3xl font-bold"><%= Guild.pending.count %></p>
+      <p class="text-white/70">Pending</p>
+    </div>
+    <div class="p-4 border-2 border-white rounded-none">
+      <p class="text-3xl font-bold"><%= GuildSignup.count %></p>
+      <p class="text-white/70">Total Signups</p>
+    </div>
+  </div>
+
+  <% needs_review = Guild.where(needs_review: true) %>
+  <% if needs_review.any? %>
+    <div class="p-4 border-2 border-bp-warning rounded-none space-y-2">
+      <p class="text-xl font-bold text-bp-warning">Needs Review (<%= needs_review.count %>)</p>
+      <div class="flex flex-wrap gap-2">
+        <% needs_review.each do |guild| %>
+          <%= render "shared/button", text: "#{guild.city}, #{guild.country}", url: admin_guild_path(guild), variant: :warning, class: "text-sm py-0.5 px-3" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="border-2 border-white rounded-none">
+    <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white">
+      <div class="col-span-1">ID</div>
+      <div class="col-span-2">City</div>
+      <div class="col-span-2">Country</div>
+      <div class="col-span-1">Status</div>
+      <div class="col-span-1">Signups</div>
+      <div class="col-span-1">Organizers</div>
+      <div class="col-span-1">Slack</div>
+      <div class="col-span-2">Created</div>
+      <div class="col-span-1">Actions</div>
+    </div>
+
+    <% if @guilds.present? %>
+      <% @guilds.each do |guild| %>
+        <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0 items-center">
+          <div class="col-span-1 py-2"><%= guild.id %></div>
+          <div class="col-span-2 font-medium">
+            <%= link_to guild.city || guild.name, admin_guild_path(guild), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
+            <% if guild.needs_review? %>
+              <span class="text-bp-warning text-xs ml-1">(needs review)</span>
+            <% end %>
+          </div>
+          <div class="col-span-2"><%= guild.country || "–" %></div>
+          <div class="col-span-1">
+            <% status_type = case guild.status
+                             when "active" then :success
+                             when "pending" then :warning
+                             when "closed" then :danger
+                             end %>
+            <%= render "admin/pill", type: status_type, value: guild.status do %><% end %>
+          </div>
+          <div class="col-span-1"><%= guild.guild_signups.size %></div>
+          <div class="col-span-1"><%= guild.guild_signups.select(&:organizer?).size %></div>
+          <div class="col-span-1">
+            <% if guild.slack_channel_id.present? %>
+              <a href="https://hackclub.slack.com/archives/<%= guild.slack_channel_id %>" target="_blank" class="underline decoration-white/30 underline-offset-2 hover:decoration-white text-sm">Open</a>
+            <% else %>
+              <span class="text-white/40">–</span>
+            <% end %>
+          </div>
+          <div class="col-span-2 text-sm"><%= guild.created_at.strftime("%b %d, %Y") %></div>
+          <div class="col-span-1">
+            <%= render "shared/button", text: "View", url: admin_guild_path(guild), class: "text-sm py-0 px-2" %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="px-4 py-6 text-center text-white/70">No guilds found.</div>
+    <% end %>
+  </div>
+
+  <div class="flex items-center justify-end text-lg">
+    <%== pagy_nav(@pagy) if @pagy.present? && @pagy.pages > 1 %>
+  </div>
+</section>

@@ -101,6 +101,7 @@ class GuildSignup < ApplicationRecord
   end
 
   def sync_to_airtable
+    return if ENV["DISABLE_AIRTABLE_SYNC"].present?
     AirtableSync.sync_records!(self.class, [ self ])
   rescue => e
     Rails.logger.error "Failed to sync guild signup #{id} to Airtable: #{e.message}"

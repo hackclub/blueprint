@@ -19,6 +19,53 @@
       </div>
     </div>
 
+    <% unless user_logged_in? %>
+      <%= render 'guilds/signup_form' %>
+    <% end %>
+
+    <%= render 'shared/card', class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-none' do %>
+      <h2 class="text-2xl md:text-3xl font-semibold text-white">Overview</h2>
+
+      <p class="text-white/90 leading-relaxed">
+        Build guilds are Hack Club hardware meetups happening <strong>April 13th-19th</strong> in cities around the world. Organizers and attendees have a lot of freedom with what they want to run. Some will have workshops, some project demos, some just building and hanging out together.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-bp-darker/50 rounded-none overflow-hidden">
+          <figure>
+            <%= image_tag "guilds/tavern-toronto.jpg", alt: "Hack Clubbers at Mystic Tavern Toronto", class: "w-full h-32 object-cover" %>
+            <figcaption class="text-xs text-white/40 px-4 pt-1">Mystic Tavern (Toronto)</figcaption>
+          </figure>
+          <div class="p-4 pt-2">
+            <h3 class="font-semibold text-bp-warning mb-1">Who?</h3>
+            <p class="text-white/80 text-sm"><strong>Anyone</strong> from Hack Club can attend - no hardware experience needed. Organizers need an approved Blueprint project.</p>
+          </div>
+        </div>
+
+        <div class="bg-bp-darker/50 rounded-none overflow-hidden">
+          <figure>
+            <%= image_tag "guilds/juice-shanghai.png", alt: "Hack Clubbers at Juice Shanghai", class: "w-full h-32 object-cover" %>
+            <figcaption class="text-xs text-white/40 px-4 pt-1">Juice (Shanghai)</figcaption>
+          </figure>
+          <div class="p-4 pt-2">
+            <h3 class="font-semibold text-bp-warning mb-1">Where?</h3>
+            <p class="text-white/80 text-sm">Community spaces, makerspaces, schools - organizers pick a safe, hardware-friendly venue in their city.</p>
+          </div>
+        </div>
+
+        <div class="bg-bp-darker/50 rounded-none overflow-hidden">
+          <figure>
+            <%= image_tag "guilds/shipwrecked.jpg", alt: "Hack Clubbers at Shipwrecked Boston", class: "w-full h-32 object-cover" %>
+            <figcaption class="text-xs text-white/40 px-4 pt-1">Shipwrecked (Boston)</figcaption>
+          </figure>
+          <div class="p-4 pt-2">
+            <h3 class="font-semibold text-bp-warning mb-1">How?</h3>
+            <p class="text-white/80 text-sm">Sign up below as an organizer or attendee. Enter your city and we'll match you to an existing guild or create a new one. Alternatively, you can select a guild on the map.</p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <div class="my-8 bg-bp-darker/50 p-6 rounded-none border-2 border-bp-darker">
       <div class="flex items-center gap-3 mb-4">
         <span class="relative flex h-4 w-4">
@@ -160,56 +207,6 @@
       });
     </script>
 
-    <%= render 'shared/card', class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-none' do %>
-      <h2 class="text-2xl md:text-3xl font-semibold text-white">Overview</h2>
-
-      <p class="text-white/90 leading-relaxed">
-        Build guilds are Hack Club hardware meetups happening <strong>April 13th-19th</strong> in cities around the world. Organizers and attendees have a lot of freedom with what they want to run. Some will have workshops, some project demos, some just building and hanging out together.
-      </p>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-bp-darker/50 rounded-none overflow-hidden">
-          <figure>
-            <%= image_tag "guilds/tavern-toronto.jpg", alt: "Hack Clubbers at Mystic Tavern Toronto", class: "w-full h-32 object-cover" %>
-            <figcaption class="text-xs text-white/40 px-4 pt-1">Mystic Tavern (Toronto)</figcaption>
-          </figure>
-          <div class="p-4 pt-2">
-            <h3 class="font-semibold text-bp-warning mb-1">Who?</h3>
-            <p class="text-white/80 text-sm"><strong>Anyone</strong> from Hack Club can attend - no hardware experience needed. Organizers need an approved Blueprint project.</p>
-          </div>
-        </div>
-
-        <div class="bg-bp-darker/50 rounded-none overflow-hidden">
-          <figure>
-            <%= image_tag "guilds/juice-shanghai.png", alt: "Hack Clubbers at Juice Shanghai", class: "w-full h-32 object-cover" %>
-            <figcaption class="text-xs text-white/40 px-4 pt-1">Juice (Shanghai)</figcaption>
-          </figure>
-          <div class="p-4 pt-2">
-            <h3 class="font-semibold text-bp-warning mb-1">Where?</h3>
-            <p class="text-white/80 text-sm">Community spaces, makerspaces, schools - organizers pick a safe, hardware-friendly venue in their city.</p>
-          </div>
-        </div>
-
-        <div class="bg-bp-darker/50 rounded-none overflow-hidden">
-          <figure>
-            <%= image_tag "guilds/shipwrecked.jpg", alt: "Hack Clubbers at Shipwrecked Boston", class: "w-full h-32 object-cover" %>
-            <figcaption class="text-xs text-white/40 px-4 pt-1">Shipwrecked (Boston)</figcaption>
-          </figure>
-          <div class="p-4 pt-2">
-            <h3 class="font-semibold text-bp-warning mb-1">How?</h3>
-            <p class="text-white/80 text-sm">Sign up below as an organizer or attendee. Enter your city and we'll match you to an existing guild or create a new one. Alternatively, you can select a guild on the map.</p>
-          </div>
-        </div>
-      </div>
-    <% end %>
-
-    <figure class="rounded-none overflow-hidden border-2 border-bp-darker">
-      <%= image_tag "guilds/undercity.png", alt: "Hack Clubbers at Undercity", class: "w-full h-56 md:h-72 object-cover" %>
-      <figcaption class="bg-bp-darker/50 px-4 py-2 text-sm text-white/60 text-center">
-        Hack Clubbers at Undercity, a 72 hour hardware hackathon at GitHub HQ!
-      </figcaption>
-    </figure>
-
     <%= render 'shared/card', class: 'flex flex-col space-y-6 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-none' do %>
       <h2 class="text-2xl md:text-3xl font-semibold text-white">Information for Organizers</h2>
 
@@ -249,162 +246,8 @@
       </div>
     <% end %>
 
-    <%= render 'shared/card', html_options: { id: 'signup-form' }, class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-none' do %>
-      <h2 class="text-2xl md:text-3xl font-semibold text-white text-center">Sign Up!</h2>
-
-      <% if @signup.errors.any? %>
-        <div class="bg-red-500/20 border border-red-500 rounded-none p-4 text-white mb-4 max-w-xl mx-auto">
-          <h2 class="font-bold">Please fix the following errors:</h2>
-          <ul class="list-disc list-inside">
-            <% @signup.errors.full_messages.each do |msg| %>
-              <li><%= msg %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-
-      <%= form_with model: @signup, url: guild_signups_path, local: true, class: "flex flex-col gap-4 max-w-xl w-full mx-auto", id: "guild-signup-form" do |f| %>
-        <%= f.hidden_field :role, id: "role-field", value: @signup.role || "attendee" %>
-
-        <div class="mb-2">
-          <label class="block text-white font-medium mb-1">I want to join as:</label>
-          <div class="flex gap-4">
-            <button type="button" id="attendee-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-none py-3 transition-colors"
-                    onclick="selectRole('attendee')">Attendee</button>
-            <button type="button" id="organizer-btn" class="btn flex-1 bg-bp-dark text-white border border-white/25 rounded-none py-3 transition-colors"
-                    onclick="selectRole('organizer')">Organizer</button>
-          </div>
-          <% if @signup.errors[:role].any? %>
-            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:role].join(', ') %></p>
-          <% end %>
-        </div>
-
-        <div>
-          <label class="block text-white font-medium mb-1">Full Name</label>
-          <%= f.text_field :name,
-                placeholder: "e.g. Orpheus",
-                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:name].any? ? 'border-red-500' : 'border-white/25'} rounded-none text-white" %>
-          <% if @signup.errors[:name].any? %>
-            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:name].join(', ') %></p>
-          <% end %>
-        </div>
-
-        <div>
-          <label class="block text-white font-medium mb-1">Email address</label>
-          <p class="text-sm text-white/60 mb-1">We'll use this to contact you about your guild.</p>
-          <%= f.email_field :email,
-                value: @signup.email.presence || current_user&.email,
-                placeholder: "e.g. orpheus@hackclub.com",
-                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:email].any? ? 'border-red-500' : 'border-white/25'} rounded-none text-white" %>
-          <% if @signup.errors[:email].any? %>
-            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:email].join(', ') %></p>
-          <% end %>
-        </div>
-
-        <div>
-          <label class="block text-white font-medium mb-1">City / location</label>
-          <p class="text-sm text-white/60 mb-1">Enter your full city name.</p>
-          <%= text_field_tag 'guild_signup[city]', @city || params.dig(:guild_signup, :city),
-                id: "guild-city-field",
-                placeholder: "e.g. New York City, not NYC",
-                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:city].any? ? 'border-red-500' : 'border-white/25'} rounded-none text-white" %>
-          <% if @signup.errors[:city].any? %>
-            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:city].join(', ') %></p>
-          <% end %>
-        </div>
-
-        <div data-controller="searchable-select">
-          <label class="block text-white font-medium mb-1">Country</label>
-          <%= f.select :country,
-                options_for_select(country_options, @signup.country),
-                { include_blank: "Choose a country" },
-                id: "guild-country-field",
-                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:country].any? ? 'border-red-500' : 'border-white/25'} rounded-none text-white",
-                data: { searchable_select_target: "select" } %>
-          <% if @signup.errors[:country].any? %>
-            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:country].join(', ') %></p>
-          <% end %>
-        </div>
-
-        <div id="organizer-ideas-container" class="<%= 'hidden' unless @signup.organizer? %>">
-          <label class="block text-white font-medium mb-1">What would you like to run?</label>
-          <p class="text-sm text-white/60 mb-1">Tell us a bit about any ideas you have – this doesn't have to be final!</p>
-          <%= f.text_area :ideas,
-                value: @signup.ideas,
-                rows: 4,
-                placeholder: "e.g. soldering workshop, project demos, lightning talks etc",
-                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:ideas].any? ? 'border-red-500' : 'border-white/25'} rounded-none text-white" %>
-          <% if @signup.errors[:ideas].any? %>
-            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:ideas].join(', ') %></p>
-          <% end %>
-        </div>
-
-        <div id="attendee-activities-container" class="<%= 'hidden' if @signup.organizer? %>">
-          <label class="block text-white font-medium mb-1">What would you like to do at your guild? (Optional)</label>
-          <%= f.text_area :attendee_activities,
-                value: @signup.attendee_activities,
-                rows: 3,
-                placeholder: "e.g. learn to solder, show off my blueprint project, just hang out...",
-                class: "w-full p-3 bg-bp-dark border #{@signup.errors[:attendee_activities].any? ? 'border-red-500' : 'border-white/25'} rounded-none text-white" %>
-          <% if @signup.errors[:attendee_activities].any? %>
-            <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:attendee_activities].join(', ') %></p>
-          <% end %>
-        </div>
-
-        <%= f.submit "Submit!",
-              class: "btn bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-none hover:bg-bp-warning-darker cursor-pointer",
-              data: { turbo_submits_with: "Submitting..." } %>
-      <% end %>
-
-      <p class="text-sm text-white/60 text-center">
-        You'll be added to your guild's Slack channel.
-      </p>
-
-      <script>
-        function selectRole(role) {
-          document.getElementById('role-field').value = role;
-
-          const attendeeBtn = document.getElementById('attendee-btn');
-          const organizerBtn = document.getElementById('organizer-btn');
-          const ideasContainer = document.getElementById('organizer-ideas-container');
-          const activitiesContainer = document.getElementById('attendee-activities-container');
-
-          if (role === 'organizer') {
-            ideasContainer.classList.remove('hidden');
-            activitiesContainer.classList.add('hidden');
-            organizerBtn.classList.add('bg-bp-warning');
-            attendeeBtn.classList.remove('bg-bp-warning');
-          } else {
-            ideasContainer.classList.add('hidden');
-            activitiesContainer.classList.remove('hidden');
-            attendeeBtn.classList.add('bg-bp-warning');
-            organizerBtn.classList.remove('bg-bp-warning');
-          }
-        }
-
-        selectRole(document.getElementById('role-field').value || 'attendee');
-
-        function prefillGuild(city, country) {
-          var cityField = document.getElementById('guild-city-field');
-          var countryField = document.getElementById('guild-country-field');
-          if (cityField) cityField.value = city;
-          if (countryField && country) {
-            var options = countryField.options;
-            for (var i = 0; i < options.length; i++) {
-              if (options[i].value.toLowerCase() === country.toLowerCase()) {
-                countryField.value = options[i].value;
-                var wrapper = countryField.closest('[data-controller="searchable-select"]');
-                if (wrapper) {
-                  var searchInput = wrapper.querySelector('input[type="text"]');
-                  if (searchInput) searchInput.value = options[i].text;
-                }
-                break;
-              }
-            }
-          }
-          document.getElementById('signup-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      </script>
+    <% if user_logged_in? %>
+      <%= render 'guilds/signup_form' %>
     <% end %>
 
     <% if @signup&.errors&.any? %>
@@ -415,6 +258,13 @@
         });
       </script>
     <% end %>
+
+    <figure class="rounded-none overflow-hidden border-2 border-bp-darker">
+      <%= image_tag "guilds/undercity.png", alt: "Hack Clubbers at Undercity", class: "w-full h-56 md:h-72 object-cover" %>
+      <figcaption class="bg-bp-darker/50 px-4 py-2 text-sm text-white/60 text-center">
+        Hack Clubbers at Undercity, a 72 hour hardware hackathon at GitHub HQ!
+      </figcaption>
+    </figure>
 
   </div>
 </section>

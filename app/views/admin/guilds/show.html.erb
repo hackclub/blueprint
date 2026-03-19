@@ -1,0 +1,123 @@
+<section class="space-y-6">
+  <%= render "shared/button", text: "Back to Guilds", url: admin_guilds_path, class: "py-0" %>
+
+  <div class="space-y-1">
+    <h1 class="text-4xl"><%= @guild.name || @guild.city %></h1>
+    <p class="text-xl text-white/70"><%= @guild.city %>, <%= @guild.country %></p>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="p-4 border-2 border-white rounded-none space-y-1">
+      <p class="text-white/70">Status</p>
+      <% status_type = case @guild.status
+                       when "active" then :success
+                       when "pending" then :warning
+                       when "closed" then :danger
+                       end %>
+      <%= render "admin/pill", type: status_type, value: @guild.status do %><% end %>
+    </div>
+    <div class="p-4 border-2 border-white rounded-none space-y-1">
+      <p class="text-white/70">Total Signups</p>
+      <p class="text-2xl font-bold"><%= @guild.guild_signups.size %></p>
+    </div>
+    <div class="p-4 border-2 border-white rounded-none space-y-1">
+      <p class="text-white/70">Organizers</p>
+      <p class="text-2xl font-bold"><%= @guild.guild_signups.select(&:organizer?).size %></p>
+    </div>
+    <div class="p-4 border-2 border-white rounded-none space-y-1">
+      <p class="text-white/70">Attendees</p>
+      <p class="text-2xl font-bold"><%= @guild.guild_signups.select(&:attendee?).size %></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="p-4 border-2 border-white rounded-none space-y-2">
+      <p class="text-lg font-bold">Details</p>
+      <div class="space-y-1 text-sm">
+        <%= render "admin/pill", type: :boolean, value: @guild.needs_review do %>
+          <p>Needs Review</p>
+        <% end %>
+        <p><span class="text-white/70">Coordinates:</span>
+          <% if @guild.latitude && @guild.longitude %>
+            <%= @guild.latitude.round(4) %>, <%= @guild.longitude.round(4) %>
+          <% else %>
+            <span class="text-white/40">Not geocoded</span>
+          <% end %>
+        </p>
+        <p><span class="text-white/70">Created:</span> <%= @guild.created_at.strftime("%b %d, %Y %H:%M") %></p>
+        <p><span class="text-white/70">Updated:</span> <%= @guild.updated_at.strftime("%b %d, %Y %H:%M") %></p>
+      </div>
+    </div>
+    <div class="p-4 border-2 border-white rounded-none space-y-2">
+      <p class="text-lg font-bold">Slack</p>
+      <div class="space-y-1 text-sm">
+        <% if @guild.slack_channel_id.present? %>
+          <p><span class="text-white/70">Channel ID:</span> <%= @guild.slack_channel_id %></p>
+          <p><a href="https://hackclub.slack.com/archives/<%= @guild.slack_channel_id %>" target="_blank" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Open in Slack</a></p>
+        <% else %>
+          <p class="text-white/40">No Slack channel created yet</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <% if @guild.description.present? %>
+    <div class="p-4 border-2 border-white rounded-none space-y-2">
+      <p class="text-lg font-bold">Description</p>
+      <p class="text-white/90"><%= @guild.description %></p>
+    </div>
+  <% end %>
+
+  <div class="space-y-4">
+    <h2 class="text-3xl">Signups (<%= @guild.guild_signups.size %>)</h2>
+
+    <div class="border-2 border-white rounded-none">
+      <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white">
+        <div class="col-span-1">Role</div>
+        <div class="col-span-2">Name</div>
+        <div class="col-span-3">Email</div>
+        <div class="col-span-2">Country</div>
+        <div class="col-span-2">Details</div>
+        <div class="col-span-2">Signed Up</div>
+      </div>
+
+      <% if @guild.guild_signups.any? %>
+        <% @guild.guild_signups.order(role: :asc, created_at: :desc).each do |signup| %>
+          <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0 items-center">
+            <div class="col-span-1 py-2">
+              <% role_type = signup.organizer? ? :warning : :success %>
+              <%= render "admin/pill", type: role_type, value: signup.role do %><% end %>
+            </div>
+            <div class="col-span-2 font-medium">
+              <% if signup.user %>
+                <%= link_to signup.name, admin_user_path(signup.user), class: "underline decoration-white/30 underline-offset-2 hover:decoration-white" %>
+              <% else %>
+                <%= signup.name %>
+              <% end %>
+            </div>
+            <div class="col-span-3 text-sm truncate">
+              <% if current_user.admin? %>
+                <a href="mailto:<%= h signup.email %>" class="underline decoration-white/30 underline-offset-2 hover:decoration-white"><%= signup.email %></a>
+              <% else %>
+                [ Hidden ]
+              <% end %>
+            </div>
+            <div class="col-span-2"><%= signup.country || "–" %></div>
+            <div class="col-span-2 text-sm text-white/70 truncate">
+              <% if signup.organizer? && signup.ideas.present? %>
+                <span title="<%= h signup.ideas %>"><%= truncate(signup.ideas, length: 40) %></span>
+              <% elsif signup.attendee? && signup.attendee_activities.present? %>
+                <span title="<%= h signup.attendee_activities %>"><%= truncate(signup.attendee_activities, length: 40) %></span>
+              <% else %>
+                –
+              <% end %>
+            </div>
+            <div class="col-span-2 text-sm"><%= signup.created_at.strftime("%b %d, %Y") %></div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="px-4 py-6 text-center text-white/70">No signups yet.</div>
+      <% end %>
+    </div>
+  </div>
+</section>
