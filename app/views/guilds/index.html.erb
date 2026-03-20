@@ -7,9 +7,9 @@
   <div class="w-full max-w-6xl space-y-4">
 
     <div class="py-4 md:py-8 text-center space-y-4">
-      <h1 class="text-4xl md:text-6xl font-bold">Build Guilds!</h1>
+      <h1 class="text-4xl md:text-6xl font-bold">Build Guilds</h1>
       <p class="text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl mx-auto">
-        Hardware meetups happening in cities around the world.
+        The world's largest week of hardware meetups - coming to a city near you.
         <br>Join an existing guild or start one in your city - <strong>April 13th-19th</strong>.
       </p>
       <div class="pt-2">
@@ -27,7 +27,13 @@
       <h2 class="text-2xl md:text-3xl font-semibold text-white">Overview</h2>
 
       <p class="text-white/90 leading-relaxed">
-        Build guilds are Hack Club hardware meetups happening <strong>April 13th-19th</strong> in cities around the world. Organizers and attendees have a lot of freedom with what they want to run. Some will have workshops, some project demos, some just building and hanging out together.
+        Build guilds are Hack Club 1-day hardware meetups running from <strong>April 13th-19th</strong> in cities around the world!
+      </p>
+      <p class="text-white/90 leading-relaxed">
+        Every guild is organized by a local Hack Clubber who picks the date, venue, theme, and activities for their guild. Hack Club funds $8 per signup.
+      </p>
+      <p class="text-white/90 leading-relaxed">
+        Each guild will look different - some will have workshops, some project demos, some just building and hanging out together! Regardless, it'll be a fun day of celebrating hardware and meeting other Hack Clubbers in your city.
       </p>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -208,7 +214,7 @@
     </script>
 
     <%= render 'shared/card', class: 'flex flex-col space-y-6 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-none' do %>
-      <h2 class="text-2xl md:text-3xl font-semibold text-white">Information for Organizers</h2>
+      <h2 class="text-2xl md:text-3xl font-semibold text-white">Information for Organizers!</h2>
 
       <div class="space-y-4">
         <div class="space-y-2">
@@ -222,26 +228,33 @@
         <div class="space-y-2">
           <h3 class="text-xl font-semibold text-bp-warning">What Can You Run at a Guild?</h3>
           <p class="text-white/90 leading-relaxed">
-            Guilds are very flexible! You can host workshops, show off projects, or run any wacky activities, provided they are safe and cost-effective. Here are some ideas:
+            You decide what happens in your guild! Run workshops, show off projects, or any wacky activities you want! provided they are safe and cost-effective. Here's some ideas:
           </p>
-          <ul class="list-disc list-inside space-y-1 text-white/90">
-            <li>Project build sessions!</li>
+          <ul class="list-disc list-inside space-y-1 text-white/90 pl-4">
+            <li>Project demos!</li>
             <li>Lightning talks</li>
+            <li>Design workshops!</li>
             <li>Soldering competitions</li>
-            <li>Misc workshops!</li>
+            <li>Project debugging sessions</li>
           </ul>
         </div>
 
         <div class="space-y-2">
           <h3 class="text-xl font-semibold text-bp-warning">What Do Organizers Do?</h3>
-          <ul class="list-disc list-inside space-y-1 text-white/90">
-            <li>Start your guild! Pick up a name for your guild.</li>
+          <ol class="list-decimal list-inside space-y-1 text-white/90 pl-4">
+            <li>Start your guild! You'll be invited to <a class="text-bp-warning underline" href="https://hackclub.enterprise.slack.com/archives/C0AM0B6D482" target="_blank" rel="noopener noreferrer">#build-guilds-organizers</a>, a channel where you meet your fellow orgs!</li>
             <li>Choose a day between April 13th-19th to run your event!</li>
             <li>Find a venue! Make sure you have their permission to run any activities you're planning.</li>
-            <li>Get signups! You'll get <strong>$10 per person</strong> who shows up to your event.</li>
+            <li>Get signups! You'll get <strong>$8 per signup 18 or under</strong> who shows up to your event.</li>
             <li>Figure out logistics like food, activities, &amp; schedule.</li>
             <li>Run your event!</li>
-          </ul>
+          </ol>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-bp-warning">Any other questions?</h3>
+            <p class="text-white/90">
+              Join the <a class="text-bp-warning underline" href="https://hackclub.enterprise.slack.com/archives/C0AM0B6D482" target="_blank" rel="noopener noreferrer">#build-guilds-organizers</a> channel!
+            </p>
         </div>
       </div>
     <% end %>
