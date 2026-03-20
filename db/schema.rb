@@ -295,11 +295,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_013712) do
   create_table "guilds", force: :cascade do |t|
     t.string "name"
     t.text "description"
+    t.string "city", null: false
+    t.string "slack_channel_id"
+    t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "city"
-    t.string "slack_channel_id"
-    t.integer "status"
     t.float "latitude"
     t.float "longitude"
     t.string "country"

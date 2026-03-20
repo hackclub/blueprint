@@ -3,14 +3,14 @@
 # Table name: guilds
 #
 #  id               :bigint           not null, primary key
-#  city             :string
+#  city             :string           not null
 #  country          :string
 #  description      :text
 #  latitude         :float
 #  longitude        :float
 #  name             :string
 #  needs_review     :boolean
-#  status           :integer
+#  status           :integer          default("pending")
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  slack_channel_id :string

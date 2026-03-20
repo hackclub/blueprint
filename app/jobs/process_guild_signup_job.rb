@@ -108,6 +108,13 @@ class ProcessGuildSignupJob < ApplicationJob
         notify_admin(admin_channel, "Invited <@#{user.slack_id}> to <##{guild.slack_channel_id}> (role: #{signup.role})")
       rescue Slack::Web::Api::Errors::AlreadyInChannel
         Rails.logger.info "User #{user.id} already in channel #{guild.slack_channel_id}"
+      rescue Slack::Web::Api::Errors::UserIsRestricted
+        Rails.logger.warn "User #{user.id} is a multi-channel guest, cannot invite to #{guild.slack_channel_id}"
+        notify_admin(admin_channel, "<@#{user.slack_id}> is a multi-channel guest and cannot be invited to <##{guild.slack_channel_id}> (role: #{signup.role}). They have been DM'd instructions to become a full member.")
+        slack_client.chat_postMessage(
+          channel: user.slack_id,
+          text: "Hey! We couldn't add you to your guild's Slack channel because your account is a multi-channel guest. To get promoted to a full member, follow the instructions in this post: https://hackclub.slack.com/archives/C0A9PMV58R5/p1770294664806709"
+        ) rescue nil
       rescue Slack::Web::Api::Errors::SlackError => e
         Rails.logger.error "Failed to invite user #{user.id} to channel #{guild.slack_channel_id}: #{e.message}"
         notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to <##{guild.slack_channel_id}> (role: #{signup.role}): #{e.message}")
@@ -126,6 +133,9 @@ class ProcessGuildSignupJob < ApplicationJob
         notify_admin(admin_channel, "Invited <@#{user.slack_id}> to <##{organizers_channel}> (organizer for #{guild.city})")
       rescue Slack::Web::Api::Errors::AlreadyInChannel
         Rails.logger.info "User #{user.id} already in organizers channel"
+      rescue Slack::Web::Api::Errors::UserIsRestricted
+        Rails.logger.warn "User #{user.id} is a multi-channel guest, cannot invite to organizers channel"
+        notify_admin(admin_channel, "<@#{user.slack_id}> is a multi-channel guest and cannot be invited to <##{organizers_channel}>. They have been Dm'd instructions to become a full member")
       rescue Slack::Web::Api::Errors::SlackError => e
         Rails.logger.error "Failed to invite user #{user.id} to organizers channel: #{e.message}"
         notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to <##{organizers_channel}>: #{e.message}")
@@ -141,6 +151,8 @@ class ProcessGuildSignupJob < ApplicationJob
     slack_client.conversations_invite(channel: Guild::MAIN_CHANNEL_ID, users: user.slack_id)
   rescue Slack::Web::Api::Errors::AlreadyInChannel
     # already there
+  rescue Slack::Web::Api::Errors::UserIsRestricted
+    Rails.logger.warn "User #{user.id} is a multi-channel guest, cannot invite to #build-guilds"
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Failed to invite user #{user.id} to #build-guilds: #{e.message}"
     notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to #build-guilds: #{e.message}")

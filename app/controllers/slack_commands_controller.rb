@@ -13,6 +13,8 @@ class SlackCommandsController < ApplicationController
     /guild-list
     /guild-no-organizers
     /guild-update-channels
+    /guild-add-user
+    /guild-remove-user
   ].freeze
 
   def handle
@@ -47,6 +49,10 @@ class SlackCommandsController < ApplicationController
       { response_type: "ephemeral", text: guild_list_message }
     when "/guild-update-channels"
       { response_type: "in_channel", text: guild_update_channels_message }
+    when "/guild-add-user"
+      { response_type: "in_channel", text: guild_add_user_message(params[:text]) }
+    when "/guild-remove-user"
+      { response_type: "in_channel", text: guild_remove_user_message(params[:text]) }
     when "/guild-invite"
       { response_type: "in_channel", text: guild_invite_message(params[:text], params[:user_id], params[:channel_id]) }
     else
@@ -270,6 +276,9 @@ class SlackCommandsController < ApplicationController
           Rails.logger.info "[SlackBot] Invited user=#{user.id} (slack=#{user.slack_id}) to channel=#{target.slack_channel_id}"
         rescue Slack::Web::Api::Errors::AlreadyInChannel
           Rails.logger.info "[SlackBot] User=#{user.id} already in channel=#{target.slack_channel_id}"
+        rescue Slack::Web::Api::Errors::UserIsRestricted
+          Rails.logger.warn "[SlackBot] User=#{user.id} is a multi-channel guest, cannot invite to merged channel=#{target.slack_channel_id}"
+          invite_failures += 1
         rescue Slack::Web::Api::Errors::SlackError => e
           Rails.logger.error "[SlackBot] Failed to invite user=#{user.id} to merged channel=#{target.slack_channel_id}: #{e.message}"
           invite_failures += 1
@@ -408,16 +417,86 @@ class SlackCommandsController < ApplicationController
     "Failed to update channel canvas: #{e.message}"
   end
 
+  def guild_remove_user_message(text)
+    parts = text.to_s.split
+    return "Usage: `/guild-remove-user @user <city>`\nExample: `/guild-remove-user @john London`" unless parts.length >= 2
+
+    raw_input = parts[0].strip
+    city = parts[1..].join(" ")
+
+    user = find_slack_user(raw_input)
+    return "No user found for \"#{raw_input}\". Try using their Slack ID (e.g. U12345678)." unless user
+
+    guild = find_guild(city)
+    return "No guild found for \"#{city}\"." unless guild
+
+    signup = user.guild_signups.find_by(guild: guild)
+    return "<@#{user.slack_id}> is not signed up for *#{guild.city}*." unless signup
+
+    role = signup.role
+    signup.destroy!
+
+    Rails.logger.info "[SlackBot] /guild-remove-user user=#{user.id} guild=#{guild.id} role=#{role} by=#{params[:user_id]}"
+
+    # Remove from Slack channel in background
+    if guild.slack_channel_id.present? && user.slack_id.present?
+      Thread.new do
+        slack = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+        slack.conversations_kick(channel: guild.slack_channel_id, user: user.slack_id)
+      rescue Slack::Web::Api::Errors::SlackError => e
+        Rails.logger.error "[SlackBot] Failed to remove user #{user.id} from channel #{guild.slack_channel_id}: #{e.message}"
+      end
+    end
+
+    # Sync Airtable in background
+    AirtableSyncClassJob.perform_later("GuildSignup")
+
+    "Removed <@#{user.slack_id}> (#{role}) from *#{guild.city}*."
+  end
+
+  def guild_add_user_message(text)
+    parts = text.to_s.split
+    return "Usage: `/guild-add-user @user <city> <attendee|organizer>`\nExample: `/guild-add-user @john London attendee`" unless parts.length >= 3
+
+    raw_input = parts[0].strip
+    role = parts[-1].strip.downcase
+    city = parts[1..-2].join(" ")
+
+    unless %w[organizer attendee].include?(role)
+      return "Role must be `organizer` or `attendee`."
+    end
+
+    user = find_slack_user(raw_input)
+    return "No user found for \"#{raw_input}\". Try using their Slack ID (e.g. U12345678)." unless user
+
+    guild = find_guild(city)
+    return "No guild found for \"#{city}\"." unless guild
+
+    if user.guild_signups.exists?(guild: guild)
+      return "<@#{user.slack_id}> is already signed up for *#{guild.city}*."
+    end
+
+    signup = user.guild_signups.build(
+      guild: guild,
+      role: role,
+      name: user.display_name,
+      email: user.email,
+      country: guild.country,
+      skip_slack_validation: true,
+      skip_admin_validations: true
+    )
+
+    if signup.save
+      "Added <@#{user.slack_id}> to *#{guild.city}* as #{role}."
+    else
+      "Failed to add user: #{signup.errors.full_messages.join(", ")}"
+    end
+  end
+
   def guild_invite_message(text, invoker_slack_id, channel_id)
     guild = Guild.find_by(slack_channel_id: channel_id)
     return "This command must be used in a guild channel." unless guild
     return "This guild is closed." if guild.closed?
-
-    # Verify the user is a member of this guild
-    invoker = User.find_by(slack_id: invoker_slack_id)
-    unless invoker && guild.guild_signups.exists?(user: invoker)
-      return "You must be a member of this guild to generate an invite link."
-    end
 
     token = GuildInvitesController.generate_token(guild.id)
     invite_url = "https://blueprint.hackclub.com/guilds/invite/#{token}"
