@@ -482,7 +482,8 @@ class SlackCommandsController < ApplicationController
       name: user.display_name,
       email: user.email,
       country: guild.country,
-      skip_slack_validation: true
+      skip_slack_validation: true,
+      skip_admin_validations: true
     )
 
     if signup.save

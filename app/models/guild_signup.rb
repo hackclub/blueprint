@@ -30,7 +30,7 @@ class GuildSignup < ApplicationRecord
   belongs_to :user
   belongs_to :guild
 
-  attr_accessor :skip_slack_validation
+  attr_accessor :skip_slack_validation, :skip_admin_validations
 
   enum :role, { organizer: 0, attendee: 1 }
 
@@ -40,8 +40,8 @@ class GuildSignup < ApplicationRecord
 
   validates :name, :email, :role, :country, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
-  validates :ideas, presence: true, if: :organizer?
-  validate :user_must_have_approved_project, if: :organizer?
+  validates :ideas, presence: true, if: -> { organizer? && !skip_admin_validations }
+  validate :user_must_have_approved_project, if: -> { organizer? && !skip_admin_validations }
   validates :user_id, uniqueness: { scope: :guild_id, message: "You have already signed up for this guild" }
   validate :user_must_have_slack_id, unless: :skip_slack_validation
   validate :one_organizer_signup_only, if: :organizer?
