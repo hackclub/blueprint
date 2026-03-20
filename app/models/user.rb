@@ -97,6 +97,7 @@ class User < ApplicationRecord
 
   before_validation :normalize_email
   after_commit :advance_projects_after_idv!, on: :update, if: -> { previous_changes.key?("ysws_verified") && ysws_verified? }
+  after_commit :reprocess_guild_signups, on: :update, if: -> { previous_changes.key?("slack_id") && slack_id.present? && previous_changes["slack_id"].first.blank? }
   after_commit :sync_to_gorse, on: :create
   after_commit :delete_from_gorse, on: :destroy
 
@@ -1058,6 +1059,12 @@ class User < ApplicationRecord
   rescue => e
     Rails.logger.error("Failed to delete user #{id} from Gorse: #{e.message}")
     Sentry.capture_exception(e)
+  end
+
+  def reprocess_guild_signups
+    guild_signups.each do |signup|
+      GuildSlackInviteJob.perform_later(signup.id)
+    end
   end
 
   def normalize_email

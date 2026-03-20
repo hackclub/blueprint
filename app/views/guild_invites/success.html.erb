@@ -1,0 +1,37 @@
+<section class="flex justify-center">
+  <div class="w-full max-w-lg space-y-6 py-8">
+
+    <%= render 'shared/card', class: 'flex flex-col space-y-6 border-2 border-bp-darker bg-bp-darker/50 p-8 rounded-none text-center' do %>
+      <h1 class="text-3xl md:text-4xl font-bold text-white">You're In!</h1>
+
+      <p class="text-lg text-white/90 leading-relaxed">
+        You've joined the
+        <strong class="text-bp-warning"><%= @guild.city %> Build Guild</strong>.
+      </p>
+
+      <% if current_user.slack_id.present? %>
+        <div class="bg-green-500/20 border border-green-500 rounded-none p-4 text-white text-sm">
+          You'll be added to the <strong>#build-guild-<%= @guild.city.parameterize %></strong> Slack channel automatically.
+        </div>
+      <% else %>
+        <div class="bg-bp-dark/50 rounded-none p-6 text-left space-y-4 border border-white/10">
+          <p class="text-white/90 text-sm font-semibold">Want to join your guild's Slack channel?</p>
+          <p class="text-white/70 text-sm">
+            Your guild coordinates on the Hack Club Slack in <strong>#build-guild-<%= @guild.city.parameterize %></strong>.
+            Join Slack to chat with your guildmates!
+          </p>
+          <a href="https://hackclub.com/slack" target="_blank"
+            class="block w-full bg-bp-warning hover:bg-bp-warning-darker text-white text-lg font-semibold py-3 px-8 rounded-none transition-all duration-200 hover:scale-105 text-center">
+            Join Slack
+          </a>
+          <p class="text-white/40 text-xs">This is optional, you can always join Slack later from the dashboard.</p>
+        </div>
+      <% end %>
+
+      <a href="<%= guilds_path %>" class="inline-block bg-bp-warning hover:bg-bp-warning-darker text-white text-lg font-semibold py-3 px-8 rounded-none transition-all duration-200">
+        Continue to Guilds
+      </a>
+    <% end %>
+
+  </div>
+</section>

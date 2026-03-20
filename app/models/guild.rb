@@ -34,6 +34,10 @@ class Guild < ApplicationRecord
     [ city, country ].compact.join(", ")
   end
 
+  def invite_url
+    "https://blueprint.hackclub.com/guilds/invite/#{city.parameterize}"
+  end
+
   after_validation :geocode, if: ->(obj) { obj.city.present? && obj.city_changed? && obj.latitude.blank? }
   after_commit :sync_to_airtable, on: [ :create, :update ]
 

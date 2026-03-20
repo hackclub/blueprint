@@ -498,10 +498,7 @@ class SlackCommandsController < ApplicationController
     return "This command must be used in a guild channel." unless guild
     return "This guild is closed." if guild.closed?
 
-    token = GuildInvitesController.generate_token(guild.id)
-    invite_url = "https://blueprint.hackclub.com/guilds/invite/#{token}"
-
-    "Here's an invite link for *#{guild.name}*:\n#{invite_url}\n\nShare this with anyone you'd like to invite."
+    "Here's the invite link for *#{guild.name}*:\n#{guild.invite_url}"
   end
 
   def find_slack_user(input)
