@@ -161,7 +161,10 @@ class GuildInvitesController < ApplicationController
   end
 
   def set_guild_from_slug
-    @guild = Guild.where.not(status: :closed).to_a.detect { |g| g.city.parameterize == params[:slug] }
+    slug = params[:slug]
+    open_guilds = Guild.where.not(status: :closed)
+
+    @guild = open_guilds.find_each.detect { |g| g.invite_slug == slug }
 
     unless @guild
       redirect_to guilds_path, alert: "No guild found for this invite link."

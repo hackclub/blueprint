@@ -34,8 +34,17 @@ class Guild < ApplicationRecord
     [ city, country ].compact.join(", ")
   end
 
+  def invite_slug
+    slug = city.parameterize
+    if Guild.where.not(status: :closed).where.not(id: id).any? { |g| g.city.parameterize == slug }
+      "#{slug}-#{country}"
+    else
+      slug
+    end
+  end
+
   def invite_url
-    "https://blueprint.hackclub.com/guilds/invite/#{city.parameterize}"
+    "https://blueprint.hackclub.com/guilds/invite/#{invite_slug}"
   end
 
   after_validation :geocode, if: ->(obj) { obj.city.present? && obj.city_changed? && obj.latitude.blank? }
