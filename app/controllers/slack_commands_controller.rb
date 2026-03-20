@@ -15,6 +15,7 @@ class SlackCommandsController < ApplicationController
     /guild-update-channels
     /guild-add-user
     /guild-remove-user
+    /guild-set-channel
   ].freeze
 
   def handle
@@ -55,6 +56,10 @@ class SlackCommandsController < ApplicationController
       { response_type: "in_channel", text: guild_remove_user_message(params[:text]) }
     when "/guild-invite"
       { response_type: "in_channel", text: guild_invite_message(params[:text], params[:user_id], params[:channel_id]) }
+    when "/guild-set-channel"
+      { response_type: "in_channel", text: guild_set_channel_message(params[:text]) }
+    when "/guild-ideas"
+      { response_type: "ephemeral", text: guild_ideas_message(params[:user_id], params[:channel_id]) }
     else
       Rails.logger.warn "[SlackBot] Unknown command: #{params[:command].inspect}"
       { response_type: "ephemeral", text: "Unknown command." }
@@ -499,6 +504,43 @@ class SlackCommandsController < ApplicationController
     return "This guild is closed." if guild.closed?
 
     "Here's the invite link for *#{guild.name}*:\n#{guild.invite_url}"
+  end
+
+  def guild_set_channel_message(text)
+    args = text.to_s.strip.split(/\s+/, 2)
+    city = args[0]
+    channel_id = args[1]
+
+    if city.blank? || channel_id.blank?
+      return "Usage: `/guild-set-channel <city> <channel_id>`\nExample: `/guild-set-channel London C0AMWJ2HNH4`"
+    end
+
+    guild = Guild.where("LOWER(city) = ?", city.downcase).first
+    return "No guild found for city: #{city}" unless guild
+
+    old_channel = guild.slack_channel_id
+    guild.update!(slack_channel_id: channel_id)
+    "Updated *#{guild.name}* slack channel from `#{old_channel || 'none'}` to `#{channel_id}`."
+  rescue => e
+    "Failed to update channel: #{e.message}"
+  end
+
+  def guild_ideas_message(invoker_slack_id, channel_id)
+    guild = Guild.find_by(slack_channel_id: channel_id)
+    return "This command must be used in a guild channel." unless guild
+
+    user = User.find_by(slack_id: invoker_slack_id)
+    unless user && guild.guild_signups.exists?(user: user, role: :organizer)
+      return "Only organizers can use this command."
+    end
+
+    signups = guild.guild_signups.where.not(attendee_activities: [ nil, "" ])
+    if signups.empty?
+      return "No attendee ideas have been submitted for *#{guild.name}* yet."
+    end
+
+    list = signups.map.with_index(1) { |s, i| "#{i}. #{s.attendee_activities}" }.join("\n")
+    "*Attendee ideas for #{guild.name}* (#{signups.count}):\n#{list}"
   end
 
   def find_slack_user(input)
