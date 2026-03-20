@@ -1,6 +1,7 @@
 | title       | Guild Organizer Tips                                              |
 | ----------- | ----------------------------------------------------------------- |
 | description | Tips and resources for organizing a Build Guild event.            |
+| unlisted    | true                                                              |
 
 # Guild Organizer Tips
 
