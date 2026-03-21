@@ -28,9 +28,15 @@
         </div>
       <% end %>
 
-      <a href="<%= guilds_path %>" class="inline-block bg-bp-warning hover:bg-bp-warning-darker text-white text-lg font-semibold py-3 px-8 rounded-none transition-all duration-200">
-        Continue to Guilds
-      </a>
+      <% if @guild.needs_review %>
+        <a href="<%= guilds_path %>" class="inline-block bg-bp-warning hover:bg-bp-warning-darker text-white text-lg font-semibold py-3 px-8 rounded-none transition-all duration-200">
+          Continue to Guilds
+        </a>
+      <% else %>
+        <a href="<%= guild_dashboard_path %>" class="inline-block bg-bp-warning hover:bg-bp-warning-darker text-white text-lg font-semibold py-3 px-8 rounded-none transition-all duration-200">
+          Go to Dashboard
+        </a>
+      <% end %>
     <% end %>
 
   </div>

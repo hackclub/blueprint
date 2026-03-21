@@ -1,0 +1,294 @@
+<section class="flex justify-center">
+  <div class="w-full max-w-6xl space-y-6 py-4 md:py-8">
+
+    <%= render "shared/button", text: "Back to Guilds", url: guilds_path, class: "py-0" %>
+
+    <div class="space-y-1">
+      <div class="flex items-center gap-3">
+        <h1 class="text-4xl"><%= @guild.city %></h1>
+        <span class="text-sm font-medium px-2 py-0.5 border rounded-none <%= @is_organizer ? 'border-bp-warning text-bp-warning' : 'border-bp-success text-bp-success' %>"><%= @is_organizer ? "Organizer" : "Attendee" %></span>
+        <% status_colors = { "active" => "border-bp-success text-bp-success", "pending" => "border-yellow-500 text-yellow-500", "closed" => "border-red-400 text-red-400" } %>
+        <span class="text-sm font-medium px-2 py-0.5 border rounded-none <%= status_colors[@guild.status] || status_colors["pending"] %>">Guild <%= @guild.status.capitalize %></span>
+      </div>
+      <p class="text-xl text-white/70"><%= ISO3166::Country[@guild.country]&.common_name || @guild.country %></p>
+    </div>
+
+    <% unless current_user.slack_id.present? %>
+      <div class="p-4 border-2 border-bp-warning rounded-none space-y-2">
+        <p class="text-lg font-bold text-bp-warning">Join the Hack Club Slack</p>
+        <p class="text-white/90 text-sm">
+          Your guild communicates on Slack. Join to connect with
+          <%= @is_organizer ? "your attendees" : "your organizers and fellow attendees" %>
+          and stay up to date.
+        </p>
+        <%= render "shared/button", text: "Join Slack", url: "https://hackclub.com/slack", variant: :warning, class: "text-sm py-1", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
+      </div>
+    <% end %>
+
+    <% announcements = @guild.announcements %>
+    <% tz = current_user.timezone || Time.zone %>
+    <% if @is_organizer %>
+      <div class="p-4 border-2 border-bp-warning rounded-none space-y-4">
+        <div class="space-y-1">
+          <p class="text-lg font-bold text-bp-warning">Announcements</p>
+          <p class="text-white/70 text-sm">Post announcements visible to all attendees on their dashboard, including those not in Slack.</p>
+        </div>
+
+        <%= form_with url: guild_create_announcement_path, method: :post, class: "space-y-3" do |f| %>
+          <%= f.text_area :body, placeholder: "Write an announcement for your attendees...", rows: 2, class: "w-full p-3 bg-bp-darker border-2 border-white/25 rounded-none text-white text-sm placeholder-white/40 focus:border-white focus:outline-none resize-y", name: "announcement[body]" %>
+          <%= render "shared/button", text: "Post Announcement", variant: :primary, class: "text-sm py-1", html_options: { type: "submit" } %>
+        <% end %>
+
+        <% if announcements.any? %>
+          <% latest = announcements.first %>
+          <div class="border-t border-white/20 pt-3 space-y-2">
+            <p class="text-sm font-medium text-white/60">Latest</p>
+            <div class="p-3 bg-bp-darker border border-white/15 space-y-1">
+              <div class="flex items-start justify-between gap-3">
+                <p class="text-white/90 text-sm"><%= simple_format(latest["body"], {}, wrapper_tag: "span") %></p>
+                <%= button_to guild_delete_announcement_path(posted_at: latest["posted_at"]), method: :delete, class: "shrink-0 text-white/40 hover:text-red-400 text-xs cursor-pointer", data: { turbo_confirm: "Delete this announcement?" } do %>
+                  &times;
+                <% end %>
+              </div>
+              <p class="text-white/40 text-xs">
+                <%= latest["author_name"] %> &middot; <%= Time.parse(latest["posted_at"]).in_time_zone(tz).strftime("%b %d, %Y at %l:%M %p") %>
+              </p>
+            </div>
+          </div>
+
+          <% if announcements.size > 1 %>
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer list-none text-sm font-medium text-white/60">
+                Older (<%= announcements.size - 1 %>)
+                <span class="text-white/40 group-open:rotate-180 transition-transform duration-200">&#9660;</span>
+              </summary>
+              <div class="space-y-2 pt-2">
+                <% announcements.drop(1).each do |ann| %>
+                  <div class="p-3 bg-bp-darker border border-white/15 space-y-1">
+                    <div class="flex items-start justify-between gap-3">
+                      <p class="text-white/90 text-sm"><%= simple_format(ann["body"], {}, wrapper_tag: "span") %></p>
+                      <%= button_to guild_delete_announcement_path(posted_at: ann["posted_at"]), method: :delete, class: "shrink-0 text-white/40 hover:text-red-400 text-xs cursor-pointer", data: { turbo_confirm: "Delete this announcement?" } do %>
+                        &times;
+                      <% end %>
+                    </div>
+                    <p class="text-white/40 text-xs">
+                      <%= ann["author_name"] %> &middot; <%= Time.parse(ann["posted_at"]).in_time_zone(tz).strftime("%b %d, %Y at %l:%M %p") %>
+                    </p>
+                  </div>
+                <% end %>
+              </div>
+            </details>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="p-4 border-2 border-bp-warning rounded-none space-y-3">
+        <p class="text-lg font-bold text-bp-warning">Announcements</p>
+        <% if announcements.any? %>
+          <% latest = announcements.first %>
+          <div class="p-3 bg-bp-darker border border-white/15 space-y-1">
+            <p class="text-white/90 text-sm"><%= simple_format(latest["body"], {}, wrapper_tag: "span") %></p>
+            <p class="text-white/40 text-xs">
+              <%= latest["author_name"] %> &middot; <%= Time.parse(latest["posted_at"]).in_time_zone(tz).strftime("%b %d, %Y at %l:%M %p") %>
+            </p>
+          </div>
+
+          <% if announcements.size > 1 %>
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer list-none text-sm font-medium text-white/60">
+                Older (<%= announcements.size - 1 %>)
+                <span class="text-white/40 group-open:rotate-180 transition-transform duration-200">&#9660;</span>
+              </summary>
+              <div class="space-y-2 pt-2">
+                <% announcements.drop(1).each do |ann| %>
+                  <div class="p-3 bg-bp-darker border border-white/15 space-y-1">
+                    <p class="text-white/90 text-sm"><%= simple_format(ann["body"], {}, wrapper_tag: "span") %></p>
+                    <p class="text-white/40 text-xs">
+                      <%= ann["author_name"] %> &middot; <%= Time.parse(ann["posted_at"]).in_time_zone(tz).strftime("%b %d, %Y at %l:%M %p") %>
+                    </p>
+                  </div>
+                <% end %>
+              </div>
+            </details>
+          <% end %>
+        <% else %>
+          <p class="text-white/50 text-sm">No announcements from organizers yet.</p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="p-4 border-2 border-white rounded-none">
+        <p class="text-2xl font-bold"><%= @signups.size %></p>
+        <p class="text-white/70">Total Signups</p>
+      </div>
+      <div class="p-4 border-2 border-white rounded-none">
+        <p class="text-2xl font-bold"><%= @signups.select(&:organizer?).size %></p>
+        <p class="text-white/70">Organizers</p>
+      </div>
+      <div class="p-4 border-2 border-white rounded-none">
+        <p class="text-2xl font-bold"><%= @signups.select(&:attendee?).size %></p>
+        <p class="text-white/70">Attendees</p>
+      </div>
+      <div class="p-4 border-2 border-white rounded-none">
+        <p class="text-2xl font-bold"><%= @signups.select { |s| s.user&.slack_id.present? }.size %></p>
+        <p class="text-white/70">In Slack</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-4 border-2 border-white rounded-none space-y-2">
+        <p class="text-lg font-bold">Invite Link</p>
+        <div class="space-y-1 text-sm">
+          <p class="text-white/70">Share this to invite people to your guild. Anyone aged 13&ndash;18 can join, even if they're not already in Hack Club.</p>
+          <code class="block text-bp-warning bg-bp-darker px-3 py-2 border border-white/25 select-all break-all text-sm"><%= @guild.invite_url %></code>
+        </div>
+      </div>
+
+      <div class="p-4 border-2 border-white rounded-none space-y-2">
+        <p class="text-lg font-bold">Slack</p>
+        <div class="space-y-1 text-sm">
+          <% if @guild.slack_channel_id.present? %>
+            <p><span class="text-white/70">Channel:</span> #build-guild-<%= @guild.city.parameterize %></p>
+            <p><a href="https://hackclub.slack.com/archives/<%= @guild.slack_channel_id %>" target="_blank" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Open in Slack</a></p>
+          <% else %>
+            <p class="text-white/40">No Slack channel created yet</p>
+          <% end %>
+          <p><a href="https://hackclub.slack.com/archives/<%= Guild::MAIN_CHANNEL_ID %>" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">#blueprint-build-guilds</a></p>
+          <% if @is_organizer %>
+            <p><a href="https://hackclub.enterprise.slack.com/archives/C0AM0B6D482" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">#build-guilds-organizers</a></p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <details class="group border-2 border-white rounded-none" open>
+      <summary class="flex items-center justify-between cursor-pointer list-none p-3 text-lg font-bold border-b-2 border-white group-open:border-white group-[&:not([open])]:border-transparent">
+        Guild Ideas (<%= @ideas.size %>)
+        <span class="text-white/50 group-open:rotate-180 transition-transform duration-200">&#9660;</span>
+      </summary>
+      <div>
+        <% if @ideas.any? %>
+          <% @ideas.each do |signup| %>
+            <% idea_text = signup.organizer? ? signup.ideas : signup.attendee_activities %>
+            <% next if idea_text.blank? %>
+            <div class="px-3 py-2 border-b border-white/30 last:border-0">
+              <p class="text-white/70 text-sm"><%= idea_text %></p>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="px-4 py-6 text-center text-white/70">No ideas submitted yet.</div>
+        <% end %>
+      </div>
+    </details>
+
+    <% if @is_organizer %>
+      <div class="p-4 border-2 border-white rounded-none space-y-2">
+        <p class="text-lg font-bold">Organizer Resources</p>
+        <div class="space-y-1 text-sm">
+          <p><a href="/resources/guild-organizer-tips" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Organizer Tips</a> <span class="text-white/50"> venue finding, budgeting, promotion, and day-of advice</span></p>
+          <p><a href="https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0AM7D41WGP" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Organizer FAQ</a> <span class="text-white/50"> frequently asked questions about organizing</span></p>
+          <p><a href="https://hackclub.enterprise.slack.com/archives/C0AM0B6D482" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">#build-guilds-organizers</a> <span class="text-white/50"> ask any questions about organizing, get help from other organizers</span></p>
+          <% if @guild.slack_channel_id.present? %>
+            <p><a href="https://hackclub.slack.com/archives/<%= @guild.slack_channel_id %>" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Your Guild's Slack Channel</a></p>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="p-4 border-2 border-white rounded-none space-y-2">
+        <p class="text-lg font-bold">Venue Submission</p>
+        <p class="text-white/70 text-sm">Coming soon, you'll be able to submit your venue details here.</p>
+      </div>
+    <% end %>
+
+    <details class="group border-2 border-white rounded-none">
+      <summary class="flex items-center justify-between cursor-pointer list-none p-3 text-lg font-bold border-b-2 border-white group-open:border-white group-[&:not([open])]:border-transparent">
+        Slack Commands
+        <span class="text-white/50 group-open:rotate-180 transition-transform duration-200">&#9660;</span>
+      </summary>
+      <div class="divide-y divide-white/30">
+        <div class="px-3 py-2 flex items-baseline gap-3">
+          <code class="font-mono text-bp-warning text-sm shrink-0">/guild-invite</code>
+          <p class="text-white/70 text-sm">View your guild's invite link (above).</p>
+        </div>
+        <div class="px-3 py-2 flex items-baseline gap-3">
+          <code class="font-mono text-bp-warning text-sm shrink-0">/guild-ideas</code>
+          <p class="text-white/70 text-sm">See what ideas attendees submitted when signing up for your guild.</p>
+        </div>
+        <div class="px-3 py-2 flex items-baseline gap-3">
+          <code class="font-mono text-bp-warning text-sm shrink-0">/guild-stats</code>
+          <p class="text-white/70 text-sm">View overall guild statistics.</p>
+        </div>
+        <div class="px-3 py-2 flex items-baseline gap-3">
+          <code class="font-mono text-bp-warning text-sm shrink-0">/guild-top</code>
+          <p class="text-white/70 text-sm">See top guilds by signups.</p>
+        </div>
+      </div>
+    </details>
+
+    <% if @is_organizer %>
+      <details class="group border-2 border-white rounded-none" open>
+        <summary class="flex items-center justify-between cursor-pointer list-none p-3 text-lg font-bold border-b-2 border-white group-open:border-white group-[&:not([open])]:border-transparent">
+          Signups (<%= @signups.size %>)
+          <span class="text-white/50 group-open:rotate-180 transition-transform duration-200">&#9660;</span>
+        </summary>
+        <div>
+          <div class="hidden md:grid grid-cols-12 px-3 py-2 text-sm text-white/70 border-b border-white/30">
+            <div class="col-span-1">Role</div>
+            <div class="col-span-3">Name</div>
+            <div class="col-span-2">Slack</div>
+            <div class="col-span-3">Details</div>
+            <div class="col-span-3">Signed Up</div>
+          </div>
+
+          <% if @signups.any? %>
+            <% @signups.each do |signup| %>
+              <div class="grid grid-cols-1 md:grid-cols-12 px-3 py-2 gap-1 md:gap-0 border-b border-white/30 last:border-0 items-center">
+                <div class="col-span-1">
+                  <span class="md:hidden text-white/50 text-sm">Role: </span>
+                  <% if signup.organizer? %>
+                    <span class="text-bp-warning text-sm font-medium">org</span>
+                  <% else %>
+                    <span class="text-bp-success text-sm font-medium">att</span>
+                  <% end %>
+                </div>
+                <div class="col-span-3 font-medium">
+                  <span class="md:hidden text-white/50 text-sm">Name: </span><%= signup.name %>
+                </div>
+                <div class="col-span-2">
+                  <span class="md:hidden text-white/50 text-sm">Slack: </span>
+                  <% if signup.user&.slack_id.present? %>
+                    <span class="inline-flex items-center gap-1.5">
+                      <span class="inline-block size-2 rounded-full bg-bp-success"></span>
+                      <span class="text-sm text-white/70">In Slack</span>
+                    </span>
+                  <% else %>
+                    <span class="inline-flex items-center gap-1.5">
+                      <span class="inline-block size-2 rounded-full bg-white/30"></span>
+                      <span class="text-sm text-white/50">Not in Slack</span>
+                    </span>
+                  <% end %>
+                </div>
+                <div class="col-span-3 text-sm text-white/70 truncate">
+                  <span class="md:hidden text-white/50">Details: </span>
+                  <% detail = signup.organizer? ? signup.ideas : signup.attendee_activities %>
+                  <% if detail.present? %>
+                    <span title="<%= h detail %>"><%= truncate(detail, length: 40) %></span>
+                  <% else %>
+                    &ndash;
+                  <% end %>
+                </div>
+                <div class="col-span-3 text-sm">
+                  <span class="md:hidden text-white/50">Signed up: </span><%= signup.created_at.strftime("%b %d, %Y %H:%M") %>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="px-4 py-6 text-center text-white/70">No signups yet.</div>
+          <% end %>
+        </div>
+      </details>
+    <% end %>
+
+  </div>
+</section>

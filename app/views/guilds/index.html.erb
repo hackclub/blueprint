@@ -19,6 +19,14 @@
       </div>
     </div>
 
+    <% if user_logged_in? && current_user.guild_signups.exists? %>
+      <% is_org = current_user.guild_signups.exists?(role: :organizer) %>
+      <div class="border-2 border-bp-warning/50 bg-bp-darker/50 p-4 rounded-none flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        <p class="text-white/90"><%= is_org ? "You're a guild organizer! Manage your guild from the dashboard." : "You're signed up for a guild! View your guild's info on the dashboard." %></p>
+        <%= render "shared/button", text: "Open Dashboard", url: guild_dashboard_path, variant: :warning, class: "py-1.5 text-base" %>
+      </div>
+    <% end %>
+
     <% unless user_logged_in? %>
       <%= render 'guilds/signup_form' %>
     <% end %>

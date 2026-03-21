@@ -61,11 +61,23 @@
     </div>
   </div>
 
-  <% if @guild.description.present? %>
-    <div class="p-4 border-2 border-white rounded-none space-y-2">
-      <p class="text-lg font-bold">Description</p>
-      <p class="text-white/90"><%= @guild.description %></p>
-    </div>
+  <% if @guild.announcements.any? %>
+    <details class="group border-2 border-white rounded-none">
+      <summary class="flex items-center justify-between cursor-pointer list-none p-3 text-lg font-bold border-b-2 border-white group-open:border-white group-[&:not([open])]:border-transparent">
+        Announcements (<%= @guild.announcements.size %>)
+        <span class="text-white/50 group-open:rotate-180 transition-transform duration-200">&#9660;</span>
+      </summary>
+      <div class="p-4 space-y-2">
+        <% @guild.announcements.each do |ann| %>
+          <div class="p-3 bg-bp-darker border border-white/15 space-y-1">
+            <p class="text-white/90 text-sm"><%= simple_format(ann["body"], {}, wrapper_tag: "span") %></p>
+            <p class="text-white/40 text-xs">
+              <%= ann["author_name"] %> &middot; <%= Time.parse(ann["posted_at"]).strftime("%b %d, %Y at %l:%M %p") %>
+            </p>
+          </div>
+        <% end %>
+      </div>
+    </details>
   <% end %>
 
   <div class="space-y-4">

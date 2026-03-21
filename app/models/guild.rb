@@ -104,6 +104,28 @@ class Guild < ApplicationRecord
     AirtableSync.find_by(record_identifier: "Guild##{id}")&.airtable_id
   end
 
+  MAX_ANNOUNCEMENTS = 20
+  def announcements
+    return [] if description.blank?
+    parsed = JSON.parse(description)
+    parsed.is_a?(Array) ? parsed : []
+  rescue JSON::ParserError
+    [ { "body" => description, "posted_at" => updated_at.iso8601, "author_name" => "Organizer" } ]
+  end
+
+  def add_announcement!(body, author_name)
+    entries = announcements
+    entries.unshift({ "body" => body, "posted_at" => Time.current.iso8601, "author_name" => author_name })
+    entries = entries.first(MAX_ANNOUNCEMENTS)
+    update_column(:description, entries.to_json)
+  end
+
+  def delete_announcement!(posted_at)
+    entries = announcements
+    entries.reject! { |a| a["posted_at"] == posted_at }
+    update_column(:description, entries.any? ? entries.to_json : nil)
+  end
+
   MAIN_CHANNEL_ID = "C0ALTV3HBGB"
 
   def self.update_main_channel_description

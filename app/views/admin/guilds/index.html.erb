@@ -41,6 +41,35 @@
     </div>
   <% end %>
 
+  <%
+    all_announcements = Guild.where.not(description: [nil, ""]).flat_map do |guild|
+      guild.announcements.map { |ann| ann.merge("guild_id" => guild.id, "guild_city" => guild.city, "guild_country" => guild.country) }
+    end.sort_by { |a| a["posted_at"] }.reverse
+  %>
+  <% if all_announcements.any? %>
+    <details class="group border-2 border-white rounded-none">
+      <summary class="flex items-center justify-between cursor-pointer list-none p-3 text-lg font-bold border-b-2 border-white group-open:border-white group-[&:not([open])]:border-transparent">
+        Guild Announcements (<%= all_announcements.size %>)
+        <span class="text-white/50 group-open:rotate-180 transition-transform duration-200">&#9660;</span>
+      </summary>
+      <div class="divide-y divide-white/30">
+        <% all_announcements.each do |ann| %>
+          <div class="px-3 py-2 space-y-1">
+            <div class="flex items-baseline justify-between gap-3">
+              <p class="text-white/90 text-sm"><%= simple_format(ann["body"], {}, wrapper_tag: "span") %></p>
+              <%= link_to admin_guild_path(ann["guild_id"]), class: "shrink-0 text-sm underline decoration-white/30 underline-offset-2 hover:decoration-white" do %>
+                <%= ann["guild_city"] %>, <%= ann["guild_country"] %>
+              <% end %>
+            </div>
+            <p class="text-white/40 text-xs">
+              Posted by <%= ann["author_name"] %> &middot; <%= Time.parse(ann["posted_at"]).strftime("%b %d, %Y at %l:%M %p") %>
+            </p>
+          </div>
+        <% end %>
+      </div>
+    </details>
+  <% end %>
+
   <div class="border-2 border-white rounded-none">
     <div class="grid grid-cols-12 p-3 text-lg border-b-2 border-white">
       <div class="col-span-1">ID</div>

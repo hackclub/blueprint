@@ -93,6 +93,29 @@
               <% else %>
                 <%= submenu_content %>
               <% end %>
+            <% elsif is_guilds && user_logged_in? && current_user.guild_signups.exists? %>
+              <%
+                has_new_announcement = Rails.cache.fetch([current_user.id, "guild_new_announcement", session[:guild_dashboard_last_seen]], expires_in: 2.minutes) do
+                  guild_signup = current_user.guild_signups.order(role: :asc).first
+                  guild_for_nav = guild_signup&.guild
+                  nav_announcements = guild_for_nav&.announcements || []
+                  last_seen = session[:guild_dashboard_last_seen]
+                  nav_announcements.any? && (!last_seen || nav_announcements.any? { |a| Time.parse(a["posted_at"]) > Time.parse(last_seen) rescue false })
+                end
+              %>
+              <div class="flex flex-col btn btn-nav text-base submenu p-0 gap-0 bg-transparent! inset-shadow-none!" data-nav-target="link" data-nav-match="prefix" data-nav-base="/guilds">
+                <%= render "shared/button", url: path, text: name, icon: "icons/micro-users.svg", icon_position: :left, icon_class: "size-4", variant: :none, class: "text-base p-0 hover:bg-bp-lighter w-full submenu-btn #{button_classes}" %>
+                <ul data-nav-target="submenu" data-submenu-base="/guilds" class="flex-col w-full pb-3 text-sm text-center hidden">
+                  <li class="w-full">
+                    <a href="<%= guild_dashboard_path %>" class="px-2 hover:bg-bp-lighter motion-safe:transition-colors block py-0.5 relative" data-nav-target="sublink" data-nav-match="exact">
+                      Dashboard
+                      <% if has_new_announcement %>
+                        <span class="inline-block size-2 rounded-full bg-bp-warning ml-1 animate-pulse"></span>
+                      <% end %>
+                    </a>
+                  </li>
+                </ul>
+              </div>
             <% else %>
               <% if is_disabled %>
                 <div data-controller="tooltip" data-tooltip-text-value="Enable expert mode to access" class="w-full">

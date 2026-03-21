@@ -118,6 +118,11 @@ Rails.application.routes.draw do
   # map data for guilds
   get "guilds/map_data", to: "guilds#map_data"
 
+  # Guilds dashboards
+  get "guilds/dashboard", to: "guilds#dashboard", as: :guild_dashboard
+  post "guilds/dashboard/announce", to: "guilds#create_announcement", as: :guild_create_announcement
+  delete "guilds/dashboard/announce", to: "guilds#delete_announcement", as: :guild_delete_announcement
+
   # Authentication
   get "auth/login" => "auth#index", as: :login
   get "auth/slack" => "auth#new", as: :slack_login
