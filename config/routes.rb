@@ -87,6 +87,9 @@ end
 Rails.application.routes.draw do
   post "/slack/commands", to: "slack_commands#handle"
   resources :guild_signups, only: [ :new, :create ]
+  post "guild_signups/signup", to: "guild_signups#signup", as: :guild_signups_signup
+  post "guild_signups/verify", to: "guild_signups#verify", as: :guild_signups_verify
+  get "guild_signups/success", to: "guild_signups#success", as: :guild_signups_success
 
   resources :shop_items, only: [ :new, :create ]
   resources :shop_orders, only: [ :index, :new, :create ]

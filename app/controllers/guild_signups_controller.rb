@@ -1,9 +1,87 @@
 class GuildSignupsController < ApplicationController
-  before_action :authenticate_user!
-  rate_limit to: 5, within: 10.minutes, only: :create, with: -> { redirect_to guilds_path, alert: "You're signing up too fast. Please try again later." }
+  skip_before_action :authenticate_user!, only: %i[signup verify success]
+  skip_before_action :redirect_to_age, only: %i[signup verify success]
+  skip_before_action :redirect_adults, only: %i[signup verify success]
+  before_action :authenticate_user!, only: %i[new create]
+  rate_limit to: 5, within: 10.minutes, only: %i[create signup verify], with: -> { redirect_to guilds_path, alert: "You're signing up too fast. Please try again later." }
 
   def new
     @signup = GuildSignup.new
+  end
+
+  def success
+    @guild = Guild.find_by(id: session[:guild_signup_success_guild_id])
+    unless @guild && current_user
+      redirect_to guilds_path
+    end
+  end
+
+  def signup
+    email = params[:guild_signup][:email].to_s.strip.downcase
+    birthday = params[:guild_signup][:birthday]
+
+    if email.blank? || !(email =~ URI::MailTo::EMAIL_REGEXP)
+      redirect_to guilds_path(anchor: "signup-form"), alert: "Please enter a valid email address."
+      return
+    end
+
+    if birthday.blank?
+      redirect_to guilds_path(anchor: "signup-form"), alert: "Please enter your birthday."
+      return
+    end
+
+    if params.dig(:guild_signup, :role) == "organizer"
+      redirect_to guilds_path(anchor: "signup-form"), alert: "You must be logged in to sign up as an organizer."
+      return
+    end
+
+    unless AllowedEmail.allowed?(email)
+      redirect_to guilds_path(anchor: "signup-form"), alert: "You do not have access."
+      return
+    end
+
+    otp = OneTimePassword.create!(email: email, request_ip: request.remote_ip)
+    if otp.send!
+      session[:guild_signup_email] = email
+      session[:guild_signup_birthday] = birthday
+      session[:guild_signup_data] = params[:guild_signup].permit(:role, :name, :country, :ideas, :attendee_activities, :city).to_h
+      redirect_to guilds_path(otp_sent: true, anchor: "signup-form")
+    else
+      redirect_to guilds_path(anchor: "signup-form"), alert: "Failed to send verification code. Please try again."
+    end
+  end
+
+  def verify
+    email = session[:guild_signup_email].to_s.strip.downcase
+    birthday_raw = session[:guild_signup_birthday]
+    signup_data = session[:guild_signup_data] || {}
+    otp = params[:otp].to_s.strip
+
+    if email.blank?
+      redirect_to guilds_path(anchor: "signup-form"), alert: "Please start by entering your email."
+      return
+    end
+
+    unless OneTimePassword.valid?(otp, email, request_ip: request.remote_ip)
+      redirect_to guilds_path(otp_sent: true, anchor: "signup-form"), alert: "Invalid code. Please try again."
+      return
+    end
+
+    %i[guild_signup_email guild_signup_birthday guild_signup_data].each { |k| session.delete(k) }
+
+    referrer_id = cookies[:referrer_id]&.to_i
+    user = User.find_or_create_from_email(email, referrer_id: referrer_id)
+    cookies.delete(:referrer_id) if referrer_id
+
+    reset_session
+    session[:user_id] = user.id
+
+    if user.birthday.nil? && birthday_raw.present?
+      result = apply_birthday(user, birthday_raw)
+      return if result == :redirected
+    end
+
+    create_signup_for(user, signup_data)
   end
 
   def create
@@ -165,5 +243,65 @@ class GuildSignupsController < ApplicationController
     slack_client.chat_postMessage(channel: ENV["GUILDS_ADMIN_CHANNEL"], text: message)
   rescue => e
     Rails.logger.error "Failed to notify admin channel: #{e.message}"
+  end
+
+  def apply_birthday(user, birthday_raw)
+    begin
+      birthday_date = Date.parse(birthday_raw.to_s)
+    rescue ArgumentError
+      redirect_to guilds_path(anchor: "signup-form"), alert: "Invalid date format."
+      return :redirected
+    end
+
+    age = ((Time.zone.now - birthday_date.to_time) / 1.year.seconds).floor
+
+    if age < 13
+      user.update!(birthday: birthday_date, is_banned: true, ban_type: :age)
+      redirect_to sorry_path, alert: "You must be at least 13 years old to use Blueprint."
+      return :redirected
+    end
+
+    if age > 18
+      user.update!(birthday: birthday_date)
+      redirect_to adult_path
+      return :redirected
+    end
+
+    user.update!(birthday: birthday_date)
+    nil
+  end
+
+  def create_signup_for(user, signup_data)
+    raw_city = signup_data["city"]&.strip
+    raw_country = signup_data["country"]&.strip
+
+    if raw_city.blank?
+      redirect_to guilds_path(anchor: "signup-form"), alert: "City can't be blank."
+      return
+    end
+
+    guild = find_or_create_guild(raw_city, raw_country)
+    notify_admin_channel(@pending_admin_message) if @pending_admin_message.present?
+
+    role = %w[organizer attendee].include?(signup_data["role"]) ? signup_data["role"] : "attendee"
+
+    signup = user.guild_signups.build(
+      guild: guild,
+      role: role,
+      name: signup_data["name"].presence || user.display_name,
+      email: user.email,
+      country: guild.country,
+      ideas: signup_data["ideas"],
+      attendee_activities: signup_data["attendee_activities"],
+      skip_slack_validation: true,
+      skip_admin_validations: true
+    )
+
+    if signup.save
+      session[:guild_signup_success_guild_id] = guild.id
+      redirect_to guild_signups_success_path
+    else
+      redirect_to guilds_path(anchor: "signup-form"), alert: signup.errors.full_messages.join(", ")
+    end
   end
 end

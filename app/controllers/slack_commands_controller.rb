@@ -529,11 +529,6 @@ class SlackCommandsController < ApplicationController
     guild = Guild.find_by(slack_channel_id: channel_id)
     return "This command must be used in a guild channel." unless guild
 
-    user = User.find_by(slack_id: invoker_slack_id)
-    unless user && guild.guild_signups.exists?(user: user, role: :organizer)
-      return "Only organizers can use this command."
-    end
-
     signups = guild.guild_signups.where.not(attendee_activities: [ nil, "" ])
     if signups.empty?
       return "No attendee ideas have been submitted for *#{guild.name}* yet."
