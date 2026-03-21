@@ -104,13 +104,15 @@ class GuildSignupsController < ApplicationController
 
       @signup = current_user.guild_signups.build(signup_params)
       @signup.guild = @guild
+      @signup.skip_slack_validation = true
 
       @signup.save || raise(ActiveRecord::Rollback)
     end
 
     if saved
       notify_admin_channel(@pending_admin_message) if @pending_admin_message.present?
-      redirect_to guilds_path, notice: "Thanks for signing up! We'll be in touch soon."
+      session[:guild_signup_success_guild_id] = @guild.id
+      redirect_to guild_signups_success_path
     else
       errors = @signup&.errors&.full_messages&.join(", ")
       guild_note = @guild_is_new ? " (new guild creation for #{raw_city} was rolled back)" : " (existing guild: #{@guild&.city})"
@@ -198,7 +200,7 @@ class GuildSignupsController < ApplicationController
           end
         end
       else
-        guild = Guild.open.near([ geocoded.latitude, geocoded.longitude ], 10, units: :km).first
+        guild = Guild.open.near([ geocoded.latitude, geocoded.longitude ], 15, units: :km).first
         guild ||= Guild.open.where("LOWER(city) = ?", canonical_city.downcase)
                        .where("LOWER(country) = ?", canonical_country.downcase).first
         guild ||= find_merge_target(canonical_city, canonical_country)

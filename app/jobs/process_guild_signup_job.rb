@@ -113,7 +113,7 @@ class ProcessGuildSignupJob < ApplicationJob
         notify_admin(admin_channel, "<@#{user.slack_id}> is a multi-channel guest and cannot be invited to <##{guild.slack_channel_id}> (role: #{signup.role}). They have been DM'd instructions to become a full member.")
         slack_client.chat_postMessage(
           channel: user.slack_id,
-          text: "Hey! We couldn't add you to your guild's Slack channel because your account is a multi-channel guest. To get promoted to a full member, follow the instructions in this post: https://hackclub.slack.com/archives/C0A9PMV58R5/p1770294664806709"
+          text: "Hey! We couldn't add you to your guild's Slack channel (<##{guild.slack_channel_id}>) because your account is a multi-channel guest. To get promoted to a full member, follow the instructions in this post: https://hackclub.slack.com/archives/C0A9PMV58R5/p1770294664806709\n\nOnce you're a full member, you'll be able to join <##{guild.slack_channel_id}>!"
         ) rescue nil
       rescue Slack::Web::Api::Errors::SlackError => e
         Rails.logger.error "Failed to invite user #{user.id} to channel #{guild.slack_channel_id}: #{e.message}"
