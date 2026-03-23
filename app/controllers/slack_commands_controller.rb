@@ -218,8 +218,6 @@ class SlackCommandsController < ApplicationController
 
     guild = find_guild(city)
     return "No guild found for \"#{city}\"." unless guild
-    return "#{guild.name} is already closed." if guild.closed?
-
     guild_name = guild.name
     had_channel = guild.slack_channel_id.present?
 
@@ -236,7 +234,7 @@ class SlackCommandsController < ApplicationController
       end
     end
 
-    guild.update!(status: :closed)
+    guild.update!(status: :closed, needs_review: false)
 
     "Closed *#{guild_name}*.#{had_channel ? ' Channel archived.' : ''}"
   end
@@ -256,7 +254,7 @@ class SlackCommandsController < ApplicationController
 
     GuildMergeJob.perform_later(source.id, target.id, response_url)
 
-    { response_type: "in_channel", text: "Merging *#{source.name}* into *#{target.name}*… I'll post the results here when it's done." }
+    { response_type: "in_channel", text: "Merging *#{source.name}* into *#{target.name}*…" }
   end
 
   def guild_change_role_message(text)
