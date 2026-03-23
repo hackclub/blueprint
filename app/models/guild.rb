@@ -47,6 +47,7 @@ class Guild < ApplicationRecord
     "https://blueprint.hackclub.com/guilds/invite/#{invite_slug}"
   end
 
+  before_save :clear_needs_review_if_closed
   after_validation :geocode, if: ->(obj) { obj.city.present? && obj.city_changed? && obj.latitude.blank? }
   after_commit :sync_to_airtable, on: [ :create, :update ]
 
@@ -61,7 +62,7 @@ class Guild < ApplicationRecord
                           .uniq
 
     mentions = organizer_slack_ids.map { |id| "<@#{id}>" }.join(", ")
-    topic = "Build Guild for #{city}! Organizers: #{mentions}"
+    topic = "Build Guild for #{city}! Organizers: #{mentions} | Invite: #{invite_url}"
 
     slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
     slack_client.conversations_setTopic(channel: slack_channel_id, topic: topic)
@@ -91,6 +92,10 @@ class Guild < ApplicationRecord
       "needs_review" => :needs_review,
       "created_at" => :created_at
     }
+  end
+
+  def clear_needs_review_if_closed
+    self.needs_review = false if status_changed? && closed?
   end
 
   def sync_to_airtable
