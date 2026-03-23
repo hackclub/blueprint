@@ -86,6 +86,13 @@ class Admin::BuildReviewsController < Admin::ApplicationController
                               .select("users.*, COUNT(build_reviews.id) AS reviews_count")
                               .order("reviews_count DESC")
                               .limit(10)
+
+    @top_reviewers_payouts = User.joins(:build_reviews)
+                                 .where("build_reviews.created_at >= ?", Date.new(2026, 3, 23))
+                                 .group("users.id")
+                                 .select("users.*, COUNT(build_reviews.id) AS reviews_count")
+                                 .order("reviews_count DESC")
+                                 .limit(10)
   end
 
   def show
