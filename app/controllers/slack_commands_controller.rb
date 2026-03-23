@@ -41,7 +41,7 @@ class SlackCommandsController < ApplicationController
     when "/guild-delete"
       { response_type: "in_channel", text: guild_delete_message(params[:text]) }
     when "/guild-merge"
-      { response_type: "in_channel", text: guild_merge_message(params[:text]) }
+      guild_merge_async(params[:text], params[:response_url])
     when "/guild-change-role"
       { response_type: "in_channel", text: guild_change_role_message(params[:text]) }
     when "/guild-relocate"
@@ -241,75 +241,22 @@ class SlackCommandsController < ApplicationController
     "Closed *#{guild_name}*.#{had_channel ? ' Channel archived.' : ''}"
   end
 
-  def guild_merge_message(text)
+  def guild_merge_async(text, response_url)
     cities = text.to_s.split(">>").map(&:strip)
-    return "Usage: `/guild-merge <source city> >> <target city>`" unless cities.length == 2
+    return { response_type: "ephemeral", text: "Usage: `/guild-merge <source city> >> <target city>`" } unless cities.length == 2
 
     source = find_guild(cities[0])
     target = find_guild(cities[1])
 
-    return "No guild found for \"#{cities[0]}\"." unless source
-    return "No guild found for \"#{cities[1]}\"." unless target
-    return "Cannot merge a guild into itself." if source.id == target.id
+    return { response_type: "ephemeral", text: "No guild found for \"#{cities[0]}\"." } unless source
+    return { response_type: "ephemeral", text: "No guild found for \"#{cities[1]}\"." } unless target
+    return { response_type: "ephemeral", text: "Cannot merge a guild into itself." } if source.id == target.id
 
     Rails.logger.info "[SlackBot] /guild-merge source_id=#{source.id} (#{source.city}) -> target_id=#{target.id} (#{target.city}) by user=#{params[:user_id]}"
 
-    moved = 0
-    skipped = 0
-    moved_user_ids = []
-    source.guild_signups.to_a.each do |signup|
-      if target.guild_signups.exists?(user_id: signup.user_id)
-        signup.destroy!
-        skipped += 1
-      else
-        signup.update!(guild_id: target.id)
-        moved_user_ids << signup.user_id
-        moved += 1
-      end
-    end
+    GuildMergeJob.perform_later(source.id, target.id, response_url)
 
-    source.update!(status: :closed)
-    Rails.logger.info "[SlackBot] Merge complete: moved=#{moved} skipped=#{skipped} source_id=#{source.id} target_id=#{target.id}"
-
-    # Invite moved users to the target guild's Slack channel
-    invite_failures = 0
-    if target.slack_channel_id.present? && moved_user_ids.any?
-      slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
-      User.where(id: moved_user_ids).where.not(slack_id: [ nil, "" ]).each do |user|
-        begin
-          slack_client.conversations_invite(channel: target.slack_channel_id, users: user.slack_id)
-          Rails.logger.info "[SlackBot] Invited user=#{user.id} (slack=#{user.slack_id}) to channel=#{target.slack_channel_id}"
-        rescue Slack::Web::Api::Errors::AlreadyInChannel
-          Rails.logger.info "[SlackBot] User=#{user.id} already in channel=#{target.slack_channel_id}"
-        rescue Slack::Web::Api::Errors::UserIsRestricted
-          Rails.logger.warn "[SlackBot] User=#{user.id} is a multi-channel guest, cannot invite to merged channel=#{target.slack_channel_id}"
-          invite_failures += 1
-        rescue Slack::Web::Api::Errors::SlackError => e
-          Rails.logger.error "[SlackBot] Failed to invite user=#{user.id} to merged channel=#{target.slack_channel_id}: #{e.message}"
-          invite_failures += 1
-        end
-      end
-    end
-
-    # Notify the old channel about the merge
-    if source.slack_channel_id.present?
-      slack_client ||= Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
-      target_channel_mention = target.slack_channel_id.present? ? "<##{target.slack_channel_id}>" : "*#{target.name}*"
-      merge_message = "This guild has been merged into #{target_channel_mention}. " \
-        "If you need help covering travel to the new guild, https://gas.hackclub.com/ can help!"
-      begin
-        slack_client.chat_postMessage(channel: source.slack_channel_id, text: merge_message, link_names: true)
-      rescue Slack::Web::Api::Errors::SlackError => e
-        Rails.logger.error "[SlackBot] Failed to notify source channel=#{source.slack_channel_id} about merge: #{e.message}"
-      end
-    end
-
-    # Update the target channel's topic with the new organizer list
-    target.update_slack_topic
-
-    result = "Merged *#{source.name}* into *#{target.name}*. Moved #{moved} signup(s), removed #{skipped} duplicate(s). Source guild marked as closed."
-    result += " #{invite_failures} user(s) could not be invited to <##{target.slack_channel_id}>." if invite_failures > 0
-    result
+    { response_type: "in_channel", text: "Merging *#{source.name}* into *#{target.name}*… I'll post the results here when it's done." }
   end
 
   def guild_change_role_message(text)
