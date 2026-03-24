@@ -75,7 +75,7 @@ module StructuredDataHelper
         "@id" => project_url(project)
       }
     }
-    data["image"] = url_for(project.display_banner) if project.display_banner.attached?
+    data["image"] = url_for(project.display_banner) if project.display_banner
     data
   end
 
