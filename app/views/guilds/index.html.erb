@@ -145,6 +145,16 @@
                 var b = document.createElement('b');
                 b.appendChild(document.createTextNode(g.city));
                 popupEl.appendChild(b);
+                if (g.website_url) {
+                  popupEl.appendChild(document.createElement('br'));
+                  var siteLink = document.createElement('a');
+                  siteLink.href = g.website_url;
+                  siteLink.target = '_blank';
+                  siteLink.rel = 'noopener noreferrer';
+                  siteLink.style.cssText = 'color: #b8860b; font-weight: bold; font-size: 0.85em;';
+                  siteLink.textContent = 'Visit website';
+                  popupEl.appendChild(siteLink);
+                }
                 popupEl.appendChild(document.createElement('br'));
                 var link = document.createElement('a');
                 link.href = '#signup-form';
@@ -156,16 +166,6 @@
                   prefillGuild(this.dataset.city, this.dataset.country);
                 });
                 popupEl.appendChild(link);
-                if (g.website_url) {
-                  popupEl.appendChild(document.createElement('br'));
-                  var siteLink = document.createElement('a');
-                  siteLink.href = g.website_url;
-                  siteLink.target = '_blank';
-                  siteLink.rel = 'noopener noreferrer';
-                  siteLink.style.cssText = 'color: #b8860b; font-size: 0.85em;';
-                  siteLink.textContent = 'Visit website';
-                  popupEl.appendChild(siteLink);
-                }
                 if (g.slack_channel_id) {
                   popupEl.appendChild(document.createElement('br'));
                   var slackLink = document.createElement('a');

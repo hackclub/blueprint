@@ -111,7 +111,8 @@ class Guild < ApplicationRecord
 
   GUILD_WEBSITES = {
     "Delhi" => "https://buildguilddelhi.netlify.app/",
-    "Dubai" => "https://build-guilds-dubai.vercel.app/"
+    "Dubai" => "https://build-guilds-dubai.vercel.app/",
+    "Lucknow" => "https://lucknow-build-guild.vercel.app/"
   }.freeze
 
   def website_url
