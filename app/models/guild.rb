@@ -109,6 +109,15 @@ class Guild < ApplicationRecord
     AirtableSync.find_by(record_identifier: "Guild##{id}")&.airtable_id
   end
 
+  GUILD_WEBSITES = {
+    "Delhi" => "https://buildguilddelhi.netlify.app/",
+    "Dubai" => "https://build-guilds-dubai.vercel.app/"
+  }.freeze
+
+  def website_url
+    GUILD_WEBSITES[city]
+  end
+
   MAX_ANNOUNCEMENTS = 20
   def announcements
     return [] if description.blank?

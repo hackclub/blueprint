@@ -70,7 +70,8 @@ class GuildsController < ApplicationController
         lat: g.latitude,
         lng: g.longitude,
         signup_count: g.guild_signups.size,
-        slack_channel_id: g.slack_channel_id
+        slack_channel_id: g.slack_channel_id,
+        website_url: g.website_url
       }
     }
   end

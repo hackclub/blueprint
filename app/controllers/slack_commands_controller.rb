@@ -61,6 +61,7 @@ class SlackCommandsController < ApplicationController
       { response_type: "in_channel", text: guild_set_channel_message(params[:text]) }
     when "/guild-archive-closed"
       guild_archive_closed_async(params[:response_url])
+
     when "/guild-ideas"
       { response_type: "ephemeral", text: guild_ideas_message(params[:user_id], params[:channel_id]) }
     else
