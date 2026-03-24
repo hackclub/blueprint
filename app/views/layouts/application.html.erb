@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html>
-  <head lang="en">
+<html lang="en">
+  <head>
     <title id="document-title"><%= content_for(:title) || "Blueprint" %></title>
     <meta name="description" id="meta-description" content="<%= content_for?(:description) ? yield(:description) : "Learn and build cool hardware projects and get funding to make them real! Ends March 31, 2026." %>">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -18,12 +18,14 @@
     <%= yield :og_tags if content_for?(:og_tags) %>
     <meta name="twitter:card" content="summary_large_image">
     
-    <link rel="canonical" href="<%= request.original_url %>">
+    <link rel="canonical" href="<%= request.base_url + request.path %>">
     
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
+
+    <%= jsonld_tag(organization_jsonld) %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>

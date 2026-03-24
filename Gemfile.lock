@@ -519,6 +519,8 @@ GEM
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
     sin_lru_redux (2.5.2)
+    sitemap_generator (6.3.0)
+      builder (~> 3.0)
     skylight (7.0.0)
       activesupport (>= 7.1.0)
     slack-ruby-client (3.0.0)
@@ -673,6 +675,7 @@ DEPENDENCIES
   selenium-webdriver
   sentry-rails
   sentry-ruby
+  sitemap_generator
   skylight
   slack-ruby-client (~> 3.0)
   solid_cable

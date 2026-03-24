@@ -1,1 +1,18 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+User-agent: *
+Allow: /
+
+Disallow: /auth/
+Disallow: /admin/
+Disallow: /home
+Disallow: /sorry
+Disallow: /toolbag
+Disallow: /users/me
+Disallow: /api/
+Disallow: /rails/
+Disallow: /slack/
+Disallow: /r/
+Disallow: /countdown
+Disallow: /amd
+Disallow: /adult
+
+Sitemap: https://blueprint.hackclub.com/sitemap.xml

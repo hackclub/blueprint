@@ -10,6 +10,9 @@
   <meta property="article:author" content="<%= user_url(@project.user) %>">
   <meta property="article:section" content="Hardware Projects">
 <% end %>
+<% content_for :head do %>
+  <%= jsonld_tag(project_article_jsonld(@project)) %>
+<% end %>
 
 <script defer src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 

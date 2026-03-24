@@ -52,6 +52,8 @@ class MarkdownController < ApplicationController
   end
 
   def render_from_base(base, slug, config, url_prefix = nil)
+    @section_prefix = url_prefix
+    @section_name = config[:suffix] || "Blueprint"
     slug = slug.to_s
     slug = "" if slug.blank?
     not_found unless valid_slug?(slug)

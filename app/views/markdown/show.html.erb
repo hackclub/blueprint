@@ -1,6 +1,18 @@
 <%# Page-level SEO %>
 <% content_for :title, @page_title if @page_title.present? %>
 <% content_for :description, @page_description if @page_description.present? %>
+<% if @section_prefix.present? && @page_title.present? %>
+  <% breadcrumbs = [
+    { name: "Home", url: "https://blueprint.hackclub.com/" },
+    { name: @section_name, url: "https://blueprint.hackclub.com#{@section_prefix}" }
+  ] %>
+  <% if @page_title != MarkdownController::SECTION_CONFIG[@section_prefix.delete("/")]&.dig(:index_title) %>
+    <% breadcrumbs << { name: @guide_meta&.dig(:title).presence || @title, url: "https://blueprint.hackclub.com#{request.path}" } %>
+  <% end %>
+  <% content_for :head do %>
+    <%= jsonld_tag(breadcrumb_jsonld(breadcrumbs)) %>
+  <% end %>
+<% end %>
 
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 

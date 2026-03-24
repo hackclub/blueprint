@@ -117,6 +117,9 @@ gem "active_storage_validations"
 
 gem "nokogiri"
 
+# Sitemap generation for SEO
+gem "sitemap_generator"
+
 # LLM integration for AI reviewer
 gem "ruby_llm"
 
