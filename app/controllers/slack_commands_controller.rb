@@ -16,6 +16,7 @@ class SlackCommandsController < ApplicationController
     /guild-add-user
     /guild-remove-user
     /guild-set-channel
+    /guild-archive-closed
   ].freeze
 
   def handle
@@ -58,6 +59,8 @@ class SlackCommandsController < ApplicationController
       { response_type: "in_channel", text: guild_invite_message(params[:text], params[:user_id], params[:channel_id]) }
     when "/guild-set-channel"
       { response_type: "in_channel", text: guild_set_channel_message(params[:text]) }
+    when "/guild-archive-closed"
+      guild_archive_closed_async(params[:response_url])
     when "/guild-ideas"
       { response_type: "ephemeral", text: guild_ideas_message(params[:user_id], params[:channel_id]) }
     else
@@ -468,6 +471,18 @@ class SlackCommandsController < ApplicationController
     "Updated *#{guild.name}* slack channel from `#{old_channel || 'none'}` to `#{channel_id}`."
   rescue => e
     "Failed to update channel: #{e.message}"
+  end
+
+  def guild_archive_closed_async(response_url)
+    guilds = Guild.where(status: :closed).where.not(slack_channel_id: [nil, ""])
+
+    if guilds.none?
+      return { response_type: "ephemeral", text: "No closed guilds with Slack channels found." }
+    end
+
+    GuildArchiveClosedChannelsJob.perform_later(response_url)
+
+    { response_type: "in_channel", text: "Archiving channels for #{guilds.count} closed guild(s)…" }
   end
 
   def guild_ideas_message(invoker_slack_id, channel_id)
