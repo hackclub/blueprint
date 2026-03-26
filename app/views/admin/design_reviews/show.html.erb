@@ -286,7 +286,8 @@
               ["Low hour devboard", "This project follows our devboard guide which typically takes 15-20 hours to complete. This project reported below this range so I am deflating less."],
               ["Keyboard", "This project is a typical full-sized keyboard with a PCB and case which takes around 15-20 hours to complete. I am deflating a little bit just to be safe."],
               ["Generic low", "This project has a very high quality journal and all of the hours are logged. I am deflating this just to be safe."],
-              ["Generic high", "This project has a very high quality and is shipped. However, some of the journal entries are long and don't make sense so I am deflating it more"]
+              ["Generic high", "This project has a very high quality and is shipped. However, some of the journal entries are long and don't make sense so I am deflating it more"],
+              ["Small", "This is a relatively small project and not that crazy. It seems to be one of the users first and is definitely shipped. Because of that, I am approving regardless."]
             ].each do |label, text| %>
               <label class="flex items-center gap-2 px-3 py-1.5 rounded border border-white/20 cursor-pointer hover:bg-white/10 transition-colors has-[:checked]:bg-bp-success/20 has-[:checked]:border-bp-success">
                 <input type="checkbox" class="accent-bp-success"
@@ -313,7 +314,8 @@
               ["Optimize BOM", "The parts list for this project can be cost optimized. Please look into alternative veendors for your parts. Please read this to help: https://blueprint.hackclub.com/resources/parts-sourcing."],
               ["Missing PCB source", "This is a PCB project but you seem to be missing some or all of the required PCB files such as .kicad_pcb, .kicad_pro, .kicad_sch, and gerbers. Please read the submission guidelines at https://blueprint.hackclub.com/about/submission-guidelines."],
               ["Missing CAD files", "This project has CAD but seems to be missing some or all of the required CAD files such as .step, .f3d, etc. Please read the submission guidelines before you resubmit. https://blueprint.hackclub.com/about/submission-guidelines."],
-              ["Missing/Bad ReadME", "Please make a more polished ReadME.md on your GitHub. Your ReadMe should include multiple photos of your project, photos of the full assembly such as PCB+Case, and have a good description of your project. Please read the submission guidelines before you resubmit. https://blueprint.hackclub.com/about/submission-guidelines."]
+              ["Missing/Bad ReadME", "Please make a more polished ReadME.md on your GitHub. Your ReadMe should include multiple photos of your project, photos of the full assembly such as PCB+Case, and have a good description of your project. Please read the submission guidelines before you resubmit. https://blueprint.hackclub.com/about/submission-guidelines."],
+              ["Journal", "Your journal needs to show the step-by-step process you took in making this project. Please break your larger journal entires into multiple smaller ones, show the steps you took, and explain it better."]
             ].each do |label, text| %>
               <label class="flex items-center gap-2 px-3 py-1.5 rounded border border-white/20 cursor-pointer hover:bg-white/10 transition-colors has-[:checked]:bg-bp-warning/20 has-[:checked]:border-bp-warning">
                 <input type="checkbox" class="accent-bp-warning"
