@@ -254,7 +254,7 @@
       </div>
     <% end %>
     <fieldset <%= "disabled" if @claimed_by_other %>>
-    <%= form_with model: @build_review, url: admin_build_review_create_path(@project), method: :post, html: { class: "space-y-6", data: { controller: "build-review-calculator", build_review_calculator_project_tier_value: @project.tier || 'null', build_review_calculator_hours_since_last_review_value: @project.hours_since_last_review.round(2) } } do |f| %>
+    <%= form_with model: @build_review, url: admin_build_review_create_path(@project), method: :post, html: { class: "space-y-6", data: { controller: "build-review-calculator review-autofill", action: "submit->review-autofill#submitForm", build_review_calculator_project_tier_value: @project.tier || 'null', build_review_calculator_hours_since_last_review_value: @project.hours_since_last_review.round(2) } } do |f| %>
       <%= hidden_field_tag :ysws_type, params[:ysws_type] if params[:ysws_type].present? %>
       <%= hidden_field_tag :skipped, params[:skipped] if params[:skipped].present? %>
       <div>
@@ -290,18 +290,64 @@
         <p class="text-xs text-white/60 mt-1">Base rate: 10 tickets/hour. Multiplier adjusts the rate (e.g., 1.5× = 15 tickets/hour)</p>
       </div>
 
+      <% if current_user&.admin? %>
+        <div>
+          <p class="block text-xl font-medium mb-2">Justification Shortcuts</p>
+          <div class="flex flex-wrap gap-2">
+            <% [
+              ["High quality devboard", "This project follows our devboard guide which typically takes 15-20 hours to complete. This project however, is signifigantly higher quality so I am going to deflate only a bit and keep it above that range."],
+              ["Normal devboard", "This project follows our devboard guide which typically takes 15-20 hours to complete. This project is a normal devboard within this range so I am deflating it only a bit."],
+              ["Low hour devboard", "This project follows our devboard guide which typically takes 15-20 hours to complete. This project reported below this range so I am deflating less."],
+              ["Keyboard", "This project is a typical full-sized keyboard with a PCB and case which takes around 15-20 hours to complete. I am deflating a little bit just to be safe."],
+              ["Generic low", "This project has a very high quality journal and all of the hours are logged. I am deflating this just to be safe."],
+              ["Generic high", "This project has a very high quality and is shipped. However, some of the journal entries are long and don't make sense so I am deflating it more"]
+            ].each do |label, text| %>
+              <label class="flex items-center gap-2 px-3 py-1.5 rounded border border-white/20 cursor-pointer hover:bg-white/10 transition-colors has-[:checked]:bg-bp-success/20 has-[:checked]:border-bp-success">
+                <input type="checkbox" class="accent-bp-success"
+                  data-review-autofill-target="reasonCheckbox"
+                  data-action="change->review-autofill#updateReason"
+                  data-text="<%= text %>">
+                <span class="text-sm"><%= label %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
       <div>
         <%= f.label :reason, "Internal Reason", class: "block text-xl font-medium" %>
-        <%= f.text_area :reason, rows: 4, placeholder: "Add notes or reasons for your decision", class: "input px-3 mt-1 block w-full" %>
+        <%= f.text_area :reason, rows: 4, placeholder: "Add notes or reasons for your decision", class: "input px-3 mt-1 block w-full", data: { review_autofill_target: "reasonTextarea" } %>
       </div>
+
+      <% if current_user&.admin? %>
+        <div>
+          <p class="block text-xl font-medium mb-2">Feedback Shortcuts</p>
+          <div class="flex flex-wrap gap-2">
+            <% [
+              ["Optimize BOM", "The parts list for this project can be cost optimized. Please look into alternative veendors for your parts. Please read this to help: https://blueprint.hackclub.com/resources/parts-sourcing."],
+              ["Missing PCB source", "This is a PCB project but you seem to be missing some or all of the required PCB files such as .kicad_pcb, .kicad_pro, .kicad_sch, and gerbers. Please read the submission guidelines at https://blueprint.hackclub.com/about/submission-guidelines."],
+              ["Missing CAD files", "This project has CAD but seems to be missing some or all of the required CAD files such as .step, .f3d, etc. Please read the submission guidelines before you resubmit. https://blueprint.hackclub.com/about/submission-guidelines."],
+              ["Missing/Bad ReadME", "Please make a more polished ReadME.md on your GitHub. Your ReadMe should include multiple photos of your project, photos of the full assembly such as PCB+Case, and have a good description of your project. Please read the submission guidelines before you resubmit. https://blueprint.hackclub.com/about/submission-guidelines."]
+            ].each do |label, text| %>
+              <label class="flex items-center gap-2 px-3 py-1.5 rounded border border-white/20 cursor-pointer hover:bg-white/10 transition-colors has-[:checked]:bg-bp-warning/20 has-[:checked]:border-bp-warning">
+                <input type="checkbox" class="accent-bp-warning"
+                  data-review-autofill-target="feedbackCheckbox"
+                  data-action="change->review-autofill#updateFeedback"
+                  data-text="<%= text %>">
+                <span class="text-sm"><%= label %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
 
       <div>
         <%= f.label :feedback, class: "block text-xl font-medium" %>
-        <%= f.text_area :feedback, rows: 4, placeholder: "Feedback is shown to users", class: "input px-3 mt-1 block w-full" %>
+        <%= f.text_area :feedback, rows: 4, placeholder: "Feedback is shown to users (defaults to 'Awesome project!' if left blank)", class: "input px-3 mt-1 block w-full", data: { review_autofill_target: "feedbackTextarea" } %>
       </div>
 
       <div class="flex gap-4">
-        <%= f.button "Approve", type: "submit", name: "build_review[result]", value: "approved", class: "btn btn-primary flex-1 bg-bp-success border-bp-success", data: { turbo_confirm: "Are you sure you want to approve #{@project.title}?" } %>
+        <%= f.button "Approve", type: "submit", name: "build_review[result]", value: "approved", class: "btn btn-primary flex-1 bg-bp-success border-bp-success", data: { review_autofill_target: "approveButton" } %>
         <%= f.button "Return", type: "submit", name: "build_review[result]", value: "returned", class: "btn btn-primary flex-1 bg-bp-warning border-bp-warning" %>
         <%= f.button "Permanently Reject", type: "submit", name: "build_review[result]", value: "rejected", class: "btn btn-primary flex-1 bg-bp-danger border-bp-danger", data: { turbo_confirm: "Are you sure you want to permanently reject #{@project.title}?" } %>
         <%= link_to "Skip", admin_next_build_review_path(skipped: accumulated_skipped(@project), ysws_type: params[:ysws_type]), class: "btn btn-outline flex-1" %>
