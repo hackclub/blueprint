@@ -1,11 +1,23 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["feedbackTextarea", "reasonTextarea", "feedbackCheckbox", "reasonCheckbox", "approveButton"]
+  static targets = ["feedbackTextarea", "reasonTextarea", "feedbackCheckbox", "reasonCheckbox", "approveButton", "hoursOverride"]
+  static values = { ysws: String }
 
   connect() {
     this.handleKeydown = this.handleKeydown.bind(this)
     document.addEventListener("keydown", this.handleKeydown)
+    this.autofillHours()
+  }
+
+  autofillHours() {
+    if (!this.hasHoursOverrideTarget) return
+    const hours = { hackpad: 15, squeak: 5, led: 5 }
+    const value = hours[this.yswsValue]
+    if (value) {
+      this.hoursOverrideTarget.value = value
+      this.hoursOverrideTarget.dispatchEvent(new Event("input", { bubbles: true }))
+    }
   }
 
   disconnect() {
