@@ -103,6 +103,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
       redirect_params = {}
       redirect_params[:skipped] = params[:skipped] if params[:skipped].present?
       redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_params[:sort] = params[:sort] if params[:sort].present?
       redirect_to admin_design_review_path(project_id, redirect_params)
     else
       redirect_to admin_design_reviews_path, alert: "No projects pending review."
@@ -127,6 +128,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
       redirect_params = {}
       redirect_params[:skipped] = params[:skipped] if params[:skipped].present?
       redirect_params[:ysws_type] = normalized_ysws_filter if normalized_ysws_filter.present?
+      redirect_params[:sort] = params[:sort] if params[:sort].present?
       redirect_to admin_next_design_review_path(redirect_params), notice: "Design review submitted successfully."
     else
       redirect_params = {}
@@ -162,6 +164,15 @@ class Admin::DesignReviewsController < Admin::ApplicationController
 
     # Exclude specifically skipped projects
     base = base.where.not(id: exclude_ids) if exclude_ids.any?
+
+    # Sort by most hours if requested
+    if params[:sort] == "most_hours"
+      hours_sql = "(SELECT COALESCE(SUM(journal_entries.duration_seconds), 0) FROM journal_entries WHERE journal_entries.project_id = projects.id)"
+      return base.select("projects.id")
+                 .order(Arel.sql("#{hours_sql} DESC"))
+                 .limit(1)
+                 .pick(:id)
+    end
 
     # For admins, prioritize pre-reviewed projects first, then by waiting time
     if current_user.admin?
