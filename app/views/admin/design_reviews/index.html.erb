@@ -60,6 +60,8 @@
       <%= render "shared/button", text: "Splitkb", url: admin_next_design_review_path(ysws_type: "splitkb"), variant: :outline, class: "py-0" %>
       <%= render "shared/button", text: "LED", url: admin_next_design_review_path(ysws_type: "led"), variant: :outline, class: "py-0" %>
       <%= render "shared/button", text: "Custom", url: admin_next_design_review_path(ysws_type: "custom"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Devboard by name", url: admin_next_design_review_path(ysws_type: "devboard_by_name"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Keyboard by name", url: admin_next_design_review_path(ysws_type: "keyboard_by_name"), variant: :outline, class: "py-0" %>
     </div>
     <%= form_with url: admin_projects_path, method: :get, local: true, class: "w-full max-w-2xl" do %>
       <div class="flex items-center gap-3">

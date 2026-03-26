@@ -58,6 +58,8 @@
         <% first_passed = @ysws_first_passed_counts[key] || 0 %>
         <%= render "shared/button", text: "#{type.capitalize} (<span class='text-bp-warning'>#{first_passed}</span>/#{total})".html_safe, url: admin_next_build_review_path(ysws_type: type), variant: :outline, class: "py-0" %>
       <% end %>
+      <%= render "shared/button", text: "Devboard by name", url: admin_next_build_review_path(ysws_type: "devboard_by_name"), variant: :outline, class: "py-0" %>
+      <%= render "shared/button", text: "Keyboard by name", url: admin_next_build_review_path(ysws_type: "keyboard_by_name"), variant: :outline, class: "py-0" %>
     </div>
     <%= form_with url: admin_projects_path, method: :get, local: true, class: "w-full max-w-2xl" do %>
       <div class="flex items-center gap-3">

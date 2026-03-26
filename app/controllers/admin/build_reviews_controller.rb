@@ -232,7 +232,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   end
 
   def normalized_ysws_filter
-    valid_types = %w[hackpad squeak devboard midi splitkb led custom]
+    valid_types = %w[hackpad squeak devboard midi splitkb led custom devboard_by_name keyboard_by_name]
     valid_types.include?(params[:ysws_type]) ? params[:ysws_type] : nil
   end
 
@@ -240,6 +240,10 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     filter = normalized_ysws_filter
     if filter == "custom"
       scope.where(ysws: nil)
+    elsif filter == "devboard_by_name"
+      scope.where("title ILIKE :q OR description ILIKE :q", q: "%devboard%")
+    elsif filter == "keyboard_by_name"
+      scope.where("title ILIKE :q OR description ILIKE :q", q: "%keyboard%")
     elsif filter.present?
       scope.where(ysws: filter)
     elsif current_user.admin?
