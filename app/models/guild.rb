@@ -49,7 +49,7 @@ class Guild < ApplicationRecord
 
   before_save :clear_needs_review_if_closed
   after_validation :geocode, if: ->(obj) { obj.city.present? && obj.city_changed? && obj.latitude.blank? }
-  after_commit :sync_to_airtable, on: [ :create, :update ]
+  after_commit :sync_to_airtable, on: [ :create, :update ] # not :delete to preserve history
 
   def update_slack_topic
     return unless slack_channel_id.present?
@@ -90,7 +90,10 @@ class Guild < ApplicationRecord
       "status" => :status,
       "slack_channel_id" => :slack_channel_id,
       "needs_review" => :needs_review,
-      "created_at" => :created_at
+      "created_at" => :created_at,
+      "poc_name" => ->(guild) { guild.guild_signups.where(role: :organizer).order(:created_at).first&.name },
+      "poc_email" => ->(guild) { guild.guild_signups.where(role: :organizer).order(:created_at).first&.email },
+      "poc_birthday" => ->(guild) { guild.guild_signups.where(role: :organizer).order(:created_at).first&.user&.birthday&.iso8601 }
     }
   end
 
@@ -113,7 +116,8 @@ class Guild < ApplicationRecord
     "Delhi" => "https://buildguilddelhi.space/",
     "Dubai" => "https://build-guilds-dubai.vercel.app/",
     "Lucknow" => "https://lucknow-build-guild.vercel.app/",
-    "Kochi" => "https://buildguildkochi.netlify.app/"
+    "Kochi" => "https://buildguildkochi.netlify.app/",
+    "Oxford" => "https://katetriestocode.github.io/buildguildoxford/"
   }.freeze
 
   def website_url
@@ -124,7 +128,7 @@ class Guild < ApplicationRecord
   def announcements
     return [] if description.blank?
     parsed = JSON.parse(description)
-    parsed.is_a?(Array) ? parsed : []
+    parsed.is_a?(Array) ? parsed : [] # check if its an array
   rescue JSON::ParserError
     [ { "body" => description, "posted_at" => updated_at.iso8601, "author_name" => "Organizer" } ]
   end

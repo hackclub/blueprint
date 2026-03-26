@@ -17,6 +17,7 @@ class SlackCommandsController < ApplicationController
     /guild-remove-user
     /guild-set-channel
     /guild-archive-closed
+    /guild-sync-poc
   ].freeze
 
   def handle
@@ -61,6 +62,8 @@ class SlackCommandsController < ApplicationController
       { response_type: "in_channel", text: guild_set_channel_message(params[:text]) }
     when "/guild-archive-closed"
       guild_archive_closed_async(params[:response_url])
+    when "/guild-sync-poc"
+      guild_sync_poc_async(params[:response_url])
 
     when "/guild-ideas"
       { response_type: "ephemeral", text: guild_ideas_message(params[:user_id], params[:channel_id]) }
@@ -484,6 +487,18 @@ class SlackCommandsController < ApplicationController
     GuildArchiveClosedChannelsJob.perform_later(response_url)
 
     { response_type: "in_channel", text: "Archiving channels for #{guilds.count} closed guild(s)…" }
+  end
+
+  def guild_sync_poc_async(response_url)
+    guilds = Guild.active
+
+    if guilds.none?
+      return { response_type: "ephemeral", text: "No active guilds found." }
+    end
+
+    GuildSyncPocJob.perform_later(response_url)
+
+    { response_type: "in_channel", text: "Syncing POC data for #{guilds.count} active guild(s)…" }
   end
 
   def guild_ideas_message(invoker_slack_id, channel_id)
