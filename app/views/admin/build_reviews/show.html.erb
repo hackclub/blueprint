@@ -4,14 +4,14 @@
       <p class="font-bold text-xl">⚠️ This project is currently being reviewed by <%= @project.build_review_claimed_by.display_name %></p>
       <p class="mt-2">Their claim will expire in approximately <%= distance_of_time_in_words(@project.build_review_claimed_at + 20.minutes, Time.current) %>. You can still view the project, but the review form is disabled.</p>
       <div class="mt-4">
-        <%= render "shared/button", text: "Skip to Next Project", url: admin_next_build_review_path(skipped: accumulated_skipped(@project)), class: "py-1" %>
+        <%= render "shared/button", text: "Skip to Next Project", url: admin_next_build_review_path(skipped: accumulated_skipped(@project), sort: params[:sort]), class: "py-1" %>
       </div>
     </div>
   <% end %>
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <%= render "shared/button", text: "Back", url: admin_build_reviews_path, class: "py-0" %>
-      <%= link_to "Skip", admin_next_build_review_path(skipped: accumulated_skipped(@project), ysws_type: params[:ysws_type]), class: "btn btn-outline py-0" %>
+      <%= link_to "Skip", admin_next_build_review_path(skipped: accumulated_skipped(@project), ysws_type: params[:ysws_type], sort: params[:sort]), class: "btn btn-outline py-0" %>
     </div>
     <div class="flex items-center gap-2">
       <%= render "shared/button", text: "HCB", url: "https://hcb.hackclub.com/ysws-blueprint/card_grants/card_overview?q=#{ERB::Util.url_encode(@project.user.email)}&event_id=ysws-blueprint", class: "py-0", variant: :outline %>
@@ -304,7 +304,8 @@
               ["Generic low", "This project has a very high quality journal and all of the hours are logged. I am deflating this just to be safe."],
               ["Generic high", "This project has a very high quality and is shipped. However, some of the journal entries are long and don't make sense so I am deflating it more"],
               ["Small", "This is a relatively small project and not that crazy. It seems to be one of the users first and is definitely shipped. Because of that, I am approving regardless."],
-              ["Magic", "This project has a incredubly high quality project and all of the hours are logged. I would say this project would qualify as magic. I am deflating this just to be safe."]
+              ["Magic", "This project has a incredubly high quality project and all of the hours are logged. I would say this project would qualify as magic. I am deflating this just to be safe."],
+              ["Trusted", "This is a very trusted user and I have talked with this person multiple times about this project and seen them working on it throughout Slack."]
             ].each do |label, text| %>
               <label class="flex items-center gap-2 px-3 py-1.5 rounded border border-white/20 cursor-pointer hover:bg-white/10 transition-colors has-[:checked]:bg-bp-success/20 has-[:checked]:border-bp-success">
                 <input type="checkbox" class="accent-bp-success"
@@ -355,7 +356,7 @@
         <%= f.button "Approve", type: "submit", name: "build_review[result]", value: "approved", class: "btn btn-primary flex-1 bg-bp-success border-bp-success", data: { review_autofill_target: "approveButton" } %>
         <%= f.button "Return", type: "submit", name: "build_review[result]", value: "returned", class: "btn btn-primary flex-1 bg-bp-warning border-bp-warning" %>
         <%= f.button "Permanently Reject", type: "submit", name: "build_review[result]", value: "rejected", class: "btn btn-primary flex-1 bg-bp-danger border-bp-danger", data: { turbo_confirm: "Are you sure you want to permanently reject #{@project.title}?" } %>
-        <%= link_to "Skip", admin_next_build_review_path(skipped: accumulated_skipped(@project), ysws_type: params[:ysws_type]), class: "btn btn-outline flex-1" %>
+        <%= link_to "Skip", admin_next_build_review_path(skipped: accumulated_skipped(@project), ysws_type: params[:ysws_type], sort: params[:sort]), class: "btn btn-outline flex-1" %>
       </div>
     <% end %>
     </fieldset>
