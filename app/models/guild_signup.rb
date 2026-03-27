@@ -47,6 +47,7 @@ class GuildSignup < ApplicationRecord
   validate :one_organizer_signup_only, if: :organizer?
 
   after_destroy :update_guild_topic, if: :organizer?
+  after_destroy :mark_guild_pending_if_no_organizer
 
   def one_organizer_signup_only
     existing = GuildSignup.where(user_id: user_id, role: :organizer)
@@ -111,5 +112,14 @@ class GuildSignup < ApplicationRecord
 
   def update_guild_topic
     guild.update_slack_topic if guild.present?
+  end
+
+  def mark_guild_pending_if_no_organizer
+    return unless organizer?
+    return unless guild.present?
+    return unless guild.active?
+    return if guild.guild_signups.where(role: :organizer).exists?
+
+    guild.update!(status: :pending)
   end
 end

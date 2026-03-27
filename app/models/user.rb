@@ -72,6 +72,8 @@ class User < ApplicationRecord
   has_many :guild_signups, dependent: :destroy
   has_many :guilds, through: :guild_signups
 
+  after_update :sync_organizer_guilds_to_airtable, if: :saved_change_to_birthday?
+
   has_many :ahoy_visits, class_name: "Ahoy::Visit"
   has_many :ahoy_events, class_name: "Ahoy::Event"
   has_one :latest_locatable_visit, -> { where.not(country: [ nil, "" ]).order(started_at: :desc) }, class_name: "Ahoy::Visit"
@@ -1065,6 +1067,15 @@ class User < ApplicationRecord
     guild_signups.each do |signup|
       GuildSlackInviteJob.perform_later(signup.id)
     end
+  end
+
+  def sync_organizer_guilds_to_airtable
+    return if ENV["DISABLE_AIRTABLE_SYNC"].present?
+
+    organizer_guilds = guilds.joins(:guild_signups).where(guild_signups: { role: :organizer, user_id: id })
+    AirtableSync.sync_records!(Guild, organizer_guilds.to_a) if organizer_guilds.any?
+  rescue => e
+    Rails.logger.error "Failed to sync organizer guilds for user #{id} to Airtable: #{e.message}"
   end
 
   def normalize_email
