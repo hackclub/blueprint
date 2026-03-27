@@ -72,7 +72,7 @@ class User < ApplicationRecord
   has_many :guild_signups, dependent: :destroy
   has_many :guilds, through: :guild_signups
 
-  after_update :sync_organizer_guilds_to_airtable, if: :saved_change_to_birthday?
+  after_commit :sync_organizer_guilds_to_airtable, on: :update, if: :saved_change_to_birthday?
 
   has_many :ahoy_visits, class_name: "Ahoy::Visit"
   has_many :ahoy_events, class_name: "Ahoy::Event"

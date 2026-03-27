@@ -37,6 +37,7 @@ class GuildSignup < ApplicationRecord
   after_commit :enqueue_processing_job, on: :create
   after_commit :send_confirmation_email, on: :create
   after_commit :sync_to_airtable, on: [ :create, :update ]
+  after_commit :sync_guild_to_airtable, on: [ :create, :update ], if: :organizer?
 
   validates :name, :email, :role, :country, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
@@ -47,6 +48,7 @@ class GuildSignup < ApplicationRecord
   validate :one_organizer_signup_only, if: :organizer?
 
   after_destroy :update_guild_topic, if: :organizer?
+  after_destroy :sync_guild_to_airtable, if: :organizer?
   after_destroy :mark_guild_pending_if_no_organizer
 
   def one_organizer_signup_only
@@ -112,6 +114,11 @@ class GuildSignup < ApplicationRecord
 
   def update_guild_topic
     guild.update_slack_topic if guild.present?
+  end
+
+  def sync_guild_to_airtable
+    return if ENV["DISABLE_AIRTABLE_SYNC"].present?
+    guild.sync_to_airtable if guild.present?
   end
 
   def mark_guild_pending_if_no_organizer
