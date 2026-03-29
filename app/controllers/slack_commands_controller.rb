@@ -65,6 +65,7 @@ class SlackCommandsController < ApplicationController
     when "/guild-sync-poc"
       guild_sync_poc_async(params[:response_url])
 
+
     when "/guild-ideas"
       { response_type: "ephemeral", text: guild_ideas_message(params[:user_id], params[:channel_id]) }
     else
@@ -413,11 +414,19 @@ class SlackCommandsController < ApplicationController
 
   def guild_add_user_message(text)
     parts = text.to_s.split
-    return "Usage: `/guild-add-user @user <city> <attendee|organizer>`\nExample: `/guild-add-user @john London attendee`" unless parts.length >= 3
+    return "Usage: `/guild-add-user @user <city> <attendee|organizer> [YYYY-MM-DD]`\nExample: `/guild-add-user @john London organizer 2008-08-21`\nBirthday is optional." unless parts.length >= 3
 
     raw_input = parts[0].strip
-    role = parts[-1].strip.downcase
-    city = parts[1..-2].join(" ")
+
+    raw_date = nil
+    if parts[-1].match?(/\A\d{4}-\d{2}-\d{2}\z/)
+      raw_date = parts[-1].strip
+      role = parts[-2].strip.downcase
+      city = parts[1..-3].join(" ")
+    else
+      role = parts[-1].strip.downcase
+      city = parts[1..-2].join(" ")
+    end
 
     unless %w[organizer attendee].include?(role)
       return "Role must be `organizer` or `attendee`."
@@ -429,8 +438,24 @@ class SlackCommandsController < ApplicationController
     guild = find_guild(city)
     return "No guild found for \"#{city}\"." unless guild
 
-    if user.guild_signups.exists?(guild: guild)
-      return "<@#{user.slack_id}> is already signed up for *#{guild.city}*."
+    if raw_date.present?
+      begin
+        birthday = Date.iso8601(raw_date)
+      rescue ArgumentError
+        return "Invalid date \"#{raw_date}\". Use YYYY-MM-DD format (e.g. 2008-08-21)."
+      end
+
+      return "Date cannot be in the future." if birthday > Date.current
+      return "Date seems too old. Please double-check." if birthday < 120.years.ago.to_date
+
+      user.update!(birthday: birthday)
+    end
+
+    existing_signup = user.guild_signups.find_by(guild: guild)
+    if existing_signup
+      result = "<@#{user.slack_id}> is already signed up for *#{guild.city}*."
+      result += " Birthday updated to #{birthday.iso8601}." if birthday
+      return result
     end
 
     signup = user.guild_signups.build(
@@ -444,7 +469,9 @@ class SlackCommandsController < ApplicationController
     )
 
     if signup.save
-      "Added <@#{user.slack_id}> to *#{guild.city}* as #{role}."
+      result = "Added <@#{user.slack_id}> to *#{guild.city}* as #{role}."
+      result += " Birthday set to #{birthday.iso8601}." if birthday
+      result
     else
       "Failed to add user: #{signup.errors.full_messages.join(", ")}"
     end
@@ -478,7 +505,7 @@ class SlackCommandsController < ApplicationController
   end
 
   def guild_archive_closed_async(response_url)
-    guilds = Guild.where(status: :closed).where.not(slack_channel_id: [nil, ""])
+    guilds = Guild.where(status: :closed).where.not(slack_channel_id: [ nil, "" ])
 
     if guilds.none?
       return { response_type: "ephemeral", text: "No closed guilds with Slack channels found." }
