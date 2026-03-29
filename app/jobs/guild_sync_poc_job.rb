@@ -10,9 +10,12 @@ class GuildSyncPocJob < ApplicationJob
 
     guilds.each do |guild|
       begin
-        unless guild.guild_signups.any?(&:organizer?)
+        has_organizer = guild.guild_signups.any?(&:organizer?)
+        if !has_organizer && guild.active?
           guild.update!(status: :pending)
           marked_pending += 1
+        elsif has_organizer && guild.pending?
+          guild.update!(status: :active)
         end
 
         organizer_user = guild.guild_signups.find(&:organizer?)&.user
