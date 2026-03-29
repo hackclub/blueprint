@@ -186,9 +186,9 @@
       <div class="p-4 border-2 border-white rounded-none space-y-2">
         <p class="text-lg font-bold">Organizer Resources</p>
         <div class="space-y-1 text-sm">
-          <p><a href="/resources/guild-organizer-tips" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Organizer Tips</a> <span class="text-white/50"> venue finding, budgeting, promotion, and day-of advice</span></p>
+          <p><a href="/resources/guild-organizer-tips" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Organizer Tips</a> <span class="text-white/50"> venue finding, budgeting, and promotion advice</span></p>
           <p><a href="https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0AM7D41WGP" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Organizer FAQ</a> <span class="text-white/50"> frequently asked questions about organizing</span></p>
-          <p><a href="https://hackclub.enterprise.slack.com/archives/C0AM0B6D482" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">#build-guilds-organizers</a> <span class="text-white/50"> ask any questions about organizing, get help from other organizers</span></p>
+          <p><a href="https://hackclub.enterprise.slack.com/archives/C0AM0B6D482" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">#build-guilds-organizers</a> <span class="text-white/50"> ask any questions about organizing and get help from other organizers</span></p>
           <% if @guild.slack_channel_id.present? %>
             <p><a href="https://hackclub.slack.com/archives/<%= @guild.slack_channel_id %>" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Your Guild's Slack Channel</a></p>
           <% end %>
@@ -197,7 +197,8 @@
 
       <div class="p-4 border-2 border-white rounded-none space-y-2">
         <p class="text-lg font-bold">Venue Submission</p>
-        <p class="text-white/70 text-sm">Coming soon, you'll be able to submit your venue details here.</p>
+        <p class="text-white/70 text-sm">Please submit this form as soon as you have confirmed the venue for your Build Guild.</p>
+        <%= render "shared/button", text: "Submit Venue", url: "https://forms.hackclub.com/t/poS7N9ZFG9us", variant: :primary, class: "text-sm py-1", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
       </div>
     <% end %>
 
@@ -233,59 +234,55 @@
           <span class="text-white/50 group-open:rotate-180 transition-transform duration-200">&#9660;</span>
         </summary>
         <div>
-          <div class="hidden md:grid grid-cols-12 px-3 py-2 text-sm text-white/70 border-b border-white/30">
-            <div class="col-span-1">Role</div>
-            <div class="col-span-3">Name</div>
-            <div class="col-span-2">Slack</div>
-            <div class="col-span-3">Details</div>
-            <div class="col-span-3">Signed Up</div>
-          </div>
-
-          <% if @signups.any? %>
-            <% @signups.each do |signup| %>
-              <div class="grid grid-cols-1 md:grid-cols-12 px-3 py-2 gap-1 md:gap-0 border-b border-white/30 last:border-0 items-center">
-                <div class="col-span-1">
-                  <span class="md:hidden text-white/50 text-sm">Role: </span>
-                  <% if signup.organizer? %>
-                    <span class="text-bp-warning text-sm font-medium">org</span>
-                  <% else %>
-                    <span class="text-bp-success text-sm font-medium">att</span>
-                  <% end %>
-                </div>
-                <div class="col-span-3 font-medium">
-                  <span class="md:hidden text-white/50 text-sm">Name: </span><%= signup.name %>
-                </div>
-                <div class="col-span-2">
-                  <span class="md:hidden text-white/50 text-sm">Slack: </span>
-                  <% if signup.user&.slack_id.present? %>
-                    <span class="inline-flex items-center gap-1.5">
-                      <span class="inline-block size-2 rounded-full bg-bp-success"></span>
-                      <span class="text-sm text-white/70">In Slack</span>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/30 text-left text-white/70">
+                <th class="px-3 py-2 font-medium">Role</th>
+                <th class="px-3 py-2 font-medium">Name</th>
+                <th class="px-3 py-2 font-medium">
+                  <div class="flex items-center justify-between">
+                    Email
+                    <span class="relative flex items-center">
+                      <% all_emails = @signups.map(&:email).compact.join(", ") %>
+                      <button id="copy-emails-btn" class="px-3 py-1 font-medium border-2 border-bp-warning text-bp-warning hover:bg-bp-warning hover:text-black cursor-pointer transition-colors text-sm">
+                        Copy Emails
+                      </button>
+                      <span id="copy-emails-confirmation" class="absolute right-full mr-2 text-bp-success whitespace-nowrap hidden">Copied!</span>
                     </span>
-                  <% else %>
-                    <span class="inline-flex items-center gap-1.5">
-                      <span class="inline-block size-2 rounded-full bg-white/30"></span>
-                      <span class="text-sm text-white/50">Not in Slack</span>
-                    </span>
-                  <% end %>
-                </div>
-                <div class="col-span-3 text-sm text-white/70 truncate">
-                  <span class="md:hidden text-white/50">Details: </span>
-                  <% detail = signup.organizer? ? signup.ideas : signup.attendee_activities %>
-                  <% if detail.present? %>
-                    <span title="<%= h detail %>"><%= truncate(detail, length: 40) %></span>
-                  <% else %>
-                    &ndash;
-                  <% end %>
-                </div>
-                <div class="col-span-3 text-sm">
-                  <span class="md:hidden text-white/50">Signed up: </span><%= signup.created_at.strftime("%b %d, %Y %H:%M") %>
-                </div>
-              </div>
-            <% end %>
-          <% else %>
-            <div class="px-4 py-6 text-center text-white/70">No signups yet.</div>
-          <% end %>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if @signups.any? %>
+                <% @signups.each do |signup| %>
+                  <tr class="border-b border-white/30 last:border-0">
+                    <td class="px-3 py-2 whitespace-nowrap">
+                      <% if signup.organizer? %>
+                        <span class="text-bp-warning font-medium">Organizer</span>
+                      <% else %>
+                        <span class="text-bp-success font-medium">Attendee</span>
+                      <% end %>
+                    </td>
+                    <td class="px-3 py-2 font-medium"><%= signup.name %></td>
+                    <td class="px-3 py-2 text-white/70 break-all"><%= signup.email %></td>
+                  </tr>
+                <% end %>
+              <% else %>
+                <tr>
+                  <td colspan="3" class="px-4 py-6 text-center text-white/70">No signups yet.</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          <script>
+            document.getElementById('copy-emails-btn').addEventListener('click', function() {
+              navigator.clipboard.writeText('<%= j all_emails %>');
+              var conf = document.getElementById('copy-emails-confirmation');
+              conf.classList.remove('hidden');
+              setTimeout(function() { conf.classList.add('hidden'); }, 2000);
+            });
+          </script>
         </div>
       </details>
     <% end %>

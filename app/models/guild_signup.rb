@@ -49,7 +49,7 @@ class GuildSignup < ApplicationRecord
 
   after_destroy :update_guild_topic, if: :organizer?
   after_destroy :sync_guild_to_airtable, if: :organizer?
-  after_destroy :mark_guild_pending_if_no_organizer
+  after_destroy :mark_guild_pending_if_no_organizer, if: :organizer?
 
   def one_organizer_signup_only
     existing = GuildSignup.where(user_id: user_id, role: :organizer)

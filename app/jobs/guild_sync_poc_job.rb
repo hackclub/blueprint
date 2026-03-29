@@ -2,7 +2,7 @@ class GuildSyncPocJob < ApplicationJob
   queue_as :default
 
   def perform(response_url)
-    guilds = Guild.active.includes(guild_signups: :user).to_a
+    guilds = Guild.open.includes(guild_signups: :user).to_a
     synced = 0
     failed = 0
     marked_pending = 0
@@ -28,7 +28,7 @@ class GuildSyncPocJob < ApplicationJob
       end
     end
 
-    result = "POC sync complete: #{synced} synced, #{failed} failed, #{marked_pending} marked pending (no organizer), #{birthdays_backfilled} birthdays backfilled out of #{guilds.size} active guilds"
+    result = "POC sync complete: #{synced} synced, #{failed} failed, #{marked_pending} marked pending (no organizer), #{birthdays_backfilled} birthdays backfilled out of #{guilds.size} open guilds"
 
     post_to_response_url(response_url, result)
   end

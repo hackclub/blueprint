@@ -213,11 +213,14 @@ class SlackCommandsController < ApplicationController
 
     Rails.logger.info "[SlackBot] /guild-approve guild_id=#{guild.id} city=#{guild.city} signups=#{guild.guild_signups.count} by user=#{params[:user_id]}"
 
-    guild.update!(needs_review: false) if guild.needs_review?
+    attrs = {}
+    attrs[:needs_review] = false if guild.needs_review?
+    attrs[:status] = :active if guild.pending?
+    guild.update!(attrs) if attrs.any?
 
     ProcessGuildApprovalJob.perform_later(guild.id)
 
-    "Approved *#{guild.name}*. Processing #{guild.guild_signups.count} signup(s) now."
+    "Approved *#{guild.name}* (status: #{guild.status}). Processing #{guild.guild_signups.count} signup(s) now."
   end
 
   def guild_delete_message(text)
@@ -308,6 +311,7 @@ class SlackCommandsController < ApplicationController
 
     # Defer Airtable sync and Slack topic update to background
     AirtableSyncClassJob.perform_later("GuildSignup")
+    AirtableSyncClassJob.perform_later("Guild")
     Thread.new do
       guild.update_slack_topic
     rescue => e
@@ -408,6 +412,7 @@ class SlackCommandsController < ApplicationController
 
     # Sync Airtable in background
     AirtableSyncClassJob.perform_later("GuildSignup")
+    AirtableSyncClassJob.perform_later("Guild")
 
     "Removed <@#{user.slack_id}> (#{role}) from *#{guild.city}*."
   end
@@ -419,7 +424,7 @@ class SlackCommandsController < ApplicationController
     raw_input = parts[0].strip
 
     raw_date = nil
-    if parts[-1].match?(/\A\d{4}-\d{2}-\d{2}\z/)
+    if parts[-1].match?(/\A\d{4}-\d{1,2}-\d{1,2}\z/)
       raw_date = parts[-1].strip
       role = parts[-2].strip.downcase
       city = parts[1..-3].join(" ")
@@ -517,15 +522,15 @@ class SlackCommandsController < ApplicationController
   end
 
   def guild_sync_poc_async(response_url)
-    guilds = Guild.active
+    guilds = Guild.open
 
     if guilds.none?
-      return { response_type: "ephemeral", text: "No active guilds found." }
+      return { response_type: "ephemeral", text: "No open guilds found." }
     end
 
     GuildSyncPocJob.perform_later(response_url)
 
-    { response_type: "in_channel", text: "Syncing POC data for #{guilds.count} active guild(s)…" }
+    { response_type: "in_channel", text: "Syncing POC data for #{guilds.count} open guild(s)…" }
   end
 
   def guild_ideas_message(invoker_slack_id, channel_id)
