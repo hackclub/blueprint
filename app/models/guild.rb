@@ -117,7 +117,8 @@ class Guild < ApplicationRecord
     "Dubai" => "https://build-guilds-dubai.vercel.app/",
     "Lucknow" => "https://lucknow-build-guild.vercel.app/",
     "Kochi" => "https://buildguildkochi.netlify.app/",
-    "Oxford" => "https://katetriestocode.github.io/buildguildoxford/"
+    "Oxford" => "https://katetriestocode.github.io/buildguildoxford/",
+    "Siliguri" => "https://buildguildsiliguri.xyz/"
   }.freeze
 
   def website_url
