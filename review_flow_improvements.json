@@ -1,0 +1,211 @@
+{
+  "review_flow_improvements": {
+    "overview": "A set of admin-only productivity improvements for a project review dashboard. These changes reduce repetitive typing by providing checkbox shortcuts that autofill textarea fields, add keyboard shortcuts, auto-populate known hour values for specific project guides, add new queue filtering/sorting options, and remove unnecessary confirmation dialogs. All shortcut checkboxes are gated behind an admin permission check and only appear on the legacy (non-streamlined) review dashboard.",
+
+    "implementation": {
+      "architecture": "This uses a single Stimulus JS controller (review_autofill_controller.js) attached to the review form element. The controller manages checkbox-to-textarea autofill, keyboard shortcuts, hours autopopulation, and default feedback on submit. The controller is attached to BOTH the design review form and the build review form via the data-controller attribute on the <form> tag. On the build review form, it coexists alongside an existing build-review-calculator controller (Stimulus supports multiple controllers on one element via space-separated names in data-controller).",
+
+      "stimulus_controller": {
+        "file": "app/javascript/controllers/review_autofill_controller.js",
+        "description": "Create this file. Stimulus auto-discovers controllers by filename convention (review_autofill_controller.js becomes 'review-autofill' in HTML). No manual registration needed if you use eagerLoadControllersFrom or similar auto-loading.",
+        "targets": {
+          "feedbackTextarea": "The textarea for 'Feedback for Author'. Wired via data-review-autofill-target='feedbackTextarea' on the textarea element.",
+          "reasonTextarea": "The textarea for 'Internal Justification/Reason'. Wired via data-review-autofill-target='reasonTextarea' on the textarea element.",
+          "feedbackCheckbox": "Multiple. Each checkbox input in the feedback shortcuts section. Each has a data-text attribute containing the autofill message.",
+          "reasonCheckbox": "Multiple. Each checkbox input in the justification shortcuts section. Each has a data-text attribute containing the autofill message.",
+          "approveButton": "The Approve submit button. Used by Ctrl+Enter shortcut to programmatically click it.",
+          "hoursOverride": "The hours_override number input field. Auto-populated on connect() based on the project's guide type."
+        },
+        "values": {
+          "ysws": "String. The project's guide type (e.g., 'hackpad', 'squeak', 'led'). Passed from the server via data-review-autofill-ysws-value on the form element. Used to determine hours autopopulation."
+        },
+        "actions": {
+          "connect()": "Called when controller connects. Binds a global keydown listener for Ctrl+Enter, then calls autofillHours() to pre-populate the hours field if the project's guide type has a known hour value.",
+          "disconnect()": "Removes the global keydown listener to prevent memory leaks.",
+          "autofillHours()": "Checks if hoursOverride target exists. Looks up the ysws value in a map: {hackpad: 15, squeak: 5, led: 5}. If found, sets the hours field value AND dispatches an 'input' event (bubbles: true) so any other controllers listening on that field (like build-review-calculator) recalculate.",
+          "handleKeydown(event)": "If Ctrl+Enter is pressed and the approveButton target exists, prevents default and programmatically clicks the approve button. This triggers the normal form submission flow including the submitForm() autofill.",
+          "updateFeedback()": "Called via data-action='change->review-autofill#updateFeedback' on each feedback checkbox. Filters all feedbackCheckbox targets for checked ones, reads each one's data-text attribute, joins them with double newlines, and sets the feedbackTextarea value. Unchecking all clears the textarea.",
+          "updateReason()": "Same as updateFeedback but for reasonCheckbox targets and reasonTextarea.",
+          "submitForm()": "Called via data-action='submit->review-autofill#submitForm' on the form element. Fires on form submit BEFORE the request is sent. If the feedback textarea is blank (empty or whitespace only), sets it to 'Awesome project!'. This means feedback is never truly empty on submission."
+        },
+        "source_code": "import { Controller } from '@hotwired/stimulus'\n\nexport default class extends Controller {\n  static targets = ['feedbackTextarea', 'reasonTextarea', 'feedbackCheckbox', 'reasonCheckbox', 'approveButton', 'hoursOverride']\n  static values = { ysws: String }\n\n  connect() {\n    this.handleKeydown = this.handleKeydown.bind(this)\n    document.addEventListener('keydown', this.handleKeydown)\n    this.autofillHours()\n  }\n\n  autofillHours() {\n    if (!this.hasHoursOverrideTarget) return\n    const hours = { hackpad: 15, squeak: 5, led: 5 }\n    const value = hours[this.yswsValue]\n    if (value) {\n      this.hoursOverrideTarget.value = value\n      this.hoursOverrideTarget.dispatchEvent(new Event('input', { bubbles: true }))\n    }\n  }\n\n  disconnect() {\n    document.removeEventListener('keydown', this.handleKeydown)\n  }\n\n  handleKeydown(event) {\n    if (event.ctrlKey && event.key === 'Enter' && this.hasApproveButtonTarget) {\n      event.preventDefault()\n      this.approveButtonTarget.click()\n    }\n  }\n\n  updateFeedback() {\n    const texts = this.feedbackCheckboxTargets\n      .filter(cb => cb.checked)\n      .map(cb => cb.dataset.text)\n    this.feedbackTextareaTarget.value = texts.join('\\n\\n')\n  }\n\n  updateReason() {\n    const texts = this.reasonCheckboxTargets\n      .filter(cb => cb.checked)\n      .map(cb => cb.dataset.text)\n    this.reasonTextareaTarget.value = texts.join('\\n\\n')\n  }\n\n  submitForm() {\n    if (this.hasFeedbackTextareaTarget) {\n      const feedback = this.feedbackTextareaTarget\n      if (feedback.value.trim() === '') {\n        feedback.value = 'Awesome project!'\n      }\n    }\n  }\n}"
+      },
+
+      "form_wiring": {
+        "description": "How to wire the Stimulus controller to the review form HTML.",
+        "form_tag": {
+          "description": "Add data-controller='review-autofill', data-action='submit->review-autofill#submitForm', and data-review-autofill-ysws-value='<project_guide_type>' to the form element. If the form already has another data-controller, append with a space: data-controller='existing-controller review-autofill'.",
+          "example_rails": "<%= form_with model: @review, url: create_path, method: :post, html: { class: 'space-y-6', data: { controller: 'review-autofill', action: 'submit->review-autofill#submitForm', review_autofill_ysws_value: @project.guide_type.to_s } } do |f| %>"
+        },
+        "hidden_fields": {
+          "description": "Add a hidden field for the sort param so it persists through form submissions (approve/return/reject redirect to the next project). This goes inside the form alongside any existing hidden fields like ysws_type or skipped.",
+          "example_rails": "<%= hidden_field_tag :sort, params[:sort] if params[:sort].present? %>"
+        },
+        "feedback_textarea": {
+          "description": "Remove required: true if present. Add data-review-autofill-target='feedbackTextarea'. Change the label from 'MANDATORY' to just the field name. Update placeholder to mention the default.",
+          "example_rails": "<%= f.text_area :feedback, rows: 4, placeholder: \"Feedback (defaults to 'Awesome project!' if left blank)\", class: 'input px-3 mt-1 block w-full', data: { review_autofill_target: 'feedbackTextarea' } %>"
+        },
+        "reason_textarea": {
+          "description": "Add data-review-autofill-target='reasonTextarea' to the internal justification/reason textarea.",
+          "example_rails": "<%= f.text_area :reason, rows: 4, placeholder: 'Justify your decision', class: 'input px-3 mt-1 block w-full', data: { review_autofill_target: 'reasonTextarea' } %>"
+        },
+        "hours_override_field": {
+          "description": "Add data-review-autofill-target='hoursOverride' to the hours override number input. If the field already has other data targets from another controller, both can coexist.",
+          "example_rails": "<%= f.number_field :hours_override, step: 0.01, class: 'input px-3 mt-1 block w-full', data: { review_autofill_target: 'hoursOverride' } %>"
+        },
+        "approve_button": {
+          "description": "Remove any confirmation dialog (e.g., data-turbo-confirm). Add data-review-autofill-target='approveButton' so Ctrl+Enter can find and click it.",
+          "example_rails": "<%= f.button 'Approve', type: 'submit', name: 'review[result]', value: 'approved', class: 'btn btn-primary bg-success', data: { review_autofill_target: 'approveButton' } %>"
+        }
+      },
+
+      "checkbox_sections_html": {
+        "description": "Two sections of checkboxes are added to the review form, each wrapped in an admin-only conditional. They go ABOVE their respective textareas. Each checkbox is an <input type='checkbox'> inside a <label> styled as a pill button. The checkbox's data-text attribute holds the full message string. When toggled, the Stimulus action fires and rebuilds the textarea content from all checked boxes.",
+
+        "justification_shortcuts_section": {
+          "placement": "Above the Internal Justification/Reason textarea",
+          "visibility": "Admin only (wrapped in permission check)",
+          "html_structure": "A container div with a heading, then a flex-wrap div containing label elements. Each label contains a hidden-ish checkbox input and a span with the label text. The label is styled as a pill: rounded border, hover highlight, and a checked state that changes background/border color (green/success theme for justifications).",
+          "single_checkbox_example_html": "<label class='flex items-center gap-2 px-3 py-1.5 rounded border border-white/20 cursor-pointer hover:bg-white/10 transition-colors has-[:checked]:bg-success/20 has-[:checked]:border-success'><input type='checkbox' class='accent-success' data-review-autofill-target='reasonCheckbox' data-action='change->review-autofill#updateReason' data-text='THE FULL MESSAGE TEXT HERE'><span class='text-sm'>Label Name</span></label>",
+          "note": "The has-[:checked] CSS selector makes the label change appearance when the checkbox inside it is checked. This is native CSS, no JS needed for the visual toggle."
+        },
+
+        "feedback_shortcuts_section": {
+          "placement": "Above the Feedback for Author textarea",
+          "visibility": "Admin only (wrapped in permission check)",
+          "html_structure": "Identical structure to justification shortcuts but uses a yellow/warning color theme instead of green/success. Target is 'feedbackCheckbox' and action calls 'updateFeedback'.",
+          "single_checkbox_example_html": "<label class='flex items-center gap-2 px-3 py-1.5 rounded border border-white/20 cursor-pointer hover:bg-white/10 transition-colors has-[:checked]:bg-warning/20 has-[:checked]:border-warning'><input type='checkbox' class='accent-warning' data-review-autofill-target='feedbackCheckbox' data-action='change->review-autofill#updateFeedback' data-text='THE FULL MESSAGE TEXT HERE'><span class='text-sm'>Label Name</span></label>"
+        }
+      },
+
+      "queue_filters_backend": {
+        "description": "The review queue controller has a method that validates allowed filter types from a URL param (ysws_type) and a method that applies that filter to the project query scope. Two new text-search filters and one sort option were added.",
+
+        "name_based_filters": {
+          "description": "Add 'devboard_by_name' and 'keyboard_by_name' to the list of valid ysws_type param values. In the apply_filter method, handle them with a case-insensitive text search (ILIKE in PostgreSQL, LIKE in MySQL/SQLite) on the project's title OR description columns, instead of filtering by the guide/ysws column.",
+          "example_sql": "scope.where('title ILIKE :q OR description ILIKE :q', q: '%devboard%')",
+          "note": "These are independent of what guide the user selected. A project titled 'My Devboard' with ysws='custom' would match devboard_by_name but NOT the regular devboard guide filter."
+        },
+
+        "most_hours_sort": {
+          "description": "Add support for a 'sort' URL param. When sort=most_hours, override the default queue ordering (which is by waiting time) to instead order by total journal entry hours descending. This uses a subquery to sum the duration_seconds column from the journal_entries table for each project.",
+          "example_sql": "(SELECT COALESCE(SUM(journal_entries.duration_seconds), 0) FROM journal_entries WHERE journal_entries.project_id = projects.id) DESC",
+          "persistence": "The sort param must persist across the entire review session. This means passing it through: (1) hidden field in the review form so it survives form submission, (2) all Skip links on the show page, (3) redirect params in show_next action, (4) redirect params in create action after submitting a review. If ANY of these miss the param, the sort resets to default on the next project."
+        }
+      },
+
+      "queue_filter_buttons_ui": {
+        "description": "Add buttons to the review index page alongside existing filter buttons. Each is a link styled as an outline button pointing to the show_next route with the appropriate params.",
+        "buttons": [
+          {
+            "label": "Devboard by name",
+            "url_param": "ysws_type=devboard_by_name"
+          },
+          {
+            "label": "Keyboard by name",
+            "url_param": "ysws_type=keyboard_by_name"
+          },
+          {
+            "label": "Most hours first",
+            "url_param": "sort=most_hours"
+          }
+        ]
+      }
+    },
+
+    "feedback_shortcuts": {
+      "description": "Checkboxes that autofill the Feedback for Author textarea when returning a project. Multiple can be selected; texts concatenate with double newlines between them. Admin only.",
+      "options": [
+        {
+          "label": "Optimize BOM",
+          "text": "The parts list for this project can be cost optimized. Please look into alternative veendors for your parts. Please read this to help: https://blueprint.hackclub.com/resources/parts-sourcing."
+        },
+        {
+          "label": "Missing PCB source",
+          "text": "This is a PCB project but you seem to be missing some or all of the required PCB files such as .kicad_pcb, .kicad_pro, .kicad_sch, and gerbers. Please read the submission guidelines at https://blueprint.hackclub.com/about/submission-guidelines."
+        },
+        {
+          "label": "Missing CAD files",
+          "text": "This project has CAD but seems to be missing some or all of the required CAD files such as .step, .f3d, etc. Please read the submission guidelines before you resubmit. https://blueprint.hackclub.com/about/submission-guidelines."
+        },
+        {
+          "label": "Missing/Bad ReadME",
+          "text": "Please make a more polished ReadME.md on your GitHub. Your ReadMe should include multiple photos of your project, photos of the full assembly such as PCB+Case, and have a good description of your project. Please read the submission guidelines before you resubmit. https://blueprint.hackclub.com/about/submission-guidelines."
+        },
+        {
+          "label": "Journal",
+          "text": "Your journal needs to show the step-by-step process you took in making this project. Please break your larger journal entires into multiple smaller ones, show the steps you took, and explain it better."
+        }
+      ]
+    },
+
+    "justification_shortcuts": {
+      "description": "Checkboxes that autofill the Internal Justification/Reason textarea when approving a project. Multiple can be selected; texts concatenate with double newlines between them. Admin only.",
+      "options": [
+        {
+          "label": "High quality devboard",
+          "text": "This project follows our devboard guide which typically takes 15-20 hours to complete. This project however, is signifigantly higher quality so I am going to deflate only a bit and keep it above that range."
+        },
+        {
+          "label": "Normal devboard",
+          "text": "This project follows our devboard guide which typically takes 15-20 hours to complete. This project is a normal devboard within this range so I am deflating it only a bit."
+        },
+        {
+          "label": "Low hour devboard",
+          "text": "This project follows our devboard guide which typically takes 15-20 hours to complete. This project reported below this range so I am deflating less."
+        },
+        {
+          "label": "High quality keyboard",
+          "text": "This project is a typical full-sized keyboard with a PCB and case which takes around 15-20 hours to complete. This project however, is signifigantly higher quality so I am going to deflate only a bit and keep it above that range."
+        },
+        {
+          "label": "Normal keyboard",
+          "text": "This project is a typical full-sized keyboard with a PCB and case which takes around 15-20 hours to complete. This project is a normal keyboard within this range so I am deflating it only a bit."
+        },
+        {
+          "label": "Low hour keyboard",
+          "text": "This project is a typical full-sized keyboard with a PCB and case which takes around 15-20 hours to complete. This project reported below this range so I am deflating less."
+        },
+        {
+          "label": "Generic low",
+          "text": "This project has a very high quality journal and all of the hours are logged. I am deflating this just to be safe."
+        },
+        {
+          "label": "Generic high",
+          "text": "This project has a very high quality and is shipped. However, some of the journal entries are long and don't make sense so I am deflating it more"
+        },
+        {
+          "label": "Small",
+          "text": "This is a relatively small project and not that crazy. It seems to be one of the users first and is definitely shipped. Because of that, I am approving regardless."
+        },
+        {
+          "label": "Magic",
+          "text": "This project has a incredubly high quality project and all of the hours are logged. I would say this project would qualify as magic. I am deflating this just to be safe."
+        },
+        {
+          "label": "Trusted",
+          "text": "This is a very trusted user and I have talked with this person multiple times about this project and seen them working on it throughout Slack."
+        }
+      ]
+    },
+
+    "keyboard_shortcuts": {
+      "ctrl_enter": "Submits the review as Approved by programmatically clicking the Approve button"
+    },
+
+    "ux_changes": {
+      "feedback_not_mandatory": "Remove required attribute from the feedback textarea. It is no longer mandatory.",
+      "feedback_default_when_blank": "On form submit, if feedback textarea is blank/whitespace, auto-set to 'Awesome project!' before the request fires.",
+      "approve_confirmation_popup_removed": "Remove any confirmation dialog (data-turbo-confirm or window.confirm) from the Approve button. Approve should submit immediately."
+    },
+
+    "hours_autopopulate": {
+      "description": "On page load, if the project's guide type matches a known type, auto-fill the hours_override field. The guide type is passed from server to client via a Stimulus value on the form element (data-review-autofill-ysws-value). After setting the value, dispatch an 'input' event so any other JS listening on that field recalculates.",
+      "values": {
+        "hackpad": 15,
+        "squeak": 5,
+        "led_blinky": 5
+      }
+    }
+  }
+}
