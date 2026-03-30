@@ -12,10 +12,16 @@ class GuildInvitesController < ApplicationController
     @signup = current_user&.guild_signups&.find_by(guild: @guild)
   end
 
-  # Step 1: logged-out user submits email + birthday → send OTP
+  # Step 1: logged-out user submits name + email + birthday → send OTP
   def signup
     email = params[:email].to_s.strip.downcase
     birthday = params[:birthday]
+    name = params[:name].to_s.strip
+
+    if name.blank?
+      redirect_to guild_invite_path(slug: params[:slug]), alert: "Please enter your name."
+      return
+    end
 
     if email.blank? || !(email =~ URI::MailTo::EMAIL_REGEXP)
       redirect_to guild_invite_path(slug: params[:slug]), alert: "Please enter a valid email address."
@@ -36,6 +42,7 @@ class GuildInvitesController < ApplicationController
     if otp.send!
       session[:guild_invite_email] = email
       session[:guild_invite_birthday] = birthday
+      session[:guild_invite_name] = name
       redirect_to guild_invite_path(slug: params[:slug], otp_sent: true)
     else
       redirect_to guild_invite_path(slug: params[:slug]), alert: "Failed to send verification code. Please try again."
@@ -46,6 +53,7 @@ class GuildInvitesController < ApplicationController
   def verify
     email = session[:guild_invite_email].to_s.strip.downcase
     birthday_raw = session[:guild_invite_birthday]
+    name = session[:guild_invite_name]
     otp = params[:otp].to_s.strip
 
     if email.blank?
@@ -60,6 +68,7 @@ class GuildInvitesController < ApplicationController
 
     session.delete(:guild_invite_email)
     session.delete(:guild_invite_birthday)
+    session.delete(:guild_invite_name)
 
     referrer_id = cookies[:referrer_id]&.to_i
     user = User.find_or_create_from_email(email, referrer_id: referrer_id)
@@ -73,7 +82,7 @@ class GuildInvitesController < ApplicationController
       return if result == :redirected
     end
 
-    create_guild_signup_for(user)
+    create_guild_signup_for(user, name: name)
   end
 
   # Logged-in user accepts invite
@@ -99,7 +108,7 @@ class GuildInvitesController < ApplicationController
       return if result == :redirected
     end
 
-    create_guild_signup_for(current_user)
+    create_guild_signup_for(current_user, name: params[:name])
   end
 
   def success
@@ -137,7 +146,7 @@ class GuildInvitesController < ApplicationController
     nil
   end
 
-  def create_guild_signup_for(user)
+  def create_guild_signup_for(user, name: nil)
     if user.guild_signups.exists?(guild: @guild)
       redirect_to guild_invite_success_path(slug: params[:slug])
       return
@@ -146,7 +155,7 @@ class GuildInvitesController < ApplicationController
     signup = user.guild_signups.build(
       guild: @guild,
       role: :attendee,
-      name: user.display_name,
+      name: name.presence || user.display_name,
       email: user.email,
       country: @guild.country,
       skip_slack_validation: true

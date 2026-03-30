@@ -32,6 +32,10 @@
         </div>
 
         <%= form_with url: accept_guild_invite_path(slug: params[:slug]), method: :post, data: { turbo: false } do |f| %>
+          <div class="mb-4">
+            <label for="name" class="block text-white font-medium mb-1 text-left">Your name</label>
+            <%= f.text_field :name, value: current_user.display_name, required: true, class: "w-full input bg-bp-dark border border-white/25 text-white" %>
+          </div>
           <% if current_user.birthday.nil? %>
             <div class="mb-4" data-controller="age-warning">
               <label for="birthday" class="block text-white font-medium mb-1 text-left">When's your birthday?</label>
@@ -67,6 +71,7 @@
         <% else %>
           <%= form_with url: guild_invite_signup_path(slug: params[:slug]), method: :post, data: { turbo: false } do |f| %>
             <div class="flex flex-col space-y-4">
+              <%= f.text_field :name, required: true, class: "input placeholder-white/75 text-lg md:text-xl", placeholder: "Your name" %>
               <%= f.email_field :email, required: true, class: "input placeholder-white/75 text-lg md:text-xl", placeholder: "Your email" %>
               <div data-controller="age-warning">
                 <label for="birthday" class="block text-white font-medium mb-1 text-left">When's your birthday?</label>
