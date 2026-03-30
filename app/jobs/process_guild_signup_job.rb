@@ -110,11 +110,8 @@ class ProcessGuildSignupJob < ApplicationJob
         Rails.logger.info "User #{user.id} already in channel #{guild.slack_channel_id}"
       rescue Slack::Web::Api::Errors::UserIsRestricted
         Rails.logger.warn "User #{user.id} is a multi-channel guest, cannot invite to #{guild.slack_channel_id}"
-        notify_admin(admin_channel, "<@#{user.slack_id}> is a multi-channel guest and cannot be invited to <##{guild.slack_channel_id}> (role: #{signup.role}). They have been DM'd instructions to become a full member.")
-        slack_client.chat_postMessage(
-          channel: user.slack_id,
-          text: "Hey! We couldn't add you to your guild's Slack channel (<##{guild.slack_channel_id}>) because your account is a multi-channel guest. To get promoted to a full member, follow the instructions in this post: https://hackclub.slack.com/archives/C0A9PMV58R5/p1770294664806709\n\nOnce you're a full member, you'll be able to join <##{guild.slack_channel_id}>!"
-        ) rescue nil
+        notify_admin(admin_channel, "<@#{user.slack_id}> is a multi-channel guest and cannot be invited to <##{guild.slack_channel_id}> (role: #{signup.role}). They will be DM'd instructions to become a full member.")
+        @user_is_mcg = true
       rescue Slack::Web::Api::Errors::SlackError => e
         Rails.logger.error "Failed to invite user #{user.id} to channel #{guild.slack_channel_id}: #{e.message}"
         notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to <##{guild.slack_channel_id}> (role: #{signup.role}): #{e.message}")
@@ -153,6 +150,7 @@ class ProcessGuildSignupJob < ApplicationJob
     # already there
   rescue Slack::Web::Api::Errors::UserIsRestricted
     Rails.logger.warn "User #{user.id} is a multi-channel guest, cannot invite to #build-guilds"
+    @user_is_mcg = true
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Failed to invite user #{user.id} to #build-guilds: #{e.message}"
     notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to #build-guilds: #{e.message}")
@@ -190,7 +188,9 @@ class ProcessGuildSignupJob < ApplicationJob
     dm_response = slack_client.conversations_open(users: user.slack_id)
     dm_channel = dm_response["channel"]["id"]
 
-    dm_text = if converted
+    dm_text = if @user_is_mcg
+      "Hey! You've signed up for the Build Guild in #{guild.city}, but we couldn't add you to your guild's Slack channel (<##{guild.slack_channel_id}>) because your account is a multi-channel guest. To get promoted to a full member, follow the instructions in this post: https://hackclub.slack.com/archives/C0A9PMV58R5/p1770294664806709\n\nOnce you're a full member, you'll be able to join <##{guild.slack_channel_id}>!"
+    elsif converted
       "You signed up as an organizer for the Build Guild in #{guild.city}, but the maximum number of organizers has already been reached. You'll still be added to the guild channel and can participate! If you'd like to help organize, please contact an existing organizer."
     elsif signup.organizer?
       "You've signed up to organize a Build Guild in #{guild.city}! We've created a channel <##{guild.slack_channel_id}> for planning and communication with attendees. You've also been added to the central organizers channel <##{organizers_channel}> where you can talk with other organizers and ask any questions you might have about running your guild!"
