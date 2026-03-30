@@ -11,11 +11,11 @@ class ProcessGuildSignupJob < ApplicationJob
 
     if guild.needs_review?
       Rails.logger.info "Guild #{guild.id} flagged for review – skipping Slack actions for signup #{signup.id}."
-      notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New signup held: *#{user.display_name}* (#{signup.role}) for *#{guild.city}*. Guild needs review.")
+      notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New signup held: *#{signup.name}* (#{signup.role}) for *#{guild.city}*. Guild needs review.")
       return
     end
 
-    notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New #{signup.role} signup: *#{user.display_name}* for *#{guild.city}*")
+    notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New #{signup.role} signup: *#{signup.name}* for *#{guild.city}*")
 
     admin_channel = ENV["GUILDS_ADMIN_CHANNEL"]
     organizers_channel = ENV["GUILDS_ORGANIZERS_CHANNEL"]
@@ -32,7 +32,7 @@ class ProcessGuildSignupJob < ApplicationJob
           signup.update!(role: :attendee)
           converted = true
           Rails.logger.info "Converted signup #{signup.id} to attendee (exceeded max organizers)"
-          notify_admin(admin_channel, "User #{user.display_name} signed up as organizer for #{guild.city} but max organizers (#{MAX_ORGANIZERS}) exceeded. Converted to attendee.")
+          notify_admin(admin_channel, "User #{signup.name} signed up as organizer for #{guild.city} but max organizers (#{MAX_ORGANIZERS}) exceeded. Converted to attendee.")
         end
       end
     end
@@ -73,7 +73,7 @@ class ProcessGuildSignupJob < ApplicationJob
     begin
       response = slack_client.conversations_create(name: channel_name)
       guild.update!(slack_channel_id: response["channel"]["id"])
-      notify_admin(admin_channel, "New guild channel created: <##{guild.slack_channel_id}> for #{guild.city} (triggered by #{signup.role}: #{user.display_name})")
+      notify_admin(admin_channel, "New guild channel created: <##{guild.slack_channel_id}> for #{guild.city} (triggered by #{signup.role}: #{signup.name})")
     rescue Slack::Web::Api::Errors::NameTaken
       # Channel already exists, try to find it
       existing = nil
@@ -120,7 +120,7 @@ class ProcessGuildSignupJob < ApplicationJob
         notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to <##{guild.slack_channel_id}> (role: #{signup.role}): #{e.message}")
       end
     else
-      notify_admin(admin_channel, "User #{user.display_name} has no Slack ID – cannot invite to <##{guild.slack_channel_id}> (role: #{signup.role})")
+      notify_admin(admin_channel, "User #{signup.name} has no Slack ID – cannot invite to <##{guild.slack_channel_id}> (role: #{signup.role})")
     end
   end
 
@@ -141,7 +141,7 @@ class ProcessGuildSignupJob < ApplicationJob
         notify_admin(admin_channel, "Failed to invite <@#{user.slack_id}> to <##{organizers_channel}>: #{e.message}")
       end
     else
-      notify_admin(admin_channel, "User #{user.display_name} has no Slack ID - cannot invite to organizers channel")
+      notify_admin(admin_channel, "User #{signup.name} has no Slack ID - cannot invite to organizers channel")
     end
   end
 

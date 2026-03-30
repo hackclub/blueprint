@@ -74,6 +74,11 @@ class GuildInvitesController < ApplicationController
     user = User.find_or_create_from_email(email, referrer_id: referrer_id)
     cookies.delete(:referrer_id) if referrer_id
 
+    # Set username from invite form if they dont have one (non-Slack signups)
+    if user.username.blank? && name.present?
+      user.update!(username: name.split.first)
+    end
+
     reset_session
     session[:user_id] = user.id
 
