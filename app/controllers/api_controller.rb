@@ -1,7 +1,7 @@
 class ApiController < ApplicationController
-  allow_unauthenticated_access only: %i[ site stickers report_grant_given report_free_stickers_claimed ]
-  skip_forgery_protection only: %i[ site stickers report_grant_given report_free_stickers_claimed ]
-  before_action :authenticate_api, only: %i[ stickers report_grant_given report_free_stickers_claimed ]
+  allow_unauthenticated_access only: %i[ site stickers report_grant_given report_free_stickers_claimed unfinished_projects ]
+  skip_forgery_protection only: %i[ site stickers report_grant_given report_free_stickers_claimed unfinished_projects ]
+  before_action :authenticate_api, only: %i[ stickers report_grant_given report_free_stickers_claimed unfinished_projects ]
 
   def site
     render plain: "#{Project.where(is_deleted: false).count} projects made"
@@ -62,6 +62,44 @@ class ApiController < ApplicationController
 
     user.update!(free_stickers_claimed: true)
     render json: { ok: true }
+  end
+
+  def unfinished_projects
+    email = params[:email]
+    unless email.present?
+      render json: { ok: false, error: "Missing email" }, status: :bad_request
+      return
+    end
+
+    user = User.find_by(email: email)
+    unless user
+      render plain: "No Unfinished Projects"
+      return
+    end
+
+    projects = user.projects.where(review_status: nil, is_deleted: false)
+
+    if projects.empty?
+      render plain: "No Unfinished Projects"
+      return
+    end
+
+    markdown = projects.map do |project|
+      lines = []
+      lines << "## #{project.title} (ID: #{project.id})"
+      lines << ""
+      lines << "**Description:** #{project.description}" if project.description.present?
+      lines << "**Tier:** #{project.tier}" if project.tier.present?
+      lines << "**Type:** #{project.project_type}" if project.project_type.present?
+      lines << "**YSWS:** #{project.ysws}" if project.ysws.present?
+      lines << "**Repo:** #{project.repo_link}" if project.repo_link.present?
+      lines << "**Demo:** #{project.demo_link}" if project.demo_link.present?
+      lines << "**Hours Logged:** #{project.approx_hour}" if project.approx_hour.present?
+      lines << "**Created:** #{project.created_at.strftime('%Y-%m-%d')}"
+      lines.join("\n")
+    end.join("\n\n---\n\n")
+
+    render plain: markdown
   end
 
   private
