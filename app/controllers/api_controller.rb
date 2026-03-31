@@ -86,7 +86,7 @@ class ApiController < ApplicationController
 
     markdown = projects.map do |project|
       lines = []
-      lines << "## #{project.title} (ID: #{project.id})"
+      lines << "## #{project.title.strip} (ID: #{project.id})"
       lines << ""
       lines << "**Description:** #{project.description}" if project.description.present?
       lines << "**Tier:** #{project.tier}" if project.tier.present?
