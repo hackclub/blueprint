@@ -210,6 +210,11 @@ class ProjectsController < ApplicationController
       return
     end
 
+    unless @project.is_currently_build?
+      redirect_to project_path(@project), alert: "Design review submissions have been closed."
+      return
+    end
+
     prepare_ship_state
 
     if @project.is_currently_build?
@@ -284,6 +289,11 @@ class ProjectsController < ApplicationController
 
     has_ship = params.dig(:project, :ship).present?
     params[:project].delete(:ship) if has_ship
+
+    if has_ship && !@project.is_currently_build?
+      redirect_to project_path(@project), alert: "Design review submissions are temporarily paused."
+      return
+    end
 
     if !current_user.is_pro
       params[:project][:ysws] = "hackpad"
