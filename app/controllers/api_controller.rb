@@ -96,6 +96,20 @@ class ApiController < ApplicationController
       lines << "**Demo:** #{project.demo_link}" if project.demo_link.present?
       lines << "**Hours Logged:** #{project.approx_hour}" if project.approx_hour.present?
       lines << "**Created:** #{project.created_at.strftime('%Y-%m-%d')}"
+
+      entries = project.journal_entries.order(created_at: :asc)
+      if entries.any?
+        lines << ""
+        lines << "### Journal Entries"
+        entries.each do |entry|
+          hours = entry.duration_seconds.to_f / 3600
+          lines << ""
+          lines << "# #{entry.created_at.strftime('%-m/%-d/%Y %-l:%M %p').strip} - #{entry.summary}"
+          lines << "_Time spent: #{format('%.1f', hours)}h_"
+          lines << entry.content if entry.content.present?
+        end
+      end
+
       lines.join("\n")
     end.join("\n\n---\n\n")
 
