@@ -210,7 +210,7 @@ class ProjectsController < ApplicationController
       return
     end
 
-    unless @project.is_currently_build?
+    unless @project.is_currently_build? || @project.can_resubmit_design?
       redirect_to project_path(@project), alert: "Design review submissions have been closed."
       return
     end
@@ -290,8 +290,8 @@ class ProjectsController < ApplicationController
     has_ship = params.dig(:project, :ship).present?
     params[:project].delete(:ship) if has_ship
 
-    if has_ship && !@project.is_currently_build?
-      redirect_to project_path(@project), alert: "Design review submissions are temporarily paused."
+    if has_ship && !@project.is_currently_build? && !@project.can_resubmit_design?
+      redirect_to project_path(@project), alert: "Design review submissions have been closed."
       return
     end
 

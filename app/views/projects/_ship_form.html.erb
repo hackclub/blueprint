@@ -1,4 +1,9 @@
 <h1 class="text-4xl">Submit project</h1>
+<% if @project.design_needs_revision? && @project.design_resubmission_count > 0 %>
+  <div class="p-4 mb-2 rounded-md bg-bp-warning/20 border border-bp-warning">
+    <p class="text-lg font-bold">You have <%= pluralize(@project.design_resubmissions_remaining, "re-submission") %> remaining.</p>
+  </div>
+<% end %>
 <p class="text-xl">Finished designing? Right this way!</p>
 <% guidelines_url = @project.ysws == "hackpad" ? "/hackpad/submitting" : "/about/submission-guidelines" %>
 <p class="text-xl">Make sure you read the <a class="text-bp-warning font-bold underline"href="<%= guidelines_url %>" target="_blank" rel="noopener noreferrer">submission guidelines</a> before submitting and check off all the boxes.</p>

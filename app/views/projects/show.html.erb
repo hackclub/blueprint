@@ -37,8 +37,14 @@
             <% if current_user.present? %>
               <% if current_user == @project.user %>
                 <% if @project.can_edit? %>
-                  <% if !@project.is_currently_build? %>
-                    <%= render "shared/button", text: "Design Submissions Closed", class: "py-1 px-6 opacity-50 cursor-not-allowed", html_options: { disabled: true, title: "Design review submissions have been closed" } %>
+                  <% if @project.can_resubmit_design? %>
+                    <%= render "shared/button", text: h(@project.submit_button_text), class: "py-1 px-6", html_options: { data: { controller: "modal", action: "click->modal#show", modal_target_id_value: "design-resubmit-confirm" } } %>
+                  <% elsif !@project.is_currently_build? %>
+                    <% if @project.design_needs_revision? %>
+                      <%= render "shared/button", text: "No Re-submissions Remaining", class: "py-1 px-6 opacity-50 cursor-not-allowed", html_options: { disabled: true } %>
+                    <% else %>
+                      <%= render "shared/button", text: "Design Submissions Closed", class: "py-1 px-6 opacity-50 cursor-not-allowed", html_options: { disabled: true, title: "Design review submissions have been closed" } %>
+                    <% end %>
                   <% else %>
                     <%= render "shared/button", text: h(@project.submit_button_text), url: ship_project_path(@project), class: "py-1 px-6" %>
                   <% end %>
@@ -104,8 +110,39 @@
     <%= render "timeline", project: @project %>
   </div>
 
+  <% if current_user.present? && current_user == @project.user && @project.can_resubmit_design? %>
+    <div
+    data-controller="modal"
+    data-action="modal:show-design-resubmit-confirm@window->modal#show modal:hide-design-resubmit-confirm@window->modal#hide"
+    class="fixed inset-0 z-50 hidden">
+      <div class="fixed inset-0 flex items-center justify-center p-4">
+        <%= render "shared/card", html_options: { data: { modal_target: "panel" } }, class: "z-50 min-w-xl space-y-0" do %>
+          <div class="flex flex-col items-center space-y-8">
+            <p class="text-3xl font-rc-full">Re-submit design review?</p>
+            <p class="text-lg text-center">
+              <% if @project.design_resubmissions_remaining == 1 %>
+                This is your last submission attempt since Blueprint has ended. Are you sure?
+              <% else %>
+                This is your <%= @project.design_resubmissions_remaining.ordinalize %> last submission attempt since Blueprint has ended. Are you sure?
+              <% end %>
+            </p>
+            <div class="flex w-full space-x-4 justify-evenly">
+              <div class="w-full">
+                <%= render "shared/button", text: "Cancel", variant: :outline, class: "w-full", html_options: { data: { controller: "modal", action: "click->modal#hide", modal_target_id_value: "design-resubmit-confirm" } } %>
+              </div>
+              <div class="w-full">
+                <%= render "shared/button", text: "Continue", as: :link, class: "w-full", url: ship_project_path(@project) %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <div data-modal-target="overlay" class="fixed inset-0 z-40 bg-black/50"></div>
+      </div>
+    </div>
+  <% end %>
+
   <% if current_user.present? && current_user == @project.user %>
-    <div 
+    <div
     data-controller="modal"
     data-action="modal:show-delete-project@window->modal#show modal:hide-delete-project@window->modal#hide modal:toggle-delete-project@window->modal#toggle modal:next-delete-project@window->modal#next"
     class="fixed inset-0 z-50 hidden">

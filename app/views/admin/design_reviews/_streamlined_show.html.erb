@@ -215,6 +215,17 @@
                 </div>
               </div>
 
+              <% if project.design_resubmission_count > 0 %>
+                <div class="px-3 py-1.5">
+                  <% remaining = project.design_resubmissions_remaining %>
+                  <% if remaining == 1 %>
+                    <span class="text-xs font-semibold text-amber-600 dark:text-amber-400">1 more attempt after this</span>
+                  <% elsif remaining <= 0 %>
+                    <span class="text-xs font-semibold text-red-600 dark:text-red-400">This is the last attempt</span>
+                  <% end %>
+                </div>
+              <% end %>
+
               <%# Links row %>
               <% link_count = [project.repo_link.present?, project.demo_link.present?].count(true) %>
               <% if link_count > 0 %>

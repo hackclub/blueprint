@@ -53,6 +53,9 @@
 class Project < ApplicationRecord
   include ActionView::Helpers::TextHelper
 
+  DESIGN_DEADLINE = Time.new(2026, 4, 1, 0, 53, 0, "-04:00").freeze
+  MAX_DESIGN_RESUBMISSIONS = 2
+
   attr_accessor :preloaded_view_count, :preloaded_follower_count
 
   belongs_to :user
@@ -618,6 +621,8 @@ class Project < ApplicationRecord
       throw "Project is already shipped!"
     end
 
+    resubmitting_design = design_needs_revision?
+
     if user.ysws_verified.nil? || user.ysws_verified == false
       update!(review_status: :awaiting_idv)
       user.update(is_pro: true) unless user.is_pro?
@@ -631,12 +636,18 @@ class Project < ApplicationRecord
     if build_approved? || has_approved_design
       update!(review_status: :build_pending)
     elsif design == true
+      increment!(:design_resubmission_count) if resubmitting_design
       update!(review_status: :design_pending)
     elsif design == false
       update!(review_status: :build_pending)
     else
       # No explicit design param and no approved review - use needs_funding
-      update!(review_status: needs_funding? ? :design_pending : :build_pending)
+      if needs_funding?
+        increment!(:design_resubmission_count) if resubmitting_design
+        update!(review_status: :design_pending)
+      else
+        update!(review_status: :build_pending)
+      end
     end
 
     user.update(is_pro: true) unless user.is_pro?
@@ -659,7 +670,15 @@ class Project < ApplicationRecord
   end
 
   def can_ship?
-    review_status.nil? || design_needs_revision? || build_needs_revision? || awaiting_idv? || design_approved? || build_approved?
+    review_status.nil? || (design_needs_revision? && can_resubmit_design?) || build_needs_revision? || awaiting_idv? || design_approved? || build_approved?
+  end
+
+  def design_resubmissions_remaining
+    MAX_DESIGN_RESUBMISSIONS - (design_resubmission_count || 0)
+  end
+
+  def can_resubmit_design?
+    design_needs_revision? && design_resubmissions_remaining > 0
   end
 
   def is_currently_build?

@@ -75,6 +75,16 @@
           <p>Self-reported: <span class="font-medium"><%= @project.approx_hour %>h</span></p>
         <% end %>
         </div>
+        <% if @project.design_resubmission_count > 0 %>
+          <div class="mt-2">
+            <% remaining = @project.design_resubmissions_remaining %>
+            <% if remaining == 1 %>
+              <p class="text-bp-warning font-bold">1 more attempt after this</p>
+            <% elsif remaining <= 0 %>
+              <p class="text-bp-danger font-bold">This is the last attempt</p>
+            <% end %>
+          </div>
+        <% end %>
       </div>
     </div>
     <div class="space-y-6">
