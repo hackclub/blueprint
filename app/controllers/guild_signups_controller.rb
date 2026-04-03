@@ -115,10 +115,8 @@ class GuildSignupsController < ApplicationController
     return if check_ip_rate_limit!(guilds_path, email: current_user&.email, city: raw_city, name: current_user&.display_name, slack_id: current_user&.slack_id)
 
     if raw_city.blank?
-      @signup = current_user.guild_signups.build(signup_params)
-      @signup.errors.add(:city, "can't be blank")
-      @guilds_page = true
-      render "guilds/index", status: :unprocessable_entity and return
+      redirect_to guilds_path(anchor: "signup-form"), alert: "City can't be blank."
+      return
     end
 
     raw_country = params[:guild_signup][:country]&.strip
@@ -145,8 +143,7 @@ class GuildSignupsController < ApplicationController
       errors = @signup&.errors&.full_messages&.join(", ")
       guild_note = @guild_is_new ? " (new guild creation for #{raw_city} was rolled back)" : " (existing guild: #{@guild&.city})"
       notify_admin_channel("Failed signup by *#{current_user.display_name}* for *#{raw_city}*#{guild_note}: #{errors}")
-      @guilds_page = true
-      render "guilds/index", status: :unprocessable_entity
+      redirect_to guilds_path(anchor: "signup-form"), alert: errors
     end
   end
 
