@@ -73,6 +73,10 @@
               class: "w-full p-3 bg-bp-dark border border-white/25 rounded-none text-white" %>
       </div>
 
+      <div style="position:absolute;left:-9999px;" aria-hidden="true">
+        <%= f.text_field :website, tabindex: "-1", autocomplete: "off" %>
+      </div>
+
       <button type="submit" class="btn bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-none hover:bg-bp-warning-darker cursor-pointer">
         Submit!
       </button>
@@ -172,6 +176,10 @@
         <% if @signup.errors[:attendee_activities].any? %>
           <p class="text-red-500 text-sm mt-1"><%= @signup.errors[:attendee_activities].join(', ') %></p>
         <% end %>
+      </div>
+
+      <div style="position:absolute;left:-9999px;" aria-hidden="true">
+        <%= f.text_field :website, tabindex: "-1", autocomplete: "off" %>
       </div>
 
       <%= f.submit "Submit!",

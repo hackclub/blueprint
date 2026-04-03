@@ -12,24 +12,32 @@ class GuildInvitesController < ApplicationController
     @signup = current_user&.guild_signups&.find_by(guild: @guild)
   end
 
-  # Step 1: logged-out user submits name + email + birthday → send OTP
   def signup
     email = params[:email].to_s.strip.downcase
     birthday = params[:birthday]
     name = params[:name].to_s.strip
+    invite_path = guild_invite_path(slug: params[:slug])
+
+    return if check_honeypot!(invite_path, email: email, city: @guild&.city)
+    return if check_ip_rate_limit!(invite_path, email: email, city: @guild&.city)
 
     if name.blank?
-      redirect_to guild_invite_path(slug: params[:slug]), alert: "Please enter your name."
+      redirect_to invite_path, alert: "Please enter your name."
       return
     end
 
     if email.blank? || !(email =~ URI::MailTo::EMAIL_REGEXP)
-      redirect_to guild_invite_path(slug: params[:slug]), alert: "Please enter a valid email address."
+      redirect_to invite_path, alert: "Please enter a valid email address."
+      return
+    end
+
+    if disposable_email?(email)
+      redirect_to invite_path, alert: "This email domain is not allowed. Please use a real email address."
       return
     end
 
     if birthday.blank?
-      redirect_to guild_invite_path(slug: params[:slug]), alert: "Please enter your birthday."
+      redirect_to invite_path, alert: "Please enter your birthday."
       return
     end
 
@@ -49,12 +57,13 @@ class GuildInvitesController < ApplicationController
     end
   end
 
-  # Step 2: logged-out user submits OTP → verify, create account, set age, join guild
   def verify
     email = session[:guild_invite_email].to_s.strip.downcase
     birthday_raw = session[:guild_invite_birthday]
     name = session[:guild_invite_name]
     otp = params[:otp].to_s.strip
+
+    return if check_ip_rate_limit!(guild_invite_path(slug: params[:slug], otp_sent: true), email: email)
 
     if email.blank?
       redirect_to guild_invite_path(slug: params[:slug]), alert: "Please start by entering your email."
@@ -92,6 +101,9 @@ class GuildInvitesController < ApplicationController
 
   # Logged-in user accepts invite
   def accept
+    return if check_honeypot!(guild_invite_path(slug: params[:slug]), email: current_user&.email, city: @guild&.city)
+    return if check_ip_rate_limit!(guild_invite_path(slug: params[:slug]), email: current_user&.email, city: @guild&.city)
+
     unless current_user
       session[:after_login_redirect] = guild_invite_path(slug: params[:slug])
       redirect_to login_path, alert: "Sign up or log in to join this guild!"
@@ -124,6 +136,86 @@ class GuildInvitesController < ApplicationController
   end
 
   private
+
+  DISPOSABLE_EMAIL_DOMAINS = %w[
+    tempmail.ing aniimate.net animateany.com gettranslation.app deepask.app
+    animatimg.com theeditai.com wnbaldwy.com marvetos.com mailinator.com
+    guerrillamail.com guerrillamail.net guerrillamail.org guerrillamail.de
+    grr.la guerrillamailblock.com tempmail.com temp-mail.org temp-mail.io
+    throwaway.email throwaway.cc fakeinbox.com sharklasers.com
+    guerrillamail.info spam4.me trashmail.com trashmail.me trashmail.net
+    yopmail.com yopmail.fr dispostable.com maildrop.cc mailnesia.com
+    tempail.com tempr.email discard.email discardmail.com discardmail.de
+    emailondeck.com getnada.com nada.email burnermail.io inboxbear.com
+    mailcatch.com mintemail.com mohmal.com tempinbox.com 10minutemail.com
+    10minutemail.net 20minutemail.com mailtemp.net harakirimail.com
+    crazymailing.com tmail.ws mailsac.com emailfake.com generator.email
+    tmpmail.net tmpmail.org moakt.cc moakt.ws 1secmail.com 1secmail.net
+    1secmail.org internxt.com disposableemailaddress.com
+  ].freeze
+
+  def disposable_email?(email)
+    domain = email.to_s.strip.downcase.split("@").last
+    return false if domain.blank?
+
+    if DISPOSABLE_EMAIL_DOMAINS.include?(domain)
+      log_signup_attempt(client_ip, email: email, blocked: true, reason: "disposable email: #{domain}")
+      true
+    else
+      false
+    end
+  end
+
+  def check_ip_rate_limit!(redirect_path, email: nil, city: nil)
+    ip = client_ip
+    hourly_key = "guild_signup_ip:#{ip}:#{Time.current.strftime('%Y%m%d%H')}"
+    daily_key = "guild_signup_ip:#{ip}:#{Time.current.strftime('%Y%m%d')}"
+
+    hourly_count = Rails.cache.increment(hourly_key, 1, expires_in: 1.hour) || 1
+    daily_count = Rails.cache.increment(daily_key, 1, expires_in: 24.hours) || 1
+
+    log_signup_attempt(ip, email: email, city: city, blocked: hourly_count > 2 || daily_count > 3)
+
+    if hourly_count > 2 || daily_count > 3
+      detail = hourly_count > 2 ? "#{hourly_count} attempts this hour" : "#{daily_count} attempts today"
+      notify_admin_channel(":rotating_light: Rate limited signup attempt from IP `#{ip}` (#{detail}). Email: #{email || 'N/A'}, City: #{city || 'N/A'}")
+      redirect_to redirect_path, alert: "You've made too many signup attempts. Please try again later."
+      return true
+    end
+
+    false
+  end
+
+  def check_honeypot!(redirect_path, email: nil, city: nil)
+    honeypot_value = (params[:website].presence || params.dig(:guild_signup, :website)).to_s.strip
+    return false if honeypot_value.blank?
+
+    log_signup_attempt(client_ip, email: email, city: city, blocked: true, reason: "honeypot: #{honeypot_value}")
+    notify_admin_channel(":robot_face: Honeypot triggered! Value: `#{honeypot_value}`, IP: `#{client_ip}`, Email: #{email || 'N/A'}, City: #{city || 'N/A'}")
+    redirect_to redirect_path
+    true
+  end
+
+  def log_signup_attempt(ip, email: nil, city: nil, blocked: false, reason: nil)
+    log_key = "guild_signup_log:#{ip}"
+    attempts = Rails.cache.read(log_key) || []
+    attempts << { email: email, city: city, blocked: blocked, reason: reason, at: Time.current.iso8601 }
+    Rails.cache.write(log_key, attempts.last(20), expires_in: 7.days)
+
+    flagged_ips = Rails.cache.read("guild_signup_flagged_ips") || []
+    unless flagged_ips.include?(ip)
+      flagged_ips << ip
+      Rails.cache.write("guild_signup_flagged_ips", flagged_ips, expires_in: 7.days)
+    end
+  end
+
+  def notify_admin_channel(message)
+    return unless ENV["GUILDS_ADMIN_CHANNEL"].present?
+    slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+    slack_client.chat_postMessage(channel: ENV["GUILDS_ADMIN_CHANNEL"], text: message)
+  rescue => e
+    Rails.logger.error "Failed to notify admin channel: #{e.message}"
+  end
 
   def apply_birthday(user, birthday_raw)
     begin

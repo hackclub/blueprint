@@ -47,6 +47,9 @@
               </p>
             </div>
           <% end %>
+          <div style="position:absolute;left:-9999px;" aria-hidden="true">
+            <%= f.text_field :website, tabindex: "-1", autocomplete: "off" %>
+          </div>
           <button type="submit" class="w-full bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-4 px-8 rounded-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30 cursor-pointer">
             Join <%= @guild.city %> Guild
           </button>
@@ -80,6 +83,9 @@
                 <p class="text-yellow-400 text-sm mt-1 hidden" data-age-warning-target="warning">
                   Are you sure? This age seems unusual. Please double-check your birthday.
                 </p>
+              </div>
+              <div style="position:absolute;left:-9999px;" aria-hidden="true">
+                <%= f.text_field :website, tabindex: "-1", autocomplete: "off" %>
               </div>
               <button type="submit" class="w-full bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-4 px-8 rounded-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30 cursor-pointer">
                 Sign up &amp; Join Guild

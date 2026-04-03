@@ -18,6 +18,7 @@ class SlackCommandsController < ApplicationController
     /guild-set-channel
     /guild-archive-closed
     /guild-sync-poc
+    /guild-spam
   ].freeze
 
   def handle
@@ -66,6 +67,8 @@ class SlackCommandsController < ApplicationController
       guild_sync_poc_async(params[:response_url])
 
 
+    when "/guild-spam"
+      { response_type: "ephemeral", text: guild_spam_message(params[:text]) }
     when "/guild-ideas"
       { response_type: "ephemeral", text: guild_ideas_message(params[:user_id], params[:channel_id]) }
     else
@@ -121,7 +124,7 @@ class SlackCommandsController < ApplicationController
 
     if guilds.any?
       list = guilds.map do |g|
-        days = g.pending? ? " – pending #{g.days_pending.round} day#{'s' if g.days_pending.round != 1}" : ""
+        days = g.pending? ? " : pending #{g.days_pending.round} day#{'s' if g.days_pending.round != 1}" : ""
         "• #{g.name} (#{g.city})#{days}"
       end.join("\n")
       "#{guilds.count} guild#{'s' if guilds.count != 1} with no organizers:\n#{list}"
@@ -139,7 +142,7 @@ class SlackCommandsController < ApplicationController
 
     if guilds.any?
       list = guilds.map.with_index(1) do |g, i|
-        "#{i}. #{g.name} – #{g.signups_count} signup#{'s' unless g.signups_count == 1}"
+        "#{i}. #{g.name}: #{g.signups_count} signup#{'s' unless g.signups_count == 1}"
       end.join("\n")
       "Top #{limit} guild#{'s' unless limit == 1} by total signups:\n#{list}"
     else
@@ -158,7 +161,7 @@ class SlackCommandsController < ApplicationController
         flags << "needs review" if g.needs_review?
         flags << "no organizers" if organizers == 0
         flag_text = flags.any? ? " :warning: #{flags.join(', ')}" : ""
-        "• *#{g.name}* (#{g.city}) – #{g.status} – #{organizers} org / #{attendees} att#{flag_text}"
+        "• *#{g.name}* (#{g.city}): #{g.status}: #{organizers} org / #{attendees} att#{flag_text}"
       end.join("\n")
       "#{guilds.count} guilds:\n#{list}"
     else
@@ -544,6 +547,41 @@ class SlackCommandsController < ApplicationController
 
     list = signups.map.with_index(1) { |s, i| "#{i}. #{s.attendee_activities}" }.join("\n")
     "*Attendee ideas for #{guild.name}* (#{signups.count}):\n#{list}"
+  end
+
+  def guild_spam_message(text)
+    ip = text.to_s.strip
+
+    if ip.blank?
+      flagged_ips = Rails.cache.read("guild_signup_flagged_ips") || []
+      return "No flagged IPs found." if flagged_ips.empty?
+
+      lines = flagged_ips.filter_map do |addr|
+        attempts = Rails.cache.read("guild_signup_log:#{addr}") || []
+        next if attempts.empty?
+
+        blocked_count = attempts.count { |a| a[:blocked] }
+        total = attempts.size
+        emails = attempts.filter_map { |a| a[:email] }.uniq.first(3)
+        email_preview = emails.any? ? " (#{emails.join(', ')})" : ""
+        "• `#{addr}`: #{total} attempt#{'s' unless total == 1}, #{blocked_count} blocked#{email_preview}"
+      end
+
+      return "No signup attempts logged." if lines.empty?
+      "*Flagged IPs:*\n#{lines.join("\n")}"
+    else
+      attempts = Rails.cache.read("guild_signup_log:#{ip}") || []
+      return "No signup attempts found for IP `#{ip}`." if attempts.empty?
+
+      lines = attempts.map do |a|
+        status = a[:blocked] ? "blocked" : "allowed"
+        reason = a[:reason] ? " (#{a[:reason]})" : ""
+        time = a[:at] ? Time.iso8601(a[:at]).strftime("%b %d %H:%M") : "?"
+        "• #{time}: #{a[:email] || 'N/A'}: #{a[:city] || 'N/A'}: #{status}#{reason}"
+      end
+
+      "*Signup attempts from `#{ip}`:*\n#{lines.join("\n")}"
+    end
   end
 
   def find_slack_user(input)
