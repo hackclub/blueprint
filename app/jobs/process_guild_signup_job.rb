@@ -11,11 +11,13 @@ class ProcessGuildSignupJob < ApplicationJob
 
     if guild.needs_review?
       Rails.logger.info "Guild #{guild.id} flagged for review – skipping Slack actions for signup #{signup.id}."
-      notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New signup held: *#{signup.name}* (#{signup.role}) for *#{guild.city}*. Guild needs review.")
+      slack_info = user.slack_id.present? ? " (<@#{user.slack_id}>)" : ""
+      notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New signup held: *#{signup.name}*#{slack_info} (#{signup.email}, #{signup.role}) for *#{guild.city}*. Guild needs review.")
       return
     end
 
-    notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New #{signup.role} signup: *#{signup.name}* for *#{guild.city}*")
+    slack_info = user.slack_id.present? ? " (<@#{user.slack_id}>)" : ""
+    notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New #{signup.role} signup: *#{signup.name}*#{slack_info} (#{signup.email}) for *#{guild.city}*")
 
     admin_channel = ENV["GUILDS_ADMIN_CHANNEL"]
     organizers_channel = ENV["GUILDS_ORGANIZERS_CHANNEL"]

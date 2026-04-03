@@ -160,6 +160,7 @@ class GuildInvitesController < ApplicationController
 
     if DISPOSABLE_EMAIL_DOMAINS.include?(domain)
       log_signup_attempt(client_ip, email: email, blocked: true, reason: "disposable email: #{domain}")
+      notify_admin_channel("Blocked disposable email signup: #{email} (#{domain}), IP: #{client_ip}")
       true
     else
       false

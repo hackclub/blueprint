@@ -180,13 +180,19 @@ class SlackCommandsController < ApplicationController
     attendees = guild.guild_signups.where(role: :attendee).includes(:user)
 
     org_list = if organizers.any?
-      organizers.map { |s| "  • #{s.name} (#{s.email})" }.join("\n")
+      organizers.map { |s|
+        slack = s.user&.slack_id.present? ? " <@#{s.user.slack_id}>" : ""
+        "  • #{s.name} (#{s.email})#{slack}"
+      }.join("\n")
     else
       "  (none)"
     end
 
     att_list = if attendees.any?
-      attendees.map { |s| "  • #{s.name} (#{s.email})" }.join("\n")
+      attendees.map { |s|
+        slack = s.user&.slack_id.present? ? " <@#{s.user.slack_id}>" : ""
+        "  • #{s.name} (#{s.email})#{slack}"
+      }.join("\n")
     else
       "  (none)"
     end
