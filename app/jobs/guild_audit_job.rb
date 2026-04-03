@@ -67,13 +67,9 @@ class GuildAuditJob < ApplicationJob
 
       sorted = group.sort_by(&:created_at)
       sorted.each_with_index do |signup, i|
-        window = sorted[i, 5]
-        break if window.size < 5
-        if (window.last.created_at - window.first.created_at) <= 1.hour
-          window.each do |s|
-            bulk_flags[s.id] = [ window.size, bulk_flags[s.id] || 0 ].max
-          end
-        end
+        cluster = sorted[i..].take_while { |s| s.created_at - signup.created_at <= 1.hour }
+        next if cluster.size < 5
+        cluster.each { |s| bulk_flags[s.id] = [ cluster.size, bulk_flags[s.id] || 0 ].max }
       end
     end
 
