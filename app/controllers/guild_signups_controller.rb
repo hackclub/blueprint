@@ -292,9 +292,9 @@ class GuildSignupsController < ApplicationController
     hourly_count = Rails.cache.increment(hourly_key, 1, expires_in: 1.hour) || 1
     daily_count = Rails.cache.increment(daily_key, 1, expires_in: 24.hours) || 1
 
-    log_signup_attempt(ip, email: email, city: city, blocked: hourly_count > 2 || daily_count > 3)
+    log_signup_attempt(ip, email: email, city: city, blocked: hourly_count > 8 || daily_count > 12)
 
-    if hourly_count > 2 || daily_count > 3
+    if hourly_count > 8 || daily_count > 12
       detail = hourly_count > 2 ? "#{hourly_count} attempts this hour" : "#{daily_count} attempts today"
       notify_admin_channel(">> Rate limited signup attempt from IP #{ip} (#{detail}). Name: #{name || 'N/A'}, Email: #{email || 'N/A'}, City: #{city || 'N/A'}#{slack_id.present? ? ", Slack: <@#{slack_id}>" : ""}")
       redirect_to redirect_path, alert: "You've made too many signup attempts. Please try again later."
