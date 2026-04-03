@@ -20,9 +20,10 @@ class GuildSignupsController < ApplicationController
     email = params[:guild_signup][:email].to_s.strip.downcase
     birthday = params[:guild_signup][:birthday]
     city = params.dig(:guild_signup, :city).to_s.strip
+    signup_name = params.dig(:guild_signup, :name).to_s.strip
 
-    return if check_honeypot!(guilds_path(anchor: "signup-form"), email: email, city: city)
-    return if check_ip_rate_limit!(guilds_path(anchor: "signup-form"), email: email, city: city)
+    return if check_honeypot!(guilds_path(anchor: "signup-form"), email: email, city: city, name: signup_name)
+    return if check_ip_rate_limit!(guilds_path(anchor: "signup-form"), email: email, city: city, name: signup_name)
 
     if email.blank? || !(email =~ URI::MailTo::EMAIL_REGEXP)
       redirect_to guilds_path(anchor: "signup-form"), alert: "Please enter a valid email address."
@@ -97,8 +98,8 @@ class GuildSignupsController < ApplicationController
 
   def create
     raw_city = params[:guild_signup][:city]&.strip
-    return if check_honeypot!(guild_signups_success_path, email: current_user&.email, city: raw_city)
-    return if check_ip_rate_limit!(guilds_path, email: current_user&.email, city: raw_city)
+    return if check_honeypot!(guild_signups_success_path, email: current_user&.email, city: raw_city, name: current_user&.display_name, slack_id: current_user&.slack_id)
+    return if check_ip_rate_limit!(guilds_path, email: current_user&.email, city: raw_city, name: current_user&.display_name, slack_id: current_user&.slack_id)
 
     if raw_city.blank?
       @signup = current_user.guild_signups.build(signup_params)
@@ -282,7 +283,7 @@ class GuildSignupsController < ApplicationController
     end
   end
 
-  def check_ip_rate_limit!(redirect_path, email: nil, city: nil)
+  def check_ip_rate_limit!(redirect_path, email: nil, city: nil, name: nil, slack_id: nil)
     ip = client_ip
     hourly_key = "guild_signup_ip:#{ip}:#{Time.current.strftime('%Y%m%d%H')}"
     daily_key = "guild_signup_ip:#{ip}:#{Time.current.strftime('%Y%m%d')}"
@@ -294,7 +295,7 @@ class GuildSignupsController < ApplicationController
 
     if hourly_count > 2 || daily_count > 3
       detail = hourly_count > 2 ? "#{hourly_count} attempts this hour" : "#{daily_count} attempts today"
-      notify_admin_channel(":rotating_light: Rate limited signup attempt from IP `#{ip}` (#{detail}). Email: #{email || 'N/A'}, City: #{city || 'N/A'}")
+      notify_admin_channel("!! Rate limited signup attempt from IP `#{ip}` (#{detail}). Name: #{name || 'N/A'}, Email: #{email || 'N/A'}, City: #{city || 'N/A'}#{slack_id.present? ? ", Slack: <@#{slack_id}>" : ""}")
       redirect_to redirect_path, alert: "You've made too many signup attempts. Please try again later."
       return true
     end
@@ -302,12 +303,12 @@ class GuildSignupsController < ApplicationController
     false
   end
 
-  def check_honeypot!(redirect_path, email: nil, city: nil)
+  def check_honeypot!(redirect_path, email: nil, city: nil, name: nil, slack_id: nil)
     honeypot_value = (params[:website].presence || params.dig(:guild_signup, :website)).to_s.strip
     return false if honeypot_value.blank?
 
     log_signup_attempt(client_ip, email: email, city: city, blocked: true, reason: "honeypot: #{honeypot_value}")
-    notify_admin_channel(":robot_face: Honeypot triggered! Value: `#{honeypot_value}`, IP: `#{client_ip}`, Email: #{email || 'N/A'}, City: #{city || 'N/A'}")
+    notify_admin_channel("!! Honeypot triggered! Value: `#{honeypot_value}`, IP: `#{client_ip}`, Name: #{name || 'N/A'}, Email: #{email || 'N/A'}, City: #{city || 'N/A'}#{slack_id.present? ? ", Slack: <@#{slack_id}>" : ""}")
     redirect_to redirect_path
     true
   end
