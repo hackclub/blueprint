@@ -579,23 +579,23 @@ class SlackCommandsController < ApplicationController
         total = attempts.size
         emails = attempts.filter_map { |a| a[:email] }.uniq.first(3)
         email_preview = emails.any? ? " (#{emails.join(', ')})" : ""
-        "• `#{addr}`: #{total} attempt#{'s' unless total == 1}, #{blocked_count} blocked#{email_preview}"
+        "#{addr}: #{total} attempt#{'s' unless total == 1}, #{blocked_count} blocked#{email_preview}"
       end
 
       return "No signup attempts logged." if lines.empty?
       "*Flagged IPs:*\n#{lines.join("\n")}"
     else
       attempts = Rails.cache.read("guild_signup_log:#{ip}") || []
-      return "No signup attempts found for IP `#{ip}`." if attempts.empty?
+      return "No signup attempts found for IP #{ip}." if attempts.empty?
 
       lines = attempts.map do |a|
         status = a[:blocked] ? "blocked" : "allowed"
         reason = a[:reason] ? " (#{a[:reason]})" : ""
         time = a[:at] ? Time.iso8601(a[:at]).strftime("%b %d %H:%M") : "?"
-        "• #{time}: #{a[:email] || 'N/A'}: #{a[:city] || 'N/A'}: #{status}#{reason}"
+        "• #{time} #{a[:email] || 'N/A'} #{a[:city] || 'N/A'} #{status}#{reason}"
       end
 
-      "*Signup attempts from `#{ip}`:*\n#{lines.join("\n")}"
+      "*Signup attempts from #{ip}:*\n#{lines.join("\n")}"
     end
   end
 

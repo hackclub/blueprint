@@ -295,7 +295,7 @@ class GuildSignupsController < ApplicationController
 
     if hourly_count > 2 || daily_count > 3
       detail = hourly_count > 2 ? "#{hourly_count} attempts this hour" : "#{daily_count} attempts today"
-      notify_admin_channel("!! Rate limited signup attempt from IP `#{ip}` (#{detail}). Name: #{name || 'N/A'}, Email: #{email || 'N/A'}, City: #{city || 'N/A'}#{slack_id.present? ? ", Slack: <@#{slack_id}>" : ""}")
+      notify_admin_channel(">> Rate limited signup attempt from IP #{ip} (#{detail}). Name: #{name || 'N/A'}, Email: #{email || 'N/A'}, City: #{city || 'N/A'}#{slack_id.present? ? ", Slack: <@#{slack_id}>" : ""}")
       redirect_to redirect_path, alert: "You've made too many signup attempts. Please try again later."
       return true
     end
@@ -308,7 +308,7 @@ class GuildSignupsController < ApplicationController
     return false if honeypot_value.blank?
 
     log_signup_attempt(client_ip, email: email, city: city, blocked: true, reason: "honeypot: #{honeypot_value}")
-    notify_admin_channel("!! Honeypot triggered! Value: `#{honeypot_value}`, IP: `#{client_ip}`, Name: #{name || 'N/A'}, Email: #{email || 'N/A'}, City: #{city || 'N/A'}#{slack_id.present? ? ", Slack: <@#{slack_id}>" : ""}")
+    notify_admin_channel(">> Honeypot triggered! Value: #{honeypot_value}, IP: #{client_ip}, Name: #{name || 'N/A'}, Email: #{email || 'N/A'}, City: #{city || 'N/A'}#{slack_id.present? ? ", Slack: <@#{slack_id}>" : ""}")
     redirect_to redirect_path
     true
   end
