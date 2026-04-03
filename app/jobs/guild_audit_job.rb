@@ -71,14 +71,13 @@ class GuildAuditJob < ApplicationJob
         break if window.size < 5
         if (window.last.created_at - window.first.created_at) <= 1.hour
           window.each do |s|
-            count = window.size
-            bulk_flags[s.id] = [ count, bulk_flags[s.id]&.first || 0 ].max
+            bulk_flags[s.id] = [ window.size, bulk_flags[s.id] || 0 ].max
           end
         end
       end
     end
 
-    bulk_flags.each do |id, (count, _)|
+    bulk_flags.each do |id, count|
       signup = signups.find { |s| s.id == id }
       next unless signup
       next if definitely_suspicious.any? { |d| d[:signup].id == id }
