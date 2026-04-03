@@ -94,6 +94,25 @@ class AirtableSync < ApplicationRecord
     upload_or_create!(table_id, record, fields, base_id: base_id)
   end
 
+  def self.delete_record!(klass, record_id, base_id: nil)
+    validate_sync_methods!(klass)
+    base_id ||= base_id_for(klass)
+    table_id = klass.airtable_sync_table_id
+    identifier = "#{klass.name}##{record_id}"
+
+    sync_record = find_by(record_identifier: identifier)
+    return unless sync_record&.airtable_id.present?
+
+    response = Faraday.delete("https://api.airtable.com/v0/#{base_id}/#{table_id}/#{sync_record.airtable_id}") do |req|
+      req.headers = { "Authorization" => "Bearer #{ENV['AIRTABLE_PAT']}" }
+    end
+
+    Rails.logger.info("Airtable delete response: #{response.status} - #{response.body}")
+    sync_record.destroy!
+  rescue => e
+    Rails.logger.error("Airtable delete failed for #{identifier}: #{e.message}")
+  end
+
   def self.upload_or_create!(table_id, object, fields, base_id: nil)
     base_id ||= ENV["AIRTABLE_BASE_ID"]
     old_airtable_id = find_by(record_identifier: build_identifier(object))&.airtable_id

@@ -37,7 +37,8 @@ class GuildSignup < ApplicationRecord
   after_commit :enqueue_processing_job, on: :create
   after_commit :send_confirmation_email, on: :create
   after_commit :sync_to_airtable, on: [ :create, :update ]
-  after_commit :sync_guild_to_airtable, on: [ :create, :update ], if: :organizer?
+  after_commit :delete_from_airtable, on: :destroy
+  after_commit :sync_guild_to_airtable, on: [ :create, :update ]
 
   validates :name, :email, :role, :country, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
@@ -48,7 +49,7 @@ class GuildSignup < ApplicationRecord
   validate :one_organizer_signup_only, if: :organizer?
 
   after_destroy :update_guild_topic, if: :organizer?
-  after_destroy :sync_guild_to_airtable, if: :organizer?
+  after_destroy :sync_guild_to_airtable
   after_destroy :mark_guild_pending_if_no_organizer, if: :organizer?
 
   def one_organizer_signup_only
@@ -119,6 +120,13 @@ class GuildSignup < ApplicationRecord
   def sync_guild_to_airtable
     return if ENV["DISABLE_AIRTABLE_SYNC"].present?
     guild.sync_to_airtable if guild.present?
+  end
+
+  def delete_from_airtable
+    return if ENV["DISABLE_AIRTABLE_SYNC"].present?
+    AirtableSync.delete_record!(self.class, id)
+  rescue => e
+    Rails.logger.error "Failed to delete guild signup #{id} from Airtable: #{e.message}"
   end
 
   def mark_guild_pending_if_no_organizer

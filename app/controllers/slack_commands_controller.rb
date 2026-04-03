@@ -19,6 +19,8 @@ class SlackCommandsController < ApplicationController
     /guild-archive-closed
     /guild-sync-poc
     /guild-spam
+    /guild-audit
+    /guild-verify
   ].freeze
 
   def handle
@@ -69,6 +71,10 @@ class SlackCommandsController < ApplicationController
 
     when "/guild-spam"
       { response_type: "ephemeral", text: guild_spam_message(params[:text]) }
+    when "/guild-audit"
+      guild_audit_async(params[:response_url])
+    when "/guild-verify"
+      { response_type: "in_channel", text: guild_verify_message(params[:text]) }
     when "/guild-ideas"
       { response_type: "ephemeral", text: guild_ideas_message(params[:user_id], params[:channel_id]) }
     else
@@ -603,6 +609,42 @@ class SlackCommandsController < ApplicationController
 
       "*Signup attempts from #{ip}:*\n#{lines.join("\n")}"
     end
+  end
+
+  def guild_verify_message(text)
+    parts = text.to_s.split
+    return "Usage: `/guild-verify <email> [more emails...]`\nTo clear the verified list: `/guild-verify reset`" if parts.empty?
+
+    if parts[0].downcase == "reset"
+      Rails.cache.delete("guild_audit_verified_ids")
+      return "Cleared all verified signups. They will appear in the next audit."
+    end
+
+    verified_ids = Rails.cache.read("guild_audit_verified_ids") || Set.new
+    results = []
+
+    parts.each do |email|
+      email = email.strip.downcase
+      signups = GuildSignup.where("LOWER(email) = ?", email)
+
+      if signups.empty?
+        results << "No signups found for `#{email}`."
+        next
+      end
+
+      signups.each do |signup|
+        verified_ids << signup.id
+        results << "Verified `#{email}` for *#{signup.guild&.city || 'unknown'}*."
+      end
+    end
+
+    Rails.cache.write("guild_audit_verified_ids", verified_ids)
+    results.join("\n")
+  end
+
+  def guild_audit_async(response_url)
+    GuildAuditJob.perform_later(response_url)
+    { response_type: "in_channel", text: "Running fraud audit across all guild signups…" }
   end
 
   def find_slack_user(input)
