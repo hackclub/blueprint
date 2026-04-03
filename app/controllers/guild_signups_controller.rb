@@ -153,7 +153,7 @@ class GuildSignupsController < ApplicationController
   private
 
   def signup_params
-    params.require(:guild_signup).permit(:role, :name, :email, :country, :ideas, :attendee_activities, :website)
+    params.require(:guild_signup).permit(:role, :name, :email, :country, :ideas, :attendee_activities)
   end
 
   def find_or_create_guild(raw_city, raw_country)
