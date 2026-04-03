@@ -40,7 +40,7 @@ class GuildSignupsController < ApplicationController
       return
     end
 
-    otp = OneTimePassword.create!(email: email, request_ip: request.remote_ip)
+    otp = OneTimePassword.create!(email: email, request_ip: client_ip)
     if otp.send!
       session[:guild_signup_email] = email
       session[:guild_signup_birthday] = birthday
@@ -62,7 +62,7 @@ class GuildSignupsController < ApplicationController
       return
     end
 
-    unless OneTimePassword.valid?(otp, email, request_ip: request.remote_ip)
+    unless OneTimePassword.valid?(otp, email, request_ip: client_ip)
       redirect_to guilds_path(otp_sent: true, anchor: "signup-form"), alert: "Invalid code. Please try again."
       return
     end

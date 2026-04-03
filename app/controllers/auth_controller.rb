@@ -517,11 +517,11 @@ class AuthController < ApplicationController
   end
 
   def send_otp(email)
-    otp = OneTimePassword.create!(email: email, request_ip: request.remote_ip)
+    otp = OneTimePassword.create!(email: email, request_ip: client_ip)
     otp.send!
   end
 
   def validate_otp(email, otp)
-    OneTimePassword.valid?(otp, email, request_ip: request.remote_ip)
+    OneTimePassword.valid?(otp, email, request_ip: client_ip)
   end
 end

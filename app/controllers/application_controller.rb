@@ -60,6 +60,10 @@ class ApplicationController < ActionController::Base
     redirect_to age_verification_path
   end
 
+  def client_ip
+    request.headers["CF-Connecting-IP"].presence || request.remote_ip
+  end
+
   def redirect_adults
     return unless user_logged_in?
     return unless current_user.birthday.present?
