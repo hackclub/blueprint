@@ -15,7 +15,7 @@
   <% if !user_logged_in? && params[:otp_sent] %>
     <%= form_with url: guild_signups_verify_path, method: :post, local: true, class: "flex flex-col gap-4 max-w-xl w-full mx-auto" do |f| %>
       <%= f.text_field :otp, required: true, autofocus: true, autocomplete: "one-time-code", class: "w-full p-3 bg-bp-dark border border-white/25 rounded-none text-white placeholder-white/50 text-lg", placeholder: "Check your email for a code!" %>
-      <button type="submit" class="btn bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-none hover:bg-bp-warning-darker cursor-pointer">
+      <button type="submit" class="btn bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-none hover:bg-bp-warning-darker cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" data-turbo-submits-with="Verifying...">
         Verify &amp; Sign Up
       </button>
     <% end %>
@@ -77,7 +77,7 @@
         <%= f.text_field :website, tabindex: "-1", autocomplete: "off" %>
       </div>
 
-      <button type="submit" class="btn bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-none hover:bg-bp-warning-darker cursor-pointer">
+      <button type="submit" class="btn bg-bp-warning text-white text-xl md:text-2xl border-0 w-full rounded-none hover:bg-bp-warning-darker cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" data-turbo-submits-with="Submitting...">
         Submit!
       </button>
 

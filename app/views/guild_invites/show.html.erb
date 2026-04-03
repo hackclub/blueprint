@@ -50,7 +50,7 @@
           <div style="position:absolute;left:-9999px;" aria-hidden="true">
             <%= f.text_field :website, tabindex: "-1", autocomplete: "off" %>
           </div>
-          <button type="submit" class="w-full bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-4 px-8 rounded-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30 cursor-pointer">
+          <button type="submit" class="w-full bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-4 px-8 rounded-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" data-turbo-submits-with="Joining...">
             Join <%= @guild.city %> Guild
           </button>
         <% end %>
@@ -66,7 +66,7 @@
           <%= form_with url: guild_invite_verify_path(slug: params[:slug]), method: :post, data: { turbo: false } do |f| %>
             <div class="flex flex-col space-y-4">
               <%= f.text_field :otp, required: true, autofocus: true, autocomplete: "one-time-code", class: "input placeholder-white/75 text-lg md:text-xl", placeholder: "Check your email for a code!" %>
-              <button type="submit" class="w-full bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-4 px-8 rounded-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30 cursor-pointer">
+              <button type="submit" class="w-full bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-4 px-8 rounded-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" data-turbo-submits-with="Verifying...">
                 Verify &amp; Join Guild
               </button>
             </div>
@@ -87,7 +87,7 @@
               <div style="position:absolute;left:-9999px;" aria-hidden="true">
                 <%= f.text_field :website, tabindex: "-1", autocomplete: "off" %>
               </div>
-              <button type="submit" class="w-full bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-4 px-8 rounded-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30 cursor-pointer">
+              <button type="submit" class="w-full bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-4 px-8 rounded-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" data-turbo-submits-with="Signing up...">
                 Sign up &amp; Join Guild
               </button>
             </div>
