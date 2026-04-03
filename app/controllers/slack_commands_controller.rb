@@ -384,26 +384,45 @@ class SlackCommandsController < ApplicationController
 
   def guild_remove_user_message(text)
     parts = text.to_s.split
-    return "Usage: `/guild-remove-user @user <city>`\nExample: `/guild-remove-user @john London`" unless parts.length >= 2
+    return "Usage: `/guild-remove-user <@user or email> [more users...] <city>`\nExample: `/guild-remove-user @john London`" unless parts.length >= 2
 
-    raw_input = parts[0].strip
-    city = parts[1..].join(" ")
+    user_inputs = []
+    city_parts = []
+    parts.each do |part|
+      if city_parts.empty? && (part.include?("@") || part.match?(/\AU\w{8,}\z/))
+        user_inputs << part.strip
+      else
+        city_parts << part
+      end
+    end
 
-    user = find_slack_user(raw_input)
-    return "No user found for \"#{raw_input}\". Try using their Slack ID (e.g. U12345678)." unless user
+    return "No city specified." if city_parts.empty?
+    return "No users specified." if user_inputs.empty?
 
+    city = city_parts.join(" ")
     guild = find_guild(city)
     return "No guild found for \"#{city}\"." unless guild
 
+    results = user_inputs.map { |raw_input| remove_user_from_guild(raw_input, guild) }
+
+    AirtableSyncClassJob.perform_later("GuildSignup")
+    AirtableSyncClassJob.perform_later("Guild")
+
+    results.join("\n")
+  end
+
+  def remove_user_from_guild(raw_input, guild)
+    user = find_slack_user(raw_input)
+    return "No user found for \"#{raw_input}\"." unless user
+
     signup = user.guild_signups.find_by(guild: guild)
-    return "<@#{user.slack_id}> is not signed up for *#{guild.city}*." unless signup
+    return "#{user.display_name} (#{raw_input}) is not signed up for *#{guild.city}*." unless signup
 
     role = signup.role
     signup.destroy!
 
     Rails.logger.info "[SlackBot] /guild-remove-user user=#{user.id} guild=#{guild.id} role=#{role} by=#{params[:user_id]}"
 
-    # Remove from Slack channel in background
     if guild.slack_channel_id.present? && user.slack_id.present?
       Thread.new do
         slack = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
@@ -413,11 +432,7 @@ class SlackCommandsController < ApplicationController
       end
     end
 
-    # Sync Airtable in background
-    AirtableSyncClassJob.perform_later("GuildSignup")
-    AirtableSyncClassJob.perform_later("Guild")
-
-    "Removed <@#{user.slack_id}> (#{role}) from *#{guild.city}*."
+    "Removed #{user.display_name} (#{role}) from *#{guild.city}*."
   end
 
   def guild_add_user_message(text)
