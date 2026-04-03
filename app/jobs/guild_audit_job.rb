@@ -9,9 +9,6 @@ class GuildAuditJob < ApplicationJob
   ]
 
   def perform(response_url)
-    verified_ids = Rails.cache.read("guild_audit_verified_ids") || Set.new
-    signups = GuildSignup.where.not(id: verified_ids.to_a).includes(:user, :guild).to_a
-    blocked_domains = GuildSignupProtection.blocked_domains
 
     definitely_suspicious = []
     possibly_suspicious = []
@@ -111,6 +108,10 @@ class GuildAuditJob < ApplicationJob
     report = build_report(definitely_suspicious, possibly_suspicious, signups.size)
     post_to_slack(report)
     post_to_response_url(response_url, "Audit complete. Report posted to admin channel.")
+  rescue => e
+    Rails.logger.error "[GuildAudit] Job failed: #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}"
+    post_to_response_url(response_url, "Audit failed: #{e.message}") if response_url.present?
+    raise
   end
 
   private

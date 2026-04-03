@@ -19,7 +19,11 @@ module GuildSignupProtection
   def self.fetch_blocklist
     require "net/http"
     uri = URI(BLOCKLIST_URL)
-    response = Net::HTTP.get_response(uri)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.open_timeout = 5
+    http.read_timeout = 5
+    response = http.request(Net::HTTP::Get.new(uri))
     raise "HTTP #{response.code}" unless response.is_a?(Net::HTTPSuccess)
 
     domains = response.body.each_line.map { |line| line.strip.downcase }.reject(&:blank?)
