@@ -76,7 +76,18 @@ class GuildSignupsController < ApplicationController
       return
     end
 
+    otp_debug = OneTimePassword.with_email(email).last
     unless OneTimePassword.valid?(otp, email, request_ip: client_ip)
+      reason = if otp_debug.nil?
+        "no OTP found for email"
+      elsif otp_debug.expired?
+        "OTP expired"
+      elsif otp_debug.request_ip != client_ip
+        "IP mismatch: stored #{otp_debug.request_ip}, got #{client_ip}"
+      else
+        "secret mismatch"
+      end
+      notify_admin_channel("OTP verification failed for #{email} (guilds signup). Reason: #{reason}, IP: #{client_ip}")
       redirect_to guilds_path(otp_sent: true, anchor: "signup-form"), alert: "Invalid code. Please try again."
       return
     end

@@ -72,7 +72,18 @@ class GuildInvitesController < ApplicationController
       return
     end
 
+    otp_debug = OneTimePassword.with_email(email).last
     unless OneTimePassword.valid?(otp, email, request_ip: client_ip)
+      reason = if otp_debug.nil?
+        "no OTP found for email"
+      elsif otp_debug.expired?
+        "OTP expired"
+      elsif otp_debug.request_ip != client_ip
+        "IP mismatch: stored #{otp_debug.request_ip}, got #{client_ip}"
+      else
+        "secret mismatch"
+      end
+      notify_admin_channel("OTP verification failed for #{email} (invite: #{@guild&.city}). Reason: #{reason}, IP: #{client_ip}")
       redirect_to guild_invite_path(slug: params[:slug], otp_sent: true), alert: "Invalid code. Please try again."
       return
     end
