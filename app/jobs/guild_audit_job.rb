@@ -60,7 +60,7 @@ class GuildAuditJob < ApplicationJob
     end
 
     bulk_groups = signups.group_by { |s| [ s.guild_id, s.country.to_s.downcase ] }
-    bulk_flagged_ids = Set.new
+    bulk_flags = {}
 
     bulk_groups.each do |(guild_id, country), group|
       next if group.size < 5
@@ -70,18 +70,21 @@ class GuildAuditJob < ApplicationJob
         window = sorted[i, 5]
         break if window.size < 5
         if (window.last.created_at - window.first.created_at) <= 1.hour
-          window.each { |s| bulk_flagged_ids << s.id }
+          window.each do |s|
+            count = window.size
+            bulk_flags[s.id] = [ count, bulk_flags[s.id]&.first || 0 ].max
+          end
         end
       end
     end
 
-    bulk_flagged_ids.each do |id|
+    bulk_flags.each do |id, (count, _)|
       signup = signups.find { |s| s.id == id }
       next unless signup
       next if definitely_suspicious.any? { |d| d[:signup].id == id }
 
       existing = possibly_suspicious.find { |p| p[:signup].id == id }
-      flag = "part of 5+ signups to #{signup.guild&.city || 'unknown'} from #{signup.country} within 1 hour"
+      flag = "part of #{count} signups to #{signup.guild&.city || 'unknown'} within 1 hour"
       if existing
         existing[:flags] << flag
       else
