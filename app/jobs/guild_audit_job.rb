@@ -9,6 +9,9 @@ class GuildAuditJob < ApplicationJob
   ]
 
   def perform(response_url)
+    verified_ids = Rails.cache.read("guild_audit_verified_ids") || Set.new
+    signups = GuildSignup.where.not(id: verified_ids.to_a).includes(:user, :guild).to_a
+    blocked_domains = GuildSignupProtection.blocked_domains
 
     definitely_suspicious = []
     possibly_suspicious = []
