@@ -89,7 +89,8 @@ class GuildAuditJob < ApplicationJob
 
     report = build_report(definitely_suspicious, possibly_suspicious, signups.size)
     post_to_slack(report)
-    post_to_response_url(response_url, "Audit complete. Report posted to admin channel.")
+    summary = build_summary(definitely_suspicious, possibly_suspicious, signups.size)
+    post_to_response_url(response_url, "Audit complete. Report posted to admin channel.\n\n#{summary}")
   rescue => e
     Rails.logger.error "[GuildAudit] Job failed: #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}"
     post_to_response_url(response_url, "Audit failed: #{e.message}") if response_url.present?
@@ -163,6 +164,35 @@ class GuildAuditJob < ApplicationJob
     lines << "\n*Summary:* #{definitely_suspicious.size} definite, #{possibly_suspicious.size} possible flags out of #{total_signups} signups."
 
     lines.join("\n")
+  end
+
+  def build_summary(definitely_suspicious, possibly_suspicious, total_signups)
+    lines = []
+    lines << " #{definitely_suspicious.size} definitely suspicious, #{possibly_suspicious.size} possibly suspicious out of #{total_signups} signups."
+
+    flag_counts = Hash.new(0)
+    (definitely_suspicious + possibly_suspicious).each do |entry|
+      entry[:flags].each { |f| flag_counts[normalize_flag(f)] += 1 }
+    end
+
+    if flag_counts.any?
+      flag_counts.sort_by { |_, count| -count }.each do |flag, count|
+        lines << "- #{flag}: #{count}"
+      end
+    end
+
+    lines.join("\n")
+  end
+
+  def normalize_flag(flag)
+    case flag
+    when /disposable email/i then "Disposable email domain"
+    when /multiple names/i then "Many names from the same suspicious domain"
+    when /random-looking name/i then "Random looking name"
+    when /auto-generated email/i then "Probably auto-generated email"
+    when /signups to .+ within/i then "5+ signups within 1 hour"
+    else flag
+    end
   end
 
   def post_to_slack(message)

@@ -25,6 +25,16 @@
       </div>
     <% end %>
 
+    <% if @is_poc %>
+      <div class="p-4 border-2 border-red-500 rounded-none space-y-2">
+        <p class="text-lg font-bold text-red-500">Funding Form</p>
+        <p class="text-white/90 text-sm">
+          As the POC for your guild, we need you to fill out this short form so we can get funding to your Build Guild. Only you can submit this for your guild, and we can't send funding until it's filled out!
+        </p>
+        <%= render "shared/button", text: "Fill Out Funding Form", url: "https://forms.hackclub.com/blueprint-checkin", variant: :primary, class: "text-sm py-1", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
+      </div>
+    <% end %>
+
     <% announcements = @guild.announcements %>
     <% tz = current_user.timezone || Time.zone %>
     <% if @is_organizer %>

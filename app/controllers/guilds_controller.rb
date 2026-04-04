@@ -15,6 +15,7 @@ class GuildsController < ApplicationController
     end
     @is_organizer = @signup.organizer?
     @guild = @signup.guild
+    @is_poc = @is_organizer && @guild.guild_signups.where(role: :organizer).order(:created_at).first&.user_id == current_user.id
     if @guild.needs_review
       redirect_to guilds_path, alert: "Your guild is currently under review. You'll get access to the dashboard once it's approved."
       return

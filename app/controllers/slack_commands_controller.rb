@@ -18,6 +18,7 @@ class SlackCommandsController < ApplicationController
     /guild-set-channel
     /guild-archive-closed
     /guild-sync-poc
+    /guild-sync
     /guild-spam
     /guild-audit
     /guild-verify
@@ -67,7 +68,8 @@ class SlackCommandsController < ApplicationController
       guild_archive_closed_async(params[:response_url])
     when "/guild-sync-poc"
       guild_sync_poc_async(params[:response_url])
-
+    when "/guild-sync"
+      guild_sync_airtable_async(params[:response_url])
 
     when "/guild-spam"
       { response_type: "ephemeral", text: guild_spam_message(params[:text]) }
@@ -549,6 +551,15 @@ class SlackCommandsController < ApplicationController
     GuildArchiveClosedChannelsJob.perform_later(response_url)
 
     { response_type: "in_channel", text: "Archiving channels for #{guilds.count} closed guild(s)…" }
+  end
+
+  def guild_sync_airtable_async(response_url)
+    guild_count = Guild.count
+    signup_count = GuildSignup.count
+
+    GuildSyncAirtableJob.perform_later(response_url)
+
+    { response_type: "in_channel", text: "Syncing #{guild_count} guilds and #{signup_count} signups to Airtable…" }
   end
 
   def guild_sync_poc_async(response_url)
