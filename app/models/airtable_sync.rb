@@ -227,13 +227,23 @@ class AirtableSync < ApplicationRecord
   def self.perform_individual_sync!(ctx, records, log_prefix:)
     airtable_ids = []
     total = records.size
+    failed = 0
 
     records.each_with_index do |record, index|
       if (index + 1) % 100 == 0 || index + 1 == total
         Rails.logger.info("#{log_prefix}: Processing #{ctx[:klass].name} (#{index + 1}/#{total})")
       end
-      airtable_ids << individual_sync!(ctx[:table_id], record, ctx[:mappings], nil, base_id: ctx[:base_id])
+      begin
+        airtable_ids << individual_sync!(ctx[:table_id], record, ctx[:mappings], nil, base_id: ctx[:base_id])
+      rescue => e
+        failed += 1
+        fields = build_airtable_fields(record, ctx[:mappings])
+        Rails.logger.error("#{log_prefix}: Failed to sync #{ctx[:klass].name}##{record.id}: #{e.message}. Fields: #{fields.inspect}")
+        airtable_ids << nil
+      end
     end
+
+    raise "#{failed}/#{total} #{ctx[:klass].name} records failed to sync" if failed > 0
 
     airtable_ids
   end

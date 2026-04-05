@@ -201,6 +201,12 @@
     </details>
 
     <% if @is_organizer %>
+      <div class="p-4 border-2 border-red-500 rounded-none space-y-2">
+        <p class="text-lg font-bold text-red-500">Safeguarding Training</p>
+        <p class="text-white/70 text-sm">Please complete the safeguarding training and review the <a href="https://hackclub.com/safeguarding-policy/" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Safeguarding Policy</a></p>
+        <%= render "shared/button", text: "Complete Safeguarding Training", url: "https://forms.hackclub.com/safeguarding-training", variant: :primary, class: "text-sm py-1", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
+      </div>
+
       <div class="p-4 border-2 border-white rounded-none space-y-2">
         <p class="text-lg font-bold">Organizer Resources</p>
         <div class="space-y-1 text-sm">
