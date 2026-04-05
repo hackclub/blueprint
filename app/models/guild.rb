@@ -119,7 +119,9 @@ class Guild < ApplicationRecord
     "Kochi" => "https://buildguildkochi.netlify.app/",
     "Oxford" => "https://katetriestocode.github.io/buildguildoxford/",
     "Siliguri" => "https://buildguildsiliguri.xyz/",
-    "Ahmedabad" => "https://buildguild-ahmedabad.vercel.app/"
+    "Ahmedabad" => "https://buildguild-ahmedabad.vercel.app/",
+    "Toronto" => "http://buildguildtoronto.xyz/",
+    "Berkeley" => "https://coding-koala222.github.io/berkeley-build-guild-website/"
   }.freeze
 
   def website_url

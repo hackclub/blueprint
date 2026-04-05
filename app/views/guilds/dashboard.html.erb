@@ -35,6 +35,14 @@
       </div>
     <% end %>
 
+    <% if @is_organizer %>
+      <div class="p-4 border-2 border-red-500 rounded-none space-y-2">
+        <p class="text-lg font-bold text-red-500">Venue Submission</p>
+        <p class="text-white/70 text-sm">Please submit this form as soon as you have confirmed the venue for your Build Guild.</p>
+        <%= render "shared/button", text: "Submit Venue", url: "https://forms.hackclub.com/t/poS7N9ZFG9us", variant: :primary, class: "text-sm py-1", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
+      </div>
+    <% end %>
+
     <% announcements = @guild.announcements %>
     <% tz = current_user.timezone || Time.zone %>
     <% if @is_organizer %>
@@ -205,11 +213,6 @@
         </div>
       </div>
 
-      <div class="p-4 border-2 border-white rounded-none space-y-2">
-        <p class="text-lg font-bold">Venue Submission</p>
-        <p class="text-white/70 text-sm">Please submit this form as soon as you have confirmed the venue for your Build Guild.</p>
-        <%= render "shared/button", text: "Submit Venue", url: "https://forms.hackclub.com/t/poS7N9ZFG9us", variant: :primary, class: "text-sm py-1", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
-      </div>
     <% end %>
 
     <details class="group border-2 border-white rounded-none">
