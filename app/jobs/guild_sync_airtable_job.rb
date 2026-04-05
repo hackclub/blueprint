@@ -18,11 +18,14 @@ class GuildSyncAirtableJob < ApplicationJob
       results << "Guilds: failed (#{e.message})"
     end
 
+    guilds_with_airtable_id = AirtableSync.where("record_identifier LIKE 'Guild#%'").where.not(airtable_id: [ nil, "" ]).count
+    Rails.logger.info "[GuildSyncAirtable] Guilds with record id in airtable: #{guilds_with_airtable_id}/#{guild_count}"
+
     begin
       Rails.logger.info "[GuildSyncAirtable] Syncing signups..."
       AirtableSync.sync!("GuildSignup", sync_all: true)
       Rails.logger.info "[GuildSyncAirtable] Signups synced successfully"
-      results << "Signups: #{signup_count} synced"
+      results << "Signups: #{signup_count} synced (#{guilds_with_airtable_id}/#{guild_count} guilds linkable)"
     rescue => e
       Rails.logger.error "[GuildSyncAirtable] Signup sync failed: #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}"
       results << "Signups: failed (#{e.message})"
