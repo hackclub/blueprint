@@ -84,7 +84,7 @@ class GuildSignup < ApplicationRecord
     {
       "signup_id" => :id,
       "guild_id" => :guild_id,
-      "Guilds" => ->(r) { airtable_id = r.guild&.airtable_record_id; airtable_id.present? ? [ airtable_id ] : nil },
+      "Guilds" => ->(r) { airtable_id = r.guild&.airtable_record_id; airtable_id.present? ? [ airtable_id ] : [] },
       "user_id" => :user_id,
       "slack_id" => ->(r) { r.user&.slack_id },
       "name" => :name,

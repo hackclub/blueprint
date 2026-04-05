@@ -10,7 +10,7 @@ class GuildSyncAirtableJob < ApplicationJob
 
     begin
       Rails.logger.info "[GuildSyncAirtable] Syncing guilds..."
-      AirtableSync.sync!("Guild", sync_all: true)
+      AirtableSync.sync!("Guild", sync_all: true, cleanup: true)
       Rails.logger.info "[GuildSyncAirtable] Guilds synced successfully"
       results << "Guilds: #{guild_count} synced"
     rescue => e
@@ -23,7 +23,7 @@ class GuildSyncAirtableJob < ApplicationJob
 
     begin
       Rails.logger.info "[GuildSyncAirtable] Syncing signups..."
-      AirtableSync.sync!("GuildSignup", sync_all: true)
+      AirtableSync.sync!("GuildSignup", sync_all: true, cleanup: true)
       Rails.logger.info "[GuildSyncAirtable] Signups synced successfully"
       results << "Signups: #{signup_count} synced (#{guilds_with_airtable_id}/#{guild_count} guilds linkable)"
     rescue => e

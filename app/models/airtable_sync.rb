@@ -37,17 +37,17 @@ class AirtableSync < ApplicationRecord
   end
 
   def self.sync_records!(klass, records, no_upload: false)
-    sync_with_records!(klass, records, no_upload:, log_prefix: "Airtable urgent sync")
+    sync_with_records!(klass, records, no_upload:, log_prefix: "Airtable urgent sync", cleanup: false)
   end
 
-  def self.sync!(classname, limit: nil, sync_all: true, no_upload: false)
+  def self.sync!(classname, limit: nil, sync_all: true, no_upload: false, cleanup: false)
     ctx = sync_context_for(classname)
     klass = ctx[:klass]
 
     Rails.logger.info("Airtable sync: Loading #{klass.name} records...")
     records = ctx[:sync_id].present? || sync_all ? all_records(klass, limit) : outdated_records(klass, limit)
 
-    sync_with_records!(klass, records, no_upload:, log_prefix: "Airtable sync")
+    sync_with_records!(klass, records, no_upload:, log_prefix: "Airtable sync", cleanup: cleanup)
   end
 
   def self.batch_sync!(table_id, records, sync_id, mappings, no_upload: false, batch_index: nil, base_id: nil)
@@ -179,7 +179,7 @@ class AirtableSync < ApplicationRecord
     }
   end
 
-  def self.sync_with_records!(klass, records, no_upload:, log_prefix:)
+  def self.sync_with_records!(klass, records, no_upload:, log_prefix:, cleanup: false)
     ctx = sync_context_for(klass)
     klass = ctx[:klass]
 
@@ -196,6 +196,10 @@ class AirtableSync < ApplicationRecord
 
     upsert_sync_state!(records, airtable_ids, batch: ctx[:sync_id].present?)
     mark_first_synced!(klass, records)
+
+    if cleanup
+      cleanup_deleted_records!(klass, records, base_id: ctx[:base_id], table_id: ctx[:table_id], log_prefix: log_prefix)
+    end
 
     records
   end
@@ -227,24 +231,12 @@ class AirtableSync < ApplicationRecord
   def self.perform_individual_sync!(ctx, records, log_prefix:)
     airtable_ids = []
     total = records.size
-    failed_records = []
 
     records.each_with_index do |record, index|
       if (index + 1) % 100 == 0 || index + 1 == total
         Rails.logger.info("#{log_prefix}: Processing #{ctx[:klass].name} (#{index + 1}/#{total})")
       end
-      begin
-        airtable_ids << individual_sync!(ctx[:table_id], record, ctx[:mappings], nil, base_id: ctx[:base_id])
-      rescue => e
-        failed_records << record
-        fields = build_airtable_fields(record, ctx[:mappings])
-        Rails.logger.error("#{log_prefix}: Failed to sync #{ctx[:klass].name}##{record.id}: #{e.message}. Fields: #{fields.inspect}")
-        airtable_ids << nil
-      end
-    end
-
-    if failed_records.any?
-      Rails.logger.warn("#{log_prefix}: #{failed_records.size}/#{total} #{ctx[:klass].name} records failed to sync")
+      airtable_ids << individual_sync!(ctx[:table_id], record, ctx[:mappings], nil, base_id: ctx[:base_id])
     end
 
     airtable_ids
@@ -252,17 +244,14 @@ class AirtableSync < ApplicationRecord
 
   def self.upsert_sync_state!(records, airtable_ids, batch:)
     now = Time.current
-    sync_data = records.filter_map do |record|
-      airtable_id = batch ? nil : airtable_ids.shift
-      next if !batch && airtable_id.nil?
-
+    sync_data = records.map do |record|
       data = {
         record_identifier: build_identifier(record),
         last_synced_at: now,
         created_at: now,
         updated_at: now
       }
-      data[:airtable_id] = airtable_id unless batch
+      data[:airtable_id] = airtable_ids.shift unless batch
       data
     end
 
@@ -291,14 +280,13 @@ class AirtableSync < ApplicationRecord
   end
 
   def self.build_airtable_fields(record, field_mappings)
-    fields = field_mappings.transform_values do |mapping|
+    field_mappings.transform_values do |mapping|
       if mapping.is_a?(Proc)
         mapping.call(record)
       else
         record.send(mapping)
       end
     end
-    fields.compact
   end
 
   def self.build_identifier(record)
@@ -339,5 +327,42 @@ class AirtableSync < ApplicationRecord
     return if ids.empty?
 
     User.where(id: ids, first_synced_to_airtable: false).update_all(first_synced_to_airtable: true)
+  end
+
+  CLEANUP_MAX_DELETE_PERCENT = 20
+
+  def self.cleanup_deleted_records!(klass, current_records, base_id:, table_id:, log_prefix:)
+    return if current_records.empty?
+
+    prefix = "#{klass.name}#"
+    current_identifiers = current_records.map { |r| build_identifier(r) }
+    total_synced = where("record_identifier LIKE ?", "#{prefix}%").count
+    stale = where("record_identifier LIKE ?", "#{prefix}%").where.not(record_identifier: current_identifiers)
+
+    return if stale.empty?
+
+    stale_count = stale.count
+    stale_percent = (stale_count.to_f / total_synced * 100).round(1)
+
+    if stale_percent > CLEANUP_MAX_DELETE_PERCENT
+      Rails.logger.error("#{log_prefix}: Cleanup aborted for #{klass.name}, would delete #{stale_count}/#{total_synced} (#{stale_percent}%) records")
+      return
+    end
+
+    Rails.logger.info("#{log_prefix}: Cleaning up #{stale_count} stale #{klass.name} Airtable records (#{stale_percent}% of #{total_synced})")
+
+    stale.find_each do |sync_record|
+      if sync_record.airtable_id.present?
+        begin
+          response = Faraday.delete("https://api.airtable.com/v0/#{base_id}/#{table_id}/#{sync_record.airtable_id}") do |req|
+            req.headers = { "Authorization" => "Bearer #{ENV['AIRTABLE_PAT']}" }
+          end
+          Rails.logger.info("#{log_prefix}: Deleted stale #{sync_record.record_identifier} from Airtable (#{response.status})")
+        rescue => e
+          Rails.logger.error("#{log_prefix}: Failed to delete stale #{sync_record.record_identifier} from Airtable: #{e.message}")
+        end
+      end
+      sync_record.destroy!
+    end
   end
 end
