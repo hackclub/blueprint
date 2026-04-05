@@ -227,7 +227,7 @@ class AirtableSync < ApplicationRecord
   def self.perform_individual_sync!(ctx, records, log_prefix:)
     airtable_ids = []
     total = records.size
-    failed = 0
+    failed_records = []
 
     records.each_with_index do |record, index|
       if (index + 1) % 100 == 0 || index + 1 == total
@@ -236,28 +236,33 @@ class AirtableSync < ApplicationRecord
       begin
         airtable_ids << individual_sync!(ctx[:table_id], record, ctx[:mappings], nil, base_id: ctx[:base_id])
       rescue => e
-        failed += 1
+        failed_records << record
         fields = build_airtable_fields(record, ctx[:mappings])
         Rails.logger.error("#{log_prefix}: Failed to sync #{ctx[:klass].name}##{record.id}: #{e.message}. Fields: #{fields.inspect}")
         airtable_ids << nil
       end
     end
 
-    raise "#{failed}/#{total} #{ctx[:klass].name} records failed to sync" if failed > 0
+    if failed_records.any?
+      Rails.logger.warn("#{log_prefix}: #{failed_records.size}/#{total} #{ctx[:klass].name} records failed to sync")
+    end
 
     airtable_ids
   end
 
   def self.upsert_sync_state!(records, airtable_ids, batch:)
     now = Time.current
-    sync_data = records.map do |record|
+    sync_data = records.filter_map do |record|
+      airtable_id = batch ? nil : airtable_ids.shift
+      next if !batch && airtable_id.nil?
+
       data = {
         record_identifier: build_identifier(record),
         last_synced_at: now,
         created_at: now,
         updated_at: now
       }
-      data[:airtable_id] = airtable_ids.shift unless batch
+      data[:airtable_id] = airtable_id unless batch
       data
     end
 
