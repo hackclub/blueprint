@@ -276,13 +276,14 @@ class AirtableSync < ApplicationRecord
   end
 
   def self.build_airtable_fields(record, field_mappings)
-    field_mappings.transform_values do |mapping|
+    fields = field_mappings.transform_values do |mapping|
       if mapping.is_a?(Proc)
         mapping.call(record)
       else
         record.send(mapping)
       end
     end
+    fields.compact
   end
 
   def self.build_identifier(record)
