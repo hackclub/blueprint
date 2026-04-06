@@ -2,6 +2,8 @@ class StatsController < ApplicationController
   allow_unauthenticated_access
 
   def index
+    @hide_nav = true
+
     @total_projects = cached("stats:total_projects") {
       Project.where(is_deleted: false).count
     }
@@ -18,14 +20,6 @@ class StatsController < ApplicationController
       JournalEntry.count
     }
 
-    @shipped_projects = cached("stats:shipped_projects") {
-      Project.where(is_deleted: false, review_status: "build_approved").count
-    }
-
-    @total_kudos = cached("stats:total_kudos") {
-      Kudo.count
-    }
-
     @total_countries = cached("stats:total_countries") {
       User.where.not(idv_country: [ nil, "" ]).distinct.count(:idv_country)
     }
@@ -34,46 +28,44 @@ class StatsController < ApplicationController
       Guild.where(status: "active").count
     }
 
-    @projects_over_time = cached("stats:projects_over_time") {
-      Project.where(is_deleted: false)
-        .where("created_at > ?", 6.months.ago)
-        .group(Arel.sql("DATE_TRUNC('week', created_at)"))
-        .order(Arel.sql("DATE_TRUNC('week', created_at)"))
-        .count
-        .transform_keys { |k| k.strftime("%b %d") }
-    }
-
-    @entries_over_time = cached("stats:entries_over_time") {
-      JournalEntry
-        .where("created_at > ?", 6.months.ago)
-        .group(Arel.sql("DATE_TRUNC('week', created_at)"))
-        .order(Arel.sql("DATE_TRUNC('week', created_at)"))
-        .count
-        .transform_keys { |k| k.strftime("%b %d") }
-    }
-
-    @projects_by_status = cached("stats:projects_by_status") {
-      Project.where(is_deleted: false)
-        .where.not(review_status: nil)
-        .group(:review_status)
-        .count
-        .transform_keys { |k| k.to_s.titleize.gsub("Build ", "").gsub("Design ", "") }
-    }
-
-    @projects_by_tier = cached("stats:projects_by_tier") {
-      Project.where(is_deleted: false)
-        .where.not(tier: nil)
-        .group(:tier)
-        .count
-        .transform_keys { |k| "Tier #{k}" }
-    }
-
     @top_countries = cached("stats:top_countries") {
       User.where.not(idv_country: [ nil, "" ])
         .group(:idv_country)
         .order(Arel.sql("COUNT(*) DESC"))
         .limit(10)
         .count
+    }
+
+    @projects_by_state = cached("stats:projects_by_state") {
+      active = Project.where(is_deleted: false).where.not(review_status: nil)
+      {
+        "In Design Review" => active.where(review_status: [ "design_pending", "design_needs_revision" ]).count,
+        "Design Approved" => active.where(review_status: "design_approved").count,
+        "In Build Review" => active.where(review_status: [ "build_pending", "build_needs_revision" ]).count,
+        "Shipped" => active.where(review_status: "build_approved").count
+      }
+    }
+
+    @avg_hours_per_project = cached("stats:avg_hours_per_project") {
+      avg = Project.joins(:journal_entries)
+        .where(is_deleted: false)
+        .group("projects.id")
+        .select("projects.id, SUM(journal_entries.duration_seconds) / 3600.0 AS total_hours")
+        .map(&:total_hours)
+      avg.any? ? (avg.sum / avg.size).round(1) : 0
+    }
+
+    @total_followers = cached("stats:total_followers") {
+      Follow.count
+    }
+
+    # Fetch recent shipped projects for the gallery
+    @gallery_projects = cached("stats:gallery_projects") {
+      Project.where(is_deleted: false, unlisted: false)
+        .where.not(review_status: nil)
+        .order(views_count: :desc)
+        .limit(12)
+        .to_a
     }
   end
 
