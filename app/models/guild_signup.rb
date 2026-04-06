@@ -135,5 +135,13 @@ class GuildSignup < ApplicationRecord
     return if guild.guild_signups.where(role: :organizer).exists?
 
     guild.update!(status: :pending)
+    notify_guild_admin("*#{guild.city}* has no remaining organizers and has been set back to pending.")
+  end
+
+  def notify_guild_admin(message)
+    return unless ENV["GUILDS_ADMIN_CHANNEL"].present?
+    Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+      .chat_postMessage(channel: ENV["GUILDS_ADMIN_CHANNEL"], text: message)
+  rescue
   end
 end
