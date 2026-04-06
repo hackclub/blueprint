@@ -59,14 +59,11 @@ class StatsController < ApplicationController
       Follow.count
     }
 
-    # Fetch recent shipped projects for the gallery
-    @gallery_projects = cached("stats:gallery_projects") {
-      Project.where(is_deleted: false, unlisted: false)
-        .where.not(review_status: nil)
-        .order(views_count: :desc)
-        .limit(12)
-        .to_a
-    }
+    # Fetch popular projects for the gallery (not cached — AR objects don't serialize well)
+    @gallery_projects = Project.where(is_deleted: false, unlisted: false)
+      .where.not(review_status: nil)
+      .order(views_count: :desc)
+      .limit(12)
   end
 
   private
