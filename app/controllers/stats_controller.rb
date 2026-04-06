@@ -27,7 +27,7 @@ class StatsController < ApplicationController
     }
 
     @total_countries = cached("stats:total_countries") {
-      User.where.not(country: [ nil, "" ]).distinct.count(:country)
+      User.where.not(idv_country: [ nil, "" ]).distinct.count(:idv_country)
     }
 
     @active_guilds = cached("stats:active_guilds") {
@@ -69,8 +69,8 @@ class StatsController < ApplicationController
     }
 
     @top_countries = cached("stats:top_countries") {
-      User.where.not(country: [ nil, "" ])
-        .group(:country)
+      User.where.not(idv_country: [ nil, "" ])
+        .group(:idv_country)
         .order(Arel.sql("COUNT(*) DESC"))
         .limit(10)
         .count
