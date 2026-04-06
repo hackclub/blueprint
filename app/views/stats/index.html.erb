@@ -1,0 +1,112 @@
+<% content_for :title, "Blueprint Stats" %>
+<% content_for :description, "Real-time statistics from the Blueprint community. See how many projects, hours, and builders are part of Blueprint." %>
+
+<%
+  chart_options = {
+    library: {
+      scales: {
+        x: { ticks: { color: "rgba(255,255,255,0.6)" }, grid: { color: "rgba(255,255,255,0.07)" } },
+        y: { ticks: { color: "rgba(255,255,255,0.6)" }, grid: { color: "rgba(255,255,255,0.07)" } }
+      },
+      plugins: { legend: { display: false } }
+    },
+    colors: ["#ffc857"],
+    height: "260px"
+  }
+
+  bar_options = chart_options.deep_merge(
+    library: {
+      indexAxis: "y",
+      scales: { x: { ticks: { color: "rgba(255,255,255,0.6)" } }, y: { ticks: { color: "rgba(255,255,255,0.6)" } } }
+    },
+    colors: ["#a8f0ae"]
+  )
+%>
+
+<section class="flex justify-center">
+  <div class="w-full max-w-6xl space-y-8">
+    <div class="py-4">
+      <h1 class="text-5xl font-rc-full">Blueprint in Numbers</h1>
+      <p class="text-xl text-white/60 mt-1">Real-time stats from the Blueprint community</p>
+    </div>
+
+    <!-- Hero Numbers -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <%= render "shared/card", class: "items-center text-center" do %>
+        <p class="text-4xl md:text-5xl font-bold font-rc-full text-bp-warning"><%= number_with_delimiter(@total_projects) %></p>
+        <p class="text-sm text-white/60 uppercase tracking-wider">Projects</p>
+      <% end %>
+
+      <%= render "shared/card", class: "items-center text-center" do %>
+        <p class="text-4xl md:text-5xl font-bold font-rc-full text-bp-warning"><%= number_with_delimiter(@total_users) %></p>
+        <p class="text-sm text-white/60 uppercase tracking-wider">Builders</p>
+      <% end %>
+
+      <%= render "shared/card", class: "items-center text-center" do %>
+        <p class="text-4xl md:text-5xl font-bold font-rc-full text-bp-warning"><%= number_with_delimiter(@total_hours.to_i) %></p>
+        <p class="text-sm text-white/60 uppercase tracking-wider">Hours Logged</p>
+      <% end %>
+
+      <%= render "shared/card", class: "items-center text-center" do %>
+        <p class="text-4xl md:text-5xl font-bold font-rc-full text-bp-warning"><%= number_with_delimiter(@total_journal_entries) %></p>
+        <p class="text-sm text-white/60 uppercase tracking-wider">Journal Entries</p>
+      <% end %>
+
+      <%= render "shared/card", class: "items-center text-center" do %>
+        <p class="text-4xl md:text-5xl font-bold font-rc-full text-bp-success"><%= number_with_delimiter(@shipped_projects) %></p>
+        <p class="text-sm text-white/60 uppercase tracking-wider">Shipped</p>
+      <% end %>
+
+      <%= render "shared/card", class: "items-center text-center" do %>
+        <p class="text-4xl md:text-5xl font-bold font-rc-full text-bp-danger"><%= number_with_delimiter(@total_kudos) %></p>
+        <p class="text-sm text-white/60 uppercase tracking-wider">Kudos Given</p>
+      <% end %>
+
+      <%= render "shared/card", class: "items-center text-center" do %>
+        <p class="text-4xl md:text-5xl font-bold font-rc-full text-bp-warning"><%= number_with_delimiter(@total_countries) %></p>
+        <p class="text-sm text-white/60 uppercase tracking-wider">Countries</p>
+      <% end %>
+
+      <%= render "shared/card", class: "items-center text-center" do %>
+        <p class="text-4xl md:text-5xl font-bold font-rc-full text-bp-success"><%= number_with_delimiter(@active_guilds) %></p>
+        <p class="text-sm text-white/60 uppercase tracking-wider">Active Guilds</p>
+      <% end %>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <%= render "shared/card" do %>
+        <h2 class="text-xl font-rc-full">Projects Over Time</h2>
+        <p class="text-sm text-white/40">Last 6 months, by week</p>
+        <%= area_chart @projects_over_time, **chart_options %>
+      <% end %>
+
+      <%= render "shared/card" do %>
+        <h2 class="text-xl font-rc-full">Journal Entries Over Time</h2>
+        <p class="text-sm text-white/40">Last 6 months, by week</p>
+        <%= area_chart @entries_over_time, **chart_options %>
+      <% end %>
+
+      <%= render "shared/card" do %>
+        <h2 class="text-xl font-rc-full">Projects by Review Status</h2>
+        <%= bar_chart @projects_by_status, **bar_options %>
+      <% end %>
+
+      <%= render "shared/card" do %>
+        <h2 class="text-xl font-rc-full">Projects by Tier</h2>
+        <%= column_chart @projects_by_tier, **chart_options.merge(colors: ["#a8f0ae"]) %>
+      <% end %>
+
+      <%= render "shared/card", class: "md:col-span-2" do %>
+        <h2 class="text-xl font-rc-full">Top 10 Countries</h2>
+        <%= bar_chart @top_countries, **bar_options.merge(colors: ["#ffc857"], height: "320px") %>
+      <% end %>
+    </div>
+
+    <!-- Explore Embed -->
+    <div>
+      <h2 class="text-3xl font-rc-full mb-4">Explore Projects</h2>
+      <iframe src="/explore" class="w-full border-2 border-white/10 bg-bp-darker" style="height: 800px;" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>

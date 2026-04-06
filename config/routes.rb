@@ -176,6 +176,7 @@ Rails.application.routes.draw do
     get :list_repos, on: :collection
   end
   get "explore" => "projects#explore", as: :explore
+  get "stats" => "stats#index", as: :stats
   get "leaderboard" => "leaderboards#index", as: :leaderboard
 
   get "guilds" => "guilds#index", as: :guilds

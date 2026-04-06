@@ -106,7 +106,11 @@ class ApiController < ApplicationController
           lines << ""
           lines << "# #{entry.created_at.strftime('%-m/%-d/%Y %-l:%M %p').strip} - #{entry.summary}"
           lines << "_Time spent: #{format('%.1f', hours)}h_"
-          lines << entry.content if entry.content.present?
+          if entry.content.present?
+            host = ENV.fetch("APPLICATION_HOST", "blueprint.hackclub.com")
+            absolutized = entry.content.gsub(/!\[([^\]]*)\]\(\//, "![\\1](https://#{host}/")
+            lines << absolutized
+          end
         end
       end
 
