@@ -92,7 +92,6 @@ class GuildAuditJob < ApplicationJob
     summary = build_summary(definitely_suspicious, possibly_suspicious, signups.size)
     post_to_response_url(response_url, "Audit complete. Report posted to admin channel.\n\n#{summary}")
   rescue => e
-    Rails.logger.error "[GuildAudit] Job failed: #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}"
     post_to_response_url(response_url, "Audit failed: #{e.message}") if response_url.present?
     raise
   end
@@ -101,9 +100,9 @@ class GuildAuditJob < ApplicationJob
 
   def random_name?(name)
     return false if name.blank?
-    return true if name.match?(/\A\d+\z/)                     # all digits
+    return true if name.match?(/\A\d+\z/)
     return true if name.match?(/\A[a-z0-9]{6,}\z/) && vowel_ratio(name) < 0.15
-    return true if name.match?(/\A[^a-zA-Z]*\z/) && name.size > 2  # no letters at all
+    return true if name.match?(/\A[^a-zA-Z]*\z/) && name.size > 2
     false
   end
 
@@ -205,8 +204,7 @@ class GuildAuditJob < ApplicationJob
       chunks = split_message(message, 3900)
       chunks.each { |chunk| slack_client.chat_postMessage(channel: ENV["GUILDS_ADMIN_CHANNEL"], text: chunk) }
     end
-  rescue => e
-    Rails.logger.error "[GuildAudit] Failed to post to admin channel: #{e.message}"
+  rescue
   end
 
   def split_message(message, max_length)
@@ -230,7 +228,6 @@ class GuildAuditJob < ApplicationJob
     request = Net::HTTP::Post.new(uri.path, "Content-Type" => "application/json")
     request.body = { response_type: "in_channel", text: text }.to_json
     http.request(request)
-  rescue => e
-    Rails.logger.error "[GuildAudit] Failed to post result to response_url: #{e.message}"
+  rescue
   end
 end

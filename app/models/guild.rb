@@ -66,8 +66,7 @@ class Guild < ApplicationRecord
 
     slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
     slack_client.conversations_setTopic(channel: slack_channel_id, topic: topic)
-  rescue => e
-    Rails.logger.error "Failed to update Slack topic for guild #{id}: #{e.message}"
+  rescue
   end
   def days_pending
     return 0 unless pending?
@@ -104,8 +103,8 @@ class Guild < ApplicationRecord
   def sync_to_airtable
     return if ENV["DISABLE_AIRTABLE_SYNC"].present?
     AirtableSync.sync_records!(self.class, [ self ])
-  rescue => e
-    Rails.logger.error "Failed to sync guild #{id} to Airtable: #{e.message}"
+  rescue
+    # Airtable sync is non-critical
   end
 
   def airtable_record_id

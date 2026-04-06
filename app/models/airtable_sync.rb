@@ -343,23 +343,15 @@ class AirtableSync < ApplicationRecord
 
     stale_count = stale.count
     stale_percent = (stale_count.to_f / total_synced * 100).round(1)
-
-    if stale_percent > CLEANUP_MAX_DELETE_PERCENT
-      Rails.logger.error("#{log_prefix}: Cleanup aborted for #{klass.name}, would delete #{stale_count}/#{total_synced} (#{stale_percent}%) records")
-      return
-    end
-
-    Rails.logger.info("#{log_prefix}: Cleaning up #{stale_count} stale #{klass.name} Airtable records (#{stale_percent}% of #{total_synced})")
+    return if stale_percent > CLEANUP_MAX_DELETE_PERCENT
 
     stale.find_each do |sync_record|
       if sync_record.airtable_id.present?
         begin
-          response = Faraday.delete("https://api.airtable.com/v0/#{base_id}/#{table_id}/#{sync_record.airtable_id}") do |req|
+          Faraday.delete("https://api.airtable.com/v0/#{base_id}/#{table_id}/#{sync_record.airtable_id}") do |req|
             req.headers = { "Authorization" => "Bearer #{ENV['AIRTABLE_PAT']}" }
           end
-          Rails.logger.info("#{log_prefix}: Deleted stale #{sync_record.record_identifier} from Airtable (#{response.status})")
-        rescue => e
-          Rails.logger.error("#{log_prefix}: Failed to delete stale #{sync_record.record_identifier} from Airtable: #{e.message}")
+        rescue
         end
       end
       sync_record.destroy!

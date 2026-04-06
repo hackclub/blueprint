@@ -63,6 +63,20 @@ class GuildsController < ApplicationController
     redirect_to guild_dashboard_path, notice: "Announcement deleted."
   end
 
+  def leave_guild
+    signup = current_user.guild_signups.find_by(guild_id: params[:guild_id])
+    unless signup
+      redirect_to guild_dashboard_path, alert: "You're not signed up for this guild."
+      return
+    end
+
+    guild = signup.guild
+    role = signup.role
+    signup.destroy!
+    notify_admin_channel("*#{current_user.display_name}* (#{current_user.email}) left *#{guild.city}* Build Guild (was #{role})")
+    redirect_to guild_dashboard_path, notice: "You have left #{guild.city}."
+  end
+
   def map_data
     @guilds = Guild.includes(:guild_signups)
                    .where.not(latitude: nil, longitude: nil)
@@ -81,5 +95,14 @@ class GuildsController < ApplicationController
         website_url: g.website_url
       }
     }
+  end
+
+  private
+
+  def notify_admin_channel(message)
+    return unless ENV["GUILDS_ADMIN_CHANNEL"].present?
+    slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+    slack_client.chat_postMessage(channel: ENV["GUILDS_ADMIN_CHANNEL"], text: message)
+  rescue
   end
 end

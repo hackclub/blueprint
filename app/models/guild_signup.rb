@@ -110,8 +110,7 @@ class GuildSignup < ApplicationRecord
   def sync_to_airtable
     return if ENV["DISABLE_AIRTABLE_SYNC"].present?
     AirtableSync.sync_records!(self.class, [ self ])
-  rescue => e
-    Rails.logger.error "Failed to sync guild signup #{id} to Airtable: #{e.message}"
+  rescue
   end
 
   def update_guild_topic
@@ -126,8 +125,7 @@ class GuildSignup < ApplicationRecord
   def delete_from_airtable
     return if ENV["DISABLE_AIRTABLE_SYNC"].present?
     AirtableSync.delete_record!(self.class, id)
-  rescue => e
-    Rails.logger.error "Failed to delete guild signup #{id} from Airtable: #{e.message}"
+  rescue
   end
 
   def mark_guild_pending_if_no_organizer

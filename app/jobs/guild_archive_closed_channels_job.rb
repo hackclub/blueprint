@@ -12,13 +12,10 @@ class GuildArchiveClosedChannelsJob < ApplicationJob
     guilds.find_each do |guild|
       begin
         slack_client.conversations_archive(channel: guild.slack_channel_id)
-        Rails.logger.info "[GuildArchiveClosedChannels] Archived channel #{guild.slack_channel_id} for guild #{guild.id} (#{guild.city})"
         archived += 1
       rescue Slack::Web::Api::Errors::AlreadyArchived
-        Rails.logger.info "[GuildArchiveClosedChannels] Channel #{guild.slack_channel_id} for guild #{guild.id} (#{guild.city}) already archived"
         already_archived += 1
-      rescue Slack::Web::Api::Errors::SlackError => e
-        Rails.logger.error "[GuildArchiveClosedChannels] Failed to archive channel #{guild.slack_channel_id} for guild #{guild.id} (#{guild.city}): #{e.message}"
+      rescue Slack::Web::Api::Errors::SlackError
         failed += 1
       end
     end
@@ -39,7 +36,6 @@ class GuildArchiveClosedChannelsJob < ApplicationJob
     request = Net::HTTP::Post.new(uri.path, "Content-Type" => "application/json")
     request.body = { response_type: "in_channel", text: text }.to_json
     http.request(request)
-  rescue => e
-    Rails.logger.error "[GuildArchiveClosedChannels] Failed to post result to response_url: #{e.message}"
+  rescue
   end
 end

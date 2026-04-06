@@ -20,7 +20,6 @@ class GuildMergeJob < ApplicationJob
     end
 
     source.update!(status: :closed)
-    Rails.logger.info "Merge complete: moved=#{moved} skipped=#{skipped} source_id=#{source.id} target_id=#{target.id}"
 
     invite_failures = 0
     if target.slack_channel_id.present? && moved_user_ids.any?
@@ -28,14 +27,10 @@ class GuildMergeJob < ApplicationJob
       User.where(id: moved_user_ids).where.not(slack_id: [ nil, "" ]).each do |user|
         begin
           slack_client.conversations_invite(channel: target.slack_channel_id, users: user.slack_id)
-          Rails.logger.info "Invited user=#{user.id} (slack=#{user.slack_id}) to channel=#{target.slack_channel_id}"
         rescue Slack::Web::Api::Errors::AlreadyInChannel
-          Rails.logger.info "User=#{user.id} already in channel=#{target.slack_channel_id}"
         rescue Slack::Web::Api::Errors::UserIsRestricted
-          Rails.logger.warn "User=#{user.id} is a multi-channel guest, cannot invite to channel=#{target.slack_channel_id}"
           invite_failures += 1
-        rescue Slack::Web::Api::Errors::SlackError => e
-          Rails.logger.error "Failed to invite user=#{user.id} to channel=#{target.slack_channel_id}: #{e.message}"
+        rescue Slack::Web::Api::Errors::SlackError
           invite_failures += 1
         end
       end
@@ -48,8 +43,7 @@ class GuildMergeJob < ApplicationJob
         "https://gas.hackclub.com/ can help you cover travel to the new guild!"
       begin
         slack_client.chat_postMessage(channel: source.slack_channel_id, text: merge_message, link_names: true)
-      rescue Slack::Web::Api::Errors::SlackError => e
-        Rails.logger.error "Failed to post in the original channel=#{source.slack_channel_id} about merge: #{e.message}"
+      rescue Slack::Web::Api::Errors::SlackError
       end
     end
 
@@ -70,7 +64,6 @@ class GuildMergeJob < ApplicationJob
     request = Net::HTTP::Post.new(uri.path, "Content-Type" => "application/json")
     request.body = { response_type: "in_channel", text: text }.to_json
     http.request(request)
-  rescue => e
-    Rails.logger.error "Failed to post merge result to response_url: #{e.message}"
+  rescue
   end
 end

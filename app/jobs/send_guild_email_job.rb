@@ -12,10 +12,7 @@ class SendGuildEmailJob < ApplicationJob
       ENV["GUILDS_ATTENDEE_TEMPLATE_ID"]
     end
 
-    if template_id.blank?
-      Rails.logger.warn "No Loops template ID configured for #{signup.role} guild emails, skipping"
-      return
-    end
+    return if template_id.blank?
 
     response = Faraday.post("https://app.loops.so/api/v1/transactional") do |req|
       req.headers["Authorization"] = "Bearer #{ENV['LOOPS_API_KEY']}"

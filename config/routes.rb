@@ -122,6 +122,7 @@ Rails.application.routes.draw do
   get "guilds/dashboard", to: "guilds#dashboard", as: :guild_dashboard
   post "guilds/dashboard/announce", to: "guilds#create_announcement", as: :guild_create_announcement
   delete "guilds/dashboard/announce", to: "guilds#delete_announcement", as: :guild_delete_announcement
+  delete "guilds/dashboard/leave", to: "guilds#leave_guild", as: :guild_leave
 
   # Authentication
   get "auth/login" => "auth#index", as: :login

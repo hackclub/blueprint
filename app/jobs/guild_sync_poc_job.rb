@@ -25,8 +25,7 @@ class GuildSyncPocJob < ApplicationJob
 
         AirtableSync.sync_records!(Guild, [ guild ])
         synced += 1
-      rescue => e
-        Rails.logger.error "[GuildSyncPoc] Failed to sync guild #{guild.id} (#{guild.city}): #{e.message}"
+      rescue
         failed += 1
       end
     end
@@ -48,8 +47,7 @@ class GuildSyncPocJob < ApplicationJob
 
     user.update!(birthday: parsed)
     true
-  rescue ArgumentError, StandardError => e
-    Rails.logger.warn "[GuildSyncPoc] Failed to backfill birthday for user #{user.id}: #{e.message}"
+  rescue
     false
   end
 
@@ -60,7 +58,6 @@ class GuildSyncPocJob < ApplicationJob
     request = Net::HTTP::Post.new(uri.path, "Content-Type" => "application/json")
     request.body = { response_type: "in_channel", text: text }.to_json
     http.request(request)
-  rescue => e
-    Rails.logger.error "[GuildSyncPoc] Failed to post result to response_url: #{e.message}"
+  rescue
   end
 end
