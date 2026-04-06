@@ -23,7 +23,14 @@ export default class extends Controller {
   }
 
   connect() {
-    this._applyActiveTab(this.hasActiveTabValue ? this.activeTabValue : null)
+    const hash = window.location.hash?.replace("#", "")
+    const hashMatchesTab = hash && this.tabTargets.some(t => this._nameFor(t) === hash)
+
+    if (hashMatchesTab) {
+      this.show(hash)
+    } else {
+      this._applyActiveTab(this.hasActiveTabValue ? this.activeTabValue : null)
+    }
   }
 
   select(event) {
