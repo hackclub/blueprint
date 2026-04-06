@@ -8,7 +8,13 @@ class GuildsController < ApplicationController
   end
 
   def dashboard
-    @signup = current_user.guild_signups.order(role: :asc).first # organizer (0) before attendee (1)
+    @user_signups = current_user.guild_signups.includes(:guild).order(role: :asc).to_a
+
+    if params[:guild_id].present?
+      @signup = @user_signups.find { |s| s.guild_id == params[:guild_id].to_i }
+    end
+    @signup ||= @user_signups.first
+
     unless @signup
       redirect_to guilds_path, alert: "You need to be signed up for a guild to access the dashboard."
       return

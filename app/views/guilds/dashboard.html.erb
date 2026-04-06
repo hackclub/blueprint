@@ -3,6 +3,19 @@
 
     <%= render "shared/button", text: "Back to Guilds", url: guilds_path, class: "py-0" %>
 
+    <% if @user_signups.size > 1 %>
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-sm text-white/50">Your guilds:</span>
+        <% @user_signups.each do |s| %>
+          <% next if s.guild.needs_review || s.guild.closed? %>
+          <a href="<%= guild_dashboard_path(guild_id: s.guild_id) %>"
+             class="text-sm font-medium px-3 py-1 border rounded-none transition-colors <%= s.guild_id == @guild.id ? 'border-white text-white bg-white/10' : 'border-white/30 text-white/50 hover:border-white/60 hover:text-white/80' %>">
+            <%= s.guild.city %>
+          </a>
+        <% end %>
+      </div>
+    <% end %>
+
     <div class="space-y-1">
       <div class="flex items-center gap-3">
         <h1 class="text-4xl"><%= @guild.city %></h1>

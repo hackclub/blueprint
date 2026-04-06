@@ -29,7 +29,8 @@ class GuildSyncAirtableJob < ApplicationJob
         results << "Signups: #{signup_count} synced (#{guilds_with_airtable_id}/#{guild_count} guilds linkable)"
       else
         Rails.logger.warn "[GuildSyncAirtable] #{failed_signups.size}/#{signup_count} signups failed"
-        results << "Signups: #{signup_count - failed_signups.size}/#{signup_count} synced, #{failed_signups.size} failed (#{guilds_with_airtable_id}/#{guild_count} guilds linkable)"
+        failure_details = failed_signups.map { |f| "• GuildSignup##{f[:signup].id} (guild_id=#{f[:signup].guild_id}): #{f[:error]}" }.join("\n")
+        results << "Signups: #{signup_count - failed_signups.size}/#{signup_count} synced, #{failed_signups.size} failed (#{guilds_with_airtable_id}/#{guild_count} guilds linkable)\n#{failure_details}"
       end
     rescue => e
       Rails.logger.error "[GuildSyncAirtable] Signup sync failed: #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}"
@@ -64,7 +65,7 @@ class GuildSyncAirtableJob < ApplicationJob
       rescue => e
         fields = AirtableSync.send(:build_airtable_fields, signup, mappings)
         Rails.logger.error "[GuildSyncAirtable] Failed GuildSignup##{signup.id} (guild_id=#{signup.guild_id}): #{e.message}. Fields: #{fields.inspect}"
-        failed << signup
+        failed << { signup: signup, error: e.message, fields: fields }
       end
     end
 
