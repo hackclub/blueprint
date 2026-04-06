@@ -16,6 +16,7 @@ class SlackCommandsController < ApplicationController
     /guild-add-user
     /guild-remove-user
     /guild-set-channel
+    /guild-set-poc
     /guild-archive-closed
     /guild-sync-poc
     /guild-sync
@@ -64,6 +65,8 @@ class SlackCommandsController < ApplicationController
       { response_type: "in_channel", text: guild_invite_message(params[:text], params[:user_id], params[:channel_id]) }
     when "/guild-set-channel"
       { response_type: "in_channel", text: guild_set_channel_message(params[:text]) }
+    when "/guild-set-poc"
+      { response_type: "in_channel", text: guild_set_poc_message(params[:text]) }
     when "/guild-archive-closed"
       guild_archive_closed_async(params[:response_url])
     when "/guild-sync-poc"
@@ -539,6 +542,35 @@ class SlackCommandsController < ApplicationController
     "Updated *#{guild.name}* slack channel from `#{old_channel || 'none'}` to `#{channel_id}`."
   rescue => e
     "Failed to update channel: #{e.message}"
+  end
+
+  def guild_set_poc_message(text)
+    parts = text.to_s.split
+    return "Usage: /guild-set-poc <@user or email> <city>" unless parts.length >= 2
+
+    raw_input = parts[0].strip
+    city = parts[1..].join(" ")
+
+    user = find_slack_user(raw_input)
+    return "No user found for \"#{raw_input}\"." unless user
+
+    guild = find_guild(city)
+    return "No guild found for \"#{city}\"." unless guild
+
+    signup = guild.guild_signups.find_by(user: user, role: :organizer)
+    return "<@#{user.slack_id || user.email}> is not an organizer for *#{guild.city}*." unless signup
+
+    earliest = guild.guild_signups.where(role: :organizer).order(:created_at).first
+    if earliest.user_id == user.id
+      return "<@#{user.slack_id || user.email}> is already the POC for *#{guild.city}*."
+    end
+
+    signup.update_column(:created_at, earliest.created_at - 1.second)
+    guild.sync_to_airtable
+
+    "Set <@#{user.slack_id || user.email}> as POC for *#{guild.city}*."
+  rescue => e
+    "Failed to set POC: #{e.message}"
   end
 
   def guild_archive_closed_async(response_url)
