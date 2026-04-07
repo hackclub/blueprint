@@ -89,12 +89,10 @@ class SlackCommandsController < ApplicationController
 
     render json: result
 
-    # Log admin command results to the admin channel after responding to Slack
-    if ADMIN_COMMANDS.include?(params[:command])
+    if ADMIN_COMMANDS.include?(params[:command]) && result[:response_type] == "ephemeral"
       Thread.new do
         notify_admin_channel("<@#{params[:user_id]}> ran `#{params[:command]} #{params[:text]}`:\n#{result[:text]}")
-      rescue => e
-        Rails.logger.error "[SlackBot] Failed to log admin command to admin channel: #{e.message}"
+      rescue
       end
     end
   end

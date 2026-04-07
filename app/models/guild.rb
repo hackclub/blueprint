@@ -49,7 +49,7 @@ class Guild < ApplicationRecord
 
   before_save :clear_needs_review_if_closed
   after_validation :geocode, if: ->(obj) { obj.city.present? && obj.city_changed? && obj.latitude.blank? }
-  after_commit :sync_to_airtable, on: [ :create, :update ] # not :delete to preserve history
+  after_commit :sync_to_airtable, on: [ :create, :update ] # not :delete to preserve history, we close guilds rather than deleting them from airtable
 
   def update_slack_topic
     return unless slack_channel_id.present?
@@ -104,7 +104,6 @@ class Guild < ApplicationRecord
     return if ENV["DISABLE_AIRTABLE_SYNC"].present?
     AirtableSync.sync_records!(self.class, [ self ])
   rescue
-    # Airtable sync is non-critical
   end
 
   def airtable_record_id
@@ -120,7 +119,8 @@ class Guild < ApplicationRecord
     "Siliguri" => "https://buildguildsiliguri.xyz/",
     "Ahmedabad" => "https://buildguild-ahmedabad.vercel.app/",
     "Toronto" => "http://buildguildtoronto.xyz/",
-    "Berkeley" => "https://coding-koala222.github.io/berkeley-build-guild-website/"
+    "Berkeley" => "https://coding-koala222.github.io/berkeley-build-guild-website/",
+    "Bhopal" => "https://www.makerani.tech/"
   }.freeze
 
   def website_url
