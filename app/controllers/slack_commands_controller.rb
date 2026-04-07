@@ -290,13 +290,19 @@ class SlackCommandsController < ApplicationController
 
   def guild_change_role_message(text)
     parts = text.to_s.split
-    return "Usage: `/guild-change-role @user <organizer|attendee>`" unless parts.length == 2
+    return "Usage: `/guild-change-role <@user or signup_id> <organizer|attendee>`" unless parts.length == 2
 
     raw_input = parts[0].strip
     new_role = parts[1].strip.downcase
 
     unless %w[organizer attendee].include?(new_role)
       return "Role must be `organizer` or `attendee`."
+    end
+
+    if raw_input.match?(/\A\d+\z/)
+      signup = GuildSignup.find_by(id: raw_input)
+      return "No signup found with ID #{raw_input}." unless signup
+      return change_signup_role(signup, new_role)
     end
 
     user = find_slack_user(raw_input)
@@ -317,9 +323,6 @@ class SlackCommandsController < ApplicationController
       return "#{signup.name} is already #{new_role} for #{guild.city}."
     end
 
-    Rails.logger.info "[SlackBot] /guild-change-role signup_id=#{signup.id} guild_id=#{guild.id} #{old_role} -> #{new_role} by user=#{params[:user_id]}"
-
-    # Update without callbacks to avoid synchronous Airtable sync (which would timeout Slack)
     signup.update_columns(role: GuildSignup.roles[new_role], updated_at: Time.current)
 
     result = "Changed #{signup.name} from #{old_role} to #{new_role} for *#{guild.city}*."
@@ -401,7 +404,11 @@ class SlackCommandsController < ApplicationController
 
   def guild_remove_user_message(text)
     parts = text.to_s.split
-    return "Usage: `/guild-remove-user <@user or email> [more users...] <city>`\nExample: `/guild-remove-user @john London`" unless parts.length >= 2
+    return "Usage: `/guild-remove-user <@user, email, or signup_id> [more] <city, guild_id, or \"all\">`\nExamples:\n`/guild-remove-user @john London`\n`/guild-remove-user @john all`\n`/guild-remove-user 1234` (signup ID)" unless parts.length >= 1
+
+    if parts.length == 1 && parts[0].match?(/\A\d+\z/)
+      return remove_signup_by_id(parts[0].to_i)
+    end
 
     user_inputs = []
     city_parts = []
@@ -413,19 +420,56 @@ class SlackCommandsController < ApplicationController
       end
     end
 
-    return "No city specified." if city_parts.empty?
+    return "No city, guild ID, or \"all\" specified." if city_parts.empty?
     return "No users specified." if user_inputs.empty?
 
     city = city_parts.join(" ")
-    guild = find_guild(city)
-    return "No guild found for \"#{city}\"." unless guild
 
-    results = user_inputs.map { |raw_input| remove_user_from_guild(raw_input, guild) }
+    if city.downcase == "all"
+      results = user_inputs.flat_map { |raw_input| remove_user_from_all_guilds(raw_input) }
+    else
+      guild = find_guild(city)
+      return "No guild found for \"#{city}\"." unless guild
+      results = user_inputs.map { |raw_input| remove_user_from_guild(raw_input, guild) }
+    end
 
     AirtableSyncClassJob.perform_later("GuildSignup")
     AirtableSyncClassJob.perform_later("Guild")
 
     results.join("\n")
+  end
+
+  def remove_signup_by_id(signup_id)
+    signup = GuildSignup.find_by(id: signup_id)
+    return "No signup found with ID #{signup_id}." unless signup
+
+    user = signup.user
+    guild = signup.guild
+    role = signup.role
+    signup.destroy!
+
+    if guild.slack_channel_id.present? && user&.slack_id.present?
+      Thread.new do
+        slack = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+        slack.conversations_kick(channel: guild.slack_channel_id, user: user.slack_id)
+      rescue Slack::Web::Api::Errors::SlackError
+      end
+    end
+
+    AirtableSyncClassJob.perform_later("GuildSignup")
+    AirtableSyncClassJob.perform_later("Guild")
+
+    "Removed #{user&.display_name || signup.name} (#{role}) from *#{guild.city}* (signup ##{signup_id})."
+  end
+
+  def remove_user_from_all_guilds(raw_input)
+    user = find_slack_user(raw_input)
+    return [ "No user found for \"#{raw_input}\"." ] unless user
+
+    signups = user.guild_signups.includes(:guild).to_a
+    return [ "#{user.display_name} (#{raw_input}) is not signed up for any guilds." ] if signups.empty?
+
+    signups.map { |signup| remove_user_from_guild(raw_input, signup.guild) }
   end
 
   def remove_user_from_guild(raw_input, guild)
@@ -438,14 +482,11 @@ class SlackCommandsController < ApplicationController
     role = signup.role
     signup.destroy!
 
-    Rails.logger.info "[SlackBot] /guild-remove-user user=#{user.id} guild=#{guild.id} role=#{role} by=#{params[:user_id]}"
-
     if guild.slack_channel_id.present? && user.slack_id.present?
       Thread.new do
         slack = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
         slack.conversations_kick(channel: guild.slack_channel_id, user: user.slack_id)
-      rescue Slack::Web::Api::Errors::SlackError => e
-        Rails.logger.error "[SlackBot] Failed to remove user #{user.id} from channel #{guild.slack_channel_id}: #{e.message}"
+      rescue Slack::Web::Api::Errors::SlackError
       end
     end
 
@@ -704,6 +745,8 @@ class SlackCommandsController < ApplicationController
   end
 
   def find_guild(city)
+    return Guild.find_by(id: city) if city.match?(/\A\d+\z/)
+
     guild = Guild.where("LOWER(city) = ?", city.downcase).first ||
             Guild.where("LOWER(name) = ?", city.downcase).first
     return guild if guild
