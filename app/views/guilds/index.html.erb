@@ -13,7 +13,7 @@
       <h1 class="text-4xl md:text-6xl font-bold">Build Guilds</h1>
       <p class="text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl mx-auto">
         The world's largest week of hardware meetups - coming to a city near you.
-        <br>Join an existing guild or start one in your city - <strong>April 13th-19th</strong>.
+        <br>Join an existing guild or start one in your city - <strong>April 13th-26th</strong>.
       </p>
       <div class="pt-2">
         <a href="#signup-form" class="inline-block bg-bp-warning hover:bg-bp-warning-darker text-white text-xl md:text-2xl font-semibold py-3 px-10 rounded-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-bp-warning/30">
@@ -38,7 +38,7 @@
       <h2 class="text-2xl md:text-3xl font-semibold text-white">Overview</h2>
 
       <p class="text-white/90 leading-relaxed">
-        Build guilds are Hack Club 1-day hardware meetups running from <strong>April 13th-19th</strong> in cities around the world!
+        Build guilds are Hack Club 1-day hardware meetups running from <strong>April 13th-26th</strong> in cities around the world!
       </p>
       <p class="text-white/90 leading-relaxed">
         Every guild is organized by a local Hack Clubber who picks the date, venue, theme, and activities for their guild. Hack Club funds $8 per signup.
@@ -205,14 +205,15 @@
         const el = document.getElementById('event-countdown');
         if (!el) return;
         const eventStart = new Date('2026-04-13T00:00:00');
-        const eventEnd = new Date('2026-04-19T23:59:59');
+        const eventEnd = new Date('2026-04-26T23:59:59');
         const now = new Date();
-        if (now >= eventStart && now <= eventEnd) {
-          el.textContent = 'Active - Guilds are running now!';
-        } else if (now > eventEnd) {
-          el.textContent = '';
+        if (now > eventEnd) {
+          el.textContent = 'Ended';
+          const pingEl = el.closest('div').querySelector('.absolute');
+          if (pingEl) pingEl.style.animation = 'none';
+          return;
         } else {
-          const diff = eventStart - now;
+          const diff = eventEnd - now;
           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
           const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -264,7 +265,7 @@
           <h3 class="text-xl font-semibold text-bp-warning">What Do Organizers Do?</h3>
           <ol class="list-decimal list-inside space-y-1 text-white/90 pl-4">
             <li>Start your guild! You'll be invited to <a class="text-bp-warning underline" href="https://hackclub.enterprise.slack.com/archives/C0AM0B6D482" target="_blank" rel="noopener noreferrer">#build-guilds-organizers</a>, a channel where you meet your fellow orgs!</li>
-            <li>Choose a day between April 13th-19th to run your event!</li>
+            <li>Choose a day between April 13th-26th to run your event!</li>
             <li>Find a venue! Make sure you have their permission to run any activities you're planning.</li>
             <li>Get signups! You'll get <strong>$8 per signup 18 or under</strong> who shows up to your event.</li>
             <li>Figure out logistics like food, activities, &amp; schedule.</li>
