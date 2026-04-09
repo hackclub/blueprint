@@ -171,7 +171,7 @@
       <div class="p-4 border-2 border-white rounded-none space-y-2">
         <p class="text-lg font-bold">Invite Link</p>
         <div class="space-y-1 text-sm">
-          <p class="text-white/70">Share this to invite people to your guild. Anyone aged 13&ndash;18 can join, even if they're not already in Hack Club.</p>
+          <p class="text-white/70">Share this to invite people to your guild. Anyone aged 13-18 can join, even if they're not already in Hack Club.</p>
           <code class="block text-bp-warning bg-bp-darker px-3 py-2 border border-white/25 select-all break-all text-sm"><%= @guild.invite_url %></code>
         </div>
       </div>
@@ -226,6 +226,7 @@
           <p><a href="/resources/guild-organizer-tips" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Organizer Tips</a> <span class="text-white/50"> venue finding, budgeting, and promotion advice</span></p>
           <p><a href="https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0AM7D41WGP" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Organizer FAQ</a> <span class="text-white/50"> frequently asked questions about organizing</span></p>
           <p><a href="https://hackclub.enterprise.slack.com/archives/C0AM0B6D482" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">#build-guilds-organizers</a> <span class="text-white/50"> ask any questions about organizing and get help from other organizers</span></p>
+          <p><a href="https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0ARQQHPHNW" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Resources Canvas</a> <span class="text-white/50">A canvas in the organizer channel that contains links to more resources (templates etc.)</span></p>
           <% if @guild.slack_channel_id.present? %>
             <p><a href="https://hackclub.slack.com/archives/<%= @guild.slack_channel_id %>" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Your Guild's Slack Channel</a></p>
           <% end %>
