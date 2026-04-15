@@ -128,25 +128,73 @@ class Guild < ApplicationRecord
   end
 
   MAX_ANNOUNCEMENTS = 20
-  def announcements
-    return [] if description.blank?
+
+  def description_data
+    return { "announcements" => [] } if description.blank?
     parsed = JSON.parse(description)
-    parsed.is_a?(Array) ? parsed : [] # check if its an array
+    if parsed.is_a?(Hash)
+      parsed["announcements"] ||= []
+      parsed
+    elsif parsed.is_a?(Array)
+      { "announcements" => parsed }
+    else
+      { "announcements" => [] }
+    end
   rescue JSON::ParserError
-    [ { "body" => description, "posted_at" => updated_at.iso8601, "author_name" => "Organizer" } ]
+    { "announcements" => [ { "body" => description, "posted_at" => updated_at.iso8601, "author_name" => "Organizer" } ] }
+  end
+
+  def write_description_data!(data)
+    data = data.dup
+    data.delete("signups_closed_at") if data["signups_closed_at"].blank?
+    if data["announcements"].blank? && data["signups_closed_at"].blank?
+      update_column(:description, nil)
+    else
+      update_column(:description, data.to_json)
+    end
+  end
+
+  def announcements
+    description_data["announcements"] || []
   end
 
   def add_announcement!(body, author_name)
-    entries = announcements
+    data = description_data
+    entries = data["announcements"] || []
     entries.unshift({ "body" => body, "posted_at" => Time.current.iso8601, "author_name" => author_name })
-    entries = entries.first(MAX_ANNOUNCEMENTS)
-    update_column(:description, entries.to_json)
+    data["announcements"] = entries.first(MAX_ANNOUNCEMENTS)
+    write_description_data!(data)
   end
 
   def delete_announcement!(posted_at)
-    entries = announcements
+    data = description_data
+    entries = data["announcements"] || []
     entries.reject! { |a| a["posted_at"] == posted_at }
-    update_column(:description, entries.any? ? entries.to_json : nil)
+    data["announcements"] = entries
+    write_description_data!(data)
+  end
+
+  def signups_closed_at
+    raw = description_data["signups_closed_at"]
+    Time.parse(raw) if raw.present?
+  rescue ArgumentError
+    nil
+  end
+
+  def signups_closed?
+    description_data["signups_closed_at"].present?
+  end
+
+  def close_signups!
+    data = description_data
+    data["signups_closed_at"] = Time.current.iso8601
+    write_description_data!(data)
+  end
+
+  def reopen_signups!
+    data = description_data
+    data.delete("signups_closed_at")
+    write_description_data!(data)
   end
 
   MAIN_CHANNEL_ID = "C0ALTV3HBGB"

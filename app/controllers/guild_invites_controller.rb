@@ -181,6 +181,11 @@ class GuildInvitesController < ApplicationController
 
     unless @guild
       redirect_to guilds_path, alert: "No guild found for this invite link."
+      return
+    end
+
+    if @guild.signups_closed? && action_name != "success"
+      redirect_to guilds_path, alert: "#{@guild.city} Build Guild is no longer accepting new signups."
     end
   end
 end

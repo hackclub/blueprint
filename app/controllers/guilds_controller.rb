@@ -1,4 +1,7 @@
 class GuildsController < ApplicationController
+  DISMISSIBLE_NOTICES = %w[venue_form funding_form safeguarding].freeze
+  DISMISSED_COOKIE = :guild_dismissed_notices
+
   skip_before_action :authenticate_user!, only: [ :index, :map_data ]
 
   def index
@@ -35,6 +38,7 @@ class GuildsController < ApplicationController
       .where.not(attendee_activities: [ nil, "" ])
       .or(@guild.guild_signups.where.not(ideas: [ nil, "" ]))
       .includes(:user)
+    @dismissed_notices = read_dismissed_notices_for(@guild)
     session[:guild_dashboard_last_seen] = Time.current.iso8601
   end
 
@@ -77,6 +81,54 @@ class GuildsController < ApplicationController
     redirect_to guild_dashboard_path, notice: "You have left #{guild.city}."
   end
 
+  def close_signups
+    guild = organizer_guild_from_params
+    return unless guild
+
+    if guild.signups_closed?
+      redirect_to guild_dashboard_path(guild_id: guild.id), notice: "Signups are already closed."
+      return
+    end
+    guild.close_signups!
+    notify_admin_channel("<@U08350QEPM1> build guild #{guild.invite_slug} has closed signups to their guild")
+    redirect_to guild_dashboard_path(guild_id: guild.id), notice: "Signups closed. Check-in forms and waivers will be released within a few hours."
+  end
+
+  def reopen_signups
+    guild = organizer_guild_from_params
+    return unless guild
+
+    unless guild.signups_closed?
+      redirect_to guild_dashboard_path(guild_id: guild.id), notice: "Signups are already open."
+      return
+    end
+    guild.reopen_signups!
+    notify_admin_channel("<@U08350QEPM1> build guild #{guild.invite_slug} has re-enabled signups to their guild")
+    redirect_to guild_dashboard_path(guild_id: guild.id), notice: "Signups reopened."
+  end
+
+  def dismiss_notice
+    signup = current_user.guild_signups.find_by(guild_id: params[:guild_id])
+    unless signup
+      redirect_to guilds_path, alert: "You're not signed up for this guild."
+      return
+    end
+
+    key = params[:key].to_s
+    unless DISMISSIBLE_NOTICES.include?(key)
+      redirect_to guild_dashboard_path(guild_id: signup.guild_id), alert: "Unknown notice."
+      return
+    end
+
+    store = cookies.signed[DISMISSED_COOKIE]
+    store = store.is_a?(Hash) ? store.deep_dup : {}
+    store[signup.guild_id.to_s] ||= {}
+    store[signup.guild_id.to_s][key] = Time.current.iso8601
+    cookies.signed.permanent[DISMISSED_COOKIE] = { value: store, httponly: true, same_site: :lax }
+
+    redirect_to guild_dashboard_path(guild_id: signup.guild_id)
+  end
+
   def map_data
     @guilds = Guild.includes(:guild_signups)
                    .where.not(latitude: nil, longitude: nil)
@@ -98,6 +150,21 @@ class GuildsController < ApplicationController
   end
 
   private
+
+  def read_dismissed_notices_for(guild)
+    raw = cookies.signed[DISMISSED_COOKIE]
+    return {} unless raw.is_a?(Hash)
+    (raw[guild.id.to_s] || {}).slice(*DISMISSIBLE_NOTICES)
+  end
+
+  def organizer_guild_from_params
+    signup = current_user.guild_signups.find_by(guild_id: params[:guild_id], role: :organizer)
+    unless signup
+      redirect_to guilds_path, alert: "Only organizers can manage guild signups."
+      return nil
+    end
+    signup.guild
+  end
 
   def notify_admin_channel(message)
     return unless ENV["GUILDS_ADMIN_CHANNEL"].present?

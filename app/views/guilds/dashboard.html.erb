@@ -38,9 +38,12 @@
       </div>
     <% end %>
 
-    <% if @is_poc %>
-      <div class="p-4 border-2 border-red-500 rounded-none space-y-2">
-        <p class="text-lg font-bold text-red-500">Funding Form</p>
+    <% if @is_poc && !@dismissed_notices.key?("funding_form") %>
+      <div class="p-4 border-2 border-red-500 rounded-none space-y-2 relative">
+        <%= button_to guild_dismiss_notice_path(guild_id: @guild.id, key: "funding_form"), method: :post, class: "absolute top-2 right-2 text-white/60 hover:text-white text-2xl leading-none cursor-pointer px-2", data: { turbo_confirm: "Dismiss this reminder? Only do this once you've submitted the funding form." } do %>
+          &times;
+        <% end %>
+        <p class="text-lg font-bold text-red-500 pr-8">Funding Form</p>
         <p class="text-white/90 text-sm">
           As the POC for your guild, we need you to fill out this short form so we can get funding to your Build Guild. Only you can submit this for your guild, and we can't send funding until it's filled out!
         </p>
@@ -48,11 +51,25 @@
       </div>
     <% end %>
 
-    <% if @is_organizer %>
-      <div class="p-4 border-2 border-red-500 rounded-none space-y-2">
-        <p class="text-lg font-bold text-red-500">Venue Submission</p>
+    <% if @is_organizer && !@dismissed_notices.key?("venue_form") %>
+      <div class="p-4 border-2 border-red-500 rounded-none space-y-2 relative">
+        <%= button_to guild_dismiss_notice_path(guild_id: @guild.id, key: "venue_form"), method: :post, class: "absolute top-2 right-2 text-white/60 hover:text-white text-2xl leading-none cursor-pointer px-2", data: { turbo_confirm: "Dismiss this reminder? Only do this once you've submitted the venue form." } do %>
+          &times;
+        <% end %>
+        <p class="text-lg font-bold text-red-500 pr-8">Venue Submission</p>
         <p class="text-white/70 text-sm">Please submit this form as soon as you have confirmed the venue for your Build Guild.</p>
         <%= render "shared/button", text: "Submit Venue", url: "https://forms.hackclub.com/t/poS7N9ZFG9us", variant: :primary, class: "text-sm py-1", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
+      </div>
+    <% end %>
+
+    <% if @is_organizer && !@dismissed_notices.key?("safeguarding") %>
+      <div class="p-4 border-2 border-red-500 rounded-none space-y-2 relative">
+        <%= button_to guild_dismiss_notice_path(guild_id: @guild.id, key: "safeguarding"), method: :post, class: "absolute top-2 right-2 text-white/60 hover:text-white text-2xl leading-none cursor-pointer px-2", data: { turbo_confirm: "Dismiss this reminder? Only do this once you've completed the safeguarding training." } do %>
+          &times;
+        <% end %>
+        <p class="text-lg font-bold text-red-500 pr-8">Safeguarding Training</p>
+        <p class="text-white/70 text-sm">Please complete the safeguarding training and review the <a href="https://hackclub.com/safeguarding-policy/" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Safeguarding Policy</a></p>
+        <%= render "shared/button", text: "Complete Safeguarding Training", url: "https://forms.hackclub.com/safeguarding-training", variant: :primary, class: "text-sm py-1", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
       </div>
     <% end %>
 
@@ -214,12 +231,6 @@
     </details>
 
     <% if @is_organizer %>
-      <div class="p-4 border-2 border-red-500 rounded-none space-y-2">
-        <p class="text-lg font-bold text-red-500">Safeguarding Training</p>
-        <p class="text-white/70 text-sm">Please complete the safeguarding training and review the <a href="https://hackclub.com/safeguarding-policy/" target="_blank" rel="noopener noreferrer" class="underline decoration-white/30 underline-offset-2 hover:decoration-white">Safeguarding Policy</a></p>
-        <%= render "shared/button", text: "Complete Safeguarding Training", url: "https://forms.hackclub.com/safeguarding-training", variant: :primary, class: "text-sm py-1", html_options: { target: "_blank", rel: "noopener noreferrer" } %>
-      </div>
-
       <div class="p-4 border-2 border-white rounded-none space-y-2">
         <p class="text-lg font-bold">Organizer Resources</p>
         <div class="space-y-1 text-sm">
@@ -318,6 +329,24 @@
           </script>
         </div>
       </details>
+    <% end %>
+
+    <% if @is_organizer %>
+      <div class="p-4 border-2 border-white rounded-none space-y-2">
+        <p class="text-lg font-bold">Signups</p>
+        <p class="text-white/70 text-sm">
+          <% if @guild.signups_closed? %>
+            Your guild is closed to new signups. Reopen if you'd like to accept more attendees.
+          <% else %>
+            This closes your Build Guild to new signups early, it also triggers the release of attendee check-in forms and waivers within a few hours, provided you have filled out the venue form. This happens automatically 24 hours before your event.
+          <% end %>
+        </p>
+        <% if @guild.signups_closed? %>
+          <%= render "shared/button", text: "Reopen Signups", url: guild_reopen_signups_path(guild_id: @guild.id), variant: :primary, class: "text-sm py-1", html_options: { method: :post, data: { turbo_confirm: "Reopen signups for #{@guild.city} Build Guild?" } } %>
+        <% else %>
+          <%= render "shared/button", text: "Close Signups Early", url: guild_close_signups_path(guild_id: @guild.id), variant: :danger, class: "text-sm py-1", html_options: { method: :post, data: { turbo_confirm: "Close signups for #{@guild.city} Build Guild?" } } %>
+        <% end %>
+      </div>
     <% end %>
 
     <div class="pt-4 border-t border-white/10">

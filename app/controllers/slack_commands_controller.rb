@@ -493,9 +493,12 @@ class SlackCommandsController < ApplicationController
 
   def guild_add_user_message(text)
     parts = text.to_s.split
-    return "Usage: `/guild-add-user @user <city> <attendee|organizer> [YYYY-MM-DD]`\nExample: `/guild-add-user @john London organizer 2008-08-21`\nBirthday is optional." unless parts.length >= 3
+    return "Usage: `/guild-add-user <@user|email> <city> <attendee|organizer> [YYYY-MM-DD]`" unless parts.length >= 3
 
     raw_input = parts[0].strip
+    if raw_input =~ /\A<mailto:([^|>]+)(?:\|[^>]*)?>\z/
+      raw_input = Regexp.last_match(1)
+    end
 
     raw_date = nil
     if parts[-1].match?(/\A\d{4}-\d{1,2}-\d{1,2}\z/)
@@ -512,7 +515,10 @@ class SlackCommandsController < ApplicationController
     end
 
     user = find_slack_user(raw_input)
-    return "No user found for \"#{raw_input}\". Try using their Slack ID (e.g. U12345678)." unless user
+    if user.nil? && raw_input =~ URI::MailTo::EMAIL_REGEXP
+      user = User.find_or_create_from_email(raw_input.downcase)
+    end
+    return "No user found for \"#{raw_input}\". Try their Slack ID (e.g. U12345678) or email." unless user
 
     guild = find_guild(city)
     return "No guild found for \"#{city}\"." unless guild
@@ -530,9 +536,11 @@ class SlackCommandsController < ApplicationController
       user.update!(birthday: birthday)
     end
 
+    user_mention = user.slack_id.present? ? "<@#{user.slack_id}>" : (user.display_name.presence || user.email)
+
     existing_signup = user.guild_signups.find_by(guild: guild)
     if existing_signup
-      result = "<@#{user.slack_id}> is already signed up for *#{guild.city}*."
+      result = "#{user_mention} is already signed up for *#{guild.city}*."
       result += " Birthday updated to #{birthday.iso8601}." if birthday
       return result
     end
@@ -540,7 +548,7 @@ class SlackCommandsController < ApplicationController
     signup = user.guild_signups.build(
       guild: guild,
       role: role,
-      name: user.display_name,
+      name: user.display_name.presence || user.email,
       email: user.email,
       country: guild.country,
       skip_slack_validation: true,
@@ -548,7 +556,7 @@ class SlackCommandsController < ApplicationController
     )
 
     if signup.save
-      result = "Added <@#{user.slack_id}> to *#{guild.city}* as #{role}."
+      result = "Added #{user_mention} to *#{guild.city}* as #{role}."
       result += " Birthday set to #{birthday.iso8601}." if birthday
       result
     else

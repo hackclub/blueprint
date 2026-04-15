@@ -125,6 +125,11 @@ class GuildSignupsController < ApplicationController
       @guild_is_new = false
       @guild = find_or_create_guild(raw_city, raw_country)
 
+      if @guild&.signups_closed?
+        @signups_closed_guild = @guild
+        raise ActiveRecord::Rollback
+      end
+
       # Normalize the signup's country to match the guild's stored format
       params[:guild_signup][:country] = @guild.country if @guild&.country.present?
 
@@ -139,6 +144,8 @@ class GuildSignupsController < ApplicationController
       notify_admin_channel(@pending_admin_message) if @pending_admin_message.present?
       session[:guild_signup_success_guild_id] = @guild.id
       redirect_to guild_signups_success_path
+    elsif @signups_closed_guild
+      redirect_to guilds_path(anchor: "signup-form"), alert: "#{@signups_closed_guild.city} Build Guild is no longer accepting new signups."
     else
       errors = @signup&.errors&.full_messages&.join(", ")
       guild_note = @guild_is_new ? " (new guild creation for #{raw_city} was rolled back)" : " (existing guild: #{@guild&.city})"
@@ -274,6 +281,10 @@ class GuildSignupsController < ApplicationController
     end
 
     guild = find_or_create_guild(raw_city, raw_country)
+    if guild&.signups_closed?
+      redirect_to guilds_path(anchor: "signup-form"), alert: "#{guild.city} Build Guild is no longer accepting new signups."
+      return
+    end
     notify_admin_channel(@pending_admin_message) if @pending_admin_message.present?
 
     role = %w[organizer attendee].include?(signup_data["role"]) ? signup_data["role"] : "attendee"

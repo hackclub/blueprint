@@ -123,6 +123,9 @@ Rails.application.routes.draw do
   post "guilds/dashboard/announce", to: "guilds#create_announcement", as: :guild_create_announcement
   delete "guilds/dashboard/announce", to: "guilds#delete_announcement", as: :guild_delete_announcement
   delete "guilds/dashboard/leave", to: "guilds#leave_guild", as: :guild_leave
+  post "guilds/dashboard/close_signups", to: "guilds#close_signups", as: :guild_close_signups
+  post "guilds/dashboard/reopen_signups", to: "guilds#reopen_signups", as: :guild_reopen_signups
+  post "guilds/dashboard/dismiss_notice/:key", to: "guilds#dismiss_notice", as: :guild_dismiss_notice
 
   # Authentication
   get "auth/login" => "auth#index", as: :login
