@@ -18,6 +18,8 @@ class SlackCommandsController < ApplicationController
     /guild-set-channel
     /guild-set-poc
     /guild-archive-closed
+    /guild-close-signups
+    /guild-reopen-signups
     /guild-sync-poc
     /guild-sync
     /guild-spam
@@ -69,6 +71,10 @@ class SlackCommandsController < ApplicationController
       { response_type: "in_channel", text: guild_set_poc_message(params[:text]) }
     when "/guild-archive-closed"
       guild_archive_closed_async(params[:response_url])
+    when "/guild-close-signups"
+      { response_type: "in_channel", text: guild_close_signups_message(params[:text]) }
+    when "/guild-reopen-signups"
+      { response_type: "in_channel", text: guild_reopen_signups_message(params[:text]) }
     when "/guild-sync-poc"
       guild_sync_poc_async(params[:response_url])
     when "/guild-sync"
@@ -639,6 +645,40 @@ class SlackCommandsController < ApplicationController
     GuildSyncAirtableJob.perform_later(response_url)
 
     { response_type: "in_channel", text: "Syncing #{guild_count} guilds and #{signup_count} signups to Airtable…" }
+  end
+
+  def guild_close_signups_message(text)
+    city = text.to_s.strip
+    return "Usage: `/guild-close-signups <city>`" if city.blank?
+
+    guild = find_guild(city)
+    return "No guild found for \"#{city}\"." unless guild
+    return "Signups for *#{guild.name}* are already closed." if guild.signups_closed?
+
+    guild.close_signups!(by_admin: true)
+    Rails.logger.info "[SlackBot] /guild-close-signups guild_id=#{guild.id} city=#{guild.city} by user=#{params[:user_id]}"
+
+    if guild.slack_channel_id.present?
+      Thread.new do
+        slack = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+        slack.chat_postMessage(channel: guild.slack_channel_id, text: "Signups for this Build Guild are now closed. Please check your email for a link to register your attendance!")
+      end
+    end
+
+    "Closed signups for *#{guild.name}*."
+  end
+
+  def guild_reopen_signups_message(text)
+    city = text.to_s.strip
+    return "Usage: `/guild-reopen-signups <city>`" if city.blank?
+
+    guild = find_guild(city)
+    return "No guild found for \"#{city}\"." unless guild
+    return "Signups for *#{guild.name}* are already open." unless guild.signups_closed?
+
+    guild.reopen_signups!
+
+    "Reopened signups for *#{guild.name}*."
   end
 
   def guild_sync_poc_async(response_url)

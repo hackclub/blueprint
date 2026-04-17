@@ -88,5 +88,14 @@
     "image": "/old-cdn/650b0f822a819caa_2a2ece39-fc77-4e70-a5fa-420085b94667.webp",
     "website": "",
     "github": "https://github.com/KOEGlike"
+  },
+  {
+    "id": "11",
+    "name": "Elliott Preston",
+    "title": "Build Guilds Organizer",
+    "description": "Hi, I'm Elliott! I'm from London, UK and am helping out with running Blueprint Build Guilds. I love electronics, engineering and making things in general, and joined Hack Club during Highway, where I got to present my Undercity project at GitHub Universe! Outside of coding, I enjoy running and playing the saxophone.",
+    "image": "https://cdn.hackclub.com/019d9a39-10bc-7d03-b91e-1d4b5a601183/test.jpeg",
+    "website": "",
+    "github": "https://github.com/Sn3akySqu1d"
   }
 ]

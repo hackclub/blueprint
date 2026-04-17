@@ -91,6 +91,7 @@ class GuildsController < ApplicationController
     end
     guild.close_signups!
     notify_admin_channel("<@U08350QEPM1> build guild #{guild.invite_slug} has closed signups to their guild")
+    notify_guild_channel(guild, "Signups for this Build Guild are now closed. Please check your email for a link to register your attendance!")
     redirect_to guild_dashboard_path(guild_id: guild.id), notice: "Signups closed. Check-in forms and waivers will be released within a few hours."
   end
 
@@ -100,6 +101,10 @@ class GuildsController < ApplicationController
 
     unless guild.signups_closed?
       redirect_to guild_dashboard_path(guild_id: guild.id), notice: "Signups are already open."
+      return
+    end
+    if guild.signups_closed_by_admin?
+      redirect_to guild_dashboard_path(guild_id: guild.id), alert: "Signups were closed by an admin and can't be reopened from the dashboard."
       return
     end
     guild.reopen_signups!
@@ -132,7 +137,7 @@ class GuildsController < ApplicationController
   def map_data
     @guilds = Guild.includes(:guild_signups)
                    .where.not(latitude: nil, longitude: nil)
-                   .where(needs_review: [false, nil])
+                   .where(needs_review: [ false, nil ])
                    .where.not(status: :closed)
     render json: @guilds.map { |g|
       {
@@ -170,6 +175,13 @@ class GuildsController < ApplicationController
     return unless ENV["GUILDS_ADMIN_CHANNEL"].present?
     slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
     slack_client.chat_postMessage(channel: ENV["GUILDS_ADMIN_CHANNEL"], text: message)
+  rescue
+  end
+
+  def notify_guild_channel(guild, message)
+    return unless guild.slack_channel_id.present?
+    slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
+    slack_client.chat_postMessage(channel: guild.slack_channel_id, text: message)
   rescue
   end
 end

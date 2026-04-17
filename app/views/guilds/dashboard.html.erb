@@ -335,13 +335,17 @@
       <div class="p-4 border-2 border-white rounded-none space-y-2">
         <p class="text-lg font-bold">Signups</p>
         <p class="text-white/70 text-sm">
-          <% if @guild.signups_closed? %>
+          <% if @guild.signups_closed_by_admin? %>
+            Signups for this guild have been closed.
+          <% elsif @guild.signups_closed? %>
             Your guild is closed to new signups. Reopen if you'd like to accept more attendees.
           <% else %>
             This closes your Build Guild to new signups early, it also triggers the release of attendee check-in forms and waivers within a few hours, provided you have filled out the venue form. This happens automatically 24 hours before your event.
           <% end %>
         </p>
-        <% if @guild.signups_closed? %>
+        <% if @guild.signups_closed_by_admin? %>
+          <%= render "shared/button", text: "Reopen Signups", variant: :primary, class: "text-sm py-1 opacity-50 cursor-not-allowed", html_options: { disabled: true, title: "Sign ups have been closed" } %>
+        <% elsif @guild.signups_closed? %>
           <%= render "shared/button", text: "Reopen Signups", url: guild_reopen_signups_path(guild_id: @guild.id), variant: :primary, class: "text-sm py-1", html_options: { method: :post, data: { turbo_confirm: "Reopen signups for #{@guild.city} Build Guild?" } } %>
         <% else %>
           <%= render "shared/button", text: "Close Signups Early", url: guild_close_signups_path(guild_id: @guild.id), variant: :danger, class: "text-sm py-1", html_options: { method: :post, data: { turbo_confirm: "Close signups for #{@guild.city} Build Guild?" } } %>

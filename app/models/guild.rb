@@ -147,6 +147,7 @@ class Guild < ApplicationRecord
   def write_description_data!(data)
     data = data.dup
     data.delete("signups_closed_at") if data["signups_closed_at"].blank?
+    data.delete("closed_by_admin") if data["signups_closed_at"].blank?
     if data["announcements"].blank? && data["signups_closed_at"].blank?
       update_column(:description, nil)
     else
@@ -185,15 +186,21 @@ class Guild < ApplicationRecord
     description_data["signups_closed_at"].present?
   end
 
-  def close_signups!
+  def signups_closed_by_admin?
+    signups_closed? && description_data["closed_by_admin"] == true
+  end
+
+  def close_signups!(by_admin: false)
     data = description_data
     data["signups_closed_at"] = Time.current.iso8601
+    data["closed_by_admin"] = true if by_admin
     write_description_data!(data)
   end
 
   def reopen_signups!
     data = description_data
     data.delete("signups_closed_at")
+    data.delete("closed_by_admin")
     write_description_data!(data)
   end
 
