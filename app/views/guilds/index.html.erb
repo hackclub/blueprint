@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <% if user_logged_in? && current_user.guild_signups.exists? %>
+    <% if user_logged_in? && current_user.guild_signups.where.not(role: :volunteer).exists? %>
       <% is_org = current_user.guild_signups.exists?(role: :organizer) %>
       <div class="border-2 border-bp-warning/50 bg-bp-darker/50 p-4 rounded-none flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <p class="text-white/90"><%= is_org ? "You're a guild organizer! Manage your guild from the dashboard." : "You're signed up for a guild! View your guild's info on the dashboard." %></p>
