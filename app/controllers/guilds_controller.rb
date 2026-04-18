@@ -11,7 +11,7 @@ class GuildsController < ApplicationController
   end
 
   def dashboard
-    @user_signups = current_user.guild_signups.includes(:guild).where.not(role: :volunteer).order(role: :asc).to_a
+    @user_signups = current_user.guild_signups.includes(:guild).order(role: :asc).to_a
 
     if params[:guild_id].present?
       @signup = @user_signups.find { |s| s.guild_id == params[:guild_id].to_i }

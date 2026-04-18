@@ -6,8 +6,6 @@ class SendGuildEmailJob < ApplicationJob
     signup = GuildSignup.find_by(id: signup_id)
     return unless signup
 
-    return if signup.volunteer?
-
     template_id = if signup.organizer?
       ENV["GUILDS_ORGANIZER_TEMPLATE_ID"]
     else

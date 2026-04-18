@@ -32,7 +32,7 @@ class GuildSignup < ApplicationRecord
 
   attr_accessor :skip_slack_validation, :skip_admin_validations
 
-  enum :role, { organizer: 0, attendee: 1, volunteer: 2 }
+  enum :role, { organizer: 0, attendee: 1 }
 
   after_commit :enqueue_processing_job, on: :create
   after_commit :send_confirmation_email, on: :create

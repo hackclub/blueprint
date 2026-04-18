@@ -6,7 +6,7 @@
     <p class="text-xl text-white/70"><%= @guild.city %>, <%= @guild.country %></p>
   </div>
 
-  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
     <div class="p-4 border-2 border-white rounded-none space-y-1">
       <p class="text-white/70">Status</p>
       <% status_type = case @guild.status
@@ -27,10 +27,6 @@
     <div class="p-4 border-2 border-white rounded-none space-y-1">
       <p class="text-white/70">Attendees</p>
       <p class="text-2xl font-bold"><%= @guild.guild_signups.select(&:attendee?).size %></p>
-    </div>
-    <div class="p-4 border-2 border-white rounded-none space-y-1">
-      <p class="text-white/70">Volunteers</p>
-      <p class="text-2xl font-bold"><%= @guild.guild_signups.select(&:volunteer?).size %></p>
     </div>
   </div>
 
@@ -101,11 +97,7 @@
         <% @guild.guild_signups.order(role: :asc, created_at: :desc).each do |signup| %>
           <div class="grid grid-cols-12 px-3 text-lg border-b border-white/30 last:border-0 items-center">
             <div class="col-span-1 py-2">
-              <% role_type = case signup.role
-                             when "organizer" then :warning
-                             when "volunteer" then :info
-                             else :success
-                             end %>
+              <% role_type = signup.organizer? ? :warning : :success %>
               <%= render "admin/pill", type: role_type, value: signup.role do %><% end %>
             </div>
             <div class="col-span-2 font-medium">

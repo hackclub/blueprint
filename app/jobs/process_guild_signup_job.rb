@@ -18,8 +18,6 @@ class ProcessGuildSignupJob < ApplicationJob
     slack_info = user.slack_id.present? ? " (<@#{user.slack_id}>)" : ""
     notify_admin(ENV["GUILDS_ADMIN_CHANNEL"], "New #{signup.role} signup: *#{signup.name}*#{slack_info} (#{signup.email}) for *#{guild.city}*")
 
-    return if signup.volunteer?
-
     admin_channel = ENV["GUILDS_ADMIN_CHANNEL"]
     organizers_channel = ENV["GUILDS_ORGANIZERS_CHANNEL"]
     contact_slack_id = "U08350QEPM1"

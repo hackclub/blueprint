@@ -165,7 +165,7 @@
       </div>
     <% end %>
 
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div class="p-4 border-2 border-white rounded-none">
         <p class="text-2xl font-bold"><%= @signups.size %></p>
         <p class="text-white/70">Total Signups</p>
@@ -177,10 +177,6 @@
       <div class="p-4 border-2 border-white rounded-none">
         <p class="text-2xl font-bold"><%= @signups.select(&:attendee?).size %></p>
         <p class="text-white/70">Attendees</p>
-      </div>
-      <div class="p-4 border-2 border-white rounded-none">
-        <p class="text-2xl font-bold"><%= @signups.select(&:volunteer?).size %></p>
-        <p class="text-white/70">Volunteers</p>
       </div>
       <div class="p-4 border-2 border-white rounded-none">
         <p class="text-2xl font-bold"><%= @signups.select { |s| s.user&.slack_id.present? }.size %></p>
@@ -308,8 +304,6 @@
                     <td class="px-3 py-2 whitespace-nowrap">
                       <% if signup.organizer? %>
                         <span class="text-bp-warning font-medium">Organizer</span>
-                      <% elsif signup.volunteer? %>
-                        <span class="text-white/70 font-medium">Volunteer (19+)</span>
                       <% else %>
                         <span class="text-bp-success font-medium">Attendee</span>
                       <% end %>
