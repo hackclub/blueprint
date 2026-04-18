@@ -4,6 +4,7 @@ class GuildSlackInviteJob < ApplicationJob
   def perform(signup_id)
     signup = GuildSignup.find_by(id: signup_id)
     return unless signup
+    return if signup.volunteer?
 
     guild = signup.guild
     user = signup.user

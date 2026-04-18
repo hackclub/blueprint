@@ -172,11 +172,13 @@ class SlackCommandsController < ApplicationController
       list = guilds.map do |g|
         organizers = g.guild_signups.count { |s| s.organizer? }
         attendees = g.guild_signups.count { |s| s.attendee? }
+        volunteers = g.guild_signups.count { |s| s.volunteer? }
         flags = []
         flags << "needs review" if g.needs_review?
         flags << "no organizers" if organizers == 0
         flag_text = flags.any? ? " :warning: #{flags.join(', ')}" : ""
-        "• *#{g.name}* (#{g.city}): #{g.status}: #{organizers} org / #{attendees} att#{flag_text}"
+        vol_text = volunteers > 0 ? " / #{volunteers} vol" : ""
+        "• *#{g.name}* (#{g.city}): #{g.status}: #{organizers} org / #{attendees} att#{vol_text}#{flag_text}"
       end.join("\n")
       "#{guilds.count} guilds:\n#{list}"
     else
@@ -193,24 +195,18 @@ class SlackCommandsController < ApplicationController
 
     organizers = guild.guild_signups.where(role: :organizer).includes(:user)
     attendees = guild.guild_signups.where(role: :attendee).includes(:user)
+    volunteers = guild.guild_signups.where(role: :volunteer).includes(:user)
 
-    org_list = if organizers.any?
-      organizers.map { |s|
-        slack = s.user&.slack_id.present? ? " <@#{s.user.slack_id}>" : ""
-        "  • #{s.name} (#{s.email})#{slack}"
-      }.join("\n")
-    else
-      "  (none)"
-    end
-
-    att_list = if attendees.any?
-      attendees.map { |s|
-        slack = s.user&.slack_id.present? ? " <@#{s.user.slack_id}>" : ""
-        "  • #{s.name} (#{s.email})#{slack}"
-      }.join("\n")
-    else
-      "  (none)"
-    end
+    format_list = ->(signups) {
+      if signups.any?
+        signups.map { |s|
+          slack = s.user&.slack_id.present? ? " <@#{s.user.slack_id}>" : ""
+          "  • #{s.name} (#{s.email})#{slack}"
+        }.join("\n")
+      else
+        "  (none)"
+      end
+    }
 
     channel_text = guild.slack_channel_id.present? ? "<##{guild.slack_channel_id}>" : "(no channel)"
 
@@ -220,10 +216,13 @@ class SlackCommandsController < ApplicationController
       Coordinates: #{guild.latitude || '?'}, #{guild.longitude || '?'}
 
       *Organizers (#{organizers.count}):*
-      #{org_list}
+      #{format_list.call(organizers)}
 
       *Attendees (#{attendees.count}):*
-      #{att_list}
+      #{format_list.call(attendees)}
+
+      *Volunteers (#{volunteers.count}):*
+      #{format_list.call(volunteers)}
     MSG
   end
 
@@ -294,13 +293,13 @@ class SlackCommandsController < ApplicationController
 
   def guild_change_role_message(text)
     parts = text.to_s.split
-    return "Usage: `/guild-change-role <@user or signup_id> <organizer|attendee>`" unless parts.length == 2
+    return "Usage: `/guild-change-role <@user or signup_id> <organizer|attendee|volunteer>`" unless parts.length == 2
 
     raw_input = parts[0].strip
     new_role = parts[1].strip.downcase
 
-    unless %w[organizer attendee].include?(new_role)
-      return "Role must be `organizer` or `attendee`."
+    unless %w[organizer attendee volunteer].include?(new_role)
+      return "Role must be `organizer`, `attendee`, or `volunteer`."
     end
 
     if raw_input.match?(/\A\d+\z/)
@@ -499,7 +498,7 @@ class SlackCommandsController < ApplicationController
 
   def guild_add_user_message(text)
     parts = text.to_s.split
-    return "Usage: `/guild-add-user <@user|email> <city> <attendee|organizer> [YYYY-MM-DD]`" unless parts.length >= 3
+    return "Usage: `/guild-add-user <@user|email> <city> <attendee|organizer|volunteer> [YYYY-MM-DD]`" unless parts.length >= 3
 
     raw_input = parts[0].strip
     if raw_input =~ /\A<mailto:([^|>]+)(?:\|[^>]*)?>\z/
@@ -516,8 +515,8 @@ class SlackCommandsController < ApplicationController
       city = parts[1..-2].join(" ")
     end
 
-    unless %w[organizer attendee].include?(role)
-      return "Role must be `organizer` or `attendee`."
+    unless %w[organizer attendee volunteer].include?(role)
+      return "Role must be `organizer`, `attendee`, or `volunteer`."
     end
 
     user = find_slack_user(raw_input)
@@ -540,6 +539,10 @@ class SlackCommandsController < ApplicationController
       return "Date seems too old. Please double-check." if birthday < 120.years.ago.to_date
 
       user.update!(birthday: birthday)
+    end
+
+    if role == "volunteer" && !user.is_adult?
+      user.update!(birthday: 20.years.ago.to_date)
     end
 
     user_mention = user.slack_id.present? ? "<@#{user.slack_id}>" : (user.display_name.presence || user.email)

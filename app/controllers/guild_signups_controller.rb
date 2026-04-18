@@ -157,7 +157,9 @@ class GuildSignupsController < ApplicationController
   private
 
   def signup_params
-    params.require(:guild_signup).permit(:role, :name, :email, :country, :ideas, :attendee_activities)
+    permitted = params.require(:guild_signup).permit(:role, :name, :email, :country, :ideas, :attendee_activities)
+    permitted[:role] = "attendee" unless %w[organizer attendee].include?(permitted[:role])
+    permitted
   end
 
   def find_or_create_guild(raw_city, raw_country)
