@@ -30,10 +30,6 @@
       </div>
     <% end %>
 
-    <% unless user_logged_in? %>
-      <%= render 'guilds/signup_form' %>
-    <% end %>
-
     <%= render 'shared/card', class: 'flex flex-col space-y-4 border-2 border-bp-darker bg-bp-darker/50 p-6 rounded-none' do %>
       <h2 class="text-2xl md:text-3xl font-semibold text-white">Overview</h2>
 
@@ -99,14 +95,16 @@
             <p class="text-white/80 text-lg uppercase tracking-wide mt-2">Build Guilds</p>
           </div>
           <div class="border-t border-white/10 pt-6 w-full">
-            <p class="text-white/90 text-base leading-relaxed">Don't see your city on the map?</p>
-            <p class="text-white/60 text-sm leading-relaxed mt-1">You can still sign up - it helps others in your area find each other. Once enough interest builds up, an organizer will come along.</p>
+            <p class="text-white/90 text-base leading-relaxed">Signups are now closed.</p>
+            <p class="text-white/60 text-sm leading-relaxed mt-1">Thank you to everyone who participated!</p>
           </div>
         </div>
 
         <div id="guilds-map" class="w-full min-h-[24rem] md:flex-1 bg-bp-dark rounded-none border border-white/25"></div>
       </div>
     </div>
+
+    <%= render 'guilds/signup_form' %>
 
     <script>
       function initGuildsMap() {
@@ -280,10 +278,6 @@
         </div>
 
       </div>
-    <% end %>
-
-    <% if user_logged_in? %>
-      <%= render 'guilds/signup_form' %>
     <% end %>
 
     <% if @signup&.errors&.any? %>
