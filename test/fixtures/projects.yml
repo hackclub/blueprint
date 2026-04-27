@@ -12,6 +12,7 @@
 #  build_slack_message         :string
 #  demo_link                   :string
 #  description                 :text
+#  design_resubmission_count   :integer          default(0), not null
 #  design_review_claimed_at    :datetime
 #  design_slack_message        :string
 #  funding_needed_cents        :integer          default(0), not null

@@ -295,11 +295,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_01_050000) do
   create_table "guilds", force: :cascade do |t|
     t.string "name"
     t.text "description"
-    t.string "city", null: false
-    t.string "slack_channel_id"
-    t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "city"
+    t.string "slack_channel_id"
+    t.integer "status"
     t.float "latitude"
     t.float "longitude"
     t.string "country"
@@ -747,8 +747,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_01_050000) do
   add_foreign_key "design_reviews", "users", column: "reviewer_id"
   add_foreign_key "follows", "projects"
   add_foreign_key "follows", "users"
-  add_foreign_key "guild_signups", "guilds"
-  add_foreign_key "guild_signups", "users"
   add_foreign_key "hcb_transactions", "hcb_grants"
   add_foreign_key "journal_entries", "projects"
   add_foreign_key "journal_entries", "users"

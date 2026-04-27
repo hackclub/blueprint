@@ -21,11 +21,6 @@
 #  index_guild_signups_on_user_id               (user_id)
 #  index_guild_signups_on_user_id_and_guild_id  (user_id,guild_id) UNIQUE
 #
-# Foreign Keys
-#
-#  fk_rails_...  (guild_id => guilds.id)
-#  fk_rails_...  (user_id => users.id)
-#
 class GuildSignup < ApplicationRecord
   belongs_to :user
   belongs_to :guild
