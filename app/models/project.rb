@@ -153,7 +153,7 @@ class Project < ApplicationRecord
     attachable.variant :web,
       resize_to_limit: [ 2000, 2000 ],
       convert: :webp,
-      saver: { quality: 80, strip: true },
+      saver: { quality: 80, keep: :none },
       preprocessed: true
   end
   has_many_attached :cart_screenshots
@@ -171,7 +171,7 @@ class Project < ApplicationRecord
   WEB_IMAGE_VARIANT_OPTIONS = {
     resize_to_limit: [ 2000, 2000 ],
     convert: :webp,
-    saver: { quality: 80, strip: true }
+    saver: { quality: 80, keep: :none }
   }.freeze
 
   def display_banner

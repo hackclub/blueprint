@@ -8,7 +8,7 @@ module Marksmith
     WEB_IMAGE_VARIANT_OPTIONS = {
       resize_to_limit: [ 2000, 2000 ],
       convert: :webp,
-      saver: { quality: 80, strip: true }
+      saver: { quality: 80, keep: :none }
     }.freeze
 
     def initialize(body:, base_url: nil)
