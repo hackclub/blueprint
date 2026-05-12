@@ -41,9 +41,9 @@ module Marksmith
 
     def preprocess_callouts(text)
       return text unless text.include?("<aside")
-      text.gsub(%r{<aside(\s[^>]*)?>\s*(.*?)\s*</aside>}m) do
+      text.gsub(%r{<aside(\s[^>]*)?>(.*?)</aside>}m) do
         attrs = Regexp.last_match(1).to_s
-        inner_md = Regexp.last_match(2)
+        inner_md = Regexp.last_match(2).to_s.strip
         inner_html = markdown.render(inner_md)
         "<aside#{attrs}>#{inner_html}</aside>"
       end

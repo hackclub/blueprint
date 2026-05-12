@@ -181,11 +181,15 @@ export default class extends Controller {
   }
 
   extractRepoInfo(link) {
-    // Extract user/repo from various formats
     let repoPath = link;
 
-    if (link.includes("github.com/")) {
-      repoPath = link.split("github.com/")[1].split("/").slice(0, 2).join("/");
+    try {
+      const url = new URL(link);
+      if (url.hostname === "github.com" || url.hostname.endsWith(".github.com")) {
+        repoPath = url.pathname.replace(/^\/+/, "").split("/").slice(0, 2).join("/");
+      }
+    } catch (_) {
+      // Not a parsable URL — assume already in user/repo form.
     }
 
     return repoPath;

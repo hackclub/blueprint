@@ -781,8 +781,9 @@ class SlackCommandsController < ApplicationController
   end
 
   def find_slack_user(input)
-    slack_id = input.gsub(/\A<@/, "").gsub(/(\|.*)?>?\z/, "")
-    slack_id = slack_id.gsub(/\A@/, "")
+    slack_id = input.delete_prefix("<@").delete_suffix(">")
+    slack_id = slack_id.split("|", 2).first.to_s
+    slack_id = slack_id.delete_prefix("@")
 
     # Try exact Slack ID match first
     user = User.find_by(slack_id: slack_id)
