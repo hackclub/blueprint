@@ -88,7 +88,7 @@ class BuildReview < ApplicationRecord
 
   before_validation :set_default_tier_override, on: :create
   before_create :freeze_project_state
-  after_save :finalize_on_approve, if: -> { saved_change_to_result? && approved? && !invalidated? }
+  after_save :finalize_on_approve, if: -> { saved_change_to_result? && approved? && !invalidated? && admin_review? }
   after_create_commit :notify_slack
 
   def self.default_multiplier_for_tier(tier)

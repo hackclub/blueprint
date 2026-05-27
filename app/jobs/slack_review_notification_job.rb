@@ -13,6 +13,8 @@ class SlackReviewNotificationJob < ApplicationJob
   def perform(review_type, review_id)
     review = review_type.constantize.find_by(id: review_id)
     return unless review
+    # First-pass build reviews are internal-only — never surfaced to the user in Slack.
+    return if review_type == "BuildReview" && !review.admin_review?
     return unless review.feedback.present?
 
     project = review.project

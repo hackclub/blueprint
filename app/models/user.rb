@@ -791,9 +791,11 @@ class User < ApplicationRecord
   end
 
   def tickets
+    # Only admin-confirmed build reviews award tickets. First-pass approvals are
+    # internal-only and must not leak into the user's ticket balance.
     build_review_tickets = received_build_reviews
       .approved
-      .where(invalidated: false)
+      .where(invalidated: false, admin_review: true)
       .sum { |br| br.tickets_awarded }
 
     manual_adjustments = manual_ticket_adjustments.sum(:adjustment)

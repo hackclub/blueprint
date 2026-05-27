@@ -217,6 +217,10 @@ class Admin::BuildReviewsController < Admin::ApplicationController
   end
 
   def update_project_review_status(project, build_review)
+    # First-pass (non-admin) build reviews are pre-vets only: they don't change
+    # project.review_status and stay hidden from the user. Only admin reviews finalize.
+    return unless build_review.admin_review?
+
     case build_review.result
     when "rejected"
       # Only invalidate non-approved reviews to preserve journal entry cutoffs
@@ -227,12 +231,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
       project.build_reviews.where.not(id: build_review.id).where.not(result: "approved").update_all(invalidated: true)
       project.update!(review_status: :build_needs_revision)
     when "approved"
-      valid_approvals = project.build_reviews.where(result: "approved", invalidated: false)
-      admin_approvals = valid_approvals.where(admin_review: true)
-
-      if valid_approvals.count >= 2 || admin_approvals.exists?
-        project.update!(review_status: :build_approved)
-      end
+      project.update!(review_status: :build_approved)
     end
   end
 

@@ -1163,8 +1163,9 @@ Any issues should go to @alexren."
 
   def build_build_review_refs
     refs = []
-    all_reviews = build_reviews.where(result: %w[returned rejected])
-                               .or(build_reviews.where(result: "approved", admin_review: true))
+    # First-pass (non-admin) build reviews are hidden from the user-facing timeline
+    # entirely — including returned/rejected outcomes — so only admin reviews are surfaced.
+    all_reviews = build_reviews.where(admin_review: true, result: %w[returned rejected approved])
                                .order(created_at: :asc)
     previous_result = nil
     approve_group = nil
