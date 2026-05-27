@@ -21,6 +21,11 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     build_approved = BuildReview.results.fetch("approved")
     design_approved = DesignReview.results.fetch("approved")
 
+    pre_approved_exists_sql = ActiveRecord::Base.sanitize_sql_array([
+      "EXISTS (SELECT 1 FROM build_reviews WHERE build_reviews.project_id = projects.id AND build_reviews.invalidated = FALSE AND build_reviews.result = ?)",
+      build_approved
+    ])
+
     last_review_entry_at_sql = ActiveRecord::Base.sanitize_sql_array([ <<~SQL.squish, build_approved, design_approved ])
       (SELECT MAX(ts) FROM (VALUES
         ((SELECT MAX(je.created_at) FROM build_reviews br
@@ -39,6 +44,7 @@ class Admin::BuildReviewsController < Admin::ApplicationController
                         .select(
                           "projects.*",
                           "(#{pre_reviewed_exists_sql}) AS pre_reviewed",
+                          "(#{pre_approved_exists_sql}) AS pre_approved",
                           "#{waiting_since_sql} AS waiting_since",
                           "#{first_waiting_since_sql} AS first_waiting_since",
                           "#{last_review_entry_at_sql} AS last_review_entry_at",

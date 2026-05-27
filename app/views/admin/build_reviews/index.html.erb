@@ -6,7 +6,8 @@
     <div class="flex flex-col">
       <h1 class="pb-2 text-4xl">Pending Build Review</h1>
       <% if current_user.admin? %>
-        <p class="text-bp-warning">Yellow: Pre-reviewed by a reviewer</p>
+        <p class="text-bp-success">Green: First-pass approved</p>
+        <p class="text-bp-warning">Yellow: Pre-reviewed (returned/rejected)</p>
       <% end %>
       <p class="underline">Underline: US submission</p>
       <p class="text-white/50">Grayed out: Claimed by another reviewer</p>
@@ -106,7 +107,14 @@
               link_classes = is_us ? "#{base_classes} #{us_classes}" : base_classes
             %>
             <% if current_user.admin? %>
-              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: "#{link_classes} #{project.pre_reviewed ? 'text-bp-warning' : ''} truncate" %>
+              <%
+                pre_review_class = if project.pre_approved
+                  "text-bp-success"
+                elsif project.pre_reviewed
+                  "text-bp-warning"
+                end
+              %>
+              <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: "#{link_classes} #{pre_review_class} truncate" %>
             <% else %>
               <%= link_to (project.title.presence || "(untitled)"), admin_build_review_path(project), class: "#{link_classes} truncate" %>
             <% end %>
