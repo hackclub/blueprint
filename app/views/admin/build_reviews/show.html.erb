@@ -1,4 +1,4 @@
-<section class="space-y-6">
+<section class="space-y-6" data-controller="first-pass-actions">
   <% if @claimed_by_other %>
     <div class="bg-bp-warning/20 border-2 border-bp-warning text-bp-warning p-4 rounded">
       <p class="font-bold text-xl">⚠️ This project is currently being reviewed by <%= @project.build_review_claimed_by.display_name %></p>
@@ -161,6 +161,22 @@
             <p>Entries since last: <%= review.frozen_entry_count.present? ? review.frozen_entry_count : "Unknown" %></p>
             <p>Note to reviewer: <%= review.frozen_reviewer_note.present? ? review.frozen_reviewer_note : "None" %></p>
           </div>
+          <% if current_user&.admin? && !review.admin_review? && !review.invalidated? && review.result.present? %>
+            <div class="flex flex-col gap-2 ml-auto shrink-0">
+              <p class="text-sm text-white/60">First-pass actions</p>
+              <%= button_to "Approve", admin_promote_first_pass_build_review_path(@project, review_id: review.id), method: :post, class: "btn btn-primary bg-bp-success border-bp-success py-1 px-4", data: { turbo_confirm: "Finalize this project using the first-pass reviewer's #{review.result} decision, hours, tier, tickets, and feedback?" } %>
+              <button type="button" class="btn btn-outline py-1 px-4"
+                title="Load these values into the review form below so you can adjust before submitting"
+                data-action="first-pass-actions#edit"
+                data-hours-override="<%= review.hours_override %>"
+                data-tier-override="<%= review.tier_override %>"
+                data-ticket-multiplier="<%= review.ticket_multiplier %>"
+                data-ticket-offset="<%= review.ticket_offset %>"
+                data-reason="<%= review.reason %>"
+                data-feedback="<%= review.feedback %>">Edit</button>
+              <%= button_to "Deny", admin_deny_first_pass_build_review_path(@project, review_id: review.id), method: :post, class: "btn btn-primary bg-bp-danger border-bp-danger py-1 px-4", data: { turbo_confirm: "Discard this first-pass proposal? You'll review the project fresh." } %>
+            </div>
+          <% end %>
         </div>
       <% end %>
     </div>

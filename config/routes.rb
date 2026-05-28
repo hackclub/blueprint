@@ -295,6 +295,8 @@ Rails.application.routes.draw do
       get "build_reviews/next(/:ysws_type)", to: "build_reviews#show_next", as: :next_build_review
       get "build_reviews/:id", to: "build_reviews#show", as: :build_review
       post "build_reviews/:id", to: "build_reviews#create", as: :build_review_create
+      post "build_reviews/:id/promote_first_pass", to: "build_reviews#promote_first_pass", as: :promote_first_pass_build_review
+      post "build_reviews/:id/deny_first_pass", to: "build_reviews#deny_first_pass", as: :deny_first_pass_build_review
 
       get "ai_reviews", to: "ai_reviews#index", as: :ai_reviews
       get "ai_reviews/:id", to: "ai_reviews#show", as: :ai_review

@@ -160,7 +160,60 @@ class Admin::BuildReviewsController < Admin::ApplicationController
     end
   end
 
+  # Promote a first-pass (non-admin) proposal into a finalized admin (second-pass)
+  # review, carrying over its result, internal justification, hours, tier and ticket
+  # settings, and feedback. Admin-only (require_admin! applies — not in skip list).
+  def promote_first_pass
+    @project = Project.find(params[:id])
+    first_pass = find_promotable_first_pass(@project)
+    return unless first_pass
+
+    admin_review = @project.build_reviews.build(
+      reviewer: current_user,
+      admin_review: true,
+      result: first_pass.result,
+      reason: first_pass.reason,
+      feedback: first_pass.feedback,
+      hours_override: first_pass.hours_override,
+      tier_override: first_pass.tier_override,
+      ticket_multiplier: first_pass.ticket_multiplier,
+      ticket_offset: first_pass.ticket_offset
+    )
+
+    if admin_review.save
+      Reviews::ClaimProject.release!(project: @project, reviewer: current_user, type: :build)
+      update_project_review_status(@project, admin_review)
+      redirect_to admin_next_build_review_path, notice: "First-pass proposal promoted and finalized."
+    else
+      redirect_to admin_build_review_path(@project), alert: admin_review.errors.full_messages.to_sentence
+    end
+  end
+
+  # Discard a first-pass proposal (mark invalidated) so the admin can review fresh.
+  # No user-facing effect — first-pass reviews are already hidden from users.
+  def deny_first_pass
+    @project = Project.find(params[:id])
+    first_pass = find_promotable_first_pass(@project)
+    return unless first_pass
+
+    first_pass.update!(invalidated: true)
+    redirect_to admin_build_review_path(@project), notice: "First-pass proposal discarded. Review fresh."
+  end
+
   private
+
+  # Loads the targeted first-pass review and verifies it's a non-admin, non-invalidated
+  # review belonging to this project. Redirects with an alert and returns nil otherwise.
+  def find_promotable_first_pass(project)
+    review = project.build_reviews.find_by(id: params[:review_id])
+
+    if review.nil? || review.admin_review? || review.invalidated?
+      redirect_to admin_build_review_path(project), alert: "That first-pass proposal is no longer available."
+      return nil
+    end
+
+    review
+  end
 
   def next_project_in_queue(type, exclude_ids: [])
     claim_cutoff = Reviews::ClaimProject::TTL.ago
