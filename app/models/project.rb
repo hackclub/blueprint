@@ -1095,12 +1095,13 @@ Any issues should go to @alexren."
 
     return if Rails.env.development? || Rails.env.test?
 
-    upload_to_airtable!
+    # Off-load the blocking Airtable/IDV upload so it can't time out the request.
+    ProjectAirtableUploadJob.perform_later(id)
   end
 
   def approve_build!
-    # Upload build review data to Airtable
-    upload_to_airtable!
+    # Upload build review data to Airtable (off the request path — see job).
+    ProjectAirtableUploadJob.perform_later(id)
   end
 
   def notify_slack_on_submission!

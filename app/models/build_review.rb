@@ -33,6 +33,9 @@
 #  fk_rails_...  (reviewer_id => users.id)
 #
 class BuildReview < ApplicationRecord
+  # Marker appended to every build review's internal justification.
+  COBR_TAG = "-COBR".freeze
+
   belongs_to :reviewer, class_name: "User"
   belongs_to :project
   has_many :journal_entries, as: :review, dependent: :nullify
@@ -87,6 +90,7 @@ class BuildReview < ApplicationRecord
   validates :hours_override, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   before_validation :set_default_tier_override, on: :create
+  before_save :tag_reason_with_cobr
   before_create :freeze_project_state
   after_save :finalize_on_approve, if: -> { saved_change_to_result? && approved? && !invalidated? && admin_review? }
   after_create_commit :notify_slack
@@ -170,6 +174,16 @@ class BuildReview < ApplicationRecord
   end
 
   private
+
+  # Append the -COBR marker to a build review's internal justification.
+  # Idempotent (won't double-tag when a first-pass reason is promoted) and only
+  # tags when a justification is actually present.
+  def tag_reason_with_cobr
+    base = reason.to_s.rstrip
+    return if base.empty? || base.end_with?(COBR_TAG)
+
+    self.reason = "#{base} #{COBR_TAG}"
+  end
 
   def notify_slack
     SlackReviewNotificationJob.perform_later("BuildReview", id)
