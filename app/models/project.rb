@@ -840,19 +840,23 @@ class Project < ApplicationRecord
     # Calculate total hours from ALL journal entries (used for self-reported fallback)
     total_hours_logged = journal_entries.sum(:duration_seconds) / 3600.0
 
-    # Check if this is an LED project
+    # Hours reported to Airtable cover only the just-approved phase, not the
+    # cumulative project total. A build review's effective_hours is already
+    # scoped to the segment since the previous review (build or design), so we
+    # take the latest one. Design uploads happen before any build, so summing
+    # admin design reviews gives the design phase total.
+    hours_for_airtable = if approved_build_reviews.any?
+      approved_build_reviews.last.effective_hours
+    elsif approved_design_reviews.any?
+      approved_design_reviews.sum(&:effective_hours)
+    else
+      total_hours_logged
+    end
+
     if ysws == "led"
-      total_effective_hours = 0
-      approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
-      approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
-      hours_for_airtable = total_effective_hours
       self_reported_hours = total_hours_logged
       reasoning = "This project followed the 555 LED blinker guide. This was a guide that we have used at workshops before and which took students new to hardware a minimum of 5 hours to complete. This project at least meets the standards of a project submitted at this event. - Clay"
     elsif ysws == "hackpad"
-      total_effective_hours = 0
-      approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
-      approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
-      hours_for_airtable = total_effective_hours
       self_reported_hours = (approved_design_reviews.any? && approved_build_reviews.empty? && approx_hour.present?) ? approx_hour.to_f : total_hours_logged
       reasoning = "This is a hackpad submitted for Blueprint initially reviewed by a hack clubber and then given a final pass by either @CAN or @alexren before being submitted to unified.
 
@@ -862,20 +866,9 @@ If it falls outside of that range, a further in-depth check is done by either @a
 
 Any issues should go to @alexren."
     elsif ysws == "squeak"
-      total_effective_hours = 0
-      approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
-      approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
-      hours_for_airtable = total_effective_hours
       self_reported_hours = total_hours_logged
       reasoning = "This project followed the Squeak guide. This project at least meets the standards of a project submitted at this event."
     else
-      # Calculate total effective hours from all approved reviews (design + build)
-      total_effective_hours = 0
-      approved_design_reviews.each { |r| total_effective_hours += r.effective_hours }
-      approved_build_reviews.each { |r| total_effective_hours += r.effective_hours }
-
-      # Use total effective hours if any reviews exist, otherwise use total logged
-      hours_for_airtable = (approved_design_reviews.any? || approved_build_reviews.any?) ? total_effective_hours : total_hours_logged
       self_reported_hours = total_hours_logged
 
       reasoning = "This user logged #{total_hours_logged.round(1)} hours across #{pluralize(journal_entries.count, 'journal entry')}.\n\n\n"
