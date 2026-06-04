@@ -66,7 +66,7 @@ gem "slack-ruby-client", "~> 3.0"
 gem "inline_svg"
 
 # Skylight for performance monitoring
-gem "skylight"
+# gem "skylight"
 
 # Sentry for error tracking
 gem "sentry-ruby"
