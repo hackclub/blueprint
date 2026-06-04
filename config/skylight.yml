@@ -1,10 +1,10 @@
----
-# The authentication token for the application.
-#Set the SKYLIGHT_AUTHENTICATION environment variable instead of hardcoding it here
-authentication: <%= ENV["SKYLIGHT_AUTHENTICATION"] %>
-
-ignored_endpoints:
-  - Rails::HealthController#show
-
-deploy:
-  git_sha: <%= ENV["SOURCE_COMMIT"] %>
+# ---
+# # The authentication token for the application.
+# #Set the SKYLIGHT_AUTHENTICATION environment variable instead of hardcoding it here
+# authentication: <%= ENV["SKYLIGHT_AUTHENTICATION"] %>
+#
+# ignored_endpoints:
+#   - Rails::HealthController#show
+#
+# deploy:
+#   git_sha: <%= ENV["SOURCE_COMMIT"] %>
