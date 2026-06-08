@@ -77,7 +77,7 @@ class ApiController < ApplicationController
       return
     end
 
-    projects = user.projects.where(review_status: [ nil, "design_needs_revision" ], is_deleted: false)
+    projects = user.projects.where(review_status: [ nil, "awaiting_idv", "design_pending", "design_approved", "design_needs_revision", "build_pending", "build_needs_revision" ], is_deleted: false)
 
     if projects.empty?
       render plain: "No Unfinished Projects"
