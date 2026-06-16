@@ -270,6 +270,8 @@ Rails.application.routes.draw do
         post :grant_shopkeeper, on: :member
         post :revoke_shopkeeper, on: :member
         post :revoke_to_user, on: :member
+        post :grant_submission_bypass, on: :member
+        post :revoke_submission_bypass, on: :member
         post :impersonate, on: :member
         post :ban, on: :member
         post :unban, on: :member

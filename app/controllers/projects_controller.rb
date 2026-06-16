@@ -205,6 +205,11 @@ class ProjectsController < ApplicationController
     @project = current_user.projects.find_by(id: params[:id], is_deleted: false)
     not_found and return unless @project
 
+    if @project.submissions_locked?
+      redirect_to project_path(@project), alert: "Project submissions are currently closed."
+      return
+    end
+
     if !@project.can_ship?
       redirect_to project_path(@project), alert: "Project cannot be shipped."
       return
@@ -289,6 +294,11 @@ class ProjectsController < ApplicationController
 
     has_ship = params.dig(:project, :ship).present?
     params[:project].delete(:ship) if has_ship
+
+    if has_ship && @project.submissions_locked?
+      redirect_to project_path(@project), alert: "Project submissions are currently closed."
+      return
+    end
 
     if has_ship && !@project.is_currently_build? && !@project.can_resubmit_design?
       redirect_to project_path(@project), alert: "Design review submissions have been closed."

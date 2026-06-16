@@ -74,6 +74,18 @@ class Admin::UsersController < Admin::ApplicationController
     redirect_to admin_user_path(@user), notice: "Admin permissions revoked"
   end
 
+  def grant_submission_bypass
+    @user = User.find(params[:id])
+    @user.update!(bypass_submission_lock: true)
+    redirect_to admin_user_path(@user), notice: "User can now bypass the submission lock"
+  end
+
+  def revoke_submission_bypass
+    @user = User.find(params[:id])
+    @user.update!(bypass_submission_lock: false)
+    redirect_to admin_user_path(@user), notice: "Submission lock bypass revoked"
+  end
+
   def ban
     @user = User.find(params[:id])
     @user.update!(is_banned: true, ban_type: :blueprint)

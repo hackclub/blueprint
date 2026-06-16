@@ -88,6 +88,14 @@
 
             <%= render "shared/button",
                   variant: :none,
+                  text: @user.bypass_submission_lock? ? "Revoke Submission Bypass" : "Grant Submission Bypass",
+                  url: @user.bypass_submission_lock? ? revoke_submission_bypass_admin_user_path(@user) : grant_submission_bypass_admin_user_path(@user),
+                  html_options: { data: { turbo_method: :post, turbo_confirm: @user.bypass_submission_lock? ? "Revoke this user's ability to bypass the submission lock?" : "Allow this user to submit projects even while submissions are closed?" } },
+                  class: @user.bypass_submission_lock? ? "btn border-bp-danger bg-bp-danger cursor-pointer text-white" : "btn border-bp-success bg-bp-success cursor-pointer text-bp-dark"
+                %>
+
+            <%= render "shared/button",
+                  variant: :none,
                   text: @user.is_banned? ? "Unban" : "Ban",
                   url: @user.is_banned? ? unban_admin_user_path(@user) : ban_admin_user_path(@user),
                   html_options: { data: { turbo_method: :post, turbo_confirm: @user.is_banned? ? "Unban this user?" : "Ban this user?" } },

@@ -37,7 +37,9 @@
             <% if current_user.present? %>
               <% if current_user == @project.user %>
                 <% if @project.can_edit? %>
-                  <% if @project.can_resubmit_design? %>
+                  <% if @project.submissions_locked? %>
+                    <%= render "shared/button", text: "Submissions Closed", class: "py-1 px-6 opacity-50 cursor-not-allowed", html_options: { disabled: true, title: "Project submissions are currently closed" } %>
+                  <% elsif @project.can_resubmit_design? %>
                     <%= render "shared/button", text: h(@project.submit_button_text), class: "py-1 px-6", html_options: { data: { controller: "modal", action: "click->modal#show", modal_target_id_value: "design-resubmit-confirm" } } %>
                   <% elsif !@project.is_currently_build? %>
                     <% if @project.design_needs_revision? %>

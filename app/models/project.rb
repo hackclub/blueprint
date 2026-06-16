@@ -670,7 +670,18 @@ class Project < ApplicationRecord
     !under_review? && !rejected? && !awaiting_idv?
   end
 
+  def self.submissions_globally_closed?
+    Flipper.enabled?(:project_submissions_closed)
+  end
+
+  # Submissions are locked for this project when the global kill-switch is on,
+  # unless the owning user has been granted a per-user bypass by an admin.
+  def submissions_locked?
+    self.class.submissions_globally_closed? && !user&.bypass_submission_lock?
+  end
+
   def can_ship?
+    return false if submissions_locked?
     review_status.nil? || (design_needs_revision? && can_resubmit_design?) || build_needs_revision? || awaiting_idv? || design_approved? || build_approved?
   end
 
