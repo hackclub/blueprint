@@ -6,6 +6,13 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   # allow_browser versions: :modern
 
+  # Signup attempts after the program has ended land here. Covers every caller of
+  # User.find_or_create_from_email -- the email login flow plus the guild signup
+  # and invite flows, none of which rescue on their own.
+  rescue_from ProgramStatus::AccountCreationClosed do
+    redirect_to login_path, alert: ProgramStatus::MESSAGE
+  end
+
   before_action :set_paper_trail_whodunnit
   before_action :update_last_active
   before_action :redirect_banned_users

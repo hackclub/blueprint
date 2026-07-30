@@ -53,6 +53,7 @@
 #
 class Project < ApplicationRecord
   include ActionView::Helpers::TextHelper
+  include UploadsCloseWithProgram
 
   DESIGN_DEADLINE = Time.new(2026, 4, 1, 0, 53, 0, "-04:00").freeze
   MAX_DESIGN_RESUBMISSIONS = 2

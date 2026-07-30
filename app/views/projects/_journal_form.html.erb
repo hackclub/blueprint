@@ -1,3 +1,11 @@
+<% if ProgramStatus.ended_for?(current_user) %>
+  <%= render "shared/card" do %>
+    <div class="flex flex-col space-y-2 dark">
+      <p class="block text-3xl font-rc-full"><%= ProgramStatus::MESSAGE %></p>
+      <p class="text-xl">New journal entries are closed. Your existing journal stays here to read and export.</p>
+    </div>
+  <% end %>
+<% else %>
 <%= render "shared/card" do %>
   <%= form_with model: [@project, (@journal_entry || JournalEntry.new)], class: "space-y-4 dark", data: { controller: "journal-validator journal-draft", "journal-validator-min-chars-value": 150, "journal-validator-image-required-value": true, "journal-draft-project-id-value": @project.id } do |f| %>
     <div class="flex flex-col space-y-6">
@@ -51,4 +59,5 @@
       <%= f.submit "Publish", class: "btn btn-primary py-1", data: { "journal-draft-target": "submit", "journal-validator-target": "submit" } %>
     </div>
   <% end %>
+<% end %>
 <% end %>
