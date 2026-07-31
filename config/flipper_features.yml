@@ -2,3 +2,4 @@ shared:
   whitelist_emails: Whitelist emails for beta launch
   streamlined_review_ui: Enable experimental streamlined build review interface for reviewers
   project_submissions_closed: Kill-switch — when enabled, disables ALL project submissions (design and build, including resubmissions and IDV ships)
+  blueprint_ended: "Kill-switch — when enabled, Blueprint has ended. Blocks new journal entries, all file uploads, and new account creation. Admins are exempt from the journal and upload blocks. Existing users can still log in, and everything already submitted stays readable."

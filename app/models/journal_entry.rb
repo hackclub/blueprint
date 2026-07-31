@@ -28,6 +28,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class JournalEntry < ApplicationRecord
+  include UploadsCloseWithProgram
+
   belongs_to :user
   belongs_to :project
   belongs_to :review, polymorphic: true, optional: true

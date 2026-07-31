@@ -3,6 +3,7 @@ class JournalEntriesController < ApplicationController
   before_action :set_journal_entry, only: [ :show, :destroy, :edit, :update ]
   before_action :require_project_owner!, only: [ :create, :export ]
   before_action :require_owner_or_author!, only: [ :edit, :update, :destroy ]
+  before_action :require_program_running!, only: [ :create, :edit, :update ]
 
   def show
     ahoy.track "journal_entry_view", journal_entry_id: @journal_entry.id, user_id: current_user&.id, project_id: @project.id
@@ -73,6 +74,13 @@ class JournalEntriesController < ApplicationController
   def require_owner_or_author!
     uid = current_user&.id
     not_found and return unless uid && (@project.user_id == uid || @journal_entry.user_id == uid)
+  end
+
+  # Deleting your own entry is still allowed -- this only blocks new writes.
+  def require_program_running!
+    return unless ProgramStatus.ended_for?(current_user)
+
+    redirect_to project_path(@project), alert: ProgramStatus::MESSAGE
   end
 
   def journal_entry_params

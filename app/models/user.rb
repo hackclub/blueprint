@@ -197,6 +197,16 @@ class User < ApplicationRecord
     user
   end
 
+  # Turn away brand-new accounts once the program has ended. Existing users still
+  # sign in normally, because every caller looks up an existing record first and
+  # only reaches this guard when it is about to create one.
+  #
+  # AuthController#create and #create_hca already rescue StandardError and surface
+  # e.message. Everything else is caught by the rescue_from in ApplicationController.
+  def self.ensure_signups_open!
+    raise ProgramStatus::AccountCreationClosed if ProgramStatus.ended?
+  end
+
   def self.create_from_slack(slack_id, referrer_id: nil)
     user_info = fetch_slack_user_info(slack_id)
     if user_info.user.is_bot
@@ -270,6 +280,8 @@ class User < ApplicationRecord
       raise StandardError, "You do not have access."
     end
 
+    ensure_signups_open!
+
     User.create!(
     slack_id: slack_id,
       username: username_from_slack,
@@ -299,6 +311,7 @@ class User < ApplicationRecord
       end
 
       user = User.with_email(email).first
+      ensure_signups_open! if user.nil?
       user ||= User.create!(email: email, is_banned: false, referrer_id: referrer_id)
       return user
     end
@@ -363,6 +376,8 @@ class User < ApplicationRecord
 
       return existing_user
     end
+
+    ensure_signups_open!
 
     User.create!(
       slack_id: slack_id,
