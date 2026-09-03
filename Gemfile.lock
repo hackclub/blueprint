@@ -307,7 +307,7 @@ GEM
       railties (>= 7.1)
       stimulus-rails
       turbo-rails
-    msgpack (1.8.0)
+    msgpack (1.8.2)
     multipart-post (2.4.1)
     net-http (0.6.0)
       uri
