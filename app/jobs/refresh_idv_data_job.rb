@@ -2,11 +2,11 @@ class RefreshIdvDataJob < ApplicationJob
   queue_as :background
 
   def perform
-    User.find_each do |user|
+    User.pending_idv_refresh.find_each do |user|
       user.refresh_idv_data!
-    rescue Faraday::UnauthorizedError => e
+    rescue Faraday::UnauthorizedError, Faraday::BadRequestError => e
       Rails.logger.warn("IDV refresh failed for user #{user.id}: #{e.message}")
-      Sentry.capture_exception(e, extra: { user_id: user.id })
+      user.clear_idv_tokens!
     end
   end
 end

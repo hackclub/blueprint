@@ -300,12 +300,11 @@ class AuthController < ApplicationController
       primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
       has_address = addresses.any?
 
-      attrs = {
-        identity_vault_access_token: access_token,
+      attrs = user.identity_vault_token_attrs(code_response).merge(
         identity_vault_id: identity_vault_id,
         ysws_verified: identity[:verification_status] == "verified" && identity[:ysws_eligible] && has_address,
         idv_country: primary_address[:country]
-      }
+      )
 
       if user.birthday.nil? && identity[:birthday].present?
         begin
