@@ -6,6 +6,9 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Must be set before ActiveRecord loads; the app does not use RubyLLM's acts_as API.
+RubyLLM.config.use_new_acts_as = true
+
 module Blueprint
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
