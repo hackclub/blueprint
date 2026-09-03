@@ -104,7 +104,7 @@ module AiReviewer
           data = image.jpegsave_buffer(Q: 20)
         end
 
-        tempfile = Tempfile.new(["ai_reviewer_image", ".jpg"])
+        tempfile = Tempfile.new([ "ai_reviewer_image", ".jpg" ])
         tempfile.binmode
         tempfile.write(data)
         tempfile.flush

@@ -65,7 +65,7 @@ EXCLUDED_YSWS = %w[led hackpad squeak].freeze
 
 # Manual carve-outs — projects we leave alone for known reasons.
 # #611: has two Build rows that can't both be derived from one design; manual fix.
-SKIP_PROJECT_IDS = [611].freeze
+SKIP_PROJECT_IDS = [ 611 ].freeze
 
 # NOTE: `where.not(ysws: [...])` excludes NULLs in SQL — projects with ysws=nil
 # follow the default branch and must stay in scope.

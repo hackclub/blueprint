@@ -42,8 +42,8 @@ module AiReviewer
         Rails.logger.info("[AiReviewer] [project:#{@project.id}] ViewKicadPcb: rendered #{path}")
 
         @seen_resources&.add(key)
-        content = RubyLLM::Content.new(description, [result[:tempfile].path])
-        content.instance_variable_set(:@_tempfiles, [result[:tempfile]])
+        content = RubyLLM::Content.new(description, [ result[:tempfile].path ])
+        content.instance_variable_set(:@_tempfiles, [ result[:tempfile] ])
         content
       rescue StandardError => e
         Rails.logger.error("[AiReviewer] [project:#{@project.id}] ViewKicadPcb error: #{e.message}")

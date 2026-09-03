@@ -60,7 +60,7 @@ module AiReviewer
         step_content = Base64.decode64(data["content"])
 
         # Save STEP to tempfile
-        step_file = Tempfile.new(["step_model", ".step"])
+        step_file = Tempfile.new([ "step_model", ".step" ])
         step_file.binmode
         step_file.write(step_content)
         step_file.flush
@@ -71,7 +71,7 @@ module AiReviewer
         browser = Ferrum::Browser.new(
           browser_path: ENV.fetch("CHROMIUM_PATH", "/usr/bin/chromium"),
           timeout: RENDER_TIMEOUT,
-          window_size: [VIEWPORT_WIDTH, VIEWPORT_HEIGHT],
+          window_size: [ VIEWPORT_WIDTH, VIEWPORT_HEIGHT ],
           headless: "new",
           browser_options: {
             "no-sandbox" => nil,
@@ -85,7 +85,7 @@ module AiReviewer
         begin
           # Load the renderer HTML from a temp file (not data: URI)
           # so that occt-import-js can resolve its WASM file correctly
-          html_file = Tempfile.new(["step_renderer", ".html"])
+          html_file = Tempfile.new([ "step_renderer", ".html" ])
           html_file.write(renderer_html)
           html_file.flush
           browser.goto("file://#{html_file.path}")
@@ -119,7 +119,7 @@ module AiReviewer
           end
 
           jpeg_data = image.jpegsave_buffer(Q: 80)
-          tempfile = Tempfile.new(["step_render", ".jpg"])
+          tempfile = Tempfile.new([ "step_render", ".jpg" ])
           tempfile.binmode
           tempfile.write(jpeg_data)
           tempfile.flush
@@ -128,8 +128,8 @@ module AiReviewer
           Rails.logger.info("[AiReviewer] [project:#{@project.id}] RenderStepFile: rendered #{path} (#{jpeg_data.bytesize} bytes)")
 
           @seen_resources&.add(key)
-          content = RubyLLM::Content.new(description, [tempfile.path])
-          content.instance_variable_set(:@_tempfiles, [tempfile])
+          content = RubyLLM::Content.new(description, [ tempfile.path ])
+          content.instance_variable_set(:@_tempfiles, [ tempfile ])
           content
         ensure
           browser.quit

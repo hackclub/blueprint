@@ -21,7 +21,7 @@ module AiReviewer
 
       def execute(queries:, num_results: 5)
         queries = Array(queries).first(5)
-        num_results = [[num_results.to_i, 1].max, 10].min
+        num_results = [ [ num_results.to_i, 1 ].max, 10 ].min
 
         api_key = ENV.fetch("BRIGHT_DATA_SERP_API_KEY", "")
         zone = ENV.fetch("BRIGHT_DATA_SERP_ZONE", "")
