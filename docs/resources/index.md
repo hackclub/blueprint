@@ -14,4 +14,5 @@ These are general resources provided by the community. PR's open!
 <li><a href="/resources/jlc-ordering">How to order from JLCPCB</a></li>
 <li><a href="/resources/parts-sourcing">How to cost effectively source parts</a></li>
 <li><a href="/resources/bom">How to make a Bill of Materials</a></li>
+<li><a href="/resources/hackpad">All resources related to the Hackpad</a></li>
 </ul>
