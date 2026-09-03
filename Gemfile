@@ -75,8 +75,8 @@ gem "sentry-rails"
 # PaperTrail for audit logging
 gem "paper_trail"
 
-# Pagination
-gem "pagy"
+# Pagy 43 is a full API rewrite; keep the 9.x API.
+gem "pagy", "~> 9.4"
 
 # Flipper for feature flags
 gem "flipper"
