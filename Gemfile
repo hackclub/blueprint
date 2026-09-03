@@ -7,7 +7,7 @@ gem "propshaft"
 # Use sqlite3 as the database for Active Record
 gem "sqlite3", ">= 2.1"
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.0"
+gem "puma", "~> 7.2"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
@@ -57,7 +57,7 @@ gem "pg", "~> 1.6"
 gem "marksmith"
 
 # HTTP client
-gem "faraday", "~> 2.14"
+gem "faraday", "~> 2.14", ">= 2.14.3"
 
 # Slack client
 gem "slack-ruby-client", "~> 3.0"
@@ -96,7 +96,7 @@ gem "countries"
 
 gem "disco"
 
-gem "jwt"
+gem "jwt", "~> 3.2"
 
 gem "chartkick"
 
@@ -107,7 +107,7 @@ gem "rack-attack"
 gem "rqrcode"
 
 gem "prawn"
-gem "prawn-svg"
+gem "prawn-svg", ">= 0.40.3"
 gem "combine_pdf"
 
 gem "phlex"
@@ -115,7 +115,7 @@ gem "ferrum_pdf"
 
 gem "active_storage_validations"
 
-gem "nokogiri"
+gem "nokogiri", ">= 1.19.4"
 
 # Sitemap generation for SEO
 gem "sitemap_generator"
