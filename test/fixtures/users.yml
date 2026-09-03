@@ -4,40 +4,43 @@
 #
 # Table name: users
 #
-#  id                          :bigint           not null, primary key
-#  admin                       :boolean          default(FALSE), not null
-#  avatar                      :string
-#  ban_type                    :integer
-#  birthday                    :date
-#  email                       :string           not null
-#  first_synced_to_airtable    :boolean          default(FALSE), not null
-#  free_stickers_claimed       :boolean          default(FALSE), not null
-#  fulfiller                   :boolean          default(FALSE), not null
-#  github_username             :string
-#  hcb_access_token            :text
-#  hcb_integration_enabled     :boolean          default(FALSE), not null
-#  hcb_refresh_token           :text
-#  hcb_token_expires_at        :datetime
-#  identity_vault_access_token :string
-#  idv_country                 :string
-#  internal_notes              :text
-#  is_banned                   :boolean          default(FALSE), not null
-#  is_mcg                      :boolean          default(FALSE), not null
-#  is_pro                      :boolean          default(FALSE)
-#  last_active                 :datetime
-#  last_impersonated_at        :datetime
-#  last_impersonation_ended_at :datetime
-#  reviewer                    :boolean          default(FALSE), not null
-#  shopkeeper                  :boolean          default(FALSE), not null
-#  timezone_raw                :string
-#  username                    :string
-#  ysws_verified               :boolean
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
-#  github_installation_id      :bigint
-#  identity_vault_id           :string
-#  referrer_id                 :bigint
-#  slack_id                    :string
+#  id                              :bigint           not null, primary key
+#  admin                           :boolean          default(FALSE), not null
+#  avatar                          :string
+#  ban_type                        :integer
+#  birthday                        :date
+#  bypass_submission_lock          :boolean          default(FALSE), not null
+#  email                           :string           not null
+#  first_synced_to_airtable        :boolean          default(FALSE), not null
+#  free_stickers_claimed           :boolean          default(FALSE), not null
+#  fulfiller                       :boolean          default(FALSE), not null
+#  github_username                 :string
+#  hcb_access_token                :text
+#  hcb_integration_enabled         :boolean          default(FALSE), not null
+#  hcb_refresh_token               :text
+#  hcb_token_expires_at            :datetime
+#  identity_vault_access_token     :string
+#  identity_vault_refresh_token    :text
+#  identity_vault_token_expires_at :datetime
+#  idv_country                     :string
+#  internal_notes                  :text
+#  is_banned                       :boolean          default(FALSE), not null
+#  is_mcg                          :boolean          default(FALSE), not null
+#  is_pro                          :boolean          default(FALSE)
+#  last_active                     :datetime
+#  last_impersonated_at            :datetime
+#  last_impersonation_ended_at     :datetime
+#  reviewer                        :boolean          default(FALSE), not null
+#  shopkeeper                      :boolean          default(FALSE), not null
+#  timezone_raw                    :string
+#  username                        :string
+#  ysws_verified                   :boolean
+#  created_at                      :datetime         not null
+#  updated_at                      :datetime         not null
+#  github_installation_id          :bigint
+#  identity_vault_id               :string
+#  referrer_id                     :bigint
+#  slack_id                        :string
 #
 # Indexes
 #

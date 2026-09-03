@@ -16,7 +16,7 @@ module AiReviewer
         browser = Ferrum::Browser.new(
           browser_path: ENV.fetch("CHROMIUM_PATH", "/usr/bin/chromium"),
           timeout: RENDER_TIMEOUT,
-          window_size: [VIEWPORT_WIDTH, VIEWPORT_HEIGHT],
+          window_size: [ VIEWPORT_WIDTH, VIEWPORT_HEIGHT ],
           headless: "new",
           browser_options: {
             "no-sandbox" => nil,
@@ -42,7 +42,7 @@ module AiReviewer
           end
 
           jpeg_data = image.jpegsave_buffer(Q: 80)
-          tempfile = Tempfile.new(["kicanvas_render", ".jpg"])
+          tempfile = Tempfile.new([ "kicanvas_render", ".jpg" ])
           tempfile.binmode
           tempfile.write(jpeg_data)
           tempfile.flush

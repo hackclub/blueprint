@@ -46,6 +46,22 @@ class IdentityVaultService
       end
     end
 
+    def refresh_token(refresh_token)
+      raise ArgumentError, "refresh_token is required" unless refresh_token.present?
+
+      can_retry do
+        conn.post("/oauth/token") do |req|
+          req.headers["Content-Type"] = "application/x-www-form-urlencoded"
+          req.body = URI.encode_www_form({
+            client_id: ENV["IDENTITY_VAULT_CLIENT_ID"],
+            client_secret: ENV["IDENTITY_VAULT_CLIENT_SECRET"],
+            refresh_token:,
+            grant_type: "refresh_token"
+          })
+        end.body
+      end
+    end
+
     def me(user_token)
       raise ArgumentError, "user_token is required" unless user_token
 

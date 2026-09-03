@@ -2,40 +2,43 @@
 #
 # Table name: users
 #
-#  id                          :bigint           not null, primary key
-#  admin                       :boolean          default(FALSE), not null
-#  avatar                      :string
-#  ban_type                    :integer
-#  birthday                    :date
-#  email                       :string           not null
-#  first_synced_to_airtable    :boolean          default(FALSE), not null
-#  free_stickers_claimed       :boolean          default(FALSE), not null
-#  fulfiller                   :boolean          default(FALSE), not null
-#  github_username             :string
-#  hcb_access_token            :text
-#  hcb_integration_enabled     :boolean          default(FALSE), not null
-#  hcb_refresh_token           :text
-#  hcb_token_expires_at        :datetime
-#  identity_vault_access_token :string
-#  idv_country                 :string
-#  internal_notes              :text
-#  is_banned                   :boolean          default(FALSE), not null
-#  is_mcg                      :boolean          default(FALSE), not null
-#  is_pro                      :boolean          default(FALSE)
-#  last_active                 :datetime
-#  last_impersonated_at        :datetime
-#  last_impersonation_ended_at :datetime
-#  reviewer                    :boolean          default(FALSE), not null
-#  shopkeeper                  :boolean          default(FALSE), not null
-#  timezone_raw                :string
-#  username                    :string
-#  ysws_verified               :boolean
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
-#  github_installation_id      :bigint
-#  identity_vault_id           :string
-#  referrer_id                 :bigint
-#  slack_id                    :string
+#  id                              :bigint           not null, primary key
+#  admin                           :boolean          default(FALSE), not null
+#  avatar                          :string
+#  ban_type                        :integer
+#  birthday                        :date
+#  bypass_submission_lock          :boolean          default(FALSE), not null
+#  email                           :string           not null
+#  first_synced_to_airtable        :boolean          default(FALSE), not null
+#  free_stickers_claimed           :boolean          default(FALSE), not null
+#  fulfiller                       :boolean          default(FALSE), not null
+#  github_username                 :string
+#  hcb_access_token                :text
+#  hcb_integration_enabled         :boolean          default(FALSE), not null
+#  hcb_refresh_token               :text
+#  hcb_token_expires_at            :datetime
+#  identity_vault_access_token     :string
+#  identity_vault_refresh_token    :text
+#  identity_vault_token_expires_at :datetime
+#  idv_country                     :string
+#  internal_notes                  :text
+#  is_banned                       :boolean          default(FALSE), not null
+#  is_mcg                          :boolean          default(FALSE), not null
+#  is_pro                          :boolean          default(FALSE)
+#  last_active                     :datetime
+#  last_impersonated_at            :datetime
+#  last_impersonation_ended_at     :datetime
+#  reviewer                        :boolean          default(FALSE), not null
+#  shopkeeper                      :boolean          default(FALSE), not null
+#  timezone_raw                    :string
+#  username                        :string
+#  ysws_verified                   :boolean
+#  created_at                      :datetime         not null
+#  updated_at                      :datetime         not null
+#  github_installation_id          :bigint
+#  identity_vault_id               :string
+#  referrer_id                     :bigint
+#  slack_id                        :string
 #
 # Indexes
 #
@@ -92,6 +95,7 @@ class User < ApplicationRecord
   enum :ban_type, { hackatime: 0, blueprint: 1, previous: 2, slack: 3, age: 4, hcb: 5 }
 
   scope :with_email, ->(email) { where("LOWER(email) = ?", email.to_s.strip.downcase) }
+  scope :pending_idv_refresh, -> { where.not(identity_vault_access_token: [ nil, "" ]).where(ysws_verified: [ false, nil ]) }
 
   validates :is_banned, inclusion: { in: [ true, false ] }
   validate :hcb_integration_requires_admin
@@ -103,7 +107,7 @@ class User < ApplicationRecord
   after_commit :sync_to_gorse, on: :create
   after_commit :delete_from_gorse, on: :destroy
 
-  has_paper_trail ignore: %i[hcb_access_token hcb_refresh_token hcb_token_expires_at]
+  has_paper_trail ignore: %i[hcb_access_token hcb_refresh_token hcb_token_expires_at identity_vault_refresh_token identity_vault_token_expires_at]
   has_recommended :projects
   has_recommended :journal_entries
 
@@ -968,13 +972,12 @@ class User < ApplicationRecord
     primary_address = addresses.find { |a| a[:primary] } || addresses.first || {}
     has_address = addresses.any?
 
-    attrs = {
-      identity_vault_access_token: access_token,
+    attrs = identity_vault_token_attrs(code_response).merge(
       identity_vault_id:,
       ysws_verified: idv_data.dig(:identity,
                                   :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible) && has_address,
       idv_country: primary_address.dig(:country)
-    }
+    )
 
     if birthday.nil? && idv_data.dig(:identity, :birthday).present?
       begin
@@ -993,6 +996,7 @@ class User < ApplicationRecord
       raise "BYPASS_IDV must not be enabled in production" if Rails.env.production?
       return {}
     end
+    refresh_idv_token_if_needed! if access_token.nil?
     IdentityVaultService.me(access_token || identity_vault_access_token)
   end
 
@@ -1002,6 +1006,40 @@ class User < ApplicationRecord
       return true
     end
     identity_vault_access_token.present?
+  end
+
+  def identity_vault_token_attrs(token_response)
+    {
+      identity_vault_access_token: token_response[:access_token],
+      identity_vault_refresh_token: token_response[:refresh_token] || identity_vault_refresh_token,
+      identity_vault_token_expires_at: Time.current + token_response[:expires_in].to_i.seconds
+    }
+  end
+
+  def clear_idv_tokens!
+    update!(
+      identity_vault_access_token: nil,
+      identity_vault_refresh_token: nil,
+      identity_vault_token_expires_at: nil
+    )
+  end
+
+  def refresh_idv_token_if_needed!
+    return unless identity_vault_refresh_token.present?
+    return if identity_vault_token_expires_at.present? && identity_vault_token_expires_at >= 20.minutes.from_now
+
+    with_lock do
+      return unless identity_vault_refresh_token.present?
+      return if identity_vault_token_expires_at.present? && identity_vault_token_expires_at >= 20.minutes.from_now
+
+      begin
+        token_response = IdentityVaultService.refresh_token(identity_vault_refresh_token)
+        update!(identity_vault_token_attrs(token_response))
+      rescue Faraday::UnauthorizedError, Faraday::BadRequestError
+        clear_idv_tokens!
+        raise
+      end
+    end
   end
 
   def refresh_idv_data!
@@ -1023,6 +1061,9 @@ class User < ApplicationRecord
                                   :verification_status) == "verified" && idv_data.dig(:identity, :ysws_eligible) && has_address,
       idv_country: primary_address.dig(:country)
     )
+  rescue Faraday::UnauthorizedError, Faraday::BadRequestError => e
+    Rails.logger.warn("IDV refresh failed for user #{id}: #{e.message}")
+    clear_idv_tokens!
   end
 
   def advance_projects_after_idv!

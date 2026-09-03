@@ -62,10 +62,10 @@
               <div class="w-full text-left text-white select bg-bp-dark">
                 <%= f.select :frozen_address, address_options, { selected: primary_address.to_json }, { class: "text-white bg-bp-dark w-full", style: "color: white; background-color: var(--color-bp-dark);" } %>
               </div>
-              <%= link_to "Manage my addresses", "https://identity.hackclub.com/addresses", class: "text-sm text-bp-warning underline underline-offset-2", target: "_blank", rel: "noopener noreferrer" %>
+              <%= link_to "Manage my addresses", "https://auth.hackclub.com/addresses", class: "text-sm text-bp-warning underline underline-offset-2", target: "_blank", rel: "noopener noreferrer" %>
             <% else %>
               <p class="text-bp-muted">No address found in your identity vault</p>
-              <%= link_to "Manage my addresses", "https://identity.hackclub.com/addresses", class: "text-sm text-bp-warning underline underline-offset-2", target: "_blank", rel: "noopener noreferrer" %>
+              <%= link_to "Manage my addresses", "https://auth.hackclub.com/addresses", class: "text-sm text-bp-warning underline underline-offset-2", target: "_blank", rel: "noopener noreferrer" %>
             <% end %>
           </div>
 

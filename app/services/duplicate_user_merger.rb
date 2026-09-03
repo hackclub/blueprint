@@ -170,7 +170,7 @@ class DuplicateUserMerger
       donor_with_idv = users.find { |u| u.identity_vault_id.present? }
     end
     if donor_with_idv
-      %i[identity_vault_id identity_vault_access_token ysws_verified idv_country].each do |field|
+      %i[identity_vault_id identity_vault_access_token identity_vault_refresh_token identity_vault_token_expires_at ysws_verified idv_country].each do |field|
         new_val = donor_with_idv.send(field)
         if primary.send(field) != new_val
           changes[field] = { from: primary.send(field), to: new_val }
@@ -314,6 +314,8 @@ class DuplicateUserMerger
         email: new_email.downcase,
         identity_vault_id: nil,
         identity_vault_access_token: nil,
+        identity_vault_refresh_token: nil,
+        identity_vault_token_expires_at: nil,
         ysws_verified: nil,
         idv_country: nil,
         slack_id: nil,

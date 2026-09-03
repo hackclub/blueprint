@@ -8,6 +8,10 @@
 #
 # Blocking them process-wide covers both Active Storage variant processing and
 # the direct Vips::Image calls in app/services/ai_reviewer.
-require "vips"
+ENV["VIPS_BLOCK_UNTRUSTED"] ||= "true"
 
-Vips.block_untrusted(true)
+begin
+  require "vips"
+  Vips.block_untrusted(true)
+rescue LoadError
+end

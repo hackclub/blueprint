@@ -60,7 +60,7 @@ module AiReviewer
         stl_content = Base64.decode64(data["content"])
 
         # Save STL to tempfile
-        stl_file = Tempfile.new(["stl_model", ".stl"])
+        stl_file = Tempfile.new([ "stl_model", ".stl" ])
         stl_file.binmode
         stl_file.write(stl_content)
         stl_file.flush
@@ -71,7 +71,7 @@ module AiReviewer
         browser = Ferrum::Browser.new(
           browser_path: ENV.fetch("CHROMIUM_PATH", "/usr/bin/chromium"),
           timeout: RENDER_TIMEOUT,
-          window_size: [VIEWPORT_WIDTH, VIEWPORT_HEIGHT],
+          window_size: [ VIEWPORT_WIDTH, VIEWPORT_HEIGHT ],
           headless: "new",
           browser_options: {
             "no-sandbox" => nil,
@@ -110,7 +110,7 @@ module AiReviewer
           end
 
           jpeg_data = image.jpegsave_buffer(Q: 80)
-          tempfile = Tempfile.new(["stl_render", ".jpg"])
+          tempfile = Tempfile.new([ "stl_render", ".jpg" ])
           tempfile.binmode
           tempfile.write(jpeg_data)
           tempfile.flush
@@ -119,8 +119,8 @@ module AiReviewer
           Rails.logger.info("[AiReviewer] [project:#{@project.id}] RenderStlFile: rendered #{path} (#{jpeg_data.bytesize} bytes)")
 
           @seen_resources&.add(key)
-          content = RubyLLM::Content.new(description, [tempfile.path])
-          content.instance_variable_set(:@_tempfiles, [tempfile])
+          content = RubyLLM::Content.new(description, [ tempfile.path ])
+          content.instance_variable_set(:@_tempfiles, [ tempfile ])
           content
         ensure
           browser.quit

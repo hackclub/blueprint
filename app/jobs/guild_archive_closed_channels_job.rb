@@ -2,7 +2,7 @@ class GuildArchiveClosedChannelsJob < ApplicationJob
   queue_as :default
 
   def perform(response_url)
-    guilds = Guild.where(status: :closed).where.not(slack_channel_id: [nil, ""])
+    guilds = Guild.where(status: :closed).where.not(slack_channel_id: [ nil, "" ])
     slack_client = Slack::Web::Client.new(token: ENV["GUILDS_BOT_TOKEN"])
 
     archived = 0

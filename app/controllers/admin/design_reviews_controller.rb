@@ -191,7 +191,7 @@ class Admin::DesignReviewsController < Admin::ApplicationController
   end
 
   def accumulated_skipped(project)
-    [params[:skipped], project.id].compact_blank.join(",")
+    [ params[:skipped], project.id ].compact_blank.join(",")
   end
   helper_method :accumulated_skipped
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_01_050000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_03_123729) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -722,6 +722,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_01_050000) do
     t.text "hcb_access_token"
     t.text "hcb_refresh_token"
     t.datetime "hcb_token_expires_at"
+    t.boolean "bypass_submission_lock", default: false, null: false
+    t.text "identity_vault_refresh_token"
+    t.datetime "identity_vault_token_expires_at"
     t.index ["hcb_integration_enabled"], name: "index_users_unique_hcb_integration_enabled", unique: true, where: "(hcb_integration_enabled = true)"
     t.index ["referrer_id"], name: "index_users_on_referrer_id"
   end
