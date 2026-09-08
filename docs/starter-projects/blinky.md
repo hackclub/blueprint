@@ -178,7 +178,7 @@ At the end, this is what it should look like:
 
 ![Astable Diagram](/old-cdn/f4258af8a265de6744357ac62db79e3c35fcb055_image.webp)
 
-Next, lets take a look at the 4017 IO expander. Due to the lack of GPIO on the 555 timer, we need a way to connect more LEDs. Thats where we use these IO expanders! We will connect as follows:
+Next, lets take a look at the 4017 IO expander. Due to the lack of GPIO on the 555 timer, we need a way to connect more LEDs. That's where we use these IO expanders! We will connect as follows:
 - VDD to +5v
 - VSS to GND
 - CLK to Q from the NE555P 	(Clock input from 555 timer)
@@ -249,7 +249,7 @@ First, create a board outline. For this tutorial, **YOU NEED TO CUSTOMIZE YOUR B
 
 This is done by modifying the `Edge.Cuts` layer on the right side.
 
-There are many ways to do this. You can either manually draw it with the given menue.
+There are many ways to do this. You can either manually draw it with the given menu.
 
 I found the default outline options limiting and wanted to create something more complex.
 To do this, I:
@@ -300,7 +300,7 @@ Your routing is complete!
 
 > Tip: place everything based on what shortens the blue lines, and what makes them not cross!
 
-> Tip 2: Use a [ground plane](https://www.kicadtips.com/how-to/make-a-ground-plane) to help with routing and to reduce noise. Thats what the red and blue layers are for! Its not necessary, but looks nice and is easy to set up!
+> Tip 2: Use a [ground plane](https://www.kicadtips.com/how-to/make-a-ground-plane) to help with routing and to reduce noise. That's what the red and blue layers are for! Its not necessary, but looks nice and is easy to set up!
 
 ![](https://files.catbox.moe/cvtxud.png)
 

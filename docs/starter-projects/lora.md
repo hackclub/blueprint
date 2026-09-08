@@ -188,10 +188,10 @@ Here's how my MCU ended up:
 
 Note the placement of the decoupling capacitors!
 
-Lastly, here's the USB section layed out:
+Lastly, here's the USB section laid out:
 ![USB section](/old-cdn/135969f087a7b634d72bcaaf230dcee2d189b4b2_image.webp)
 
-Here are all of the subsections layed out together! Make sure to give the RF some isolation.
+Here are all of the subsections laid out together! Make sure to give the RF some isolation.
 ![Full layout](/old-cdn/a9947bb13700f4db88f84dc5d74c62bc12de360b_image.webp)
 
 ## Routing
@@ -280,7 +280,7 @@ The frequency is 915 MHz!
 
 Finally, for S, we'll use 0.5mm, as that's the KiCAD default for zone fill clearance.
 
-Next, we're targeting 50 ohms, so we can just hit Synthesize! This finallly gives us our trace width to use while routing the RF traces.
+Next, we're targeting 50 ohms, so we can just hit Synthesize! This finally gives us our trace width to use while routing the RF traces.
 
 ![Calculator settings](/old-cdn/72da9fb33151feef3b6083da65eff5379137b407_image.webp)
 

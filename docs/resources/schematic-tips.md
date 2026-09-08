@@ -16,7 +16,7 @@ Always point ground symbols down, and power symbols up! If you are really space 
 Put pull-up resistors above the line that you want to connect, and pull-down resistors below the line.  
 ![img](/old-cdn/56b9d40dca4788db5d83e1633fb2ba1c8e9b7e51_screenshot_20250531_180709.webp)
 
-## Lables
+## Labels
 
 ### Dont leave them hanging
 
