@@ -264,7 +264,7 @@ GEM
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
     json (2.21.2)
-    jwt (3.2.0)
+    jwt (3.3.0)
       base64
     kamal (2.12.0)
       activesupport (>= 7.0)
@@ -659,7 +659,7 @@ DEPENDENCIES
   importmap-rails
   inline_svg
   jbuilder
-  jwt (~> 3.2)
+  jwt (~> 3.3)
   kamal
   lz_string
   marksmith
