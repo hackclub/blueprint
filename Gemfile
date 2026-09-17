@@ -83,7 +83,7 @@ gem "flipper"
 gem "flipper-active_record"
 gem "flipper-ui"
 
-gem "tailwind_merge", "~> 1.3"
+gem "tailwind_merge", "~> 1.5"
 
 gem "redcarpet"
 
