@@ -162,6 +162,8 @@ Rails.application.routes.draw do
   post "api/report_grant_given" => "api#report_grant_given", as: :api_report_grant_given
   post "api/report_free_stickers_claimed" => "api#report_free_stickers_claimed", as: :api_report_free_stickers_claimed
   get "api/unfinished_projects" => "api#unfinished_projects", as: :api_unfinished_projects
+  post "api/privacy/delete" => "privacy#delete", as: :api_privacy_delete
+  post "api/privacy/export" => "privacy#export", as: :api_privacy_export
 
   resources :projects, only: [ :index, :new, :create, :show, :edit, :update, :destroy ] do
     member do

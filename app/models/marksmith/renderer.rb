@@ -57,6 +57,25 @@ module Marksmith
         super(options)
       end
 
+      def self.find_blob_from_url(src)
+        # Standard ActiveStorage URLs
+        if (match = src.match(%r{/rails/active_storage/blobs/(?:redirect/|proxy/)?([^/]+)/}))
+          return ActiveStorage::Blob.find_signed(match[1])
+        end
+
+        # Marksmith/user-attachments URLs (Base64-encoded JSON with blob_id)
+        if (match = src.match(%r{/user-attachments/blobs/(?:redirect/|proxy/)?([^/]+)/}))
+          token = match[1].split("--").first
+          decoded = JSON.parse(Base64.decode64(token))
+          blob_id = decoded.dig("_rails", "data") || decoded["data"]
+          return ActiveStorage::Blob.find_by(id: blob_id)
+        end
+
+        nil
+      rescue ActiveSupport::MessageVerifier::InvalidSignature, JSON::ParserError, ArgumentError
+        nil
+      end
+
       def image(src, title, alt_text)
         optimized_src = optimize_image_src(src)
 
@@ -147,22 +166,7 @@ module Marksmith
       end
 
       def find_blob_from_url(src)
-        # Standard ActiveStorage URLs
-        if (match = src.match(%r{/rails/active_storage/blobs/(?:redirect/|proxy/)?([^/]+)/}))
-          return ActiveStorage::Blob.find_signed(match[1])
-        end
-
-        # Marksmith/user-attachments URLs (Base64-encoded JSON with blob_id)
-        if (match = src.match(%r{/user-attachments/blobs/(?:redirect/|proxy/)?([^/]+)/}))
-          token = match[1].split("--").first
-          decoded = JSON.parse(Base64.decode64(token))
-          blob_id = decoded.dig("_rails", "data") || decoded["data"]
-          return ActiveStorage::Blob.find_by(id: blob_id)
-        end
-
-        nil
-      rescue ActiveSupport::MessageVerifier::InvalidSignature, JSON::ParserError, ArgumentError
-        nil
+        self.class.find_blob_from_url(src)
       end
 
       def host_for_urls

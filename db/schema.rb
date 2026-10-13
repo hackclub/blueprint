@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_03_123729) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_13_120605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -418,6 +418,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_03_123729) do
     t.string "country"
     t.integer "package_type"
     t.index ["trackable_type", "trackable_id"], name: "index_packages_on_trackable"
+  end
+
+  create_table "privacy_token_uses", force: :cascade do |t|
+    t.string "jti", null: false
+    t.datetime "used_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["jti"], name: "index_privacy_token_uses_on_jti", unique: true
+    t.index ["used_at"], name: "index_privacy_token_uses_on_used_at"
   end
 
   create_table "privileged_session_expiries", force: :cascade do |t|
