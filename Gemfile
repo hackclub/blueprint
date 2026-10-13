@@ -96,7 +96,7 @@ gem "countries"
 
 gem "disco"
 
-gem "jwt", "~> 3.2"
+gem "jwt", "~> 3.3"
 
 gem "chartkick"
 
