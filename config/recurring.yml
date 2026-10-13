@@ -20,6 +20,11 @@ production:
     queue: background
     schedule: every hour
 
+  prune_privacy_token_uses:
+    command: "PrivacyTokenUse.prune!"
+    queue: background
+    schedule: every day at 4am
+
   uptime_ping:
     class: UptimePingJob
     queue: uptime

@@ -58,6 +58,20 @@ jobs:
 
   annotate_check:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/blueprint_development
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -67,6 +81,9 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Load database schema
+        run: bin/rails db:create db:schema:load
 
       - name: Check if annotations are up to date
         run: |
