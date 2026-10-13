@@ -16,7 +16,7 @@
 #  quantity                :integer
 #  rejected_at             :datetime
 #  rejection_reason        :string
-#  state                   :integer          default("pending"), not null
+#  state                   :integer          default(0), not null
 #  tracking_number         :string
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null

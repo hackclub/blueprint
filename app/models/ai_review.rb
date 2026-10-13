@@ -14,7 +14,7 @@
 #  retry_count          :integer          default(0), not null
 #  review_phase         :string           not null
 #  started_at           :datetime
-#  status               :string           default(NULL), not null
+#  status               :string           default("pending"), not null
 #  steps                :jsonb            not null
 #  total_tokens         :integer
 #  created_at           :datetime         not null
