@@ -97,5 +97,14 @@
     "image": "https://cdn.hackclub.com/019d9a39-10bc-7d03-b91e-1d4b5a601183/test.jpeg",
     "website": "",
     "github": "https://github.com/Sn3akySqu1d"
+  },
+    {
+    "id": "12",
+    "name": "Souptik Samanta",
+    "title": "Reviewer",
+    "description": "",
+    "image": "https://cdn.hackclub.com/019f4a7d-6dd4-7844-9b55-56fd4a473e9d/image.png",
+    "website": "https://souptik.me/",
+    "github": "https://github.com/souptik-samanta"
   }
 ]
