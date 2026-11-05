@@ -109,7 +109,7 @@ To start, make a new sketch. Draw a rectangle with the same dimensions as our PC
 Next, draw a larger rectangle with a 10mm margin:
 <img src="/docs-assets/hackpad/v1/sketchmarg.webp" className="max-w-96" />
 
-Next, we're going to draw the accomodating holes for it:
+Next, we're going to draw the accommodating holes for it:
 <img src="/docs-assets/hackpad/v1/sketchhole.webp" className="max-w-96" />
 
 Extrude the base of the case by 3mm:

@@ -28,7 +28,7 @@ Almost every idea out there has been thought of before - what matters is that wh
 
 Generally speaking, each project must be closer to a product than a demo - that doesn't mean go ultra advertising mode, but that does mean that a breadboarded together project with no case *doesn't* count.
 
-Making multiple very-similar projects will also result in a decrease of ponits or a rejection (if they are too simillar).
+Making multiple very-similar projects will also result in a decrease of points or a rejection (if they are too similar).
 
 (more to be added)
 

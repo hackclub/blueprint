@@ -134,7 +134,7 @@
         },
         {
           "label": "Journal",
-          "text": "Your journal needs to show the step-by-step process you took in making this project. Please break your larger journal entires into multiple smaller ones, show the steps you took, and explain it better."
+          "text": "Your journal needs to show the step-by-step process you took in making this project. Please break your larger journal entries into multiple smaller ones, show the steps you took, and explain it better."
         }
       ]
     },
@@ -144,7 +144,7 @@
       "options": [
         {
           "label": "High quality devboard",
-          "text": "This project follows our devboard guide which typically takes 15-20 hours to complete. This project however, is signifigantly higher quality so I am going to deflate only a bit and keep it above that range."
+          "text": "This project follows our devboard guide which typically takes 15-20 hours to complete. This project however, is significantly higher quality so I am going to deflate only a bit and keep it above that range."
         },
         {
           "label": "Normal devboard",
@@ -156,7 +156,7 @@
         },
         {
           "label": "High quality keyboard",
-          "text": "This project is a typical full-sized keyboard with a PCB and case which takes around 15-20 hours to complete. This project however, is signifigantly higher quality so I am going to deflate only a bit and keep it above that range."
+          "text": "This project is a typical full-sized keyboard with a PCB and case which takes around 15-20 hours to complete. This project however, is significantly higher quality so I am going to deflate only a bit and keep it above that range."
         },
         {
           "label": "Normal keyboard",

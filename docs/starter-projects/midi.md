@@ -33,7 +33,7 @@ There will be another guide for assembly later.
 
 
 ## Getting started
-This guide covers the essential steps needed to make a simple mini device, and teaches you to implement the folowing things in both circuit design and code.
+This guide covers the essential steps needed to make a simple mini device, and teaches you to implement the following things in both circuit design and code.
 - Switches and keys (in matrix)
 - Rotary encoders
 - TFT LCD
@@ -207,7 +207,7 @@ to +3v3.
 ### A little bit more on the schematic
 
 Your schematic is mostly ready to go around this point, but you should take a few steps to make it look cleaner and easier to read!
-1. Use bounding boxes around certain sections of the schematic to group certain areas. Visually seperate if a set of buttons is used differently from another in the schematic too!
+1. Use bounding boxes around certain sections of the schematic to group certain areas. Visually separate if a set of buttons is used differently from another in the schematic too!
 
 ![](/old-cdn/445922a3881f428687ce54be215270e3356eb6cd_image.webp)
 
@@ -348,7 +348,7 @@ color_palette = displayio.Palette(1)
 color_palette[0] = 0x00FF00
 ```
 
-This creates a bitmap the size of the screen, creates a pallete with one colour and tehn adds the colour to the palette. In this case, `0x00FF00` is the colour for green. If you have some basic knowledge of hex codes, you can change this to any colour you want.
+This creates a bitmap the size of the screen, creates a palette with one colour and tehn adds the colour to the palette. In this case, `0x00FF00` is the colour for green. If you have some basic knowledge of hex codes, you can change this to any colour you want.
 
 ```python
 bg_sprite = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)

@@ -75,7 +75,7 @@ Again type "a" and search for "c" (the shorthand for capacitor). Make sure to do
 
 ![Pasted image 20250925102628.png](/old-cdn/2009d7d514b07a2fb777dd999a696c20c0f97fe6_Pasted_image_20250925102628.webp)
 
-These are the decoupling capacitors for the 3.3V line, now we need to do the caps for the 1.1V line. There's 2 VDD pins, so two, 0.1uF caps, and we need one for the line too, so a 1uF cap aswell:
+These are the decoupling capacitors for the 3.3V line, now we need to do the caps for the 1.1V line. There's 2 VDD pins, so two, 0.1uF caps, and we need one for the line too, so a 1uF cap as well:
 
 ![Pasted image 20250925103109.png](/old-cdn/797d137221a655fc531580d26af05ca611ade4fe_Pasted_image_20250925103109.webp)
 
@@ -477,7 +477,7 @@ Then, select the entire PCB with your ground fill, and then tap B to fill it:
 
 Now you'll notice that all your ground ratliness disappear. Their might be a couple that are still there though, this is because the pads are isolated, so you might need to put a via from the pad onto the ground fill. You also might need to adjust like some of the header pins signals and such to make it work!
 
-I'd also suggest adding via's to all the isolated islands of ground for signal integrity, but this is just good practice, and also putting extra near the SoC and stuff that get's hot like the LDO:
+I'd also suggest adding via's to all the isolated islands of ground for signal integrity, but this is just good practice, and also putting extra near the SoC and stuff that gets hot like the LDO:
 
 ![Pasted image 20250929172715.png](/old-cdn/f2185f07a9e0c6148986b5790b9b40c0695db82c_Pasted_image_20250929172715.webp)
 
@@ -620,7 +620,7 @@ Now try to challenge yourself in your next endeavor, and don't just make another
 
 Feel free to also modify this board you've created to include an LED matrix, motor drivers, literally whatever your heart desires.
 
-I hope you learned alot, if you want to checkout some of the other stuff I've created, check out my projects on [GitHub](https://github.com/KaiPereira) or my personal website https://kaipereira.com/! 
+I hope you learned a lot, if you want to checkout some of the other stuff I've created, check out my projects on [GitHub](https://github.com/KaiPereira) or my personal website https://kaipereira.com/! 
 
 Now if you want to stick around, we're going to go through assembling your PCB, if you didn't want to get JLC to do PCBA!
 
@@ -663,7 +663,7 @@ So basically:
 - Apply heat to the other pad, and solder it to the component
 - Apply more solder to the pad you first soldered to create a stronger connection
 
-And then you're done! I sometimes add some more flux and then clean up my joints, but it's up to you if you want to do so! This will be hard when you first start off, but it get's much easier with practice, and also better tools help a lot!
+And then you're done! I sometimes add some more flux and then clean up my joints, but it's up to you if you want to do so! This will be hard when you first start off, but it gets much easier with practice, and also better tools help a lot!
 
 Now you want to pay close attention to your joints, to make sure that your solder is actually joined with the component! I find being in a WELL lit room helps a lot to see everything, and a microscope can be very handy!
 

@@ -41,7 +41,7 @@ Firmware implementation info can be found here:
 
 ## SK6812MINI-E RGB LEDs
 
-These are the RGB LEDs that come with the hackpad kit! Each one has a super tiny microcontroller inside, so you can chain them together control all of them with only 1 pin of your micrcontroller!
+These are the RGB LEDs that come with the hackpad kit! Each one has a super tiny microcontroller inside, so you can chain them together control all of them with only 1 pin of your microcontroller!
 
 They have 4 pins - 1 5v power (VCC), 1 ground (GND), 1 for data coming in (DIN), and 1 for data going out of the LED (DOUT).
 
