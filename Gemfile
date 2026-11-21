@@ -76,7 +76,7 @@ gem "sentry-rails"
 gem "paper_trail"
 
 # Pagy 43 is a full API rewrite; keep the 9.x API.
-gem "pagy", "~> 9.4"
+gem "pagy", "~> 43.6"
 
 # Flipper for feature flags
 gem "flipper"
