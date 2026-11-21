@@ -48,7 +48,7 @@ gem "aws-sdk-s3", require: false
 gem "tailwindcss-rails", "~> 4.4"
 
 # Redis for cache, queue, and Action Cable
-gem "redis", "~> 5.0"
+gem "redis", "~> 6.0"
 
 # PostgreSQL adapter for ActiveRecord
 gem "pg", "~> 1.6"
